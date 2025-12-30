@@ -80,20 +80,18 @@
 //	return 0x0;
 //}
 
-
 ASMJIT_PATCH(0x6B6D44, SpawnManagerClass_Init_Spawns, 0x5)
 {
 	enum { Jump = 0x6B6DF0, Change = 0x6B6D53, Continue = 0 };
 
 	GET(SpawnManagerClass*, pThis, ESI);
 
-
 	GET_STACK(size_t, i, STACK_OFFSET(0x1C, 0x4));
 
 	auto const pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->Owner->GetTechnoType());
 
-	if ((int)i >= pTypeExt->InitialSpawnsNumber.Get(pThis->SpawnCount)) {
-
+	if ((int)i >= pTypeExt->InitialSpawnsNumber.Get(pThis->SpawnCount))
+	{
 		GET(SpawnNode*, pControl, EBP);
 
 		pControl->Unit = nullptr;
@@ -108,7 +106,6 @@ ASMJIT_PATCH(0x6B6D44, SpawnManagerClass_Init_Spawns, 0x5)
 
 	R->EAX(pTypeExt->Spawns_Queue[i]->CreateObject(pThis->Owner->GetOwningHouse()));
 	return Change;
-
 }
 
 ASMJIT_PATCH(0x6B78D3, SpawnManagerClass_Update_Spawns, 0x6)
@@ -121,8 +118,10 @@ ASMJIT_PATCH(0x6B78D3, SpawnManagerClass_Update_Spawns, 0x6)
 
 	std::vector<AircraftTypeClass*> vec = pTypeExt->Spawns_Queue;
 
-	for (auto& pNode : pThis->SpawnedNodes) {
-		if (pNode->Unit) {
+	for (auto& pNode : pThis->SpawnedNodes)
+	{
+		if (pNode->Unit)
+		{
 			fast_remove_if(vec, [=](auto pType) { return pType == pNode->Unit->GetTechnoType(); });
 		}
 	}

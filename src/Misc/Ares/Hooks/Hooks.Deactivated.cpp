@@ -6,7 +6,8 @@ ASMJIT_PATCH(0x417F83, AircraftClass_GetActionOnCell_Deactivated, 0x6)
 {
 	GET(AircraftClass* const, pThis, ESI);
 
-	if (pThis->Deactivated) {
+	if (pThis->Deactivated)
+	{
 		R->EAX(Action::None);
 		return 0x417F94;
 	}
@@ -27,14 +28,15 @@ ASMJIT_PATCH(0x4436F7, BuildingClass_ActionOnCell_Deactivated, 0x5)
 {
 	GET(BuildingClass* const, pThis, ECX);
 	return (pThis->Deactivated)
-		? 0x443729 : 0 ;
+		? 0x443729 : 0;
 }
 
 ASMJIT_PATCH(0x447548, BuildingClass_GetActionOnCell_Deactivated, 0x6)
 {
 	GET(BuildingClass* const, pThis, ESI);
 
-	if (pThis->Deactivated) {
+	if (pThis->Deactivated)
+	{
 		R->EBX(Action::None);
 		return 0x44776D;
 	}
@@ -67,7 +69,8 @@ ASMJIT_PATCH(0x51F808, InfantryClass_GetActionOnCell_Deactivated, 0x6)
 ASMJIT_PATCH(0x7404B9, UnitClass_GetCursorOverCell_Deactivated, 6)
 {
 	GET(UnitClass* const, pThis, ESI);
-	if (pThis->Deactivated) {
+	if (pThis->Deactivated)
+	{
 		R->EAX(Action::None);
 		return 0x740805;
 	}
@@ -77,8 +80,10 @@ ASMJIT_PATCH(0x7404B9, UnitClass_GetCursorOverCell_Deactivated, 6)
 ASMJIT_PATCH(0x5200B3, InfantryClass_UpdatePanic_Deactivated, 6)
 {
 	GET(InfantryClass* const, pThis, ESI);
-	if (pThis->Deactivated) {
-		if (pThis->PanicDurationLeft > 0) {
+	if (pThis->Deactivated)
+	{
+		if (pThis->PanicDurationLeft > 0)
+		{
 			--pThis->PanicDurationLeft;
 		}
 		return 0x52025A;

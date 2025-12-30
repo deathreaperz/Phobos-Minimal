@@ -7,9 +7,7 @@
 #ifndef lgc_h
 #define lgc_h
 
-
 #include <stddef.h>
-
 
 #include "lobject.h"
 #include "lstate.h"
@@ -28,7 +26,6 @@
 ** invariant is not being enforced (e.g., sweep phase).
 */
 
-
 /*
 ** Possible states of the Garbage Collector
 */
@@ -42,10 +39,8 @@
 #define GCScallfin	7
 #define GCSpause	8
 
-
 #define issweepphase(g)  \
 	(GCSswpallgc <= (g)->gcstate && (g)->gcstate <= GCSswpend)
-
 
 /*
 ** macro to tell when main invariant (white objects cannot point to black
@@ -56,7 +51,6 @@
 */
 
 #define keepinvariant(g)	((g)->gcstate <= GCSatomic)
-
 
 /*
 ** some useful bit tricks
@@ -70,7 +64,6 @@
 #define resetbit(x,b)		resetbits(x, bitmask(b))
 #define testbit(x,b)		testbits(x, bitmask(b))
 
-
 /*
 ** Layout for bit use in 'marked' field. First three bits are
 ** used for object "age" in generational mode. Last bit is used
@@ -83,10 +76,7 @@
 
 #define TESTBIT		7
 
-
-
 #define WHITEBITS	bit2mask(WHITE0BIT, WHITE1BIT)
-
 
 #define iswhite(x)      testbits((x)->marked, WHITEBITS)
 #define isblack(x)      testbit((x)->marked, BLACKBIT)
@@ -105,7 +95,6 @@
 
 #define luaC_white(g)	cast_byte((g)->currentwhite & WHITEBITS)
 
-
 /* object age in generational mode */
 #define G_NEW		0	/* created in current cycle */
 #define G_SURVIVAL	1	/* created in previous cycle */
@@ -120,7 +109,6 @@
 #define getage(o)	((o)->marked & AGEBITS)
 #define setage(o,a)  ((o)->marked = cast_byte(((o)->marked & (~AGEBITS)) | a))
 #define isold(o)	(getage(o) > G_SURVIVAL)
-
 
 /*
 ** In generational mode, objects are created 'new'. After surviving one
@@ -159,7 +147,6 @@
 ** the cycle.
 */
 
-
 /*
 ** {======================================================
 ** Default Values for GC parameters
@@ -184,7 +171,6 @@
 */
 #define LUAI_GENMINORMUL         20
 
-
 /* incremental */
 
 /* Number of bytes must be LUAI_GCPAUSE% before starting new cycle */
@@ -200,12 +186,10 @@
 /* How many bytes to allocate before next GC step */
 #define LUAI_GCSTEPSIZE	(200 * sizeof(Table))
 
-
 #define setgcparam(g,p,v)  (g->gcparams[LUA_GCP##p] = luaO_codeparam(v))
 #define applygcparam(g,p,x)  luaO_applyparam(g->gcparams[LUA_GCP##p], x)
 
 /* }====================================================== */
-
 
 /*
 ** Control when GC is running:
@@ -214,7 +198,6 @@
 #define GCSTPGC		2  /* bit true when GC stopped by itself */
 #define GCSTPCLS	4  /* bit true when closing Lua state */
 #define gcrunning(g)	((g)->gcstp == 0)
-
 
 /*
 ** Does one step of collection when debt becomes zero. 'pre'/'pos'
@@ -237,7 +220,6 @@
 /* more often than not, 'pre'/'pos' are empty */
 #define luaC_checkGC(L)		luaC_condGC(L,(void)0,(void)0)
 
-
 #define luaC_objbarrier(L,p,o) (  \
 	(isblack(p) && iswhite(o)) ? \
 	luaC_barrier_(L,obj2gco(p),obj2gco(o)) : cast_void(0))
@@ -251,18 +233,17 @@
 #define luaC_barrierback(L,p,v) (  \
 	iscollectable(v) ? luaC_objbarrierback(L, p, gcvalue(v)) : cast_void(0))
 
-LUAI_FUNC void luaC_fix (lua_State *L, GCObject *o);
-LUAI_FUNC void luaC_freeallobjects (lua_State *L);
-LUAI_FUNC void luaC_step (lua_State *L);
-LUAI_FUNC void luaC_runtilstate (lua_State *L, int state, int fast);
-LUAI_FUNC void luaC_fullgc (lua_State *L, int isemergency);
-LUAI_FUNC GCObject *luaC_newobj (lua_State *L, lu_byte tt, size_t sz);
-LUAI_FUNC GCObject *luaC_newobjdt (lua_State *L, lu_byte tt, size_t sz,
-                                                 size_t offset);
-LUAI_FUNC void luaC_barrier_ (lua_State *L, GCObject *o, GCObject *v);
-LUAI_FUNC void luaC_barrierback_ (lua_State *L, GCObject *o);
-LUAI_FUNC void luaC_checkfinalizer (lua_State *L, GCObject *o, Table *mt);
-LUAI_FUNC void luaC_changemode (lua_State *L, int newmode);
-
+LUAI_FUNC void luaC_fix(lua_State* L, GCObject* o);
+LUAI_FUNC void luaC_freeallobjects(lua_State* L);
+LUAI_FUNC void luaC_step(lua_State* L);
+LUAI_FUNC void luaC_runtilstate(lua_State* L, int state, int fast);
+LUAI_FUNC void luaC_fullgc(lua_State* L, int isemergency);
+LUAI_FUNC GCObject* luaC_newobj(lua_State* L, lu_byte tt, size_t sz);
+LUAI_FUNC GCObject* luaC_newobjdt(lua_State* L, lu_byte tt, size_t sz,
+												 size_t offset);
+LUAI_FUNC void luaC_barrier_(lua_State* L, GCObject* o, GCObject* v);
+LUAI_FUNC void luaC_barrierback_(lua_State* L, GCObject* o);
+LUAI_FUNC void luaC_checkfinalizer(lua_State* L, GCObject* o, Table* mt);
+LUAI_FUNC void luaC_changemode(lua_State* L, int newmode);
 
 #endif

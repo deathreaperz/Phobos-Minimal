@@ -7,26 +7,30 @@
 #include <Misc/DamageArea.h>
 #include <Ext/Building/Body.h>
 
-FacingType NOINLINE BuildingExtData::GetPoseDir(AircraftClass* pAir , BuildingClass* pBld)
+FacingType NOINLINE BuildingExtData::GetPoseDir(AircraftClass* pAir, BuildingClass* pBld)
 {
 	FacingType ret = (FacingType)TechnoTypeExtContainer::Instance.Find(pAir->Type)->LandingDir.Get(RulesClass::Instance->PoseDir);
 
 	if (pBld || pAir->HasAnyLink())
 	{
-		if (!pBld){
-
-			for (auto i = 0; i < pAir->RadioLinks.Capacity; ++i) {
-				if (auto possiblebld = cast_to<BuildingClass*>(pAir->RadioLinks[i])) {
+		if (!pBld)
+		{
+			for (auto i = 0; i < pAir->RadioLinks.Capacity; ++i)
+			{
+				if (auto possiblebld = cast_to<BuildingClass*>(pAir->RadioLinks[i]))
+				{
 					pBld = possiblebld;
 				}
 			}
 
-			if(!pBld && pAir->RadioLinks[0] && ret < FacingType::Min) { //spawner
+			if (!pBld && pAir->RadioLinks[0] && ret < FacingType::Min)
+			{ //spawner
 				return FacingType((((pAir->PrimaryFacing.Current().Raw >> 12) + 1) >> 1) & 7);
 			}
 		}
 
-		if(pBld) {
+		if (pBld)
+		{
 			const auto pBldTypeExt = BuildingTypeExtContainer::Instance.Find(pBld->Type);
 			const int nIdx = pBld->FindLinkIndex(pAir);
 			const auto dir = &pBldTypeExt->DockPoseDir;
@@ -34,14 +38,14 @@ FacingType NOINLINE BuildingExtData::GetPoseDir(AircraftClass* pAir , BuildingCl
 			if (nIdx <= -1 || (size_t)nIdx >= dir->size() || ret < FacingType::Min)
 			{
 				return pBldTypeExt->LandingDir.Get(FacingType((((pBld->PrimaryFacing.Current().Raw >> 12) + 1) >> 1) & 7));
-
 			}
 			else
 				return (*dir)[nIdx];
 		}
 	}
 
-	if (!pAir->Type->AirportBound && ret < FacingType::Min) {
+	if (!pAir->Type->AirportBound && ret < FacingType::Min)
+	{
 		return FacingType((((pAir->PrimaryFacing.Current().Raw >> 12) + 1) >> 1) & 7);
 	}
 
@@ -53,7 +57,7 @@ ASMJIT_PATCH(0x41B760, IFlyControl_LandDirection, 0x6)
 {
 	GET_STACK(IFlyControl*, pThis, 0x4);
 
-	const FacingType result =  BuildingExtData::GetPoseDir(static_cast<AircraftClass*>(pThis), nullptr);
+	const FacingType result = BuildingExtData::GetPoseDir(static_cast<AircraftClass*>(pThis), nullptr);
 	R->EAX(result);
 	return 0x41B7C1;
 }
@@ -64,39 +68,44 @@ ASMJIT_PATCH(0x446FA2, BuildingClass_GrandOpening_PoseDir, 0x6)
 	GET(BuildingClass*, pThis, EBP);
 	GET(AircraftClass*, pAir, ESI);
 	pThis->SendCommand(RadioCommand::RequestTether, pAir);
-	const DirStruct dir {  BuildingExtData::GetPoseDir(pAir, pThis) };
+	const DirStruct dir { BuildingExtData::GetPoseDir(pAir, pThis) };
 
 	if (RulesExtData::Instance()->ExpandAircraftMission)
 		pAir->PrimaryFacing.Set_Current(dir);
 
 	pAir->SecondaryFacing.Set_Current(dir);
 
-//	if (pThis->GetHeight() > 0)
-//		AircraftTrackerClass::Instance->Add(pThis);
+	//	if (pThis->GetHeight() > 0)
+	//		AircraftTrackerClass::Instance->Add(pThis);
 
 	return 0x446FB0;
 }
 
 ASMJIT_PATCH(0x687AF4, CCINIClass_InitializeStuffOnMap_AdjustAircrafts, 0x5)
 {
-	AircraftClass::Array->for_each([](AircraftClass* const pThis) {
-		if (pThis && pThis->Type->AirportBound) {
-			if (auto pCell = pThis->GetCell()) {
-				if (auto pBuilding = pCell->GetBuilding()) {
-					if (pBuilding->Type->Helipad && pThis->Type->Dock.contains(pBuilding->Type)) {
-						pBuilding->SendCommand(RadioCommand::RequestLink, pThis);
-						pBuilding->SendCommand(RadioCommand::RequestTether, pThis);
-						pThis->SetLocation(pBuilding->GetDockCoords(pThis));
-						pThis->DockedTo = pBuilding;
-						const DirStruct dir { ((int) BuildingExtData::GetPoseDir(pThis, pBuilding) << 13) };
-						pThis->SecondaryFacing.Set_Current(dir);
+	AircraftClass::Array->for_each([](AircraftClass* const pThis)
+ {
+	 if (pThis && pThis->Type->AirportBound)
+	 {
+		 if (auto pCell = pThis->GetCell())
+		 {
+			 if (auto pBuilding = pCell->GetBuilding())
+			 {
+				 if (pBuilding->Type->Helipad && pThis->Type->Dock.contains(pBuilding->Type))
+				 {
+					 pBuilding->SendCommand(RadioCommand::RequestLink, pThis);
+					 pBuilding->SendCommand(RadioCommand::RequestTether, pThis);
+					 pThis->SetLocation(pBuilding->GetDockCoords(pThis));
+					 pThis->DockedTo = pBuilding;
+					 const DirStruct dir { ((int)BuildingExtData::GetPoseDir(pThis, pBuilding) << 13) };
+					 pThis->SecondaryFacing.Set_Current(dir);
 
-						if (pThis->GetHeight() > 0)
-							AircraftTrackerClass::Instance->Add(pThis);
-					}
-				}
-			}
-		}
+					 if (pThis->GetHeight() > 0)
+						 AircraftTrackerClass::Instance->Add(pThis);
+				 }
+			 }
+		 }
+	 }
 	});
 
 	return 0x0;
@@ -113,13 +122,13 @@ ASMJIT_PATCH(0x4CF31C, FlyLocomotionClass_FlightUpdate_LandingDir, 0x9)
 	const auto pFoot = *pFootPtr;
 	dir = 0;
 
-	if (iFly) {
-
+	if (iFly)
+	{
 		if (iFly->Is_Locked())
 			return SkipGameCode;
 
 		if (const auto pAircraft = cast_to<AircraftClass*, true>(pFoot))
-			dir = DirStruct( BuildingExtData::GetPoseDir(pAircraft, nullptr)).Raw;
+			dir = DirStruct(BuildingExtData::GetPoseDir(pAircraft, nullptr)).Raw;
 		else
 			dir = (iFly->Landing_Direction() << 13);
 	}
@@ -140,10 +149,11 @@ ASMJIT_PATCH(0x4CF190, FlyLocomotionClass_FlightUpdate_SetPrimaryFacing, 0x6) //
 		// No const because it also need to be used by SecondaryFacing
 		REF_STACK(CoordStruct, destination, STACK_OFFSET(0x48, 0x8));
 
-		auto horizontalDistance = [&destination](const CoordStruct& location) {
-			const auto delta = Point2D { location.X, location.Y } - Point2D { destination.X, destination.Y };
-			return static_cast<int>(delta.Length());
-		};
+		auto horizontalDistance = [&destination](const CoordStruct& location)
+			{
+				const auto delta = Point2D { location.X, location.Y } - Point2D { destination.X, destination.Y };
+				return static_cast<int>(delta.Length());
+			};
 
 		const auto pFoot = *pFootPtr;
 		const auto pAircraft = cast_to<AircraftClass*, true>(pFoot);
@@ -162,9 +172,8 @@ ASMJIT_PATCH(0x4CF190, FlyLocomotionClass_FlightUpdate_SetPrimaryFacing, 0x6) //
 		}
 		else
 		{
-
 			const auto footCoords = pAircraft->GetCoords();
-			const auto landingDir = DirStruct( BuildingExtData::GetPoseDir(pAircraft , nullptr));
+			const auto landingDir = DirStruct(BuildingExtData::GetPoseDir(pAircraft, nullptr));
 
 			// Try to land from the rear
 			if (pAircraft->Destination && (pAircraft->DockedTo == pAircraft->Destination || pAircraft->SpawnOwner == pAircraft->Destination))
@@ -204,7 +213,6 @@ ASMJIT_PATCH(0x4CF190, FlyLocomotionClass_FlightUpdate_SetPrimaryFacing, 0x6) //
 
 	return SkipGameCode;
 }
-
 
 ASMJIT_PATCH(0x4CF3D0, FlyLocomotionClass_FlightUpdate_SetFlightLevel, 0x7) // Make aircraft not have to fly directly above the airport before starting to descend
 {
@@ -260,11 +268,9 @@ ASMJIT_PATCH(0x4CF3D0, FlyLocomotionClass_FlightUpdate_SetFlightLevel, 0x7) // M
 					}
 
 					pThis->FlightLevel = level;
-
 				}
 				else
 				{
-
 					// project the next steps using the current speed
 					// and facing. if there's a height difference, use
 					// the highest value as the new flight level.
@@ -311,7 +317,6 @@ ASMJIT_PATCH(0x4CF3D0, FlyLocomotionClass_FlightUpdate_SetFlightLevel, 0x7) // M
 						{
 							R->EBP(pThis);
 							pThis->FlightLevel = pType->GetFlightLevel();
-
 						}
 					}
 				}
@@ -347,8 +352,8 @@ ASMJIT_PATCH(0x4CF3D0, FlyLocomotionClass_FlightUpdate_SetFlightLevel, 0x7) // M
 		}
 	}
 
-	if (const auto pAircraft = cast_to<AircraftClass*, false>(pFootPtr)) {
-
+	if (const auto pAircraft = cast_to<AircraftClass*, false>(pFootPtr))
+	{
 		if (RulesExtData::Instance()->ExpandAircraftMission)
 		{
 			GET(const int, distance, EBX);
@@ -365,7 +370,6 @@ ASMJIT_PATCH(0x4CF3D0, FlyLocomotionClass_FlightUpdate_SetFlightLevel, 0x7) // M
 			}
 			else
 			{
-
 				const auto flightLevel = pType->GetFlightLevel();
 
 				// Check returning actions

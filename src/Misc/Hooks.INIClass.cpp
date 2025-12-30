@@ -43,19 +43,23 @@ namespace detail
 			return false;
 
 		// Semantic locomotor aliases
-		if (parser.value()[0] != '{') {
-
+		if (parser.value()[0] != '{')
+		{
 			if (Phobos::Otamaa::IsAdmin)
-				Debug::Log("Reading locomotor [%s] of [%s]\n" , parser.value() , pSection);
+				Debug::Log("Reading locomotor [%s] of [%s]\n", parser.value(), pSection);
 
-			for (size_t i = 0; i < EnumFunctions::LocomotorPairs_ToStrings.size(); ++i) {
-				if (IS_SAME_STR_(parser.value(), EnumFunctions::LocomotorPairs_ToStrings[i].first)) {
+			for (size_t i = 0; i < EnumFunctions::LocomotorPairs_ToStrings.size(); ++i)
+			{
+				if (IS_SAME_STR_(parser.value(), EnumFunctions::LocomotorPairs_ToStrings[i].first))
+				{
 					CLSID dummy;
 					const unsigned hr = CLSIDFromString(LPCOLESTR(EnumFunctions::LocomotorPairs_ToWideStrings[i].second), &dummy);
-					if (SUCCEEDED(hr)) {
+					if (SUCCEEDED(hr))
+					{
 						value = dummy; return true;
 					}
-					else {
+					else
+					{
 						Debug::LogError("Cannot find Locomotor [{} - {}({})] err : 0x{:08X}", pSection, parser.value(), EnumFunctions::LocomotorPairs_ToStrings[i].second, hr);
 					}
 				}
@@ -64,11 +68,11 @@ namespace detail
 			//PARSE(Attachment)
 			//PARSE(Levitate)
 			PARSE(AdvancedDrive)
-			//PARSE(CustomRocket)
-			//PARSE(TSJumpJet)
+				//PARSE(CustomRocket)
+				//PARSE(TSJumpJet)
 
-			//AddMore loco here
-			return false;
+				//AddMore loco here
+				return false;
 		}
 
 		CHAR bytestr[128];
@@ -84,8 +88,9 @@ namespace detail
 		MultiByteToWideChar(0, 1, bytestr, -1, wcharstr, 128);
 		const unsigned hr = CLSIDFromString(wcharstr, &value);
 
-		if(!SUCCEEDED(hr)){
-			Debug::LogError("Cannot find Locomotor [{} - {}] err : 0x{:08X}", pSection, parser.value(),hr);
+		if (!SUCCEEDED(hr))
+		{
+			Debug::LogError("Cannot find Locomotor [{} - {}] err : 0x{:08X}", pSection, parser.value(), hr);
 			return false;
 		}
 
@@ -94,8 +99,10 @@ namespace detail
 }
 
 // passthrough instead of std::hash, because our keys are already unique CRCs
-struct Passthrough {
-	std::size_t operator()(int const& x) const noexcept {
+struct Passthrough
+{
+	std::size_t operator()(int const& x) const noexcept
+	{
 		return x;
 	}
 };
@@ -116,9 +123,10 @@ struct INIInheritance
 	static std::set<std::string> SavedIncludes;
 	static std::unordered_map<int, std::string, Passthrough> Inherits;
 
-	static int Finalize(char* buffer ,int length, const char* result)
+	static int Finalize(char* buffer, int length, const char* result)
 	{
-		if (!result) {
+		if (!result)
+		{
 			*buffer = NULL;
 			return 0;
 		}
@@ -140,7 +148,7 @@ struct INIInheritance
 			ini->SectionIndex.IsPresent(sectionCRC) ? ini->SectionIndex.Archive->Data : nullptr;
 
 		if (!pSection)
-			return Finalize(buffer ,length ,defaultValue);
+			return Finalize(buffer, length, defaultValue);
 
 		const auto pEntry = pSection->EntryIndex.IsPresent(entryCRC) ? pSection->EntryIndex.Archive->Data : nullptr;
 
@@ -159,7 +167,8 @@ struct INIInheritance
 		int length,
 		bool useCurrentSection,
 		bool skipCheck = false
-	) {
+	)
+	{
 		int resultLen = 0;
 
 		if (!skipCheck)
@@ -188,7 +197,7 @@ struct INIInheritance
 
 			// if we failed to find $Inherits, stop
 			if (resultLen == 0)
-				return Finalize(buffer,length, defaultValue);
+				return Finalize(buffer, length, defaultValue);
 
 			inherits_result = stringBuffer;
 		}
@@ -344,7 +353,6 @@ ASMJIT_PATCH(0x528BAC, INIClass_GetString_Inheritance_NoEntry, 0x6)
 	return 0x528BB6;
 }
 
-
 #pragma region INCLUDES
 
 ASMJIT_PATCH(0x474230, CCINIClass_ReadCCFile1, 5)
@@ -365,13 +373,13 @@ ASMJIT_PATCH(0x474230, CCINIClass_ReadCCFile1, 5)
 		auto section = pINI->GetSection(!Phobos::Config::UseNewIncludes ?
 			INIInheritance::AresIncludesSection : INIInheritance::IncludesSection);
 
-		if(!section) section = pINI->GetSection(!Phobos::Config::UseNewIncludes ?
+		if (!section) section = pINI->GetSection(!Phobos::Config::UseNewIncludes ?
 			INIInheritance::AresIncludesSectionB : INIInheritance::IncludesSectionB);
 
-		if (section) {
-
-			for (auto& node : section->EntryIndex) {
-
+		if (section)
+		{
+			for (auto& node : section->EntryIndex)
+			{
 				if (!node.Data || !node.Data->Value || !*node.Data->Value)
 					continue;
 
@@ -383,14 +391,16 @@ ASMJIT_PATCH(0x474230, CCINIClass_ReadCCFile1, 5)
 				INIInheritance::SavedIncludes.insert(std::move(nodefilename));
 
 				CCFileClass nFile { node.Data->Value };
-				if (nFile.Exists()) {
-					if(Phobos::Otamaa::IsAdmin)
+				if (nFile.Exists())
+				{
+					if (Phobos::Otamaa::IsAdmin)
 						Debug::Log("Reading Included INI file %s !\n", node.Data->Value);
 
 					INIInheritance::LastINIFile->ReadCCFile(&nFile, false, false);
-				} else {
-
-					if(!Phobos::Otamaa::IsAdmin)
+				}
+				else
+				{
+					if (!Phobos::Otamaa::IsAdmin)
 						Debug::FatalErrorAndExit("Included INI file %s does not exist", node.Data->Value);
 					else
 						Debug::Log("Included INI file %s does not exist\n", node.Data->Value);

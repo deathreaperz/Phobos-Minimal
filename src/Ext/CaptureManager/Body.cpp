@@ -20,7 +20,7 @@ AnimTypeClass* CaptureExtData::GetMindcontrollAnimType(TechnoClass* pController,
 	return pFallback;
 }
 
-bool CaptureExtData::AllowDrawLink(TechnoClass* pTechno , TechnoTypeClass* pType)
+bool CaptureExtData::AllowDrawLink(TechnoClass* pTechno, TechnoTypeClass* pType)
 {
 	const auto pExt = TechnoTypeExtContainer::Instance.Find(pType);
 	return EnumFunctions::CanTargetHouse(pExt->Draw_MindControlLink, pTechno->Owner, HouseClass::CurrentPlayer);
@@ -39,8 +39,9 @@ bool CaptureExtData::FreeUnit(CaptureManagerClass* pManager, TechnoClass* pTarge
 
 			if (pTarget == pNode->Unit)
 			{
-				if (pTarget->MindControlRingAnim) {
-					GameDelete<true,false>(pTarget->MindControlRingAnim);
+				if (pTarget->MindControlRingAnim)
+				{
+					GameDelete<true, false>(pTarget->MindControlRingAnim);
 					//pTarget->MindControlRingAnim->TimeToDie = true;
 					//pTarget->MindControlRingAnim->UnInit();
 					pTarget->MindControlRingAnim = nullptr;
@@ -93,16 +94,17 @@ bool CaptureExtData::CaptureUnit(CaptureManagerClass* pManager, TechnoClass* pTa
 		if (!pManager->InfiniteMindControl)
 		{
 			if (pManager->MaxControlNodes == 1 && pManager->ControlNodes.Count == 1)
-				CaptureExtData::FreeUnit(pManager, pManager->ControlNodes[0]->Unit , bSilent);
+				CaptureExtData::FreeUnit(pManager, pManager->ControlNodes[0]->Unit, bSilent);
 			else if (pManager->ControlNodes.Count == pManager->MaxControlNodes && bRemoveFirst)
-				CaptureExtData::FreeUnit(pManager, pManager->ControlNodes[0]->Unit , bSilent);
+				CaptureExtData::FreeUnit(pManager, pManager->ControlNodes[0]->Unit, bSilent);
 		}
 
 		{
 			auto pControlNode = GameCreate<ControlNode>(pTarget, pTarget->Owner, RulesClass::Instance->MindControlAttackLineFrames);
 			pManager->ControlNodes.push_back(pControlNode);
 
-			if (threatDelay > 0) {
+			if (threatDelay > 0)
+			{
 				TechnoExtContainer::Instance.Find(pTarget)->BeControlledThreatFrame = Unsorted::CurrentFrame() + threatDelay;
 			}
 
@@ -160,13 +162,13 @@ bool CaptureExtData::CaptureUnit(CaptureManagerClass* pManager, TechnoClass* pTe
 		const auto Controller = pManager->Owner;
 		return CaptureExtData::CaptureUnit(pManager, pTechno,
 		TechnoTypeExtContainer::Instance.Find(Controller->GetTechnoType())->MultiMindControl_ReleaseVictim,
-		bSilent, RulesClass::Instance->ControlledAnimationType , threatDelay);
+		bSilent, RulesClass::Instance->ControlledAnimationType, threatDelay);
 	}
 
 	return false;
 }
 
-void CaptureExtData::DecideUnitFate(CaptureManagerClass* pManager, FootClass* pFoot , bool Captured)
+void CaptureExtData::DecideUnitFate(CaptureManagerClass* pManager, FootClass* pFoot, bool Captured)
 {
 	// to be implemented (if needed). - secsome
 }

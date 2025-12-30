@@ -18,7 +18,7 @@ void PaintballType::Read(INI_EX& parser, const char* pSection)
 	detail::read(BrightMultiplier, parser, pSection, "PaintBall.BrightMult", false);
 	BrightMultiplier = std::clamp(BrightMultiplier, 0.0f, 2.0f);
 
-	detail::read(Accumulate, parser, pSection, "PaintBall.Accumulate" , false);
+	detail::read(Accumulate, parser, pSection, "PaintBall.Accumulate", false);
 	detail::read(IgnoreFog, parser, pSection, "PaintBall.IgnoreFog", false);
 	detail::read(IgnoreShroud, parser, pSection, "PaintBall.IgnoreShroud", false);
 	detail::read(Override, parser, pSection, "PaintBall.OverrideSameAffect", false);
@@ -26,7 +26,8 @@ void PaintballType::Read(INI_EX& parser, const char* pSection)
 
 void PaintBall::Init()
 {
-	if (!Color.isset()) {
+	if (!Color.isset())
+	{
 		// readed as 3Bytes
 		// but this is actually Color16
 		// then need to make it ColorStruct
@@ -35,9 +36,9 @@ void PaintBall::Init()
 	}
 }
 
- bool PaintBall::AllowDraw(TechnoClass* pWho)
+bool PaintBall::AllowDraw(TechnoClass* pWho)
 {
-	if (auto const pBld = cast_to<BuildingClass* , false>(pWho))
+	if (auto const pBld = cast_to<BuildingClass*, false>(pWho))
 	{
 		if (pBld->IsFogged && !Data->IgnoreFog)
 			return false;
@@ -55,7 +56,7 @@ void PaintBall::Init()
 	return true;
 }
 
- /*
+/*
 void PaintBall::DrawSHP_Paintball(TechnoClass* pTech, REGISTERS* R)
 {
 	auto const& [rePaint, changeColor, changeBright] = NeedPaint();

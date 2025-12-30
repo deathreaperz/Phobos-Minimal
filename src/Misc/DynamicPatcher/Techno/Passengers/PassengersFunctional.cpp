@@ -9,7 +9,8 @@ void PassengersFunctional::AI(TechnoClass* pThis)
 	{
 		if (pThis->InOpenToppedTransport)
 		{
-			if (!pTranporter->IsAlive) {
+			if (!pTranporter->IsAlive)
+			{
 				//if(auto pThisFoot = flag_cast_to<FootClass*>(pThis))
 				//	pTranporter->MarkPassengersAsExited();
 
@@ -18,7 +19,7 @@ void PassengersFunctional::AI(TechnoClass* pThis)
 				pThis->InOpenToppedTransport = false;
 				pThis->Transporter = nullptr;
 
-				if(pThis->InLimbo) // only delete limboed techno , assume it fail to survive
+				if (pThis->InLimbo) // only delete limboed techno , assume it fail to survive
 					TechnoExtData::HandleRemove(pThis, nullptr, false, false);
 
 				return;
@@ -30,7 +31,7 @@ void PassengersFunctional::AI(TechnoClass* pThis)
 				{
 					auto nMission = pTranporter->GetCurrentMission();
 					if (nMission != Mission::Attack)
-						pThis->Override_Mission(Mission::Sleep, nullptr,nullptr);
+						pThis->Override_Mission(Mission::Sleep, nullptr, nullptr);
 				}
 
 				if (pTransportExt->MyPassangersData.ForceFire)
@@ -45,7 +46,8 @@ bool PassengersFunctional::CanFire(TechnoClass* pThis)
 	if (auto const pTranporter = pThis->Transporter)
 	{
 		auto const pType = pTranporter->GetTechnoType();
-		if (pThis->InOpenToppedTransport) {
+		if (pThis->InOpenToppedTransport)
+		{
 			auto const pTransportExt = TechnoTypeExtContainer::Instance.Find(pType);
 
 			switch (pTranporter->GetCurrentMission())

@@ -97,7 +97,6 @@ bool StraightVariantCTrajectoryType::Load(PhobosStreamReader& Stm, bool Register
 		.Process(this->EdgeAttenuation)
 		.Process(this->CountAttenuation)
 		;
-
 }
 
 bool StraightVariantCTrajectoryType::Save(PhobosStreamWriter& Stm) const
@@ -134,7 +133,6 @@ bool StraightVariantCTrajectoryType::Save(PhobosStreamWriter& Stm) const
 		.Process(this->EdgeAttenuation)
 		.Process(this->CountAttenuation)
 		;
-
 }
 
 bool StraightTrajectoryVarianC::Load(PhobosStreamReader& Stm, bool RegisterForChange)
@@ -689,7 +687,7 @@ void StraightTrajectoryVarianC::BulletDetonateLastCheck(HouseClass* pOwner)
 			if (pType->ProximityDirect)
 				pDetonateAt->ReceiveDamage(&damage, 0, pWH, pBullet->Owner, false, false, pOwner);
 			else
-				WarheadTypeExtData::DetonateAt(pWH, pType->ProximityMedial ? nullptr : pDetonateAt , pType->ProximityMedial ? pBullet->Location : position, pBullet->Owner, damage , pOwner);
+				WarheadTypeExtData::DetonateAt(pWH, pType->ProximityMedial ? nullptr : pDetonateAt, pType->ProximityMedial ? pBullet->Location : position, pBullet->Owner, damage, pOwner);
 
 			this->CalculateNewDamage();
 		}
@@ -797,13 +795,13 @@ void StraightTrajectoryVarianC::PassWithDetonateAt(HouseClass* pOwner)
 			detonateCoords.Z = MapClass::Instance->GetCellFloorHeight(detonateCoords);
 
 		const auto damage = this->GetTheTrueDamage(this->PassDetonateDamage, nullptr, false);
-		WarheadTypeExtData::DetonateAt(pWH, detonateCoords, pBullet->Owner, damage,false, pOwner);
+		WarheadTypeExtData::DetonateAt(pWH, detonateCoords, pBullet->Owner, damage, false, pOwner);
 		this->CalculateNewDamage();
 	}
 }
 
 // Select suitable targets and choose the closer targets then attack each target only once.
-void StraightTrajectoryVarianC::PrepareForDetonateAt( HouseClass* pOwner)
+void StraightTrajectoryVarianC::PrepareForDetonateAt(HouseClass* pOwner)
 {
 	BulletClass* pBullet = this->AttachedTo;
 	auto pType = this->GetTrajectoryType();
@@ -983,7 +981,7 @@ void StraightTrajectoryVarianC::PrepareForDetonateAt( HouseClass* pOwner)
 		if (pType->ProximityDirect)
 			pTechno->ReceiveDamage(&damage, 0, pWH, pBullet->Owner, false, false, pOwner);
 		else
-			WarheadTypeExtData::DetonateAt(pWH, pType->ProximityMedial ? nullptr : pTechno , pType->ProximityMedial ? pBullet->Location : pTechno->GetCoords(), pBullet->Owner, damage, pOwner);
+			WarheadTypeExtData::DetonateAt(pWH, pType->ProximityMedial ? nullptr : pTechno, pType->ProximityMedial ? pBullet->Location : pTechno->GetCoords(), pBullet->Owner, damage, pOwner);
 
 		this->CalculateNewDamage();
 
@@ -1332,8 +1330,8 @@ bool StraightTrajectoryVarianC::PassAndConfineAtHeight()
 	{
 		auto checkDifference = MapClass::Instance->GetCellFloorHeight(futureCoords) - futureCoords.Z;
 
-		if (pCell->ContainsBridge()) {
-
+		if (pCell->ContainsBridge())
+		{
 			const auto differenceOnBridge = checkDifference + Unsorted::BridgeHeight;
 			if (Math::abs(differenceOnBridge) < Math::abs(checkDifference))
 				checkDifference = differenceOnBridge;

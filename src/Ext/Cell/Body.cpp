@@ -47,10 +47,13 @@ int FakeCellClass::_Reduce_Tiberium(int levels)
 
 			pTibExt->Clear_Tiberium_Spread_State(this->MapCoords);
 
-			for (int facing = 0; facing < 8; facing++) {
+			for (int facing = 0; facing < 8; facing++)
+			{
 				auto adjacent = this->GetAdjacentCell((FacingType)facing);
-				if (MapClass::Instance->IsWithinUsableArea(adjacent,false)) {
-					if (!pTibExt->SpreadState[TiberiumExtData::Map_Cell_Index(adjacent->MapCoords)]) {
+				if (MapClass::Instance->IsWithinUsableArea(adjacent, false))
+				{
+					if (!pTibExt->SpreadState[TiberiumExtData::Map_Cell_Index(adjacent->MapCoords)])
+					{
 						tiberium->Queue_Spread_At_Cell(&adjacent->MapCoords);
 					}
 				}
@@ -75,20 +78,22 @@ TiberiumClass* CellExtData::GetTiberium(CellClass* pCell)
 
 int CellExtData::GetOverlayIndex(CellClass* pCell, TiberiumClass* pTiberium)
 {
-		return (pCell->SlopeIndex > 0) ?
-			(pCell->SlopeIndex + pTiberium->Image->ArrayIndex + pTiberium->NumImages - 1) : (pTiberium->Image->ArrayIndex + pCell->MapCoords.X * pCell->MapCoords.Y % pTiberium->NumImages)
-			;
+	return (pCell->SlopeIndex > 0) ?
+		(pCell->SlopeIndex + pTiberium->Image->ArrayIndex + pTiberium->NumImages - 1) : (pTiberium->Image->ArrayIndex + pCell->MapCoords.X * pCell->MapCoords.Y % pTiberium->NumImages)
+		;
 }
 
 int CellExtData::GetOverlayIndex(CellClass* pCell)
 {
-	if (pCell->OverlayTypeIndex != -1) {
-		if (const auto pTiberium = TiberiumClass::Find(pCell->OverlayTypeIndex)) {
+	if (pCell->OverlayTypeIndex != -1)
+	{
+		if (const auto pTiberium = TiberiumClass::Find(pCell->OverlayTypeIndex))
+		{
 			return GetOverlayIndex(pCell, pTiberium);
 		}
 	}
 
-	return 0 ;
+	return 0;
 }
 
 #include <OverlayClass.h>
@@ -97,26 +102,30 @@ int CellExtData::GetOverlayIndex(CellClass* pCell)
 
 int FakeCellClass::_GetTiberiumType()
 {
-    if (this->OverlayTypeIndex == -1) {
-        return -1;
-    }
+	if (this->OverlayTypeIndex == -1)
+	{
+		return -1;
+	}
 
 	auto pOverlay = OverlayTypeClass::Array->Items[this->OverlayTypeIndex];
-    if (!pOverlay->Tiberium || TiberiumClass::Array->Count <= 0) {
-        return -1;
-    }
+	if (!pOverlay->Tiberium || TiberiumClass::Array->Count <= 0)
+	{
+		return -1;
+	}
 
-
-	for(auto pTib : *TiberiumClass::Array) {
+	for (auto pTib : *TiberiumClass::Array)
+	{
 		const auto v5 = pTib->Image->ArrayIndex;
-		if(this->OverlayTypeIndex >= v5 && this->OverlayTypeIndex < (v5 + pTib->NumImages)) {
+		if (this->OverlayTypeIndex >= v5 && this->OverlayTypeIndex < (v5 + pTib->NumImages))
+		{
 			return pTib->ArrayIndex;
 		}
 
 		int NumImages = pTib->NumImages;
-        if (this->OverlayTypeIndex >= NumImages + v5 && this->OverlayTypeIndex < v5 + NumImages + pTib->SlopeFrames ) {
-             return pTib->ArrayIndex;
-         }
+		if (this->OverlayTypeIndex >= NumImages + v5 && this->OverlayTypeIndex < v5 + NumImages + pTib->SlopeFrames)
+		{
+			return pTib->ArrayIndex;
+		}
 	}
 
 	//Debug::LogInfo("Overlay [%s - %s] not really tiberium[%d]", pOverlay->ID , pOverlay->Name , 0);
@@ -133,7 +142,6 @@ bool FakeCellClass::_SpreadTiberium(bool force)
 
 	if (!force)
 	{
-
 		if (tib_ == -1
 			  || this->OverlayData <= tib_ / 2
 			  || this->SlopeIndex
@@ -142,7 +150,6 @@ bool FakeCellClass::_SpreadTiberium(bool force)
 		{
 			return false;
 		}
-
 	}
 	else
 	{
@@ -185,7 +192,6 @@ bool FakeCellClass::_SpreadTiberium(bool force)
 
 int __fastcall CellExtData::GetTiberiumType(int Overlay)
 {
-
 	if (Overlay == -1)
 	{
 		return -1;
@@ -196,7 +202,6 @@ int __fastcall CellExtData::GetTiberiumType(int Overlay)
 	{
 		return -1;
 	}
-
 
 	for (auto pTib : *TiberiumClass::Array)
 	{
@@ -244,7 +249,6 @@ bool FakeCellClass::_SpreadTiberium_2(TerrainClass* pTerrain, bool force)
 		{
 			return false;
 		}
-
 	}
 	else
 	{
@@ -281,24 +285,29 @@ void FakeCellClass::_Invalidate(AbstractClass* ptr, bool removed)
 
 	if (removed)
 	{
-		if (ptr == static_cast<void*>(this->AltObject)) {
+		if (ptr == static_cast<void*>(this->AltObject))
+		{
 			//Debug::LogInfo("Cell {} - at ( {} . {} ) with Invalid Alt Obj {}", (void*)this, this->MapCoords.X , this->MapCoords.Y , (void*)this->AltObject);
 			this->AltObject = nullptr;
 		}
 
-		if (ptr == static_cast<void*>(this->FirstObject)) {
+		if (ptr == static_cast<void*>(this->FirstObject))
+		{
 			//Debug::LogInfo("Cell {} - at ( {} . {} ) with Invalid Obj {}", (void*)this, this->MapCoords.X, this->MapCoords.Y, (void*)this->FirstObject);
 			this->FirstObject = nullptr;
 		}
 
-		if(pExt) {
-			if (ptr == static_cast<void*>(pExt->IncomingUnit)) {
+		if (pExt)
+		{
+			if (ptr == static_cast<void*>(pExt->IncomingUnit))
+			{
 				//Debug::LogInfo("Cell {} - at ( {} . {} ) with Invalid IncomingObj {}", (void*)this, this->MapCoords.X, this->MapCoords.Y, (void*)pExt->IncomingUnit);
 				this->OccupationFlags &= ~0x20;
 				pExt->IncomingUnit = nullptr;
 			}
 
-			if (ptr == static_cast<void*>(pExt->IncomingUnitAlt)) {
+			if (ptr == static_cast<void*>(pExt->IncomingUnitAlt))
+			{
 				//Debug::LogInfo("Cell {} - at ( {} . {} ) with Invalid IncomingAltObj {}", (void*)this, this->MapCoords.X, this->MapCoords.Y, (void*)pExt->IncomingUnitAlt);
 				this->AltOccupationFlags &= ~0x20;
 				pExt->IncomingUnitAlt = nullptr;
@@ -310,8 +319,8 @@ void FakeCellClass::_Invalidate(AbstractClass* ptr, bool removed)
 // ============================ =
 // load / save
 template <typename T>
-void CellExtData::Serialize(T& Stm) {
-
+void CellExtData::Serialize(T& Stm)
+{
 	Stm
 		.Process(this->NewPowerups)
 		.Process(this->InfantryCount)
@@ -361,7 +370,6 @@ bool CellExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool CellExtContainer::SaveAll(json& root)
@@ -398,7 +406,8 @@ ASMJIT_PATCH(0x47BDA1, CellClass_CTOR, 0x5)
 	return 0;
 }
 
-ASMJIT_PATCH(0x47BB60, CellClass_DTOR, 0x6) {
+ASMJIT_PATCH(0x47BB60, CellClass_DTOR, 0x6)
+{
 	GET(CellClass*, pItem, ECX);
 
 	CellExtContainer::Instance.Remove(pItem);

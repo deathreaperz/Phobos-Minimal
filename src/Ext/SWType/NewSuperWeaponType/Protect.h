@@ -23,11 +23,11 @@ public:
 	static void ApplyProtect(SuperClass* pThis, const CellStruct& Coords, SWRange range);
 
 protected:
-	void newStateMachine(int Deferment, CellStruct XY, SuperClass* pSuper) {
+	void newStateMachine(int Deferment, CellStruct XY, SuperClass* pSuper)
+	{
 		SWStateMachine::Array.push_back(std::move(std::make_unique<ProtectStateMachine>(Deferment, XY, pSuper, this)));
 	}
 };
-
 
 class SW_IronCurtain : public SW_Protect
 {

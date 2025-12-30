@@ -50,7 +50,8 @@ int FakeAircraftClass::_Mission_Attack()
 		bool lose_ammo = this->loseammo_6c8;
 		this->IsLocked = 0;
 
-		if (lose_ammo) {
+		if (lose_ammo)
+		{
 			auto ammo = this->Ammo;
 			this->loseammo_6c8 = 0;
 			this->Ammo = ammo - 1;
@@ -60,11 +61,13 @@ int FakeAircraftClass::_Mission_Attack()
 
 		if (v7 && this->Ammo)
 		{
-			this->SetDestination(this->GoodTargetLoc_(v7),true);
+			this->SetDestination(this->GoodTargetLoc_(v7), true);
 
 			this->MissionStatus = int(this->Destination != 0
 				? AirAttackStatus::FlyToPosition : AirAttackStatus::ReturnToBase);
-		} else {
+		}
+		else
+		{
 			return_to_base();
 		}
 
@@ -73,7 +76,8 @@ int FakeAircraftClass::_Mission_Attack()
 
 	case AirAttackStatus::FlyToPosition:
 	{
-		if (this->loseammo_6c8) {
+		if (this->loseammo_6c8)
+		{
 			auto v10 = this->Ammo;
 			this->loseammo_6c8 = 0;
 			this->Ammo = v10 - 1;
@@ -81,15 +85,18 @@ int FakeAircraftClass::_Mission_Attack()
 
 		this->IsLocked = 0;
 
-		if (!this->Target || !this->Ammo) {
+		if (!this->Target || !this->Ammo)
+		{
 			this->MissionStatus = (int)AirAttackStatus::ReturnToBase;
 			return 1;
 		}
 
-		if (this->Is_Strafe()) {
+		if (this->Is_Strafe())
+		{
 			auto WeaponType = this->GetWeapon(0)->WeaponType;
 
-			if (this->DistanceFrom(this->Target) < WeaponType->Range) {
+			if (this->DistanceFrom(this->Target) < WeaponType->Range)
+			{
 				this->MissionStatus = (int)AirAttackStatus::FireAtTarget;
 				return 1;
 			}
@@ -98,12 +105,14 @@ int FakeAircraftClass::_Mission_Attack()
 		}
 		else
 		{
-			if (this->Is_Locked()) {
+			if (this->Is_Locked())
+			{
 				this->MissionStatus = (int)AirAttackStatus::FireAtTarget;
 				return 1;
 			}
 
-			if (!this->Locomotor.GetInterfacePtr()->Is_Moving_Now()) {
+			if (!this->Locomotor.GetInterfacePtr()->Is_Moving_Now())
+			{
 				this->MissionStatus = (int)AirAttackStatus::FireAtTarget;
 				return 1;
 			}
@@ -121,7 +130,8 @@ int FakeAircraftClass::_Mission_Attack()
 
 				DirStruct fac {};
 
-				if (v17.X == v16.X && v17.Y == v16.Y) {
+				if (v17.X == v16.X && v17.Y == v16.Y)
+				{
 					fac.Raw = 0;
 				}
 
@@ -149,7 +159,8 @@ int FakeAircraftClass::_Mission_Attack()
 				}
 			}
 		}
-		else {
+		else
+		{
 			this->MissionStatus = (int)AirAttackStatus::PickAttackLocation;
 		}
 
@@ -275,9 +286,12 @@ int FakeAircraftClass::_Mission_Attack()
 				this->Fire(this->Target, this->SelectWeapon(this->Target));
 				MapClass::Instance->GetCellAt(this->Target->GetCoords())->ScatterContent(this->Location, true, false, false);
 
-				if (!this->Ammo) {
+				if (!this->Ammo)
+				{
 					return_to_base();
-				} else {
+				}
+				else
+				{
 					this->MissionStatus = int(RulesClass::Instance->CurleyShuffle ? AirAttackStatus::PickAttackLocation : AirAttackStatus::FireAtTarget);
 				}
 				return get_default_mission_control_return();
@@ -290,13 +304,17 @@ int FakeAircraftClass::_Mission_Attack()
 				}
 				else
 				{
-					if (!this->IsCloseEnoughToAttack(this->Target) || this->Is_Strafe()) {
+					if (!this->IsCloseEnoughToAttack(this->Target) || this->Is_Strafe())
+					{
 						this->MissionStatus = (int)AirAttackStatus::PickAttackLocation;
-					} else {
+					}
+					else
+					{
 						this->MissionStatus = (int)(RulesClass::Instance->CurleyShuffle ? AirAttackStatus::PickAttackLocation : AirAttackStatus::FireAtTarget);
 					}
 
-					if (this->Is_Strafe()) {
+					if (this->Is_Strafe())
+					{
 						return 45;
 					}
 				}
@@ -311,10 +329,14 @@ int FakeAircraftClass::_Mission_Attack()
 				this->Uncloak(0);
 				return get_default_mission_control_return();
 			}
-			default: {
-				if (!this->Ammo) {
+			default:
+			{
+				if (!this->Ammo)
+				{
 					return_to_base();
-				} else {
+				}
+				else
+				{
 					this->MissionStatus = int(this->IsCloseEnoughToAttack(this->Target) ?
 						RulesClass::Instance->CurleyShuffle
 						? AirAttackStatus::PickAttackLocation : AirAttackStatus::FireAtTarget :
@@ -323,7 +345,9 @@ int FakeAircraftClass::_Mission_Attack()
 				return get_default_mission_control_return();
 			}
 			}
-		} else {
+		}
+		else
+		{
 			this->MissionStatus = (int)AirAttackStatus::ReturnToBase;
 			return 1;
 		}
@@ -412,7 +436,8 @@ int FakeAircraftClass::_Mission_Attack()
 				this->SetDestination(this->Target, 1);
 				break;
 			default:
-				if (!this->Ammo) {
+				if (!this->Ammo)
+				{
 					this->MissionStatus = (int)AirAttackStatus::ReturnToBase;
 					this->IsLocked = 0;
 				}
@@ -435,7 +460,7 @@ int FakeAircraftClass::_Mission_Attack()
 	{
 		if (this->Target)
 		{
-			switch (this->GetFireError(this->Target,this->SelectWeapon(this->Target),true))
+			switch (this->GetFireError(this->Target, this->SelectWeapon(this->Target), true))
 			{
 			case FireError::OK:
 			case FireError::FACING:
@@ -446,14 +471,16 @@ int FakeAircraftClass::_Mission_Attack()
 				this->MissionStatus = (int)AirAttackStatus::FlyToPosition;
 				return this->GetWeapon(0)->WeaponType->Range + 1024 / this->Type->Speed;
 			default:
-				if (!this->Ammo) {
+				if (!this->Ammo)
+				{
 					this->MissionStatus = (int)AirAttackStatus::ReturnToBase;
 					this->IsLocked = 0;
 				}
 				break;
 			}
 		}
-		else {
+		else
+		{
 			this->MissionStatus = (int)AirAttackStatus::ReturnToBase;
 		}
 		return 1;
@@ -463,20 +490,26 @@ int FakeAircraftClass::_Mission_Attack()
 	{
 		auto v84 = this->loseammo_6c8;
 		this->IsLocked = 0;
-		if (v84) {
+		if (v84)
+		{
 			auto v85 = this->Ammo;
 			this->loseammo_6c8 = 0;
-			if (v85 > 0) {
+			if (v85 > 0)
+			{
 				this->Ammo = v85 - 1;
 			}
 		}
 
-		if (this->Ammo) {
-			if (this->Target) {
-				this->MissionStatus= (int)AirAttackStatus::PickAttackLocation;
+		if (this->Ammo)
+		{
+			if (this->Target)
+			{
+				this->MissionStatus = (int)AirAttackStatus::PickAttackLocation;
 				return 1;
 			}
-		} else if (this->Spawned || this->Owner->IsControlledByHuman()) {
+		}
+		else if (this->Spawned || this->Owner->IsControlledByHuman())
+		{
 			this->SetTarget(0);
 		}
 
@@ -485,13 +518,13 @@ int FakeAircraftClass::_Mission_Attack()
 			, CellStruct::Empty
 			, CellStruct::Empty
 			, SpeedType::Winged
-			,true
-			,MovementZone::Normal
+			, true
+			, MovementZone::Normal
 		);
 
 		this->SetDestination(MapClass::Instance->GetCellAt(edgeCell), 1);
 		this->NumParadropsLeft = 0;
-		(this->Airstrike && this->Ammo > 0 ? this->QueueMission(Mission::Retreat, false) : this->EnterIdleMode(false,1));
+		(this->Airstrike && this->Ammo > 0 ? this->QueueMission(Mission::Retreat, false) : this->EnterIdleMode(false, 1));
 		this->NumParadropsLeft = 1;
 		return 1;
 	}
@@ -520,7 +553,6 @@ void FakeAircraftClass::_FootClass_Update_Wrapper()
 	auto pExt = TechnoExtContainer::Instance.Find(this);
 
 	const auto pTypeExt = TechnoTypeExtContainer::Instance.Find(this->Type);
-
 
 	//pExt->UpdateAircraftOpentopped();
 	AircraftPutDataFunctional::AI(pExt, pTypeExt);
@@ -596,19 +628,23 @@ void FakeAircraftClass::_FootClass_Update_Wrapper()
 	}
 }
 
-COMPILETIMEEVAL FORCEDINLINE bool IsFlyLoco(const ILocomotion* pLoco) {
+COMPILETIMEEVAL FORCEDINLINE bool IsFlyLoco(const ILocomotion* pLoco)
+{
 	return (((DWORD*)pLoco)[0] == FlyLocomotionClass::ILoco_vtable);
 }
 
-COMPILETIMEEVAL FORCEDINLINE bool AircraftCanStrafeWithWeapon(WeaponTypeClass* pWeapon) {
+COMPILETIMEEVAL FORCEDINLINE bool AircraftCanStrafeWithWeapon(WeaponTypeClass* pWeapon)
+{
 	return pWeapon && WeaponTypeExtContainer::Instance.Find(pWeapon)->Strafing
 		.Get(pWeapon->Projectile->ROT <= 1 && !pWeapon->Projectile->Inviso);
 }
 
-NOINLINE void CalculateVelocity(AircraftClass* pThis , BulletClass* pBullet , AbstractClass* pTarget) {
+NOINLINE void CalculateVelocity(AircraftClass* pThis, BulletClass* pBullet, AbstractClass* pTarget)
+{
 	auto const pBulletTypeExt = BulletTypeExtContainer::Instance.Find(pBullet->Type);
 
-	if (pBullet->HasParachute ||(pBullet->Type->Vertical && pBulletTypeExt->Vertical_AircraftFix)) {
+	if (pBullet->HasParachute || (pBullet->Type->Vertical && pBulletTypeExt->Vertical_AircraftFix))
+	{
 		return;
 	}
 
@@ -658,84 +694,83 @@ NOINLINE void CalculateVelocity(AircraftClass* pThis , BulletClass* pBullet , Ab
 
 		velocity->X = Math::cos(newRad) * dist2D;
 		velocity->Y = -Math::sin(newRad) * dist2D;
+	}
+	else if (pBullet->Type->ROT == 1)
+	{
+		// Homing weapon: calculate angle and scale
+		CoordStruct src = pThis->GetCoords();
+		CoordStruct tgt = pTarget->GetCoords();
 
-	} else if (pBullet->Type->ROT == 1)
+		CoordStruct offset = tgt - src;
+
+		// Copy offset components into double vector for math
+		Vector3D aimVector = {
+			static_cast<double>(offset.X),
+			static_cast<double>(offset.Y),
+			static_cast<double>(offset.Z)
+		};
+
+		// Calculate yaw angle to face the target in XY plane
+		double yawRadians = std::atan2(-aimVector.Y, aimVector.X) - Math::DEG90_AS_RAD;
+		int yawBinaryAngle = static_cast<int>(yawRadians * Math::BINARY_ANGLE_MAGIC);
+		int adjustedYaw = yawBinaryAngle - Math::BINARY_ANGLE_MASK;
+		double adjustedYawRad = adjustedYaw * Math::DIRECTION_FIXED_MAGIC;
+
+		// Prepare bullet velocity (set if all-zero)
+		VelocityClass* velocity = &pBullet->Velocity;
+
+		velocity->SetIfZeroXY();
+
+		double originalSpeed2D = velocity->LengthXY();
+
+		// Set initial XY velocity facing target yaw
+		velocity->X = Math::cos(adjustedYawRad) * originalSpeed2D;
+		velocity->Y = -Math::sin(adjustedYawRad) * originalSpeed2D;
+
+		// Calculate pitch angle from aim vector
+		double horizontalDistance = aimVector.LengthXY();
+		double pitchRadians = std::atan2(aimVector.Z, horizontalDistance) - Math::DEG90_AS_RAD;
+		int pitchBinaryAngle = static_cast<int>(pitchRadians * Math::BINARY_ANGLE_MAGIC);
+		int adjustedPitch = pitchBinaryAngle - Math::BINARY_ANGLE_MASK;
+		double adjustedPitchRad = adjustedPitch * Math::DIRECTION_FIXED_MAGIC;
+
+		// Re-calculate current yaw from bullet velocity
+		DirStruct currentFacing = velocity->GetDirectionFromXY();
+		int currentFacingOffset = currentFacing.Raw - Math::BINARY_ANGLE_MASK;
+		double currentYawRad = currentFacingOffset * Math::DIRECTION_FIXED_MAGIC;
+
+		double currentSpeed3D = velocity->Length();
+
+		// If yaw was altered, rescale velocity
+		if (currentYawRad != 0.0)
 		{
+			double cosYaw = Math::cos(currentYawRad);
+			velocity->X /= cosYaw;
+			velocity->Y /= Math::cos(currentYawRad); // redundant, matches original logic
+		}
 
-			// Homing weapon: calculate angle and scale
-			CoordStruct src = pThis->GetCoords();
-			CoordStruct tgt = pTarget->GetCoords();
+		// Apply pitch to Z velocity
+		velocity->X *= Math::cos(adjustedPitchRad);
+		velocity->Y *= Math::cos(adjustedPitchRad);
+		velocity->Z = Math::sin(adjustedPitchRad) * currentSpeed3D;
 
-			CoordStruct offset = tgt - src;
+		// Normalize speed to weapon's max speed
+		WeaponTypeClass* weapon = pThis->GetPrimaryWeapon()->WeaponType;
+		double maxBulletSpeed = static_cast<double>(weapon->Speed);
 
-			// Copy offset components into double vector for math
-			Vector3D aimVector = {
-				static_cast<double>(offset.X),
-				static_cast<double>(offset.Y),
-				static_cast<double>(offset.Z)
-			};
+		velocity->SetIfZeroXYZ();
 
-			// Calculate yaw angle to face the target in XY plane
-			double yawRadians = std::atan2(-aimVector.Y, aimVector.X) - Math::DEG90_AS_RAD;
-			int yawBinaryAngle = static_cast<int>(yawRadians * Math::BINARY_ANGLE_MAGIC);
-			int adjustedYaw = yawBinaryAngle - Math::BINARY_ANGLE_MASK;
-			double adjustedYawRad = adjustedYaw * Math::DIRECTION_FIXED_MAGIC;
+		double finalSpeed = velocity->Length();
+		double speedScale = maxBulletSpeed / finalSpeed;
 
-			// Prepare bullet velocity (set if all-zero)
-			VelocityClass* velocity = &pBullet->Velocity;
-
-			velocity->SetIfZeroXY();
-
-			double originalSpeed2D = velocity->LengthXY();
-
-			// Set initial XY velocity facing target yaw
-			velocity->X = Math::cos(adjustedYawRad) * originalSpeed2D;
-			velocity->Y = -Math::sin(adjustedYawRad) * originalSpeed2D;
-
-			// Calculate pitch angle from aim vector
-			double horizontalDistance = aimVector.LengthXY();
-			double pitchRadians = std::atan2(aimVector.Z, horizontalDistance) - Math::DEG90_AS_RAD;
-			int pitchBinaryAngle = static_cast<int>(pitchRadians * Math::BINARY_ANGLE_MAGIC);
-			int adjustedPitch = pitchBinaryAngle - Math::BINARY_ANGLE_MASK;
-			double adjustedPitchRad = adjustedPitch * Math::DIRECTION_FIXED_MAGIC;
-
-			// Re-calculate current yaw from bullet velocity
-			DirStruct currentFacing = velocity->GetDirectionFromXY();
-			int currentFacingOffset = currentFacing.Raw - Math::BINARY_ANGLE_MASK;
-			double currentYawRad = currentFacingOffset * Math::DIRECTION_FIXED_MAGIC;
-
-			double currentSpeed3D = velocity->Length();
-
-			// If yaw was altered, rescale velocity
-			if (currentYawRad != 0.0)
-			{
-				double cosYaw = Math::cos(currentYawRad);
-				velocity->X /= cosYaw;
-				velocity->Y /= Math::cos(currentYawRad); // redundant, matches original logic
-			}
-
-			// Apply pitch to Z velocity
-			velocity->X *= Math::cos(adjustedPitchRad);
-			velocity->Y *= Math::cos(adjustedPitchRad);
-			velocity->Z = Math::sin(adjustedPitchRad) * currentSpeed3D;
-
-			// Normalize speed to weapon's max speed
-			WeaponTypeClass* weapon = pThis->GetPrimaryWeapon()->WeaponType;
-			double maxBulletSpeed = static_cast<double>(weapon->Speed);
-
-			velocity->SetIfZeroXYZ();
-
-			double finalSpeed = velocity->Length();
-			double speedScale = maxBulletSpeed / finalSpeed;
-
-			velocity->X *= speedScale;
-			velocity->Y *= speedScale;
-			velocity->Z *= speedScale;
+		velocity->X *= speedScale;
+		velocity->Y *= speedScale;
+		velocity->Z *= speedScale;
 	}
 }
 
-BulletClass* FakeAircraftClass::_FireAt(AbstractClass* pTarget, int nWeaponIdx) {
-
+BulletClass* FakeAircraftClass::_FireAt(AbstractClass* pTarget, int nWeaponIdx)
+{
 	auto const pTypeExt = TechnoTypeExtContainer::Instance.Find(this->Type);
 	bool DropPassengers = pTypeExt->Paradrop_DropPassangers;
 
@@ -760,8 +795,8 @@ BulletClass* FakeAircraftClass::_FireAt(AbstractClass* pTarget, int nWeaponIdx) 
 
 	BulletClass* pBullet = this->TechnoClass::Fire(pTarget, nWeaponIdx);
 
-	if(pBullet) {
-
+	if (pBullet)
+	{
 		if (AircraftCanStrafeWithWeapon(pBullet->WeaponType))
 		{
 			AircraftExtContainer::Instance.Find(this)->Strafe_BombsDroppedThisRound++;
@@ -773,7 +808,7 @@ BulletClass* FakeAircraftClass::_FireAt(AbstractClass* pTarget, int nWeaponIdx) 
 			}
 		}
 
-		if(!pTypeExt->Firing_IgnoreGravity)
+		if (!pTypeExt->Firing_IgnoreGravity)
 			CalculateVelocity(this, pBullet, pTarget);
 	}
 	// Reveal map for attacking aircraft if controlled by player
@@ -782,27 +817,32 @@ BulletClass* FakeAircraftClass::_FireAt(AbstractClass* pTarget, int nWeaponIdx) 
 	{
 		CoordStruct coord = this->Location;
 
-		if (!MapClass::Instance->IsLocationShrouded(coord)) {
+		if (!MapClass::Instance->IsLocationShrouded(coord))
+		{
 			bool mapped = false;
 			constexpr CoordStruct offsets[4] = {
 				{512, 512 , 0}, {-512, -512 , 0}, {512, -512 , 0}, {-512, 512 , 0}
 			};
 
-			for (auto& off : offsets) {
+			for (auto& off : offsets)
+			{
 				CoordStruct probe = off + coord;
 
-				if (MapClass::Instance->IsLocationShrouded(probe)) {
+				if (MapClass::Instance->IsLocationShrouded(probe))
+				{
 					mapped = true;
 					break;
 				}
 			}
 
-			if (!mapped) {
+			if (!mapped)
+			{
 				CoordStruct tgtCenter = pTarget->GetCoords();
 				mapped = MapClass::Instance->IsLocationShrouded(tgtCenter);
 			}
 
-			if (mapped) {
+			if (mapped)
+			{
 				const int sightRange = TechnoTypeExtContainer::Instance.Find(this->Type)->AttackingAircraftSightRange.Get(RulesClass::Instance->AttackingAircraftSightRange);
 				MapClass::Instance->RevealArea2(&coord, sightRange, this->Owner, 0, 0, 0, 1, 0);
 				MapClass::Instance->RevealArea2(&coord, sightRange, this->Owner, 0, 0, 0, 1, 1);
@@ -810,7 +850,8 @@ BulletClass* FakeAircraftClass::_FireAt(AbstractClass* pTarget, int nWeaponIdx) 
 		}
 	}
 
-	if (this->IsKamikaze) {
+	if (this->IsKamikaze)
+	{
 		this->UnInit();
 	}
 
@@ -903,7 +944,7 @@ void AircraftExtData::FireBurst(AircraftClass* pThis, AbstractClass* pTarget, Ai
 	if (!weaponType)
 		return;
 
-	AircraftExtData::FireBurst(pThis , pTarget, shotNumber, WeaponIdx, weaponType);
+	AircraftExtData::FireBurst(pThis, pTarget, shotNumber, WeaponIdx, weaponType);
 }
 
 void AircraftExtData::FireBurst(AircraftClass* pThis, AbstractClass* pTarget, AircraftFireMode shotNumber, int WeaponIdx, WeaponTypeClass* pWeapon)
@@ -920,7 +961,6 @@ void AircraftExtData::FireBurst(AircraftClass* pThis, AbstractClass* pTarget, Ai
 	}
 }
 
-
 bool AircraftExtData::IsValidLandingZone(AircraftClass* pThis)
 {
 	if (const auto pPassanger = pThis->Passengers.GetFirstPassenger())
@@ -935,7 +975,6 @@ bool AircraftExtData::IsValidLandingZone(AircraftClass* pThis)
 	}
 
 	return false;
-
 }
 
 AircraftExtContainer AircraftExtContainer::Instance;
@@ -949,14 +988,14 @@ bool AircraftExtContainer::LoadAll(const json& root)
 	{
 		auto& container = root[AircraftExtContainer::ClassName];
 
-		for (auto& entry : container[AircraftExtData::ClassName]) {
-
+		for (auto& entry : container[AircraftExtData::ClassName])
+		{
 			uint32_t oldPtr = 0;
 			if (!ExtensionSaveJson::ReadHex(entry, "OldPtr", oldPtr))
 				return false;
 
 			size_t dataSize = entry["datasize"].get<size_t>();
-			std::string encoded = entry["data"].get<std::string>();	
+			std::string encoded = entry["data"].get<std::string>();
 			AircraftExtData* buffer = this->AllocateNoInit();
 
 			PhobosByteStream loader(dataSize);
@@ -982,7 +1021,8 @@ bool AircraftExtContainer::SaveAll(json& root)
 	auto& first_layer = root[AircraftExtContainer::ClassName];
 
 	json _extRoot = json::array();
-	for (auto& _extData : AircraftExtContainer::Array) {
+	for (auto& _extData : AircraftExtContainer::Array)
+	{
 		PhobosByteStream saver(sizeof(*_extData));
 		PhobosStreamWriter writer(saver);
 
@@ -1015,9 +1055,9 @@ ASMJIT_PATCH(0x41426F, AircraftClass_DTOR, 0x7)
 
 void FakeAircraftClass::_Detach(AbstractClass* target, bool all)
 {
-	if(auto pExt = this->_GetExtData())
+	if (auto pExt = this->_GetExtData())
 		pExt->InvalidatePointer(target, all);
 	//will detach type pointer
 	this->AircraftClass::PointerExpired(target, all);
 }
-DEFINE_FUNCTION_JUMP(VTABLE , 0x7E22CC , FakeAircraftClass::_Detach)
+DEFINE_FUNCTION_JUMP(VTABLE, 0x7E22CC, FakeAircraftClass::_Detach)

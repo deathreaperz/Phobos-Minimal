@@ -51,7 +51,7 @@ public:
 		Apply(static_cast<LatencyLevelEnum>(newLatencyLevel));
 	}
 
-	static COMPILETIMEEVAL int maxAhead[]  = {
+	static COMPILETIMEEVAL int maxAhead[] = {
 		/* 0 */ 1
 
 		/* 1 */ ,4
@@ -65,7 +65,8 @@ public:
 		/* 9 */ ,36
 	};
 
-	static FORCEDINLINE COMPILETIMEEVAL int GetMaxAhead(LatencyLevelEnum latencyLevel) {
+	static FORCEDINLINE COMPILETIMEEVAL int GetMaxAhead(LatencyLevelEnum latencyLevel)
+	{
 		return maxAhead[(int)latencyLevel];
 	}
 
@@ -81,5 +82,4 @@ public:
 
 		return LatencyLevelEnum::LATENCY_LEVEL_MAX;
 	}
-
 };

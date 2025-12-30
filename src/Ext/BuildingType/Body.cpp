@@ -19,7 +19,8 @@ const CellStruct BuildingTypeExtData::FoundationEndMarker = { 0x7FFF, 0x7FFF };
 
 #include <Phobos.SaveGame.h>
 
-bool FakeBuildingTypeClass::_CanUseWaypoint() {
+bool FakeBuildingTypeClass::_CanUseWaypoint()
+{
 	return RulesExtData::Instance()->BuildingWaypoint;
 }
 
@@ -31,7 +32,7 @@ bool BuildingTypeExtData::IsSameBuildingType(BuildingTypeClass* pType1, Building
 // Check whether can call the occupiers leave
 bool BuildingTypeExtData::CheckOccupierCanLeave(HouseClass* pBuildingHouse, HouseClass* pOccupierHouse)
 {
-	if (!pOccupierHouse|| !pBuildingHouse)
+	if (!pOccupierHouse || !pBuildingHouse)
 		return false;
 	else if (pBuildingHouse == pOccupierHouse)
 		return true;
@@ -48,7 +49,7 @@ bool BuildingTypeExtData::CleanUpBuildingSpace(BuildingTypeClass* pBuildingType,
 {
 	// Step 1: Find the technos inside of the building place grid.
 	auto infantryCount = CellStruct::Empty;
-	StackVector<TechnoClass* , 24> checkedTechnos {};
+	StackVector<TechnoClass*, 24> checkedTechnos {};
 	StackVector<CellClass*, 24> checkedCells {};
 
 	for (auto pFoundation = pBuildingType->GetFoundationData(false); *pFoundation != CellStruct { 0x7FFF, 0x7FFF }; ++pFoundation)
@@ -114,48 +115,49 @@ bool BuildingTypeExtData::CleanUpBuildingSpace(BuildingTypeClass* pBuildingType,
 		return true;
 
 	// Step 3: Sort the technos by the distance out of the foundation.
-	std::ranges::sort(checkedTechnos.container(),[optionalCells](TechnoClass* pTechnoA, TechnoClass* pTechnoB) {
-		int minA = INT_MAX;
-		int minB = INT_MAX;
+	std::ranges::sort(checkedTechnos.container(), [optionalCells](TechnoClass* pTechnoA, TechnoClass* pTechnoB)
+ {
+	 int minA = INT_MAX;
+	 int minB = INT_MAX;
 
-		for (const auto& pOptionalCell : optionalCells.container()) // If there are many valid cells at start, it means most of occupiers will near to the edge
-		{
-			if (minA > 65536) // If distance squared is lower or equal to 256^2, then no need to calculate any more because it is on the edge
-			{
-				auto curA = static_cast<int>(pTechnoA->GetMapCoords().DistanceFromSquared(pOptionalCell->MapCoords));
+	 for (const auto& pOptionalCell : optionalCells.container()) // If there are many valid cells at start, it means most of occupiers will near to the edge
+	 {
+		 if (minA > 65536) // If distance squared is lower or equal to 256^2, then no need to calculate any more because it is on the edge
+		 {
+			 auto curA = static_cast<int>(pTechnoA->GetMapCoords().DistanceFromSquared(pOptionalCell->MapCoords));
 
-				if (curA < minA)
-					minA = curA;
-			}
+			 if (curA < minA)
+				 minA = curA;
+		 }
 
-			if (minB > 65536)
-			{
-				auto curB = static_cast<int>(pTechnoB->GetMapCoords().DistanceFromSquared(pOptionalCell->MapCoords));
+		 if (minB > 65536)
+		 {
+			 auto curB = static_cast<int>(pTechnoB->GetMapCoords().DistanceFromSquared(pOptionalCell->MapCoords));
 
-				if (curB < minB)
-					minB = curB;
-			}
-		}
+			 if (curB < minB)
+				 minB = curB;
+		 }
+	 }
 
-		return minA > minB;
+	 return minA > minB;
 	});
 
 	// Step 4: Core, successively find the farthest techno and its closest valid destination.
-	StackVector<TechnoClass* , 50> reCheckedTechnos {};
+	StackVector<TechnoClass*, 50> reCheckedTechnos {};
 
 	struct InfantryCountInCell // Temporary struct
 	{
 		CellClass* position;
 		int count;
 	};
-	StackVector<InfantryCountInCell , 25> infantryCells {};
+	StackVector<InfantryCountInCell, 25> infantryCells {};
 
 	struct TechnoWithDestination // Also temporary struct
 	{
 		TechnoClass* techno;
 		CellClass* destination;
 	};
-	StackVector<TechnoWithDestination , 25> finalOrder {};
+	StackVector<TechnoWithDestination, 25> finalOrder {};
 
 	do
 	{
@@ -186,8 +188,9 @@ bool BuildingTypeExtData::CleanUpBuildingSpace(BuildingTypeClass* pBuildingType,
 				{
 					if (!infantryCells->empty() && infantryCount.Y >= (infantryCount.X / 3 + (infantryCount.X % 3 ? 1 : 0)))
 					{
-						std::ranges::sort(infantryCells.container(),[location](InfantryCountInCell cellA, InfantryCountInCell cellB){
-							return cellA.position->MapCoords.DistanceFromSquared(location) < cellB.position->MapCoords.DistanceFromSquared(location);
+						std::ranges::sort(infantryCells.container(), [location](InfantryCountInCell cellA, InfantryCountInCell cellB)
+{
+	return cellA.position->MapCoords.DistanceFromSquared(location) < cellB.position->MapCoords.DistanceFromSquared(location);
 						});
 
 						for (auto& infantryCell : infantryCells.container())
@@ -210,8 +213,9 @@ bool BuildingTypeExtData::CleanUpBuildingSpace(BuildingTypeClass* pBuildingType,
 					}
 				}
 
-				std::ranges::sort(optionalCells.container(),[location](CellClass* pCellA, CellClass* pCellB){
-					return pCellA->MapCoords.DistanceFromSquared(location) < pCellB->MapCoords.DistanceFromSquared(location);
+				std::ranges::sort(optionalCells.container(), [location](CellClass* pCellA, CellClass* pCellB)
+{
+	return pCellA->MapCoords.DistanceFromSquared(location) < pCellB->MapCoords.DistanceFromSquared(location);
 				});
 				const auto minDistanceSquared = optionalCells[0]->MapCoords.DistanceFromSquared(location);
 
@@ -239,7 +243,7 @@ bool BuildingTypeExtData::CleanUpBuildingSpace(BuildingTypeClass* pBuildingType,
 					for (const auto& pOptionalCell : optionalCells.container())
 					{
 						auto pCurObject = pOptionalCell->FirstObject;
-						StackVector<TechnoClass*,4> optionalTechnos {};
+						StackVector<TechnoClass*, 4> optionalTechnos {};
 						bool valid = true;
 
 						while (pCurObject)
@@ -337,7 +341,8 @@ bool BuildingTypeExtData::CleanUpBuildingSpace(BuildingTypeClass* pBuildingType,
 	while (reCheckedTechnos->size());
 
 	// Step 5: Confirm command execution.
-	for (const auto& pThisOrder : finalOrder.container()) {
+	for (const auto& pThisOrder : finalOrder.container())
+	{
 		pThisOrder.techno->ClickedMission(Mission::Move, nullptr, pThisOrder.destination, pThisOrder.destination);
 	}
 
@@ -360,36 +365,35 @@ bool BuildingTypeExtData::AutoPlaceBuilding(BuildingClass* pBuilding)
 	const auto foundation = pType->GetFoundationData(true);
 
 	auto canBuildHere = [&pType, &pHouse, &foundation](CellStruct cell)
-	{
-
-		return DisplayClass::Instance->CanBuildHere(pType, pHouse->ArrayIndex, foundation, &cell) // Adjacent
-			&& DisplayClass::Instance->ProximityCheck2(pType, pHouse->ArrayIndex, foundation, &cell); // NoShroud
-	};
+		{
+			return DisplayClass::Instance->CanBuildHere(pType, pHouse->ArrayIndex, foundation, &cell) // Adjacent
+				&& DisplayClass::Instance->ProximityCheck2(pType, pHouse->ArrayIndex, foundation, &cell); // NoShroud
+		};
 
 	const auto pHouseExt = HouseExtContainer::Instance.Find(pHouse);
 
 	auto getMapCell = [&pHouseExt](BuildingClass* pBuilding)
-	{
-		if (!pBuilding->IsAlive || pBuilding->Health <= 0 || !pBuilding->IsOnMap || pBuilding->InLimbo || (BuildingExtContainer::Instance.Find(pBuilding)->LimboID != -1))
-			return CellStruct::Empty;
+		{
+			if (!pBuilding->IsAlive || pBuilding->Health <= 0 || !pBuilding->IsOnMap || pBuilding->InLimbo || (BuildingExtContainer::Instance.Find(pBuilding)->LimboID != -1))
+				return CellStruct::Empty;
 
-		return pBuilding->GetMapCoords();
-	};
+			return pBuilding->GetMapCoords();
+		};
 
 	auto addPlaceEvent = [&pType, &pHouse](CellStruct cell)
-	{
-		EventClass event
-		(
-			HouseClass::CurrentPlayer->ArrayIndex,
-			EventType::PLACE,
-			AbstractType::Building,
-			pType->GetArrayIndex(),
-			pType->Naval,
-			cell
-		);
+		{
+			EventClass event
+			(
+				HouseClass::CurrentPlayer->ArrayIndex,
+				EventType::PLACE,
+				AbstractType::Building,
+				pType->GetArrayIndex(),
+				pType->Naval,
+				cell
+			);
 
-		EventClass::AddEvent(&event);
-	};
+			EventClass::AddEvent(&event);
+		};
 
 	if (pType->LaserFencePost || pType->Wall)
 	{
@@ -489,37 +493,37 @@ bool BuildingTypeExtData::AutoPlaceBuilding(BuildingClass* pBuilding)
 	const auto buildable = speedType != SpeedType::Float;
 
 	auto tryBuildAt = [&](DynamicVectorClass<BuildingClass*>& vector, bool baseNormal)
-	{
-		for (const auto& pBase : vector)
 		{
-			if (baseNormal && !pBase->Type->BaseNormal)
-				continue;
+			for (const auto& pBase : vector)
+			{
+				if (baseNormal && !pBase->Type->BaseNormal)
+					continue;
 
-			const auto baseCell = getMapCell(pBase);
+				const auto baseCell = getMapCell(pBase);
 
-			if (baseCell == CellStruct::Empty)
-				continue;
+				if (baseCell == CellStruct::Empty)
+					continue;
 
-			// TODO The construction area does not actually need to be so large, the surrounding space should be able to be occupied by other things
-			// TODO It would be better if the Buildable check could be fit with ExtendedBuildingPlacing within this function.
-			// TODO Similarly, it would be better if the following Adjacent & NoShroud check could be made within this function.
-			auto cell = pType->PlaceAnywhere ? baseCell : MapClass::Instance->NearByLocation(baseCell, speedType, ZoneType::None, MovementZone::Normal, false,
-				width, height, false, false, false, false, CellStruct::Empty, false, buildable);
+				// TODO The construction area does not actually need to be so large, the surrounding space should be able to be occupied by other things
+				// TODO It would be better if the Buildable check could be fit with ExtendedBuildingPlacing within this function.
+				// TODO Similarly, it would be better if the following Adjacent & NoShroud check could be made within this function.
+				auto cell = pType->PlaceAnywhere ? baseCell : MapClass::Instance->NearByLocation(baseCell, speedType, ZoneType::None, MovementZone::Normal, false,
+					width, height, false, false, false, false, CellStruct::Empty, false, buildable);
 
-			if (cell == CellStruct::Empty)
-				return false;
+				if (cell == CellStruct::Empty)
+					return false;
 
-			cell += CellStruct { buildGap, buildGap };
+				cell += CellStruct { buildGap, buildGap };
 
-			if (!canBuildHere(cell))
-				continue;
+				if (!canBuildHere(cell))
+					continue;
 
-			addPlaceEvent(cell);
-			return true;
-		}
+				addPlaceEvent(cell);
+				return true;
+			}
 
-		return false;
-	};
+			return false;
+		};
 
 	if (pHouse->ConYards.Count > 0 && tryBuildAt(pHouse->ConYards, false))
 		return true;
@@ -553,7 +557,6 @@ bool BuildingTypeExtData::BuildLimboBuilding(BuildingClass* pBuilding)
 
 void BuildingTypeExtData::CreateLimboBuilding(BuildingClass* pBuilding, BuildingTypeClass* pType, HouseClass* pOwner, int ID)
 {
-
 	if (pBuilding || (pBuilding = static_cast<BuildingClass*>(pType->CreateObject(pOwner)), pBuilding))
 	{
 		// All of these are mandatory
@@ -608,9 +611,9 @@ void BuildingTypeExtData::CreateLimboBuilding(BuildingClass* pBuilding, Building
 		{
 			KillMethod nMethod = pBuildingExt->Type->Death_Method.Get();
 
-			if (nMethod != KillMethod::None) {
-
-				if(pBuildingExt->Type->Death_Countdown > 0)
+			if (nMethod != KillMethod::None)
+			{
+				if (pBuildingExt->Type->Death_Countdown > 0)
 					pBuildingExt->Death_Countdown.Start(pBuildingExt->Type->Death_Countdown);
 
 				HouseExtContainer::Instance.AutoDeathObjects.emplace_unchecked(pBuilding, nMethod);
@@ -619,7 +622,8 @@ void BuildingTypeExtData::CreateLimboBuilding(BuildingClass* pBuilding, Building
 	}
 }
 
-int BuildingTypeExtData::CountOwnedNowWithDeployOrUpgrade(BuildingTypeClass* pBuilding, HouseClass* pHouse) {
+int BuildingTypeExtData::CountOwnedNowWithDeployOrUpgrade(BuildingTypeClass* pBuilding, HouseClass* pHouse)
+{
 	const auto upgrades = BuildingTypeExtData::GetUpgradesAmount(pBuilding, pHouse);
 
 	if (upgrades != -1)
@@ -678,7 +682,6 @@ void BuildingTypeExtData::UpdateFoundationRadarShape()
 		// wider for each line drawn. the start and end values
 		// are special-cased to not draw the pixels outside the
 		// foundation.
-
 
 		if (rows > 0)
 		{
@@ -795,10 +798,10 @@ bool BuildingTypeExtData::IsFoundationEqual(BuildingTypeClass* pType1, BuildingT
 bool BuildingTypeExtData::CanBeOccupiedBy(InfantryClass* whom) const
 {
 	// if CanBeOccupiedBy isn't empty, we have to check if this soldier is allowed in
-	if(!this->DisallowedOccupiers.empty() && this->DisallowedOccupiers.Contains(whom->Type))
+	if (!this->DisallowedOccupiers.empty() && this->DisallowedOccupiers.Contains(whom->Type))
 		return false;
 
-	if(!this->AllowedOccupiers.empty() && !this->AllowedOccupiers.Contains(whom->Type))
+	if (!this->AllowedOccupiers.empty() && !this->AllowedOccupiers.Contains(whom->Type))
 		return false;
 
 	return true;
@@ -828,10 +831,15 @@ void BuildingTypeExtData::DisplayPlacementPreview()
 	SHPStruct* Selected = pTypeExt->PlacementPreview_Shape.GetSHP();
 	int nDecidedFrame = 0;
 
-	if (!Selected) {
-		if (const auto pBuildup = pType->LoadBuildup()) {
+	if (!Selected)
+	{
+		if (const auto pBuildup = pType->LoadBuildup())
+		{
 			nDecidedFrame = ((pBuildup->Frames / 2) - 1);
-			Selected = pBuildup; } else {
+			Selected = pBuildup;
+		}
+		else
+		{
 			Selected = pType->GetImage();
 		}
 	}
@@ -842,7 +850,7 @@ void BuildingTypeExtData::DisplayPlacementPreview()
 	const auto& [nOffsetX, nOffsetY, nOffsetZ] = pTypeExt->PlacementPreview_Offset.Get();
 	const auto nHeight = pCell->GetFloorHeight({ 0,0 });
 
-	auto[nPoint, _result] = TacticalClass::Instance->GetCoordsToClientSituation(CellClass::Cell2Coord(pCell->MapCoords, nHeight + nOffsetZ));
+	auto [nPoint, _result] = TacticalClass::Instance->GetCoordsToClientSituation(CellClass::Cell2Coord(pCell->MapCoords, nHeight + nOffsetZ));
 
 	if (!_result)
 		return;
@@ -861,7 +869,6 @@ void BuildingTypeExtData::DisplayPlacementPreview()
 		{
 			pDecidedPal = pCustom;
 		}
-
 	}
 	else
 	{
@@ -915,8 +922,10 @@ int BuildingTypeExtData::GetSuperWeaponIndex(const int index, HouseClass* pHouse
 {
 	const size_t idxSW = this->GetSuperWeaponIndex(index);
 
-	if (idxSW < (size_t)pHouse->Supers.Count) {
-		if (!SWTypeExtContainer::Instance.Find(pHouse->Supers[idxSW]->Type)->IsAvailable(pHouse)) {
+	if (idxSW < (size_t)pHouse->Supers.Count)
+	{
+		if (!SWTypeExtContainer::Instance.Find(pHouse->Supers[idxSW]->Type)->IsAvailable(pHouse))
+		{
 			return -1;
 		}
 	}
@@ -956,7 +965,6 @@ int BuildingTypeExtData::GetBuildingAnimTypeIndex(BuildingClass* pThis, const Bu
 			const auto nIndex = pThis->Occupants[0]->Owner->Type->ArrayIndex;
 			if (nIndex != -1)
 			{
-
 				AnimTypeClass* pDecidedAnim = nullptr;
 
 				switch (nSlot)
@@ -989,7 +997,6 @@ int BuildingTypeExtData::GetBuildingAnimTypeIndex(BuildingClass* pThis, const Bu
 	}
 
 	return AnimTypeClass::FindIndexById(pDefault);
-
 }
 
 void __fastcall BuildingTypeExtData::DrawPlacementGrid(Surface* Surface, ConvertClass* Pal, SHPStruct* SHP, int FrameIndex, const Point2D* const Position, const RectangleStruct* const Bounds, BlitterFlags Flags, int Remap, int ZAdjust, ZGradient ZGradientDescIndex, int Brightness, int TintColor, SHPStruct* ZShape, int ZShapeFrame, int XOffset, int YOffset)
@@ -1013,7 +1020,8 @@ int BuildingTypeExtData::GetEnhancedPower(BuildingClass* pBuilding, HouseClass* 
 	float fFactor = 1.0f;
 
 	auto const pHouseExt = HouseExtContainer::Instance.Find(pHouse);
-	for (const auto& [pBldType, nCount] : pHouseExt->PowerPlantEnhancerBuildings) {
+	for (const auto& [pBldType, nCount] : pHouseExt->PowerPlantEnhancerBuildings)
+	{
 		const auto pExt = BuildingTypeExtContainer::Instance.Find(pBldType);
 		if (pExt->PowerPlantEnhancer_Buildings.empty() || !pExt->PowerPlantEnhancer_Buildings.Contains(pBuilding->Type))
 			continue;
@@ -1182,7 +1190,7 @@ int BuildingTypeExtData::GetUpgradesAmount(BuildingTypeClass* pBuilding, HouseCl
 
 	auto checkUpgrade = [pHouse, pBuilding, &result, &isUpgrade](BuildingTypeClass* pTPowersUp)
 		{
-			if(!pTPowersUp)
+			if (!pTPowersUp)
 				return;
 
 			isUpgrade = true;
@@ -1236,7 +1244,8 @@ bool BuildingTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 						{ return pItem == Phobos::readBuffer; });
 
 		this->IsTrench = std::distance(BuildingTypeExtContainer::Instance.trenchKinds.begin(), it);
-		if (it == std::ranges::end(BuildingTypeExtContainer::Instance.trenchKinds)) {
+		if (it == std::ranges::end(BuildingTypeExtContainer::Instance.trenchKinds))
+		{
 			BuildingTypeExtContainer::Instance.trenchKinds.emplace_back(Phobos::readBuffer);
 		}
 	}
@@ -1274,17 +1283,19 @@ bool BuildingTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		// Ares SuperWeapons tag
 		auto const& pArray = SuperWeaponTypeClass::Array;
 		std::string str_Supers = GameStrings::SuperWeapons();
-		if (pArray->IsAllocated && pArray->Count > 0) {
+		if (pArray->IsAllocated && pArray->Count > 0)
+		{
 			this->SuperWeapons.Read(exINI, pSection, str_Supers.c_str());
 
-			for (size_t i = 0;; ++i) {
+			for (size_t i = 0;; ++i)
+			{
 				NullableIdxVector<SuperWeaponTypeClass*> _readsupers {};
 				_readsupers.Read(exINI, pSection, (str_Supers + std::to_string(i)).c_str());
 
 				if (!_readsupers.HasValue() || _readsupers.empty())
 					break;
 
-				this->SuperWeapons.insert(this->SuperWeapons.end() , _readsupers.begin(), _readsupers.end());
+				this->SuperWeapons.insert(this->SuperWeapons.end(), _readsupers.begin(), _readsupers.end());
 			}
 		}
 
@@ -1293,7 +1304,7 @@ bool BuildingTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 		this->PlacementPreview_Show.Read(exINI, pSection, "PlacementPreview.Show");
 
-		if(!this->PlacementPreview_Show.isset())
+		if (!this->PlacementPreview_Show.isset())
 			this->PlacementPreview_Show.Read(exINI, pSection, "PlacementPreview");
 
 		if (pINI->GetString(pSection, "PlacementPreview.Shape", Phobos::readBuffer))
@@ -1419,7 +1430,6 @@ bool BuildingTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 					Debug::LogInfo("BuildingType {} has a SpyEffect.StolenTechIndex of {}. The value has to be less than 32.", pSection, (*pos));
 					Debug::RegisterParserError();
 				}
-
 			}
 			while (++pos != end);
 		}
@@ -1534,14 +1544,15 @@ bool BuildingTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		std::string _boons = "SecretLab.PossibleBoons";
 
 		this->Secret_Boons.Read(exINI, pSection, _boons.c_str());
-		for (size_t i = 0;; ++i) {
+		for (size_t i = 0;; ++i)
+		{
 			NullableVector<TechnoTypeClass*> _read {};
 			_read.Read(exINI, pSection, (_boons + std::to_string(i)).c_str());
 
 			if (!_read.HasValue() || _read.empty())
 				break;
 
-			this->Secret_Boons.insert(this->Secret_Boons.end() , _read.begin(), _read.end());
+			this->Secret_Boons.insert(this->Secret_Boons.end(), _read.begin(), _read.end());
 		}
 
 		this->Secret_RecalcOnCapture.Read(exINI, pSection, "SecretLab.GenerateOnCapture");
@@ -1573,7 +1584,7 @@ bool BuildingTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 		Cloning_Powered.Read(exINI, pSection, "Cloning.Powered");
 
-		if(Cloning_Powered)
+		if (Cloning_Powered)
 			this->Cloning_RequirePower = true;
 
 		this->Radar_RequirePower.Read(exINI, pSection, "Radar.RequirePower");
@@ -1588,12 +1599,13 @@ bool BuildingTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		this->FactoryPlant_AllowTypes.Read(exINI, pSection, "FactoryPlant.AllowTypes");
 		this->FactoryPlant_DisallowTypes.Read(exINI, pSection, "FactoryPlant.DisallowTypes");
 
-		if (Phobos::Otamaa::CompatibilityMode) {
+		if (Phobos::Otamaa::CompatibilityMode)
+		{
 			if (pThis->NumberOfDocks > 0)
 			{
 				this->DockPoseDir.clear();
 				this->DockPoseDir.resize(pThis->NumberOfDocks);
-				std::string base_tag ("AircraftDockingDir");
+				std::string base_tag("AircraftDockingDir");
 
 				Nullable<DirType> nLandingDir;
 				nLandingDir.Read(exINI, pSection, "AircraftDockingDir");
@@ -1696,7 +1708,7 @@ bool BuildingTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		this->BuildUp_UseNormalLIght.Read(exArtINI, pArtSection, "Buildup.UseNormalLight");
 		this->RubblePalette.Read(exArtINI, pArtSection,
 			(!Phobos::Otamaa::CompatibilityMode ?
-			"Rubble.Palette" : "RubblePalette"));
+				"Rubble.Palette" : "RubblePalette"));
 
 		if (!Phobos::Otamaa::CompatibilityMode)
 		{
@@ -1705,7 +1717,6 @@ bool BuildingTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 				//char keyDock[0x40];
 				this->DockPoseDir.clear();
 				this->DockPoseDir.resize(pThis->NumberOfDocks);
-
 
 				for (int i = 0; i < pThis->NumberOfDocks; ++i)
 				{
@@ -1719,7 +1730,6 @@ bool BuildingTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		this->DockUnload_Cell.Read(exArtINI, pArtSection, "DockUnloadCell");
 		this->DockUnload_Facing.Read(exArtINI, pArtSection, "DockUnloadFacing");
 		this->IsAnimDelayedBurst.Read(exArtINI, pSection, "IsAnimDelayedBurst");
-
 	}
 
 	if (pThis->UnitRepair && pThis->Factory == AbstractType::AircraftType)
@@ -1754,12 +1764,12 @@ bool BuildingTypeExtData::ShouldExistGreyCameo(TechnoTypeClass* pType)
 
 	const auto& pNegTypes = pTypeExt->Cameo_NegTechnos;
 
-
-	for (const auto& pNegType : pNegTypes) {
+	for (const auto& pNegType : pNegTypes)
+	{
 		if (pNegType && pHouse->CountOwnedAndPresent(pNegType))
 			return false;
 		else if (pNegType->WhatAmI() == AbstractType::BuildingType && BuildingTypeExtData::GetUpgradesAmount(static_cast<BuildingTypeClass*>(pNegType), pHouse) > 0)
-				return false;
+			return false;
 	}
 
 	const auto& pAuxTypes = pTypeExt->Cameo_AuxTechnos;
@@ -2459,7 +2469,6 @@ bool BuildingTypeExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool BuildingTypeExtContainer::SaveAll(json& root)
@@ -2508,12 +2517,10 @@ void BuildingTypeExtContainer::LoadFromINI(BuildingTypeClass* key, CCINIClass* p
 		//this function can be called again multiple time but without need to re-init the data
 		ptr->SetInitState(InitState::Ruled);
 	}
-
 }
 
 void BuildingTypeExtContainer::WriteToINI(BuildingTypeClass* key, CCINIClass* pINI)
 {
-
 	if (auto ptr = this->TryFind(key))
 	{
 		if (!pINI)
@@ -2561,4 +2568,3 @@ bool FakeBuildingTypeClass::_ReadFromINI(CCINIClass* pINI)
 }
 
 DEFINE_FUNCTION_JUMP(VTABLE, 0x7E45D4, FakeBuildingTypeClass::_ReadFromINI)
-

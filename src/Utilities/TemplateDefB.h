@@ -145,7 +145,6 @@ OPTIONALINLINE const FoundationDef* FindFoundation(std::string_view name) noexce
 	return nullptr;
 }
 
-
 namespace detail
 {
 	template <>
@@ -153,7 +152,8 @@ namespace detail
 	{
 		if (!parser.Read3Float(pSection, pKey, (float*)&value))
 		{
-			if (!parser.empty()) {
+			if (!parser.empty())
+			{
 				Debug::INIParseFailed(pSection, pKey, parser.value(), "Expected a valid 3 float Values");
 			}
 
@@ -168,19 +168,23 @@ namespace detail
 	{
 		if (parser.ReadString(pSection, pKey))
 		{
-			for (size_t i = 0; i < TechnoTypeClass::BuildingFoundationName.size(); ++i) {
-				if (IS_SAME_STR_(TechnoTypeClass::BuildingFoundationName[i].Name, parser.c_str())) {
+			for (size_t i = 0; i < TechnoTypeClass::BuildingFoundationName.size(); ++i)
+			{
+				if (IS_SAME_STR_(TechnoTypeClass::BuildingFoundationName[i].Name, parser.c_str()))
+				{
 					value = TechnoTypeClass::BuildingFoundationName[i].Value;
 					return true;
 				}
 			}
 
-			if (IS_SAME_STR_(parser.c_str(), "Custom")) {
+			if (IS_SAME_STR_(parser.c_str(), "Custom"))
+			{
 				value = (Foundation)127;
 				return true;
 			}
 
-			if (FindFoundation(parser.c_str())) {
+			if (FindFoundation(parser.c_str()))
+			{
 				return true;
 			}
 
@@ -195,8 +199,10 @@ namespace detail
 	{
 		if (parser.ReadString(pSection, pKey))
 		{
-			for (size_t i = 0; i < EnumFunctions::FacingType_to_strings.size(); ++i) {
-				if (IS_SAME_STR_(EnumFunctions::FacingType_to_strings[i], parser.c_str())) {
+			for (size_t i = 0; i < EnumFunctions::FacingType_to_strings.size(); ++i)
+			{
+				if (IS_SAME_STR_(EnumFunctions::FacingType_to_strings[i], parser.c_str()))
+				{
 					value = DoTypeFacing(i);
 					return true;
 				}
@@ -231,7 +237,8 @@ namespace detail
 					}
 				}
 
-				if (!found) {
+				if (!found)
+				{
 					Debug::INIParseFailed(pSection, pKey, cur, "Expected valid AffectPlayerType value");
 				}
 			}
@@ -256,7 +263,7 @@ namespace detail
 				cur = strtok_s(nullptr, Phobos::readDelims, &context))
 			{
 				bool found = false;
-				for (const auto& [pStrings , val]: EnumFunctions::SpotlightFlags_ToStrings)
+				for (const auto& [pStrings, val] : EnumFunctions::SpotlightFlags_ToStrings)
 				{
 					if (IS_SAME_STR_(cur, pStrings))
 					{
@@ -266,7 +273,8 @@ namespace detail
 					}
 				}
 
-				if (!found) {
+				if (!found)
+				{
 					Debug::INIParseFailed(pSection, pKey, cur, "Expected valid SpotlightFlags value");
 				}
 			}
@@ -281,22 +289,29 @@ namespace detail
 	template <>
 	OPTIONALINLINE bool read<ColorStruct>(ColorStruct& value, INI_EX& parser, const char* pSection, const char* pKey, bool allocate)
 	{
-		if (!parser.Read3Bytes(pSection, pKey, (BYTE*)(&value))) {
-			if (!parser.empty()) {
-				if (auto const pColorClass = ColorTypeClass::Find(parser.value())) {
+		if (!parser.Read3Bytes(pSection, pKey, (BYTE*)(&value)))
+		{
+			if (!parser.empty())
+			{
+				if (auto const pColorClass = ColorTypeClass::Find(parser.value()))
+				{
 					value = pColorClass->ToColor();
 					return true;
 				}
 
-				for(auto&[val, str] : EnumFunctions::SpotlightAttachment_ToStrings) {
-					if (PhobosCRT::iequals(parser.value(), str)) {
+				for (auto& [val, str] : EnumFunctions::SpotlightAttachment_ToStrings)
+				{
+					if (PhobosCRT::iequals(parser.value(), str))
+					{
 						value = Drawing::DefaultColors[(BYTE)val];
 						return true;
 					}
 				}
 
-				if (ColorScheme::Array->Count) {
-					if (auto const& nResult = ColorScheme::Find(parser.value())) {
+				if (ColorScheme::Array->Count)
+				{
+					if (auto const& nResult = ColorScheme::Find(parser.value()))
+					{
 						value = nResult->BaseColor;
 						return true;
 					}
@@ -316,11 +331,13 @@ namespace detail
 	{
 		if (parser.ReadString(pSection, pKey))
 		{
-			if(GameStrings::IsBlank(parser.value()))
+			if (GameStrings::IsBlank(parser.value()))
 				return false;
 
-			for(auto&[val, str] : EnumFunctions::DamageDelayTargetFlag_ToStrings) {
-				if (PhobosCRT::iequals(parser.value(), str)) {
+			for (auto& [val, str] : EnumFunctions::DamageDelayTargetFlag_ToStrings)
+			{
+				if (PhobosCRT::iequals(parser.value(), str))
+				{
 					value = val;
 					return true;
 				}
@@ -357,11 +374,13 @@ namespace detail
 	{
 		if (parser.ReadString(pSection, pKey))
 		{
-			if(GameStrings::IsBlank(parser.value()))
+			if (GameStrings::IsBlank(parser.value()))
 				return false;
 
-			for(auto&[val, str] : EnumFunctions::TargetZoneScanType_ToStrings) {
-				if (PhobosCRT::iequals(parser.value(), str)) {
+			for (auto& [val, str] : EnumFunctions::TargetZoneScanType_ToStrings)
+			{
+				if (PhobosCRT::iequals(parser.value(), str))
+				{
 					value = val;
 					return true;
 				}
@@ -424,7 +443,8 @@ namespace detail
 		auto ret = false;
 		std::string _key(pKey);
 
-		for (size_t i = 0; i < EnumFunctions::MouseCursorData_ToStrings.size(); ++i) {
+		for (size_t i = 0; i < EnumFunctions::MouseCursorData_ToStrings.size(); ++i)
+		{
 			ret |= read(value.OriginalData.StartFrame, parser, pSection, (_key + EnumFunctions::MouseCursorData_ToStrings[i]).c_str());
 		}
 
@@ -452,7 +472,8 @@ namespace detail
 	template <>
 	OPTIONALINLINE bool read<FacingType>(FacingType& value, INI_EX& parser, const char* pSection, const char* pKey, bool allocate)
 	{
-		if (parser.ReadString(pSection, pKey) && detail::getresult(value,parser.value(), pSection , pKey)) {
+		if (parser.ReadString(pSection, pKey) && detail::getresult(value, parser.value(), pSection, pKey))
+		{
 			return true;
 		}
 
@@ -465,7 +486,8 @@ namespace detail
 		int nBuffer = -1;
 		if (parser.ReadInteger(pSection, pKey, &nBuffer))
 		{
-			if(nBuffer >= (int)DirType32::Min && nBuffer <= (int)DirType32::Max){
+			if (nBuffer >= (int)DirType32::Min && nBuffer <= (int)DirType32::Max)
+			{
 				value = (DirType32)nBuffer;
 				return true;
 			}
@@ -485,7 +507,8 @@ namespace detail
 			const bool IsNegative = nBuffer < 0;
 			const DirType nVal = (DirType)Math::abs(nBuffer);
 
-			if(DirType::North <= nVal && nVal <= DirType::Max){
+			if (DirType::North <= nVal && nVal <= DirType::Max)
+			{
 				value = (DirType)(!IsNegative ? (int)nVal : (int)DirType::Max + 1 - IsNegative);
 				return true;
 			}
@@ -499,15 +522,18 @@ namespace detail
 	template <>
 	OPTIONALINLINE bool read<SpotlightAttachment>(SpotlightAttachment& value, INI_EX& parser, const char* pSection, const char* pKey, bool allocate)
 	{
-		if (parser.ReadString(pSection, pKey)) {
-			for(auto&[val, str] : EnumFunctions::SpotlightAttachment_ToStrings) {
-				if (PhobosCRT::iequals(parser.value(), str)) {
+		if (parser.ReadString(pSection, pKey))
+		{
+			for (auto& [val, str] : EnumFunctions::SpotlightAttachment_ToStrings)
+			{
+				if (PhobosCRT::iequals(parser.value(), str))
+				{
 					value = val;
 					return true;
 				}
 			}
 
-			Debug::INIParseFailed(pSection, pKey, parser.value(),"Expect valid SpotlightAttachment");
+			Debug::INIParseFailed(pSection, pKey, parser.value(), "Expect valid SpotlightAttachment");
 		}
 
 		return false;
@@ -518,8 +544,10 @@ namespace detail
 	{
 		if (parser.ReadString(pSection, pKey))
 		{
-			for(auto&[val, str] : EnumFunctions::ShowTimerType_ToStrings) {
-				if (PhobosCRT::iequals(parser.value(), str)) {
+			for (auto& [val, str] : EnumFunctions::ShowTimerType_ToStrings)
+			{
+				if (PhobosCRT::iequals(parser.value(), str))
+				{
 					value = val;
 					return true;
 				}
@@ -536,8 +564,10 @@ namespace detail
 	{
 		if (parser.ReadString(pSection, pKey))
 		{
-			for(auto&[val, str] : EnumFunctions::AttachmentYSortPosition_ToStrings) {
-				if (PhobosCRT::iequals(parser.value(), str)) {
+			for (auto& [val, str] : EnumFunctions::AttachmentYSortPosition_ToStrings)
+			{
+				if (PhobosCRT::iequals(parser.value(), str))
+				{
 					value = val;
 					return true;
 				}
@@ -560,25 +590,29 @@ namespace detail
 				cur;
 				cur = strtok_s(nullptr, Phobos::readDelims, &context))
 			{
-
 				size_t result = 0;
 				bool found = false;
-				for (const auto& pStrings : EnumFunctions::AffectedTechno_ToStrings) {
-					if (PhobosCRT::iequals(cur, pStrings.second)) {
+				for (const auto& pStrings : EnumFunctions::AffectedTechno_ToStrings)
+				{
+					if (PhobosCRT::iequals(cur, pStrings.second))
+					{
 						found = true;
 						break;
 					}
 					++result;
 				}
 
-				if (!found) {
-					if (IS_SAME_STR_(cur, "vehicle")) {
+				if (!found)
+				{
+					if (IS_SAME_STR_(cur, "vehicle"))
+					{
 						found = true;
 						result = 2;
 					}
 				}
 
-				if (!found) {
+				if (!found)
+				{
 					Debug::INIParseFailed(pSection, pKey, cur, "Expected a AffectedTechno");
 					return false;
 				}
@@ -615,18 +649,20 @@ namespace detail
 				cur;
 				cur = strtok_s(nullptr, Phobos::readDelims, &context))
 			{
-
 				size_t result = 0;
 				bool found = false;
-				for (const auto& pStrings : EnumFunctions::DisplayShowType_ToStrings) {
-					if (IS_SAME_STR_(cur, pStrings)) {
+				for (const auto& pStrings : EnumFunctions::DisplayShowType_ToStrings)
+				{
+					if (IS_SAME_STR_(cur, pStrings))
+					{
 						found = true;
 						break;
 					}
 					++result;
 				}
 
-				if (!found) {
+				if (!found)
+				{
 					Debug::INIParseFailed(pSection, pKey, cur, "Expected a DisplayShowType");
 					return false;
 				}
@@ -659,8 +695,10 @@ namespace detail
 		{
 			const auto pVal = parser.value();
 
-			for(auto&[val, str] : EnumFunctions::BountyValueOption_ToStrings) {
-				if (PhobosCRT::iequals(pVal, str)) {
+			for (auto& [val, str] : EnumFunctions::BountyValueOption_ToStrings)
+			{
+				if (PhobosCRT::iequals(pVal, str))
+				{
 					value = val;
 					return true;
 				}
@@ -678,8 +716,10 @@ namespace detail
 		if (parser.ReadString(pSection, pKey))
 		{
 			const auto pVal = parser.value();
-			for(auto&[val, str] : EnumFunctions::BuildingSelectBracketPosition_ToStrings) {
-				if (PhobosCRT::iequals(pVal, str)) {
+			for (auto& [val, str] : EnumFunctions::BuildingSelectBracketPosition_ToStrings)
+			{
+				if (PhobosCRT::iequals(pVal, str))
+				{
 					value = val;
 					return true;
 				}
@@ -697,8 +737,10 @@ namespace detail
 		if (parser.ReadString(pSection, pKey))
 		{
 			const auto pVal = parser.value();
-			for(auto&[val, str] : EnumFunctions::DisplayInfoType_ToStrings) {
-				if (PhobosCRT::iequals(pVal, str)) {
+			for (auto& [val, str] : EnumFunctions::DisplayInfoType_ToStrings)
+			{
+				if (PhobosCRT::iequals(pVal, str))
+				{
 					value = val;
 					return true;
 				}
@@ -717,8 +759,10 @@ namespace detail
 		{
 			auto str = parser.value();
 
-			for (auto& [val , string] : EnumFunctions::InterpolationMode_ToStrings) {
-				if (PhobosCRT::iequals(string, str)) {
+			for (auto& [val, string] : EnumFunctions::InterpolationMode_ToStrings)
+			{
+				if (PhobosCRT::iequals(string, str))
+				{
 					value = val;
 					return true;
 				}
@@ -759,7 +803,7 @@ namespace detail
 				auto res = PhobosCRT::trim(cur);
 
 				T buffer = nullptr;
-				if COMPILETIMEEVAL (!Alloc)
+				if COMPILETIMEEVAL(!Alloc)
 					buffer = baseType::Find(res.c_str());
 				else
 					buffer = baseType::FindOrAllocate(res.c_str());
@@ -767,9 +811,12 @@ namespace detail
 				if (bVerbose)
 					Debug::LogInfo("ParseVector DEBUG: [{}][{}]: Verose parsing [{}]", pSection, i, res.c_str());
 
-				if (buffer) {
+				if (buffer)
+				{
 					nVecDest[i].push_back(buffer);
-				}else if (bDebug && !GameStrings::IsBlank(cur)) {
+				}
+				else if (bDebug && !GameStrings::IsBlank(cur))
+				{
 					Debug::LogInfo("ParseVector DEBUG: [{}][{}]: Error parsing [{}]", pSection, i, res.c_str());
 				}
 			}
@@ -846,14 +893,14 @@ namespace detail
 	}
 
 	template<typename T, bool Allocate = false, bool Unique = false>
-	OPTIONALINLINE void ParseVector(DynamicVectorClass<T>& List, INI_EX& IniEx , const char* section, const char* key , const char* message = nullptr)
+	OPTIONALINLINE void ParseVector(DynamicVectorClass<T>& List, INI_EX& IniEx, const char* section, const char* key, const char* message = nullptr)
 	{
-		if (IniEx.ReadString(section,key))
+		if (IniEx.ReadString(section, key))
 		{
 			List.reset();
 			char* context = nullptr;
 
-			if COMPILETIMEEVAL (std::is_pointer<T>())
+			if COMPILETIMEEVAL(std::is_pointer<T>())
 			{
 				using BaseType = std::remove_pointer_t<T>;
 
@@ -861,7 +908,7 @@ namespace detail
 					 cur = strtok_s(nullptr, Phobos::readDelims, &context))
 				{
 					BaseType* buffer = nullptr;
-					if COMPILETIMEEVAL (Allocate)
+					if COMPILETIMEEVAL(Allocate)
 					{
 						buffer = BaseType::FindOrAllocate(cur);
 					}
@@ -872,13 +919,16 @@ namespace detail
 
 					if (buffer)
 					{
-						if COMPILETIMEEVAL (!Unique) {
+						if COMPILETIMEEVAL(!Unique)
+						{
 							List.push_back(buffer);
-						} else {
+						}
+						else
+						{
 							List.insert_unique(buffer);
 						}
 					}
-					else if(!GameStrings::IsBlank(cur))
+					else if (!GameStrings::IsBlank(cur))
 					{
 						Debug::INIParseFailed(section, key, cur, message);
 					}
@@ -892,7 +942,7 @@ namespace detail
 					T buffer = T();
 					if (Parser<T>::TryParse(cur, &buffer))
 					{
-						if COMPILETIMEEVAL (!Unique)
+						if COMPILETIMEEVAL(!Unique)
 						{
 							List.push_back(buffer);
 						}

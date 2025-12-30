@@ -71,14 +71,15 @@ void ShowAnimNameCommandClass::AI()
 			//}
 
 			std::wstring pText(sizeof(pTech->Type->ID) + 0x1, L'#');
-			mbstowcs(&pText[0], pTech->Type->ID, 0x18 );
+			mbstowcs(&pText[0], pTech->Type->ID, 0x18);
 			Point2D pixelOffset = Point2D::Empty;
 			int width = 0, height = 0;
 			BitFont::Instance->GetTextDimension(pText.c_str(), &width, &height, 120);
 			pixelOffset.X -= (width / 2);
 			auto coord = pTech->GetCoords();
 
-			if (!coord.IsValid()) {
+			if (!coord.IsValid())
+			{
 				Debug::Log("Anim %s has invalid coords!\n", pTech->Type->ID);
 				continue;
 			}
@@ -92,7 +93,7 @@ void ShowAnimNameCommandClass::AI()
 			if (!(pos.X < 0 || pos.Y < 0 || pos.X > bound.Width || pos.Y > bound.Height))
 			{
 				ColorStruct _color = ColorScheme::Array->Items[pResultOwner->ColorSchemeIndex]->BaseColor;
-				TextDrawing::Simple_Text_Print_Wide(pText, DSurface::Temp(), &bound, &pos, _color.ToInit() , 0, TextPrintType::Center);
+				TextDrawing::Simple_Text_Print_Wide(pText, DSurface::Temp(), &bound, &pos, _color.ToInit(), 0, TextPrintType::Center);
 			}
 		}
 	}

@@ -79,7 +79,6 @@ int __fastcall FakeWarheadTypeClass::ModifyDamageA(int damage, FakeWarheadTypeCl
 			damage = MaxImpl(damage, pExt->MinDamage >= 0 ? pExt->MinDamage : RulesClass::Instance->MinDamage);
 
 		damage = MinImpl(damage, RulesClass::Instance->MaxDamage);
-
 	}
 	else
 	{
@@ -253,7 +252,7 @@ bool WarheadTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 	this->Shield_Penetrate_Types.Read(exINI, pSection, "Shield.Penetrate.Types");
 	this->Shield_Penetrate_Types_Disallowed_Types.Read(exINI, pSection, "Shield.Penetrate.Disallow.Types");
-	this->Shield_Penetrate_Armor_Types.Read(exINI,pSection, "Shield.Penetrates.ArmorTypes");
+	this->Shield_Penetrate_Armor_Types.Read(exINI, pSection, "Shield.Penetrates.ArmorTypes");
 	this->Shield_Break_Types.Read(exINI, pSection, "Shield.Break.Types");
 	this->Shield_Respawn_Types.Read(exINI, pSection, "Shield.Respawn.Types");
 	this->Shield_SelfHealing_Types.Read(exINI, pSection, "Shield.SelfHealing.Types");
@@ -355,7 +354,6 @@ bool WarheadTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 				pDefArmor != ArmorTypeClass::Array[ArmorTypeClass::Array.size()].get();
 				pDefArmor = ArmorTypeClass::Array[pDefArmor->DefaultTo].get())
 			{
-
 				if (auto pFallback = hitAnim[ArmorTypeClass::Array[i]->DefaultTo])
 					hitAnim[i] = pFallback;
 
@@ -381,7 +379,6 @@ bool WarheadTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	this->Remover_Anim.Read(exINI, pSection, "Remover.Anim");
 	this->PermaMC.Read(exINI, pSection, "MindControl.Permanent");
 	this->Sound.Read(exINI, pSection, GameStrings::Sound());
-
 
 	TechnoTypeConvertData::Parse(Phobos::Otamaa::CompatibilityMode, this->ConvertsPair, exINI, pSection, "ConvertsPair");
 	this->Convert_SucceededAnim.Read(exINI, pSection, "ConvertsAnim");
@@ -505,7 +502,7 @@ bool WarheadTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	this->Malicious.Read(exINI, pSection, "Malicious");
 	this->PreImpact_Moves.Read(exINI, pSection, "PreImpactAnim.Moves");
 
-	LauchSWData::ReadVector(this->Launchs, exINI , pSection, Phobos::Otamaa::CompatibilityMode);
+	LauchSWData::ReadVector(this->Launchs, exINI, pSection, Phobos::Otamaa::CompatibilityMode);
 
 	this->Conventional_IgnoreUnits.Read(exINI, pSection, "Conventional.IgnoreUnits");
 
@@ -620,7 +617,6 @@ bool WarheadTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 	for (size_t i = 0; ; i++)
 	{
-
 		std::string base("SpawnsCrate");
 		std::string base_Num = base + std::to_string(i);
 
@@ -647,7 +643,6 @@ bool WarheadTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 	this->PenetratesIronCurtain.Read(exINI, pSection, "PenetratesIronCurtain");
 	this->PenetratesForceShield.Read(exINI, pSection, "PenetratesForceShield");
-
 
 	this->SuppressRevengeWeapons.Read(exINI, pSection, "SuppressRevengeWeapons");
 	this->SuppressRevengeWeapons_Types.Read(exINI, pSection, "SuppressRevengeWeapons.Types");
@@ -773,13 +768,14 @@ bool WarheadTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 }
 
 //https://github.com/Phobos-developers/Phobos/issues/629
-void WarheadTypeExtData::ApplyDamageMult(TechnoClass* pVictim, TechnoClass* pSource, HouseClass* pSourceHouse,  int* pDamage) const
+void WarheadTypeExtData::ApplyDamageMult(TechnoClass* pVictim, TechnoClass* pSource, HouseClass* pSourceHouse, int* pDamage) const
 {
 	//auto const pExt = TechnoExtContainer::Instance.Find(pVictim);
 
 	// AffectsAbove/BelowPercent & AffectsNeutral can ignore IgnoreDefenses like AffectsAllies/Enmies/Owner
 	// They should be checked here to cover all cases that directly use ReceiveDamage to deal damage
-	if (!this->IsHealthInThreshold(pVictim) || (!this->AffectsNeutral && pVictim->Owner->IsNeutral())) {
+	if (!this->IsHealthInThreshold(pVictim) || (!this->AffectsNeutral && pVictim->Owner->IsNeutral()))
+	{
 		*pDamage = 0;
 		return;
 	}
@@ -797,7 +793,7 @@ void WarheadTypeExtData::ApplyDamageMult(TechnoClass* pVictim, TechnoClass* pSou
 
 	if ((nAllyMod.isset() && nOwnerMod.isset() && nEnemyMod.isset()))
 	{
-		auto const pHouse = pSourceHouse ? pSourceHouse :pSource ? pSource->Owner : HouseExtData::FindFirstCivilianHouse();
+		auto const pHouse = pSourceHouse ? pSourceHouse : pSource ? pSource->Owner : HouseExtData::FindFirstCivilianHouse();
 
 		if (pHouse && pVictimHouse)
 		{
@@ -846,7 +842,8 @@ void WarheadTypeExtData::ApplyDamageMult(TechnoClass* pVictim, TechnoClass* pSou
 			multiplier = this->DamageOwnerMultiplier.Get(!this->AffectsEnemies ? pRulesExt->DamageOwnerMultiplier_NotAffectsEnemies.Get(pRulesExt->DamageOwnerMultiplier) : pRulesExt->DamageOwnerMultiplier);
 	}
 
-	if (multiplier != 1.0) {
+	if (multiplier != 1.0)
+	{
 		const auto sgnDamage = *pDamage > 0 ? 1 : -1;
 		const auto calculateDamage = static_cast<int>(*pDamage * multiplier);
 		*pDamage = calculateDamage ? calculateDamage : sgnDamage;
@@ -927,7 +924,8 @@ bool WarheadTypeExtData::CanAffectHouse(HouseClass* pOwnerHouse, HouseClass* pTa
 
 		const bool affect_ally = This()->AffectsAllies;
 
-		if (pTargetHouse == pOwnerHouse) {
+		if (pTargetHouse == pOwnerHouse)
+		{
 			return this->AffectsOwner.Get(affect_ally);
 		}
 
@@ -938,7 +936,7 @@ bool WarheadTypeExtData::CanAffectHouse(HouseClass* pOwnerHouse, HouseClass* pTa
 	return true;
 }
 
-bool WarheadTypeExtData::CanDealDamage(TechnoClass* pTechno, bool Bypass, bool SkipVerses , bool CheckImmune, bool checkLimbo) const
+bool WarheadTypeExtData::CanDealDamage(TechnoClass* pTechno, bool Bypass, bool SkipVerses, bool CheckImmune, bool checkLimbo) const
 {
 	if (pTechno)
 	{
@@ -998,8 +996,8 @@ bool WarheadTypeExtData::CanDealDamage(TechnoClass* pTechno, bool Bypass, bool S
 	return Bypass;
 }
 
-bool WarheadTypeExtData::CanAffectInvulnerable(TechnoClass* pTarget) const {
-
+bool WarheadTypeExtData::CanAffectInvulnerable(TechnoClass* pTarget) const
+{
 	if (!pTarget || !pTarget->IsIronCurtained())
 		return true;
 
@@ -1037,7 +1035,6 @@ bool WarheadTypeExtData::CanDealDamage(TechnoClass* pTechno, int damageIn, int d
 	}
 
 	return true;
-
 }
 
 FullMapDetonateResult WarheadTypeExtData::EligibleForFullMapDetonation(TechnoClass* pTechno, HouseClass* pOwner) const
@@ -1129,7 +1126,6 @@ void WarheadTypeExtData::applyWebby(TechnoClass* pTarget, HouseClass* pKillerHou
 			// is already on.
 			if (newValue > 0)
 			{
-
 				// set new length and reset the anim ownership
 				pInf->ParalysisTimer.Start(newValue);
 
@@ -1165,16 +1161,16 @@ void WarheadTypeExtData::applyWebby(TechnoClass* pTarget, HouseClass* pKillerHou
 
 AnimTypeClass* __fastcall WarheadTypeExtData::SelectCombatAnim(int damage, WarheadTypeClass* pWarhead, LandType land, CoordStruct& coord)
 {
-	if (pWarhead) {
-
+	if (pWarhead)
+	{
 		const auto pWHExt = WarheadTypeExtContainer::Instance.Find(pWarhead);
 		pWHExt->Splashed = false;
 
 		//allowing zero damage to pass ,..
 		//hopefully it wont do any harm to these thing , ...
 
-		if ((damage == 0 && pWHExt->AnimList_ShowOnZeroDamage) || damage) {
-
+		if ((damage == 0 && pWHExt->AnimList_ShowOnZeroDamage) || damage)
+		{
 			if (damage < 0)
 				damage = -damage;
 
@@ -1182,11 +1178,12 @@ AnimTypeClass* __fastcall WarheadTypeExtData::SelectCombatAnim(int damage, Warhe
 				&& pWarhead->Conventional
 				&& !MapClass::Instance->GetCellAt(coord)->ContainsBridge()
 				&& coord.Z < (MapClass::Instance->GetCellFloorHeight(coord) + Unsorted::CellHeight)
-				) {
+				)
+			{
 				pWHExt->Splashed = true;
 
-				if (const auto Vec = pWHExt->SplashList.GetElements(RulesClass::Instance->SplashList)) {
-
+				if (const auto Vec = pWHExt->SplashList.GetElements(RulesClass::Instance->SplashList))
+				{
 					size_t idx = pWHExt->SplashList_PickRandom ?
 						ScenarioClass::Instance->Random.RandomFromMax(Vec.size() - 1) :
 						MinImpl(Vec.size() * 35 - 1, (size_t)damage) / 35;
@@ -1197,18 +1194,22 @@ AnimTypeClass* __fastcall WarheadTypeExtData::SelectCombatAnim(int damage, Warhe
 				return (nullptr);
 			}
 
-			if (auto const pSuper = SW_LightningStorm::CurrentLightningStorm) {
+			if (auto const pSuper = SW_LightningStorm::CurrentLightningStorm)
+			{
 				auto const pData = SWTypeExtContainer::Instance.Find(pSuper->Type);
 
-				if (pData->GetNewSWType()->GetWarhead(pData) == pWarhead) {
+				if (pData->GetNewSWType()->GetWarhead(pData) == pWarhead)
+				{
 					if (auto const pAnimType = pData->Weather_BoltExplosion.Get(
-						RulesClass::Instance->WeatherConBoltExplosion)) {
+						RulesClass::Instance->WeatherConBoltExplosion))
+					{
 						return (pAnimType);
 					}
 				}
 			}
 
-			if (pWHExt->CritActive && !pWHExt->Crit_AnimList.empty() && !pWHExt->Crit_AnimOnAffectedTargets) {
+			if (pWHExt->CritActive && !pWHExt->Crit_AnimList.empty() && !pWHExt->Crit_AnimOnAffectedTargets)
+			{
 				const size_t idx = pWHExt->Crit_AnimList_PickRandom.Get(pWHExt->AnimList_PickRandom.Get(pWarhead->EMEffect)) ?
 					ScenarioClass::Instance->Random.RandomFromMax(pWHExt->Crit_AnimList.size() - 1) :
 					(MinImpl(pWHExt->Crit_AnimList.size() * 25 - 1, (size_t)damage) / 25);
@@ -1216,7 +1217,8 @@ AnimTypeClass* __fastcall WarheadTypeExtData::SelectCombatAnim(int damage, Warhe
 				return (pWHExt->Crit_AnimList[idx < pWHExt->Crit_AnimList.size() ? idx : 0]);
 			}
 
-			if (!pWarhead->AnimList.Empty()) {
+			if (!pWarhead->AnimList.Empty())
+			{
 				const size_t idx = pWHExt->AnimList_PickRandom.Get(pWarhead->EMEffect) ?
 					ScenarioClass::Instance->Random.RandomFromMax(pWarhead->AnimList.Count - 1) :
 					MinImpl(pWarhead->AnimList.Count * 25 - 1, damage) / 25;
@@ -1358,17 +1360,19 @@ bool WarheadTypeExtData::GoBerzerkFor(FootClass* pVictim, int* damage) const
 
 		if (oldValue <= 0)
 		{
-			if (newValue > 0) {
+			if (newValue > 0)
+			{
 				pVictim->GoBerzerkFor(newValue);
 			}
 		}
 		else
 		{
-
-			if (newValue > 0) {
+			if (newValue > 0)
+			{
 				pVictim->GoBerzerkFor(newValue);
-			} else {
-
+			}
+			else
+			{
 				auto const nLeft = pVictim->BerzerkDurationLeft - newValue;
 				if (nLeft <= 0)
 				{
@@ -1376,7 +1380,9 @@ bool WarheadTypeExtData::GoBerzerkFor(FootClass* pVictim, int* damage) const
 					pVictim->Berzerk = false;
 					pVictim->SetTarget(nullptr);
 					TechnoExtData::SetMissionAfterBerzerk(pVictim);
-				} else {
+				}
+				else
+				{
 					pVictim->BerzerkDurationLeft -= nLeft;
 				}
 			}
@@ -1390,8 +1396,10 @@ bool WarheadTypeExtData::GoBerzerkFor(FootClass* pVictim, int* damage) const
 
 AnimTypeClass* WarheadTypeExtData::GetArmorHitAnim(int Armor)
 {
-	for (auto begin = this->ArmorHitAnim.begin(); begin != this->ArmorHitAnim.end(); ++begin) {
-		if (begin->first == ArmorTypeClass::Array[Armor].get()) {
+	for (auto begin = this->ArmorHitAnim.begin(); begin != this->ArmorHitAnim.end(); ++begin)
+	{
+		if (begin->first == ArmorTypeClass::Array[Armor].get())
+		{
 			return begin->second;
 		}
 	}
@@ -1510,7 +1518,6 @@ void WarheadTypeExtData::applyEMP(WarheadTypeClass* pWH, const CoordStruct& coor
 
 	if (pWHExt->EMP_Duration)
 		AresEMPulse::CreateEMPulse(pWH, coords, source);
-
 }
 
 void WarheadTypeExtData::ApplyPenetratesTransport(TechnoClass* pTarget, TechnoClass* pInvoker, HouseClass* pInvokerHouse, const CoordStruct& coords, int damage) const
@@ -1629,7 +1636,6 @@ void WarheadTypeExtData::ApplyPenetratesTransport(TechnoClass* pTarget, TechnoCl
 	}
 	else
 	{
-
 		VocClass::SafeImmedietelyPlayAt(this->PenetratesTransport_CleanSound, coords);
 	}
 }
@@ -2009,7 +2015,6 @@ void WarheadTypeExtData::Serialize(T& Stm)
 		.Process(this->DamageSourceHealthMultiplier)
 		.Process(this->DamageTargetHealthMultiplier)
 
-
 		.Process(this->AffectsBelowPercent)
 		.Process(this->AffectsAbovePercent)
 		.Process(this->AffectsNeutral)
@@ -2149,7 +2154,7 @@ void WarheadTypeExtData::ApplyAttachEffects(TechnoClass* pTarget, HouseClass* pI
 
 bool WarheadTypeExtData::IsHealthInThreshold(ObjectClass* pTarget) const
 {
-	if(!(this->AffectsAbovePercent > 0.0 || this->AffectsBelowPercent < 1.0))
+	if (!(this->AffectsAbovePercent > 0.0 || this->AffectsBelowPercent < 1.0))
 		return true;
 
 	return TechnoExtData::IsHealthInThreshold(pTarget, this->AffectsAbovePercent, this->AffectsBelowPercent);
@@ -2160,10 +2165,10 @@ bool WarheadTypeExtData::ApplySuppressDeathWeapon(TechnoClass* pVictim) const
 	auto const absType = pVictim->WhatAmI();
 	auto const pVictimType = pVictim->GetTechnoType();
 
-	if (!this->SuppressDeathWeapon_Exclude.Contains(pVictimType)) {
-
-		if (this->SuppressDeathWeapon.Contains(pVictimType)){
-
+	if (!this->SuppressDeathWeapon_Exclude.Contains(pVictimType))
+	{
+		if (this->SuppressDeathWeapon.Contains(pVictimType))
+		{
 			if (absType == UnitClass::AbsID && !this->SuppressDeathWeapon_Vehicles)
 				return false;
 
@@ -2180,7 +2185,8 @@ bool WarheadTypeExtData::ApplySuppressDeathWeapon(TechnoClass* pVictim) const
 	return false;
 }
 
-void WarheadTypeExtData::ApplyBuildingUndeploy(TechnoClass* pTarget) {
+void WarheadTypeExtData::ApplyBuildingUndeploy(TechnoClass* pTarget)
+{
 	const auto pBuilding = cast_to<BuildingClass*>(pTarget);
 
 	if (!pBuilding || !pBuilding->IsAlive || pBuilding->Health <= 0 || !pBuilding->IsOnMap || pBuilding->InLimbo)
@@ -2188,9 +2194,10 @@ void WarheadTypeExtData::ApplyBuildingUndeploy(TechnoClass* pTarget) {
 
 	// Higher priority for selling
 
-	if (this->BuildingSell) {
-
-		if ((pBuilding->CanBeSold() && !pBuilding->IsStrange()) || this->BuildingSell_IgnoreUnsellable) {
+	if (this->BuildingSell)
+	{
+		if ((pBuilding->CanBeSold() && !pBuilding->IsStrange()) || this->BuildingSell_IgnoreUnsellable)
+		{
 			pBuilding->SetArchiveTarget(nullptr); // Reset to ensure it must to be sold
 			pBuilding->Sell(1);
 		}
@@ -2214,14 +2221,12 @@ void WarheadTypeExtData::ApplyBuildingUndeploy(TechnoClass* pTarget) {
 
 	// Offset of undeployment on large-scale buildings
 	if (width > 2 || height > 2)
-		cell += CellStruct{ 1, 1 };
+		cell += CellStruct { 1, 1 };
 
 	if (this->BuildingUndeploy_Leave)
 	{
-
 		const auto pHouse = pBuilding->Owner;
-		const auto pItems = Helpers::Alex::getCellSpreadItems(pBuilding->GetCoords(), 20, false, false , false , true , false);
-
+		const auto pItems = Helpers::Alex::getCellSpreadItems(pBuilding->GetCoords(), 20, false, false, false, true, false);
 
 		// Divide the surrounding units into 16 directions and record their costs
 
@@ -2233,19 +2238,15 @@ void WarheadTypeExtData::ApplyBuildingUndeploy(TechnoClass* pTarget) {
 
 			if ((!pHouse || !pHouse->IsAlliedWith(pItem)) && pItem->IsArmed())
 				record[pBuilding->GetDirectionOverObject(pItem).GetValue<4>()] += pItem->GetTechnoType()->Cost;
-
 		}
-
 
 		int costs = 0;
 		int dir = 0;
-
 
 		// Starting from 16, prevent negative numbers
 
 		for (int i = 16; i < 32; ++i)
 		{
-
 			int newCosts = 0;
 
 			// Assign weights to values in the direction
@@ -2259,48 +2260,37 @@ void WarheadTypeExtData::ApplyBuildingUndeploy(TechnoClass* pTarget) {
 			for (int j = -7; j < 8; ++j)
 				newCosts += ((8 - Math::abs(j)) * record[(i + j) & 15]);
 
-
-
 			// Record the direction with the highest weight
 
 			if (newCosts > costs)
 			{
-
 				dir = (i - 16);
 				costs = newCosts;
 			}
 		}
-
 
 		// If there is no threat in the surrounding area, randomly select one side
 
 		if (!costs)
 			dir = ScenarioClass::Instance->Random.RandomRanged(0, 15);
 
-
 		// Reverse the direction and convert it into radians
 
 		const double radian = -(((dir - 4) / 16.0) * Math::GAME_TWOPI);
-
 
 		// Base on a location about 14 grids away
 
 		cell.X -= static_cast<short>(14 * Math::cos(radian));
 		cell.Y += static_cast<short>(14 * Math::sin(radian));
 
-
 		// Find a location where the conyard can be deployed
 		const auto newCell = MapClass::Instance->NearByLocation(cell, pType->UndeploysInto->SpeedType, ZoneType::None, pType->UndeploysInto->MovementZone, false, (width + 2), (height + 2), false, false, false, false, CellStruct::Empty, false, false);
-
 
 		// If it can find a more suitable location, go to the new one
 		if (newCell != CellStruct::Empty)
 
 			cell = newCell;
-
 	}
-
-
 
 	if (const auto pCell = MapClass::Instance->TryGetCellAt(cell))
 		pBuilding->SetArchiveTarget(pCell);
@@ -2364,7 +2354,6 @@ bool WarheadTypeExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool WarheadTypeExtContainer::SaveAll(json& root)
@@ -2413,12 +2402,10 @@ void WarheadTypeExtContainer::LoadFromINI(ext_t::base_type* key, CCINIClass* pIN
 		//this function can be called again multiple time but without need to re-init the data
 		ptr->SetInitState(InitState::Ruled);
 	}
-
 }
 
 void WarheadTypeExtContainer::WriteToINI(ext_t::base_type* key, CCINIClass* pINI)
 {
-
 	if (auto ptr = this->TryFind(key))
 	{
 		if (!pINI)

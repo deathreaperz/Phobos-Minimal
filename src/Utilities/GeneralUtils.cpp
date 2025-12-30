@@ -34,7 +34,7 @@ bool GeneralUtils::IsValidString(const char* str)
 	if (str == nullptr || strlen(str) == 0 || GameStrings::IsBlank(str))
 		return false;
 
-	if (IS_SAME_STR_(str , DEFAULT_STR) || IS_SAME_STR_(str, DEFAULT_STR2))
+	if (IS_SAME_STR_(str, DEFAULT_STR) || IS_SAME_STR_(str, DEFAULT_STR2))
 		return false;
 
 	return true;
@@ -50,7 +50,8 @@ void GeneralUtils::IntValidCheck(int* source, const char* section, const char* t
 	if (defaultValue < min) defaultValue = min;
 	if (defaultValue > max) defaultValue = max;
 
-	if (*source < min || *source>max) {
+	if (*source < min || *source>max)
+	{
 		//Debug::LogInfo("[Developer warning][%s]%s=%d is invalid! Reset to %d.", section, tag, *source, defaultValue);
 		*source = defaultValue;
 	}
@@ -61,7 +62,8 @@ void GeneralUtils::DoubleValidCheck(double* source, const char* section, const c
 	if (defaultValue < min) defaultValue = min;
 	if (defaultValue > max) defaultValue = max;
 
-	if (*source < min || *source>max) {
+	if (*source < min || *source>max)
+	{
 		//Debug::LogInfo("[Developer warning][%s]%s=%f is invalid! Reset to %f.", section, tag, *source, defaultValue);
 		*source = defaultValue;
 	}
@@ -84,7 +86,8 @@ const wchar_t* GeneralUtils::LoadStringUnlessMissing(const char* key, const wcha
 
 	auto pCSF = CSFLoader::FindOrAllocateDynamicStrings(key);
 
-	if (pCSF->IsMissingValue) {
+	if (pCSF->IsMissingValue)
+	{
 		wcscpy_s(pCSF->Text, std::size(pCSF->Text), defaultValue);
 		pCSF->IsMissingValue = false; // enforce it to false, since we dont want to do this operation again
 	}
@@ -96,7 +99,8 @@ const wchar_t* GeneralUtils::LoadStringUnlessMissingNoChecks(const char* key, co
 {
 	auto pCSF = CSFLoader::FindOrAllocateDynamicStrings(key);
 
-	if (pCSF->IsMissingValue) {
+	if (pCSF->IsMissingValue)
+	{
 		wcscpy_s(pCSF->Text, std::size(pCSF->Text), defaultValue);
 		pCSF->IsMissingValue = false; // enforce it to false, since we dont want to do this operation again
 	}
@@ -106,7 +110,7 @@ const wchar_t* GeneralUtils::LoadStringUnlessMissingNoChecks(const char* key, co
 
 void GeneralUtils::AdjacentCellsInRange(std::vector<CellStruct>& nCells, short range, bool clearFirst)
 {
-	if(clearFirst)
+	if (clearFirst)
 		nCells.clear();
 
 	const short value = (2 * range + 1) * (2 * range + 1);
@@ -238,7 +242,7 @@ bool GeneralUtils::ApplyTheaterExtToString(std::string& flag)
 	const auto nPos = flag.find("~");
 	if (nPos != std::string::npos)
 	{
-		std::string pTheater = TheaterTypeClass::Array.empty() ? Theater::Get(ScenarioClass::Instance->Theater)->Letter:
+		std::string pTheater = TheaterTypeClass::Array.empty() ? Theater::Get(ScenarioClass::Instance->Theater)->Letter :
 			TheaterTypeClass::FindFromTheaterType(ScenarioClass::Instance->Theater)->Letter.c_str();
 
 		PhobosCRT::lowercase(pTheater);
@@ -268,7 +272,6 @@ std::string GeneralUtils::ApplyTheaterSuffixToString(const std::string& str)
 
 		//Debug::LogInfo("Found designated string at [%d] Replacing [%s] to [%s] ",
 		//	nPos, str.c_str(), buffer.c_str());
-
 	}
 
 	return buffer;
@@ -278,7 +281,7 @@ std::string GeneralUtils::ApplyTheaterSuffixToString(const std::string& str)
 
 AnimTypeClass* GeneralUtils::GetAnimFacingFromVector(TechnoClass* pFirer, const Iterator<AnimTypeClass*> iter)
 {
-	return iter.get_or(GeneralUtils::GetAnimIndexFromFacing(pFirer, iter.size()),nullptr);
+	return iter.get_or(GeneralUtils::GetAnimIndexFromFacing(pFirer, iter.size()), nullptr);
 }
 
 const int GeneralUtils::GetAnimIndexFromFacing(TechnoClass* pFirer, int nVectorSize)
@@ -300,7 +303,8 @@ const int GeneralUtils::GetAnimIndexFromFacing(TechnoClass* pFirer, int nVectorS
 
 const int GeneralUtils::GetAnimIndexFromFacing(FootClass* pFoot, int nVectorSize)
 {
-	if (pFoot) {
+	if (pFoot)
+	{
 		auto highest = Conversions::Int2Highest(nVectorSize);
 
 		// 2^highest is the frame count, 3 means 8 frames

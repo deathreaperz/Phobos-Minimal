@@ -57,7 +57,6 @@ private:
 	void LoadFromName(const char* PaletteName);
 };
 
-
 class CustomPalette
 {
 public:
@@ -74,17 +73,19 @@ public:
 	UniqueGamePtr<BytePalette> Palette;
 	DynamicVectorClass<ColorScheme*>* ColorschemeDataVector;
 
-	public:
+public:
 
-	CustomPalette() : Mode( PaletteMode::Default ) , Name() , Convert() , Palette() , ColorschemeDataVector() {	};
+	CustomPalette() : Mode(PaletteMode::Default), Name(), Convert(), Palette(), ColorschemeDataVector() { };
 
-	explicit CustomPalette(PaletteMode mode) noexcept : Mode(mode), Name() , Convert() , Palette() , ColorschemeDataVector() { };
+	explicit CustomPalette(PaletteMode mode) noexcept : Mode(mode), Name(), Convert(), Palette(), ColorschemeDataVector() { };
 
-	ConvertClass* GetConvert() const {
+	ConvertClass* GetConvert() const
+	{
 		return this->Convert.get();
 	}
 
-	ConvertClass* GetOrDefaultConvert(ConvertClass* pDefault) const {
+	ConvertClass* GetOrDefaultConvert(ConvertClass* pDefault) const
+	{
 		return this->Convert.get() ? this->Convert.get() : pDefault;
 	}
 

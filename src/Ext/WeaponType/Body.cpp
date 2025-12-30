@@ -17,10 +17,12 @@ std::array<double, 16> WeaponTypeExtData::sinLUT {};
 bool WeaponTypeExtData::LutsInitialized = false;
 #pragma endregion
 
-void WeaponTypeExtData::calculateCircuferences() {
+void WeaponTypeExtData::calculateCircuferences()
+{
 	constexpr double _pi_by_108 = (Math::GAME_PI / 180.0);
 
-	if (!WeaponTypeExtData::LutsInitialized) {
+	if (!WeaponTypeExtData::LutsInitialized)
+	{
 		for (int i = 0; i < 16; ++i)
 		{
 			double deg = std::fmod(i * 22.5 + 270.0, 360.0);
@@ -59,7 +61,7 @@ bool WeaponTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 #ifdef _Enable
 	int Bolt_Count;
-	if (detail::read(Bolt_Count , exINI, pSection, "Bolt.Count") && Bolt_Count > 0)
+	if (detail::read(Bolt_Count, exINI, pSection, "Bolt.Count") && Bolt_Count > 0)
 	{
 		BoltData data { Bolt_Count };
 
@@ -79,13 +81,14 @@ bool WeaponTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 #endif
 
 	{
-		static constexpr std::array<std::pair<const char*, const char*> , 3u> Bolt_Tags {{
+		static constexpr std::array<std::pair<const char*, const char*>, 3u> Bolt_Tags { {
 			{ "Bolt.Color1" , "Bolt.Disable1" } ,
 			{ "Bolt.Color2" , "Bolt.Disable2" } ,
 			{ "Bolt.Color3" , "Bolt.Disable3" }
-		}};
+		} };
 
-		for(int i = 0; i < 3; ++i) {
+		for (int i = 0; i < 3; ++i)
+		{
 			this->Bolt_Colors[i].Read(exINI, pSection, Bolt_Tags[i].first);
 			this->Bolt_Disables[i].Read(exINI, pSection, Bolt_Tags[i].second);
 		}
@@ -96,7 +99,7 @@ bool WeaponTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		this->Bolt_FollowFLH.Read(exINI, pSection, "Bolt.FollowFLH");
 	}
 
-	this->RadType.Read(exINI, pSection, "RadType" , true);
+	this->RadType.Read(exINI, pSection, "RadType", true);
 	this->Rad_NoOwner.Read(exINI, pSection, "Rad.NoOwner");
 
 	this->Strafing.Read(exINI, pSection, "Strafing");
@@ -158,7 +161,8 @@ bool WeaponTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 	this->RockerPitch.Read(exINI, pSection, "RockerPitch");
 
-	if (this->RockerPitch > 0.0f) {
+	if (this->RockerPitch > 0.0f)
+	{
 		this->RockerPitch = float(1.0f * Math::PI_BY_TWO_ACCURATE);
 	}
 
@@ -293,18 +297,19 @@ bool WeaponTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 int WeaponTypeExtData::GetRangeWithModifiers(WeaponTypeClass* pThis, TechnoClass* pFirer, std::optional<int> fallback)
 {
-	int range = fallback.has_value() ? fallback.value()  : 0;
+	int range = fallback.has_value() ? fallback.value() : 0;
 
 	if (!pThis && !pFirer)
 		return range;
 	else if (pFirer && pFirer->CanOccupyFire())
 		range = (RulesClass::Instance->OccupyWeaponRange + pFirer->GetOccupyRangeBonus()) * Unsorted::LeptonsPerCell;
-	else if (pThis && pFirer){
+	else if (pThis && pFirer)
+	{
 		auto pFirerExt = TechnoExtContainer::Instance.Find(pFirer);
 		int range_ = pThis->Range;
 
-		if(pFirerExt->AdditionalRange.isset())
-			range_+= pFirerExt->AdditionalRange;
+		if (pFirerExt->AdditionalRange.isset())
+			range_ += pFirerExt->AdditionalRange;
 
 		range = range_;
 	}
@@ -316,7 +321,8 @@ int WeaponTypeExtData::GetRangeWithModifiers(WeaponTypeClass* pThis, TechnoClass
 
 	auto pTechno = pFirer;
 
-	if (pTechno->Transporter && pTechno->Transporter->IsAlive && pTechno->Transporter->GetTechnoType()->OpenTopped) {
+	if (pTechno->Transporter && pTechno->Transporter->IsAlive && pTechno->Transporter->GetTechnoType()->OpenTopped)
+	{
 		auto const pTypeExt = TechnoTypeExtContainer::Instance.Find(pTechno->Transporter->GetTechnoType());
 
 		if (pTypeExt->OpenTopped_UseTransportRangeModifiers)
@@ -325,7 +331,8 @@ int WeaponTypeExtData::GetRangeWithModifiers(WeaponTypeClass* pThis, TechnoClass
 
 	{
 		auto pExt = TechnoExtContainer::Instance.Find(pTechno);
-		if (pExt->AE.ExtraRange.Enabled()){
+		if (pExt->AE.ExtraRange.Enabled())
+		{
 			range = pExt->AE.ExtraRange.Get(range, pThis);
 		}
 	}
@@ -334,7 +341,8 @@ int WeaponTypeExtData::GetRangeWithModifiers(WeaponTypeClass* pThis, TechnoClass
 
 #include <SpawnManagerClass.h>
 
-int WeaponTypeExtData::GetTechnoKeepRange(WeaponTypeClass* pThis, TechnoClass* pFirer, bool isMinimum) {
+int WeaponTypeExtData::GetTechnoKeepRange(WeaponTypeClass* pThis, TechnoClass* pFirer, bool isMinimum)
+{
 	const auto pExt = WeaponTypeExtContainer::Instance.Find(pThis);
 	const auto keepRange = pExt->KeepRange;
 
@@ -408,7 +416,7 @@ bool WeaponTypeExtData::HasRequiredAttachedEffects(TechnoClass* pTarget, TechnoC
 		if (this->AttachEffect_CheckOnFirer && pFirer)
 			pTechno = pFirer;
 
-		if(!pTechno || !pTechno->IsAlive)
+		if (!pTechno || !pTechno->IsAlive)
 			return true;
 
 		//auto const pTechnoExt = TechnoExtContainer::Instance.Find(pTechno);
@@ -416,16 +424,18 @@ bool WeaponTypeExtData::HasRequiredAttachedEffects(TechnoClass* pTarget, TechnoC
 		if (hasDisallowedTypes && PhobosAEFunctions::HasAttachedEffects(pTechno, this->AttachEffect_DisallowedTypes, false, this->AttachEffect_IgnoreFromSameSource, pFirer, This()->Warhead, &this->AttachEffect_DisallowedMinCounts, &this->AttachEffect_DisallowedMaxCounts))
 			return false;
 
-		if (hasDisallowedGroups) {
+		if (hasDisallowedGroups)
+		{
 			auto group = PhobosAttachEffectTypeClass::GetTypesFromGroups(this->AttachEffect_DisallowedGroups);
-			if(PhobosAEFunctions::HasAttachedEffects(pTechno, group, false, this->AttachEffect_IgnoreFromSameSource, pFirer, This()->Warhead, &this->AttachEffect_DisallowedMinCounts, &this->AttachEffect_DisallowedMaxCounts))
+			if (PhobosAEFunctions::HasAttachedEffects(pTechno, group, false, this->AttachEffect_IgnoreFromSameSource, pFirer, This()->Warhead, &this->AttachEffect_DisallowedMinCounts, &this->AttachEffect_DisallowedMaxCounts))
 				return false;
 		}
 
 		if (hasRequiredTypes && !PhobosAEFunctions::HasAttachedEffects(pTechno, this->AttachEffect_RequiredTypes, true, this->AttachEffect_IgnoreFromSameSource, pFirer, This()->Warhead, &this->AttachEffect_RequiredMinCounts, &this->AttachEffect_RequiredMaxCounts))
 			return false;
 
-		if (hasRequiredGroups){
+		if (hasRequiredGroups)
+		{
 			auto req_group = PhobosAttachEffectTypeClass::GetTypesFromGroups(this->AttachEffect_RequiredGroups);
 			if (!PhobosAEFunctions::HasAttachedEffects(pTechno, req_group, true, this->AttachEffect_IgnoreFromSameSource, pFirer, This()->Warhead, &this->AttachEffect_RequiredMinCounts, &this->AttachEffect_RequiredMaxCounts))
 				return false;
@@ -435,8 +445,9 @@ bool WeaponTypeExtData::HasRequiredAttachedEffects(TechnoClass* pTarget, TechnoC
 	return true;
 }
 
-bool WeaponTypeExtData::IsHealthInThreshold(ObjectClass* pTarget) const {
-	if(!(this->CanTarget_MinHealth > 0.0 || this->CanTarget_MaxHealth < 1.0))
+bool WeaponTypeExtData::IsHealthInThreshold(ObjectClass* pTarget) const
+{
+	if (!(this->CanTarget_MinHealth > 0.0 || this->CanTarget_MaxHealth < 1.0))
 		return true;
 
 	return TechnoExtData::IsHealthInThreshold(pTarget, this->CanTarget_MinHealth, this->CanTarget_MaxHealth);
@@ -447,8 +458,10 @@ ColorStruct WeaponTypeExtData::GetBeamColor() const
 	const auto pThis = This();
 	const auto& result = this->Beam_Color;
 
-	if (pThis->IsRadBeam || pThis->IsRadEruption) {
-		if (pThis->Warhead && pThis->Warhead->Temporal) {
+	if (pThis->IsRadBeam || pThis->IsRadEruption)
+	{
+		if (pThis->Warhead && pThis->Warhead->Temporal)
+		{
 			return result.Get(RulesClass::Instance->ChronoBeamColor);
 		}
 	}
@@ -617,7 +630,7 @@ void WeaponTypeExtData::Serialize(T& Stm)
 template <typename T>
 void WeaponTypeExtData::Serialize(T& Stm)
 {
-	auto debugProcess = [this ,&Stm](auto& field, const char* fieldName) -> auto&
+	auto debugProcess = [this, &Stm](auto& field, const char* fieldName) -> auto&
 		{
 			if constexpr (std::is_same_v<T, PhobosStreamWriter>)
 			{
@@ -864,7 +877,7 @@ int WeaponTypeExtData::GetBurstDelay(WeaponTypeClass* pThis, int burstIndex)
 
 void WeaponTypeExtData::DetonateAt1(WeaponTypeClass* pThis, AbstractClass* pTarget, TechnoClass* pOwner, bool AddDamage, HouseClass* HouseInveoker)
 {
-	WeaponTypeExtData::DetonateAt2(pThis, pTarget, pOwner, pThis->Damage , AddDamage , HouseInveoker);
+	WeaponTypeExtData::DetonateAt2(pThis, pTarget, pOwner, pThis->Damage, AddDamage, HouseInveoker);
 }
 
 #include <Ext/Scenario/Body.h>
@@ -903,7 +916,7 @@ void WeaponTypeExtData::DetonateAt2(WeaponTypeClass* pThis, AbstractClass* pTarg
 
 void WeaponTypeExtData::DetonateAt3(WeaponTypeClass* pThis, const CoordStruct& coords, TechnoClass* pOwner, bool AddDamage, HouseClass* HouseInveoker)
 {
-	WeaponTypeExtData::DetonateAt4(pThis, coords, pOwner, pThis->Damage , AddDamage , HouseInveoker);
+	WeaponTypeExtData::DetonateAt4(pThis, coords, pOwner, pThis->Damage, AddDamage, HouseInveoker);
 }
 
 void WeaponTypeExtData::DetonateAt4(WeaponTypeClass* pThis, const CoordStruct& coords, TechnoClass* pOwner, int damage, bool AddDamage, HouseClass* HouseInveoker)
@@ -915,7 +928,7 @@ void WeaponTypeExtData::DetonateAt4(WeaponTypeClass* pThis, const CoordStruct& c
 	}
 
 	auto cell = MapClass::Instance->GetCellAt(coords);
-	WeaponTypeExtData::DetonateAt2(pThis, cell, pOwner, damage, AddDamage , HouseInveoker);
+	WeaponTypeExtData::DetonateAt2(pThis, cell, pOwner, damage, AddDamage, HouseInveoker);
 }
 
 #include <Ext/Scenario/Body.h>
@@ -1002,7 +1015,6 @@ bool WeaponTypeExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool WeaponTypeExtContainer::SaveAll(json& root)
@@ -1025,7 +1037,6 @@ bool WeaponTypeExtContainer::SaveAll(json& root)
 	}
 
 	first_layer[WeaponTypeExtData::ClassName] = std::move(_extRoot);
-
 
 	PhobosByteStream saver(0);
 	PhobosStreamWriter writer(saver);
@@ -1052,12 +1063,10 @@ void WeaponTypeExtContainer::LoadFromINI(ext_t::base_type* key, CCINIClass* pINI
 		//this function can be called again multiple time but without need to re-init the data
 		ptr->SetInitState(InitState::Ruled);
 	}
-
 }
 
 void WeaponTypeExtContainer::WriteToINI(ext_t::base_type* key, CCINIClass* pINI)
 {
-
 	if (auto ptr = this->TryFind(key))
 	{
 		if (!pINI)

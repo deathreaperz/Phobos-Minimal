@@ -17,10 +17,13 @@ bool TheaterSpecificSHP::Read(INI_EX& parser, const char* pSection, const char* 
 			[](char input, char expected) { return input == expected; }))
 			Result += ".shp";
 
-		if (auto const pImage = FileSystem::LoadSHPFile(Result.c_str())) {
+		if (auto const pImage = FileSystem::LoadSHPFile(Result.c_str()))
+		{
 			value = pImage;
 			return true;
-		} else {
+		}
+		else
+		{
 			Debug::Log("Failed to find file %s referenced by [%s]%s=%s\n", Result.c_str(), pSection, pKey, pValue);
 		}
 	}

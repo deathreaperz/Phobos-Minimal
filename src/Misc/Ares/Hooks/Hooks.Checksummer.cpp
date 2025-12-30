@@ -56,6 +56,6 @@ ASMJIT_PATCH(0x4A1DE0, Checksummer_Add_Buffer, 6)
 	GET(CRCEngine*, pThis, ECX);
 	GET_STACK(const void*, data, STACK_OFFS(0x0, -0x4));
 	GET_STACK(size_t, length, STACK_OFFS(0x0, -0x8));
-	R->EAX(pThis->operator()(data ,length));
+	R->EAX(pThis->operator()(data, length));
 	return 0x4A1FA6;
 }

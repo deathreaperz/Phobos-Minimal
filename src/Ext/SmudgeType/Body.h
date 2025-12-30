@@ -16,9 +16,9 @@ public:
 	Valueable<bool> Clearable;
 
 public:
-	SmudgeTypeExtData(SmudgeTypeClass* pObj) : ObjectTypeExtData(pObj) , Clearable (true)
+	SmudgeTypeExtData(SmudgeTypeClass* pObj) : ObjectTypeExtData(pObj), Clearable(true)
 	{
- 		this->AbsType = SmudgeTypeClass::AbsID;
+		this->AbsType = SmudgeTypeClass::AbsID;
 	}
 
 	SmudgeTypeExtData(SmudgeTypeClass* pObj, noinit_t nn) : ObjectTypeExtData(pObj, nn) { }
@@ -82,13 +82,13 @@ class NOVTABLE FakeSmudgeTypeClass : public SmudgeTypeClass
 {
 public:
 
-	bool _CanPlaceHere(CellStruct*origin, bool underbuildings);
+	bool _CanPlaceHere(CellStruct* origin, bool underbuildings);
 
 	bool _ReadFromINI(CCINIClass* pINI);
 
-	SmudgeTypeExtData* _GetExtData() {
+	SmudgeTypeExtData* _GetExtData()
+	{
 		return *reinterpret_cast<SmudgeTypeExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
-
 };
 static_assert(sizeof(FakeSmudgeTypeClass) == sizeof(SmudgeTypeClass), "Invalid Size !");

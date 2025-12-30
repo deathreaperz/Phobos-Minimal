@@ -70,14 +70,20 @@ struct OptionalStruct : public std::optional<T>
 
 		if COMPILETIMEEVAL(!Persistable)
 			return true;
-		else {
+		else
+		{
 			bool hasval;
-			if (Stm.Process(hasval)) {
-				if (!hasval) {
+			if (Stm.Process(hasval))
+			{
+				if (!hasval)
+				{
 					return true;
-				} else {
+				}
+				else
+				{
 					T buffer {};
-					if (Stm.Process(buffer, RegisterForChange)) {
+					if (Stm.Process(buffer, RegisterForChange))
+					{
 						this->emplace(std::move(buffer)); // Use emplace for efficiency
 						return true;
 					}
@@ -102,5 +108,4 @@ struct OptionalStruct : public std::optional<T>
 			return true;
 		}
 	}
-
 };

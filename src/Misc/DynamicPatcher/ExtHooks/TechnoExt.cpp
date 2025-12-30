@@ -63,7 +63,6 @@ ASMJIT_PATCH(0x730F1C, ObjectClass_StopCommand, 0x5)
 	return 0;
 }
 
-
 ASMJIT_PATCH(0x69252D, ScrollClass_ProcessClickCoords_VirtualUnit, 0x8)
 {
 	GET(TechnoClass*, pThis, ESI);
@@ -72,8 +71,6 @@ ASMJIT_PATCH(0x69252D, ScrollClass_ProcessClickCoords_VirtualUnit, 0x8)
 	return pExt && pExt->VirtualUnit ? 0x6925E6 : 0x0;
 }
 #endif
-
-
 
 static bool CeaseFire(TechnoClass* pThis)
 {
@@ -93,53 +90,52 @@ ASMJIT_PATCH(0x6FC339, TechnoClass_CanFire_DP, 0x6) //8
 }
 */
 
- ASMJIT_PATCH(0x6B743E, SpawnManagerAI_SpawnSupportFLH, 0x6)
- {
- 	GET(SpawnManagerClass*, pSpawn, ESI);
- 	//GET_STACK(int, nArrIdx, STACK_OFFS(0x68, 0x54));
+ASMJIT_PATCH(0x6B743E, SpawnManagerAI_SpawnSupportFLH, 0x6)
+{
+	GET(SpawnManagerClass*, pSpawn, ESI);
+	//GET_STACK(int, nArrIdx, STACK_OFFS(0x68, 0x54));
 
- 	if (auto pOwner = pSpawn->Owner)
- 	{
- 		//if ((*pFLH) == CoordStruct::Empty)
- 		{
- 			auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pOwner->GetTechnoType());
+	if (auto pOwner = pSpawn->Owner)
+	{
+		//if ((*pFLH) == CoordStruct::Empty)
+		{
+			auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pOwner->GetTechnoType());
 
- 			if (pTypeExt->MySpawnSupportDatas.Enable)
- 			{
- 				//CoordStruct nFLH = CoordStruct::Empty;
+			if (pTypeExt->MySpawnSupportDatas.Enable)
+			{
+				//CoordStruct nFLH = CoordStruct::Empty;
 
- 				SpawnSupportFLHData nFLHData = pTypeExt->MySpawnSupportFLH;
- 				if (auto const pTransporter = pOwner->Transporter)
- 				{
- 					if (auto const pTransportExt = TechnoTypeExtContainer::Instance.Find(pTransporter->GetTechnoType()))
- 					{
- 						nFLHData = pTransportExt->MySpawnSupportFLH;
- 					}
- 				}
+				SpawnSupportFLHData nFLHData = pTypeExt->MySpawnSupportFLH;
+				if (auto const pTransporter = pOwner->Transporter)
+				{
+					if (auto const pTransportExt = TechnoTypeExtContainer::Instance.Find(pTransporter->GetTechnoType()))
+					{
+						nFLHData = pTransportExt->MySpawnSupportFLH;
+					}
+				}
 
- 				CoordStruct nFLH = pOwner->Veterancy.IsElite() ? nFLHData.EliteSpawnSupportFLH : nFLHData.SpawnSupportFLH;
+				CoordStruct nFLH = pOwner->Veterancy.IsElite() ? nFLHData.EliteSpawnSupportFLH : nFLHData.SpawnSupportFLH;
 
- 				if (nFLH == CoordStruct::Empty)
- 					return 0x0;
+				if (nFLH == CoordStruct::Empty)
+					return 0x0;
 
- 				if (auto pSpawnExt = TechnoExtContainer::Instance.Find(pOwner))
- 				{
- 					if (pTypeExt->MySpawnSupportDatas.SwitchFLH)
- 					{
- 						nFLH.Y *= pSpawnExt->MySpawnSuport.supportFLHMult;
- 						pSpawnExt->MySpawnSuport.supportFLHMult *= -1;
- 					}
- 				}
+				if (auto pSpawnExt = TechnoExtContainer::Instance.Find(pOwner))
+				{
+					if (pTypeExt->MySpawnSupportDatas.SwitchFLH)
+					{
+						nFLH.Y *= pSpawnExt->MySpawnSuport.supportFLHMult;
+						pSpawnExt->MySpawnSuport.supportFLHMult *= -1;
+					}
+				}
 
- 				R->EAX(&nFLH);
- 				return 0x6B7498;
- 			}
- 		}
- 	}
+				R->EAX(&nFLH);
+				return 0x6B7498;
+			}
+		}
+	}
 
-
- 	return 0x0;
- }
+	return 0x0;
+}
 
 namespace CalculatePinch
 {
@@ -162,7 +158,6 @@ namespace CalculatePinch
 
 				pFirer->AngleRotatedForwards = (float)(-ext->RockerPitch.Get() * Math::cos(theta));
 				pFirer->AngleRotatedSideways = (float)(ext->RockerPitch.Get() * Math::sin(theta));
-
 			}
 		}
 	}
@@ -177,10 +172,8 @@ namespace CalculatePinch
 
 // 	bool Slectable = true;
 
-
 // 	if (auto pExt = TechnoExtContainer::Instance.Find(pThis))
 // 		Slectable = !pExt->VirtualUnit.Get();
-
 
 // 	return Slectable || !bNotSlectable ? 0x0 : 0x5F45A9;
 
@@ -190,14 +183,16 @@ namespace CalculatePinch
 // 	return 0x0;
 // }
 
-
-//Gscript 
+//Gscript
 //    v_Init((this + 36), &a2, v4, "ScatterChance", 0);
 //	  v_bool((this + 19), &a2, v4, "ScatterOnInfantry", 0);
-AbstractClass* ScatterAgainst(AbstractClass* pTarget , AbstractType abs, int chance){
-	if(pTarget && pTarget->WhatAmI() == abs){
-		if(ScenarioClass::Instance->Random.RandomFromMax(chance)){
-			auto pCell = MapClass::Instance->GetCellAt( pTarget->GetCoords());
+AbstractClass* ScatterAgainst(AbstractClass* pTarget, AbstractType abs, int chance)
+{
+	if (pTarget && pTarget->WhatAmI() == abs)
+	{
+		if (ScenarioClass::Instance->Random.RandomFromMax(chance))
+		{
+			auto pCell = MapClass::Instance->GetCellAt(pTarget->GetCoords());
 			static constexpr std::array<FacingType, 4> __facing = {
 				FacingType::North, FacingType::East, FacingType::South, FacingType::West
 			};
@@ -224,41 +219,44 @@ ASMJIT_PATCH(0x6FDD50, TechnoClass_FireAt_PreFire, 0x6)
 	auto pExt = TechnoExtContainer::Instance.Find(pThis);
 	//if ()
 	//{
-		pExt->CurrentWeaponIdx = nWeapon;
-		auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType());
-		{
-			AircraftDiveFunctional::OnFire(pExt, pTypeExt, pTarget, nWeapon);
-			//AttackBeaconFunctional::OnFire(pExt, pTarget, nWeapon);
-		}
+	pExt->CurrentWeaponIdx = nWeapon;
+	auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType());
+	{
+		AircraftDiveFunctional::OnFire(pExt, pTypeExt, pTarget, nWeapon);
+		//AttackBeaconFunctional::OnFire(pExt, pTarget, nWeapon);
+	}
 	//}
 
 	return 0x0;
 }
 
-static WeaponStruct* __fastcall GetWeapon_(TechnoClass* pTech, void*, int idx) {
+static WeaponStruct* __fastcall GetWeapon_(TechnoClass* pTech, void*, int idx)
+{
 	return pTech->GetWeapon(TechnoExtContainer::Instance.Find(pTech)->CurrentWeaponIdx);
 }
 DEFINE_FUNCTION_JUMP(CALL6, 0x6FDD69, GetWeapon_);
 
- ASMJIT_PATCH(0x6F6CA0, TechnoClass_Unlimbo_Early, 0x7)
- {
- 	GET(TechnoClass*, pThis, ECX);
- 	GET_STACK(CoordStruct*, pCoord, (0x4));
- 	//GET_STACK(DirType, faceDir, (0x8));
+ASMJIT_PATCH(0x6F6CA0, TechnoClass_Unlimbo_Early, 0x7)
+{
+	GET(TechnoClass*, pThis, ECX);
+	GET_STACK(CoordStruct*, pCoord, (0x4));
+	//GET_STACK(DirType, faceDir, (0x8));
 
-	auto pExt = TechnoExtContainer::Instance.Find(pThis); {
-		auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType()); {
- 			DamageSelfState::OnPut(pExt->DamageSelfState, pTypeExt->DamageSelfData);
- 			GiftBoxFunctional::Init(pExt, pTypeExt);
- 			AircraftPutDataFunctional::OnPut(pExt, pTypeExt, pCoord);
- 		}
- 	}
+	auto pExt = TechnoExtContainer::Instance.Find(pThis);
+	{
+		auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType());
+		{
+			DamageSelfState::OnPut(pExt->DamageSelfState, pTypeExt->DamageSelfData);
+			GiftBoxFunctional::Init(pExt, pTypeExt);
+			AircraftPutDataFunctional::OnPut(pExt, pTypeExt, pCoord);
+		}
+	}
 
- 	return 0;
- }
+	return 0;
+}
 
 ASMJIT_PATCH(0x6FBFE9, TechnoClass_Select_SkipVoice, 0x6)
 {
 	GET(TechnoClass*, pThis, ESI);
-	return TechnoExtContainer::Instance.Find(pThis)->SkipVoice ? 0x6FC01E :0x0;
+	return TechnoExtContainer::Instance.Find(pThis)->SkipVoice ? 0x6FC01E : 0x0;
 }

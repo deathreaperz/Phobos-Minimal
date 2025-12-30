@@ -5,9 +5,10 @@ PhobosMap<std::string, GroupData> PhobosAttachEffectTypeClass::GroupsMap;
 
 void PhobosAttachEffectTypeClass::AddToGroupsMap()
 {
-    for (const auto& group : this->Groups)  {
-        PhobosAttachEffectTypeClass::GroupsMap[group].insert(this);
-    }
+	for (const auto& group : this->Groups)
+	{
+		PhobosAttachEffectTypeClass::GroupsMap[group].insert(this);
+	}
 }
 
 std::vector<PhobosAttachEffectTypeClass*> PhobosAttachEffectTypeClass::GetTypesFromGroups(std::vector<std::string>& groupIDs)
@@ -17,10 +18,12 @@ std::vector<PhobosAttachEffectTypeClass*> PhobosAttachEffectTypeClass::GetTypesF
 
 	types.reserve(map->size() * 10);
 
-	for (const auto& group : groupIDs) {
+	for (const auto& group : groupIDs)
+	{
 		auto iter = map->get_key_iterator(group);
-		if (iter != map->end()) {
-			types.insert(types.end(),iter->second.begin(), iter->second.end());
+		if (iter != map->end())
+		{
+			types.insert(types.end(), iter->second.begin(), iter->second.end());
 		}
 	}
 
@@ -59,7 +62,7 @@ void PhobosAttachEffectTypeClass::LoadFromINI(CCINIClass* pINI)
 	this->Animation_UseInvokerAsOwner.Read(exINI, pSection, "Animation.UseInvokerAsOwner");
 	this->Animation_HideIfAttachedWith.Read(exINI, pSection, "Animation.HideIfAttachedWith");
 
-	this->ExpireWeapon.Read(exINI, pSection, "ExpireWeapon" , true);
+	this->ExpireWeapon.Read(exINI, pSection, "ExpireWeapon", true);
 	this->ExpireWeapon_TriggerOn.Read(exINI, pSection, "ExpireWeapon.TriggerOn");
 	this->ExpireWeapon_CumulativeOnlyOnce.Read(exINI, pSection, "ExpireWeapon.CumulativeOnlyOnce");
 
@@ -140,7 +143,8 @@ void PhobosAttachEffectTypeClass::LoadFromINI(CCINIClass* pINI)
 	this->AffectTargets.Read(exINI, pSection, "AffectTargets");
 
 	// Animation draw offsets.
-	for (int i = 0; i < INT32_MAX; i++) {
+	for (int i = 0; i < INT32_MAX; i++)
+	{
 		AnimationDrawOffsetClass offset;
 
 		if (!offset.LoadFromINI(pINI, pSection, i))

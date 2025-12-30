@@ -16,7 +16,8 @@ struct ExtraFireData
 		ValueableVector<CoordStruct> WeaponXFLH { };
 		ValueableVector<CoordStruct> EliteWeaponXFLH { };
 
-		FLHData* AsPointer() const{
+		FLHData* AsPointer() const
+		{
 			return const_cast<FLHData*>(this);
 		}
 
@@ -76,7 +77,6 @@ struct ExtraFireData
 				.Process(EliteWeaponX)
 				;
 		}
-
 	};
 
 	FLHData AttachedFLH { };
@@ -84,20 +84,21 @@ struct ExtraFireData
 
 	//confuse ? , yeah me too :kekw:
 	void ReadArt(INI_EX& parserArt, const char* pSection_Art);
-	void ReadRules(INI_EX& parserRules,const char* pSection_rules);
+	void ReadRules(INI_EX& parserRules, const char* pSection_rules);
 
-	OPTIONALINLINE bool Load(PhobosStreamReader& Stm, bool RegisterForChange) {
+	OPTIONALINLINE bool Load(PhobosStreamReader& Stm, bool RegisterForChange)
+	{
 		return Stm
 			.Process(AttachedFLH)
 			.Process(AttachedWeapon)
 			;
 	}
 
-	OPTIONALINLINE bool Save(PhobosStreamWriter& Stm) const {
+	OPTIONALINLINE bool Save(PhobosStreamWriter& Stm) const
+	{
 		return Stm
 			.Process(AttachedFLH)
 			.Process(AttachedWeapon)
 			;
 	}
-
 };

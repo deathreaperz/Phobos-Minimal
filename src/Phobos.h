@@ -47,7 +47,8 @@ enum class FPSCounterMode
 class CCINIClass;
 class AbstractClass;
 
-enum class ExceptionHandlerMode {
+enum class ExceptionHandlerMode
+{
 	Default = 0,
 	Full = 1,
 	NoRemove = 2
@@ -65,17 +66,20 @@ public:
 	{
 	public:
 
-		static void SetRandomSeed(int seed) {
+		static void SetRandomSeed(int seed)
+		{
 			_engine.seed(seed);
 		}
 
 		template<typename T>
-		static T RandomRanged(T min, T max) {
+		static T RandomRanged(T min, T max)
+		{
 			std::uniform_int_distribution<T> dis(min, max);
 			return dis(_engine);
 		}
 
-		static double RandomDouble() {
+		static double RandomDouble()
+		{
 			return RandomRanged(1, INT_MAX) / (double)((unsigned int)INT_MAX + 1);
 		}
 
@@ -102,7 +106,7 @@ public:
 	static HANDLE hInstance;
 	static OPTIONALINLINE COMPILETIMEEVAL size_t readLength { 2048 }; // this variable can be used anywhere , keep the inline
 	static char readBuffer[readLength];
-	static wchar_t wideBuffer[readLength] ;
+	static wchar_t wideBuffer[readLength];
 	static const char readDelims[4];
 	static const char readDefval[4];
 	static std::string AppIconPath;
@@ -172,7 +176,7 @@ public:
 		static void Read_RA2MD();
 		static void Read_UIMD();
 		static void Read_RULESMD();
-		
+
 		static bool HideWarning;
 		static bool ToolTipDescriptions;
 		static bool ToolTipBlur;

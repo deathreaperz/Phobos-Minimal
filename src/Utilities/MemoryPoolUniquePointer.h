@@ -5,8 +5,10 @@ class PoolDeleter
 {
 public:
 	template<typename T>
-	void operator()(T* ptr) const {
-		if (ptr) {
+	void operator()(T* ptr) const
+	{
+		if (ptr)
+		{
 			ptr->deleteInstance();
 		}
 	}
@@ -15,7 +17,6 @@ public:
 template<typename T>
 struct MemoryPoolUniquePointer final : public std::unique_ptr<T, PoolDeleter>
 {
-
 	COMPILETIMEEVAL MemoryPoolUniquePointer<T>() noexcept : std::unique_ptr<T, PoolDeleter>()
 	{ }
 

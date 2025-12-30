@@ -14,7 +14,7 @@ class SW_NuclearMissile : public SWTypeHandler
 {
 public:
 
-	virtual SuperWeaponType GetSWType() { return SuperWeaponType::Nuke;  };
+	virtual SuperWeaponType GetSWType() { return SuperWeaponType::Nuke; };
 	virtual SuperWeaponFlags Flags(const SWTypeExtData* pData) const override;
 
 	virtual bool Activate(SuperClass* pThis, const CellStruct& Coords, bool IsPlayer);
@@ -30,5 +30,5 @@ public:
 	BuildingClass* GetAlternateLauchSite(const SWTypeExtData* pData, SuperClass* pThis) const;
 
 	static SuperWeaponTypeClass* CurrentNukeType;
-	static bool DropNukeAt(SuperWeaponTypeClass* pSuper , CoordStruct const& to, TechnoClass* Owner , HouseClass* OwnerHouse , WeaponTypeClass* pPayload);
+	static bool DropNukeAt(SuperWeaponTypeClass* pSuper, CoordStruct const& to, TechnoClass* Owner, HouseClass* OwnerHouse, WeaponTypeClass* pPayload);
 };

@@ -17,7 +17,8 @@ ASMJIT_PATCH(0x4FF9C9, HouseClass_ExcludeFromMultipleFactoryBonus, 0x6)
 	GET(FakeHouseClass*, pThis, EDI);
 	GET(bool, isNaval, ECX);
 
-	if (pBuilding->_GetTypeExtData()->ExcludeFromMultipleFactoryBonus) {
+	if (pBuilding->_GetTypeExtData()->ExcludeFromMultipleFactoryBonus)
+	{
 		pThis->_GetExtData()->UpdateNonMFBFactoryCounts(pBuilding->Type->Factory, R->Origin()
 			== 0x4FF9C9, isNaval);
 	}
@@ -47,7 +48,6 @@ ASMJIT_PATCH(0x500910, HouseClass_GetFactoryCount, 0x5)
 //
 //update it separately
 // ASMJIT_PATCH(0x4F9038, HouseClass_AI_Superweapons, 0x5) {
-
 // 	GET(FakeHouseClass*, pThis, ESI);
 
 // 	if (!RulesExtData::Instance()->AISuperWeaponDelay.isset() || pThis->IsControlledByHuman() || pThis->Type->MultiplayPassive)
@@ -207,8 +207,8 @@ ASMJIT_PATCH(0x508C30, HouseClass_UpdatePower_UpdateCounter, 0x5)
 				|| pBld->IsBeingWarpedOut())
 				continue;
 
-			for(auto const pType : pBld->GetTypes()){
-
+			for (auto const pType : pBld->GetTypes())
+			{
 				if (!pType)
 					continue;
 
@@ -223,7 +223,8 @@ ASMJIT_PATCH(0x508C30, HouseClass_UpdatePower_UpdateCounter, 0x5)
 
 				const auto pExt = BuildingTypeExtContainer::Instance.Find(pType);
 
-				if(HasPower) {
+				if (HasPower)
+				{
 					if (!pExt->PowerPlantEnhancer_Buildings.empty() &&
 						(pExt->PowerPlantEnhancer_Amount != 0 || pExt->PowerPlantEnhancer_Factor != 1.0f))
 					{
@@ -284,7 +285,8 @@ ASMJIT_PATCH(0x6F6BC9, TechnoClass_Limbo_AddTracking, 0x6)
 {
 	GET(TechnoClass* const, pThis, ESI);
 
-	if(pThis->IsAlive){
+	if (pThis->IsAlive)
+	{
 		HouseExtContainer::Instance.LimboTechno.push_back_unique(pThis);
 	}
 
@@ -302,13 +304,14 @@ ASMJIT_PATCH(0x6F6D85, TechnoClass_Unlimbo_RemoveTracking, 0x6)
 
 HouseClass* OldOwner = nullptr;
 
-ASMJIT_PATCH(0x70173B , TechnoClass_SetOwningHouse_AfterHouseWasSet, 0x5)
+ASMJIT_PATCH(0x70173B, TechnoClass_SetOwningHouse_AfterHouseWasSet, 0x5)
 {
 	GET(TechnoClass* const, pThis, ESI);
-	auto pNewOwner= pThis->Owner;
+	auto pNewOwner = pThis->Owner;
 
-	if(OldOwner){
-		if (auto pMe = flag_cast_to<FootClass* , false>(pThis))
+	if (OldOwner)
+	{
+		if (auto pMe = flag_cast_to<FootClass*, false>(pThis))
 		{
 			const auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pMe->GetTechnoType());
 			bool I_am_human = OldOwner->IsControlledByHuman();
@@ -319,17 +322,19 @@ ASMJIT_PATCH(0x70173B , TechnoClass_SetOwningHouse_AfterHouseWasSet, 0x5)
 			if (!pConvertTo)
 			{
 				auto& map = pTypeExt->Convert_ToHouseOrCountry;
-				for(auto it = map.begin(); it != map.end(); ++it) {
-					if(it->first == pNewOwner->Type ||
-					 	it->first == SideClass::Array->Items[pNewOwner->Type->SideIndex]){
-						 pConvertTo = it->second;
-						 break;
+				for (auto it = map.begin(); it != map.end(); ++it)
+				{
+					if (it->first == pNewOwner->Type ||
+						it->first == SideClass::Array->Items[pNewOwner->Type->SideIndex])
+					{
+						pConvertTo = it->second;
+						break;
 					}
 				}
 			}
 
 			if (pConvertTo)
-				TechnoExt_ExtData::ConvertToType(pMe, pConvertTo,true , false);
+				TechnoExt_ExtData::ConvertToType(pMe, pConvertTo, true, false);
 		}
 
 		if (RulesExtData::Instance()->ExtendedBuildingPlacing
@@ -342,19 +347,18 @@ ASMJIT_PATCH(0x70173B , TechnoClass_SetOwningHouse_AfterHouseWasSet, 0x5)
 		OldOwner = nullptr;
 	}
 
-	if (TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType())->Passengers_SyncOwner && pThis->Passengers.NumPassengers > 0) {
+	if (TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType())->Passengers_SyncOwner && pThis->Passengers.NumPassengers > 0)
+	{
 		for (NextObject j(pThis->Passengers.GetFirstPassenger());
 			j && ((*j)->AbstractFlags & AbstractFlags::Foot);
 			++j)
 		{
 			((FootClass*)(*j))->SetOwningHouse(pNewOwner, false);
-
 		}
 	}
 
 	return 0x0;
 }
-
 
 ASMJIT_PATCH(0x7015EB, TechnoClass_SetOwningHouse_UpdateTracking, 0x7)
 {
@@ -367,7 +371,8 @@ ASMJIT_PATCH(0x7015EB, TechnoClass_SetOwningHouse_UpdateTracking, 0x7)
 	//auto pExt = TechnoExtContainer::Instance.Find(pThis);
 	const auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pType);
 
-	if (pTypeExt->Death_Method != KillMethod::None) {
+	if (pTypeExt->Death_Method != KillMethod::None)
+	{
 		const bool humanToComputer = pTypeExt->AutoDeath_OnOwnerChange_HumanToComputer.Get(pTypeExt->AutoDeath_OnOwnerChange);
 		const bool computerToHuman = pTypeExt->AutoDeath_OnOwnerChange_ComputerToHuman.Get(pTypeExt->AutoDeath_OnOwnerChange);
 
@@ -375,13 +380,17 @@ ASMJIT_PATCH(0x7015EB, TechnoClass_SetOwningHouse_UpdateTracking, 0x7)
 		{
 			TechnoExtData::KillSelf(pThis
 				, pTypeExt->Death_Method
-				, pTypeExt->AutoDeath_VanishAnimation );
+				, pTypeExt->AutoDeath_VanishAnimation);
 			return 0x70188C;
-		} else if (humanToComputer || computerToHuman) {
+		}
+		else if (humanToComputer || computerToHuman)
+		{
 			const bool I_am_human = pThis->Owner->IsControlledByHuman();
 
-			if (I_am_human != pNewOwner->IsControlledByHuman()) {
-				if ((I_am_human && humanToComputer) || (!I_am_human && computerToHuman)) {
+			if (I_am_human != pNewOwner->IsControlledByHuman())
+			{
+				if ((I_am_human && humanToComputer) || (!I_am_human && computerToHuman))
+				{
 					TechnoExtData::KillSelf(pThis
 						, pTypeExt->Death_Method
 						, pTypeExt->AutoDeath_VanishAnimation);
@@ -391,7 +400,7 @@ ASMJIT_PATCH(0x7015EB, TechnoClass_SetOwningHouse_UpdateTracking, 0x7)
 		}
 	}
 
-	if (!pNewOwner->Type->MultiplayPassive &&  pThis->WhatAmI() != BuildingClass::AbsID && TechnoTypeExtContainer::Instance.Find(pType)->IsGenericPrerequisite())
+	if (!pNewOwner->Type->MultiplayPassive && pThis->WhatAmI() != BuildingClass::AbsID && TechnoTypeExtContainer::Instance.Find(pType)->IsGenericPrerequisite())
 	{
 		pThis->Owner->RecheckTechTree = true;
 		pNewOwner->RecheckTechTree = true;
@@ -441,12 +450,14 @@ ASMJIT_PATCH(0x7015EB, TechnoClass_SetOwningHouse_UpdateTracking, 0x7)
 //}
 #pragma endregion
 
-ASMJIT_PATCH(0x4FDCE0 , HouseClass_AI_Fire_Sale_OnLastLegs, 0x6){
+ASMJIT_PATCH(0x4FDCE0, HouseClass_AI_Fire_Sale_OnLastLegs, 0x6)
+{
 	GET(FakeHouseClass*, pThis, ECX);
-	GET_STACK(UrgencyType, urg , 0x4);
+	GET_STACK(UrgencyType, urg, 0x4);
 
 	bool ret = false;
-	if(urg == UrgencyType::Critical){
+	if (urg == UrgencyType::Critical)
+	{
 		auto const pRules = RulesExtData::Instance();
 		auto const pExt = pThis->_GetExtData();
 
@@ -518,6 +529,6 @@ ASMJIT_PATCH(0x4F9BFC, HouseClass_ClearForceEnemy, 0xA)	// HouseClass_MakeAlly
 	GET(FakeHouseClass*, pThis, ESI);
 
 	pThis->_GetExtData()->SetForceEnemy(-1);
-	pThis->UpdateAngerNodes(0u,nullptr);
+	pThis->UpdateAngerNodes(0u, nullptr);
 	return R->Origin() + 0xA;
 }

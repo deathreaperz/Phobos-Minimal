@@ -98,7 +98,8 @@ public:
 template <>
 struct Savegame::ObjectFactory<PrismForwarding>
 {
-	std::unique_ptr<PrismForwarding> operator() (PhobosStreamReader& Stm) const {
+	std::unique_ptr<PrismForwarding> operator() (PhobosStreamReader& Stm) const
+	{
 		return std::make_unique<PrismForwarding>();
 	}
 };

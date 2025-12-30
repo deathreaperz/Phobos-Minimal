@@ -44,7 +44,6 @@ bool TriggerExtContainer::LoadAll(const json& root)
 
 		for (auto& entry : container[TriggerExtData::ClassName])
 		{
-
 			uint32_t oldPtr = 0;
 			if (!ExtensionSaveJson::ReadHex(entry, "OldPtr", oldPtr))
 				return false;
@@ -101,11 +100,11 @@ bool TriggerExtContainer::SaveAll(json& root)
 
 ASMJIT_PATCH(0x72612C, TriggerClass_CTOR, 0x7)
 {
-
 	GET(TriggerClass*, pThis, ESI);
 	TriggerExtContainer::Instance.Allocate(pThis);
 
-	if (!SessionClass::IsCampaign()) {
+	if (!SessionClass::IsCampaign())
+	{
 		auto& triggerOwners = ScenarioExtData::Instance()->TriggerTypePlayerAtXOwners;
 		auto it = triggerOwners.get_key_iterator(pThis->Type->ArrayIndex);
 
@@ -116,8 +115,8 @@ ASMJIT_PATCH(0x72612C, TriggerClass_CTOR, 0x7)
 		}
 	}
 
-	if (pThis->Type) {
-
+	if (pThis->Type)
+	{
 		auto pExt = TriggerExtContainer::Instance.Find(pThis);
 		auto pCurrentEvent = pThis->Type->FirstEvent;
 
@@ -176,7 +175,7 @@ ASMJIT_PATCH(0x72617D, TriggerClass_DTOR, 0xF)
 
 void FakeTriggerClass::_Detach(AbstractClass* pTarget, bool bRemove)
 {
-	if(auto pExt = this->_GetExtData())
+	if (auto pExt = this->_GetExtData())
 		pExt->InvalidatePointer(pTarget, bRemove);
 
 	this->TriggerClass::PointerExpired(pTarget, bRemove);

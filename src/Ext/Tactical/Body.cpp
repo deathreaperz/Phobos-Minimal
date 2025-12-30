@@ -17,7 +17,8 @@
 #include <TextDrawing.h>
 
 #include <Phobos.h>
-enum class CollisionBoxShape : BYTE{
+enum class CollisionBoxShape : BYTE
+{
 	Rectangle,
 	Diamond,      // Isometric diamond
 	Ellipse,
@@ -264,23 +265,23 @@ void NOINLINE DrawCollisionBox(FootClass* obj, DSurface* surface,
 
 	// Always draw center cross (white)
 	DrawCenterCross(surface, bounds, screen);
-
 }
 
 template<typename T>
-void NOINLINE Draws(COLORREF color, DSurface* pSurface , RectangleStruct& bounds) {
+void NOINLINE Draws(COLORREF color, DSurface* pSurface, RectangleStruct& bounds)
+{
 	unsigned short pixelColor = DSurface::RGB_To_Pixel(
 		(color >> 16) & 0xFF,  // R
 		(color >> 8) & 0xFF,   // G
 		color & 0xFF           // B
 	);
 
-	T::Array->for_each([&](T* tech) {
-		if (tech && tech->IsAlive && tech->IsOnMap && !tech->InLimbo)
-			DrawCollisionBox(tech, pSurface, bounds, pixelColor);  // Green
+	T::Array->for_each([&](T* tech)
+ {
+	 if (tech && tech->IsAlive && tech->IsOnMap && !tech->InLimbo)
+		 DrawCollisionBox(tech, pSurface, bounds, pixelColor);  // Green
 	});
 }
-
 
 void NOINLINE FakeTacticalClass::DrawCollisionDebug()
 {
@@ -365,9 +366,11 @@ void FakeTacticalClass::_Draw_Pixel_Effects(RectangleStruct* tactical_rect, Rect
 
 DEFINE_FUNCTION_JUMP(CALL, 0x6D492B, FakeTacticalClass::_Draw_Pixel_Effects)
 
-void FakeTacticalClass::_Render_Objects_Near_Shroud(bool arg0, Point2D pos, RectangleStruct* a5) {
+void FakeTacticalClass::_Render_Objects_Near_Shroud(bool arg0, Point2D pos, RectangleStruct* a5)
+{
 	// Update light sources if they have been flagged to be updated.
-	if (ScenarioExtData::UpdateLightSources) {
+	if (ScenarioExtData::UpdateLightSources)
+	{
 		for (auto light : *LightSourceClass::Array)
 		{
 			if (light->Activated)
@@ -383,14 +386,15 @@ void FakeTacticalClass::_Render_Objects_Near_Shroud(bool arg0, Point2D pos, Rect
 	this->Render_Objects_Near_Shroud(arg0, pos, a5);
 }
 
-DEFINE_FUNCTION_JUMP(CALL , 0x6D4471 , FakeTacticalClass::_Render_Objects_Near_Shroud)
+DEFINE_FUNCTION_JUMP(CALL, 0x6D4471, FakeTacticalClass::_Render_Objects_Near_Shroud)
 
 // Fixes glitches if the map size is smaller than the screen resolution
 // Author: Belonit
 static constexpr float paddingTopInCell = 5;
 static constexpr float paddingBottomInCell = 4.5;
 
-bool FakeTacticalClass::__ClampTacticalPos(Point2D* tacticalPos) {
+bool FakeTacticalClass::__ClampTacticalPos(Point2D* tacticalPos)
+{
 	bool isUpdated = false;
 
 	const auto pMapRect = &MapClass::Instance->MapRect;
@@ -489,10 +493,10 @@ void FakeTacticalClass::SelectFiltered(LTRBStruct* pRect, callback_type fpCheckC
 	if (pRect->Right <= 0 || pRect->Bottom <= 0 || this->SelectableCount <= 0)
 		return;
 
-	for (const auto& selected : Array) {
-
-		if (this->IsInSelectionRect(pRect, selected)) {
-
+	for (const auto& selected : Array)
+	{
+		if (this->IsInSelectionRect(pRect, selected))
+		{
 			const auto pObj = selected.Object;
 			auto pTechno = static_cast<TechnoClass*>(selected.Object);
 			const auto pObjType = pObj->GetType();
@@ -500,8 +504,8 @@ void FakeTacticalClass::SelectFiltered(LTRBStruct* pRect, callback_type fpCheckC
 			{
 				const auto TypeExt = TechnoTypeExtContainer::Instance.Find((TechnoTypeClass*)pObjType);
 
-				if (bPriorityFiltering){
-
+				if (bPriorityFiltering)
+				{
 					//auto const pExt = TechnoExtContainer::Instance.Find(pTechno);
 					// Attached units shouldn't be selected regardless of the setting
 					bool isLowPriorityByTechno = Phobos::Config::PrioritySelectionFiltering && TypeExt->LowSelectionPriority;
@@ -514,7 +518,8 @@ void FakeTacticalClass::SelectFiltered(LTRBStruct* pRect, callback_type fpCheckC
 					Game::UICommands_TypeSelect_7327D0(TypeExt->GetSelectionGroupID());
 				else if (fpCheckCallback)
 					(*fpCheckCallback)(pTechno);
-				else {
+				else
+				{
 					const auto pBldType = type_cast<BuildingTypeClass*>((TechnoTypeClass*)pObjType);
 					const auto pOwner = pTechno->GetOwningHouse();
 
@@ -522,11 +527,11 @@ void FakeTacticalClass::SelectFiltered(LTRBStruct* pRect, callback_type fpCheckC
 						&& pOwner->ControlledByCurrentPlayer()
 						&& pTechno->CanBeSelected()
 						&& (!pBldType || pBldType->IsUndeployable())
-						) {
+						)
+					{
 						Unsorted::MoveFeedback = !pTechno->Select();
 					}
 				}
-
 			}
 		}
 	}
@@ -591,15 +596,19 @@ void FakeTacticalClass::__DrawRadialIndicator(
 	bool concentric,
 	bool round)
 {
-	if (round) {
+	if (round)
+	{
 		radius = std::round(radius);
 	}
 
 	int size;
 
-	if (concentric) {
+	if (concentric)
+	{
 		size = (int)radius;
-	} else {
+	}
+	else
+	{
 		size = int((double)radius + 0.5) / Math::SQRT_TWO * double(Unsorted::CellWidthInPixels); // should be cell size global?
 	}
 
@@ -618,7 +627,8 @@ void FakeTacticalClass::__DrawRadialIndicator(
 	);
 
 	RectangleStruct intersect = draw_area.IntersectWith(DSurface::ViewBounds());
-	if (intersect.Width <= 0 || intersect.Height <= 0) {
+	if (intersect.Width <= 0 || intersect.Height <= 0)
+	{
 		return;
 	}
 
@@ -640,7 +650,8 @@ void FakeTacticalClass::__DrawRadialIndicator(
 	/**
 	 *  Draw the sweeping indicator line.
 	 */
-	if (!draw_indicator) {
+	if (!draw_indicator)
+	{
 		return;
 	}
 
@@ -650,7 +661,6 @@ void FakeTacticalClass::__DrawRadialIndicator(
 	static constexpr double _line_alpha[] = {
 		//0.05, 0.20, 0.40, 1.0                     // original values.
 		0.05, 0.10, 0.20, 0.40, 0.60, 0.80, 1.0     // new values.
-
 	};
 
 	constexpr double ANGLE_STEP_MULT = 0.05;
@@ -659,7 +669,8 @@ void FakeTacticalClass::__DrawRadialIndicator(
 	double sizeD = static_cast<double>(size);
 	double halfsizeD = static_cast<double>(halfSize);
 
-	for (size_t i = 0; i < ARRAY_SIZE(_line_alpha); ++i) {
+	for (size_t i = 0; i < ARRAY_SIZE(_line_alpha); ++i)
+	{
 		// Calculate animated angle based on current game frame
 		int frameValue = Unsorted::CurrentFrame + i;
 		double angle = static_cast<double>(frameValue) * ANGLE_STEP_MULT;
@@ -673,17 +684,21 @@ void FakeTacticalClass::__DrawRadialIndicator(
 
 		// Special case: near 90 degrees (avoid tan singularity)
 		double diff90 = Math::abs(angle - Math::DEG90_AS_RAD);
-		if (diff90 < ANGLE_EPSILON) {
+		if (diff90 < ANGLE_EPSILON)
+		{
 			// Straight down (in screen coords)
 			endX = center_pixel.X;
 			endY = center_pixel.Y + static_cast<int>(-halfsizeD);
 		}
 		// Special case: near 270 degrees
-		else if (Math::abs(angle - Math::THREE_PI_BY_TWO) < ANGLE_EPSILON) {
+		else if (Math::abs(angle - Math::THREE_PI_BY_TWO) < ANGLE_EPSILON)
+		{
 			// Straight up
 			endX = center_pixel.X;
 			endY = center_pixel.Y + static_cast<int>(halfsizeD);
-		} else {
+		}
+		else
+		{
 			// General case: calculate point on ellipse using tan
 			double tanAngle = Math::tan(angle);
 			double tanSq = tanAngle * tanAngle;
@@ -707,20 +722,20 @@ void FakeTacticalClass::__DrawRadialIndicator(
 			double xCoord = xAbs;
 			double yCoord = yAbs;
 
-
 			// Left half of ellipse (90° < angle < 270°): negate X
-			if (angle > Math::DEG90_AS_RAD && angle < Math::THREE_PI_BY_TWO) {
+			if (angle > Math::DEG90_AS_RAD && angle < Math::THREE_PI_BY_TWO)
+			{
 				xCoord = -xCoord;
 			}
 
 			// Bottom half of ellipse (angle >= 180°): negate Y
-			if (angle >= Math::GAME_PI) {
+			if (angle >= Math::GAME_PI)
+			{
 				yCoord = -yCoord;
 			}
 
 			endX = center_pixel.X + static_cast<int>(xCoord);
 			endY = center_pixel.Y + static_cast<int>(yCoord);
-
 		}
 
 		// Convert to viewport-relative coordinates for line drawing
@@ -747,7 +762,6 @@ void FakeTacticalClass::__DrawRadialIndicator(
 										false,
 										false,
 										thickness);
-
 	}
 }
 
@@ -791,8 +805,8 @@ void FakeTacticalClass::__RenderOverlapForeignMap()
 
 #include <WWKeyboardClass.h>
 
-void DrawTransRect(BitFont* pBitInst, int* width , int index ) {
-
+void DrawTransRect(BitFont* pBitInst, int* width, int index)
+{
 	width += 6;
 	const int lineSpace = pBitInst->field_1C + 2;
 	Point2D location { DSurface::ViewBounds->Width, (DSurface::ViewBounds->Height - ((index + 1) * lineSpace)) };
@@ -839,7 +853,8 @@ void __fastcall FakeTacticalClass::__DrawTimersA(int value, ColorScheme* color, 
 	if (!interval && _arg && _arg1)
 	{
 		const auto now = Game::AudioGetTime();
-		if (static_cast<uint64_t>(_arg->QuadPart) < static_cast<uint64_t>(now.QuadPart)) {
+		if (static_cast<uint64_t>(_arg->QuadPart) < static_cast<uint64_t>(now.QuadPart))
+		{
 			_arg->QuadPart = now.QuadPart + 1000;
 			*_arg1 = !*_arg1;
 		}
@@ -862,7 +877,7 @@ void __fastcall FakeTacticalClass::__DrawTimersA(int value, ColorScheme* color, 
 	ColorStruct out = color->BaseColor;
 
 	TextDrawing::Simple_Text_Print_Wide(
-		&_temp, 
+		&_temp,
 		labe_buffer.data(),
 		pComposite,
 		&rect,
@@ -922,7 +937,8 @@ void __fastcall FakeTacticalClass::__DrawTimersB(int value, ColorScheme* color, 
 	if (!interval && _arg && _arg1)
 	{
 		const auto now = Game::AudioGetTime();
-		if (static_cast<uint64_t>(_arg->QuadPart) < static_cast<uint64_t>(now.QuadPart)) {
+		if (static_cast<uint64_t>(_arg->QuadPart) < static_cast<uint64_t>(now.QuadPart))
+		{
 			_arg->QuadPart = now.QuadPart + 1000;
 			*_arg1 = !*_arg1;
 		}
@@ -1007,7 +1023,8 @@ void __fastcall FakeTacticalClass::__DrawTimersC(int value, ColorScheme* color, 
 	if (!interval && _arg && _arg1)
 	{
 		const auto now = Game::AudioGetTime();
-		if (static_cast<uint64_t>(_arg->QuadPart) < static_cast<uint64_t>(now.QuadPart)) {
+		if (static_cast<uint64_t>(_arg->QuadPart) < static_cast<uint64_t>(now.QuadPart))
+		{
 			_arg->QuadPart = now.QuadPart + 1000;
 			*_arg1 = !*_arg1;
 		}
@@ -1163,7 +1180,8 @@ DEFINE_FUNCTION_JUMP(LJMP, 0x6D4B50, FakeTacticalClass::__DrawTimers);
 
 void FakeTacticalClass::__DrawTimersSW(SuperClass* pSuper, int value, int interval)
 {
-	for (auto& pBanner : BannerManagerClass::Instance.Array) {
+	for (auto& pBanner : BannerManagerClass::Instance.Array)
+	{
 		pBanner.Render();
 	}
 
@@ -1173,25 +1191,28 @@ void FakeTacticalClass::__DrawTimersSW(SuperClass* pSuper, int value, int interv
 
 	static fmt::basic_memory_buffer<wchar_t> buffer;
 	buffer.clear();
-	if (pTypeExt->ChargeTimer) {
-		 
-		const auto percent = SWTypeExtData::GetSuperChargePercent(pSuper , pTypeExt->ChargeTimer_Backwards);
+	if (pTypeExt->ChargeTimer)
+	{
+		const auto percent = SWTypeExtData::GetSuperChargePercent(pSuper, pTypeExt->ChargeTimer_Backwards);
 
 		fmt::format_to(std::back_inserter(buffer), L"{:.2f} %", percent);
-
-	} else {
+	}
+	else
+	{
 		const int hour = interval / 60 / 60;
 		const int minute = interval / 60 % 60;
 		const int second = interval % 60;
 
-		if (hour) {
+		if (hour)
+		{
 			fmt::format_to(std::back_inserter(buffer), L"{:02}:{:02}:{:02}", hour, minute, second);
-		} else {
+		}
+		else
+		{
 			fmt::format_to(std::back_inserter(buffer), L"{:02}:{:02}", minute, second);
 		}
 	}
-    buffer.push_back(L'\0');
-
+	buffer.push_back(L'\0');
 
 	static fmt::basic_memory_buffer<wchar_t> labe_buffer;
 	labe_buffer.clear();
@@ -1206,7 +1227,8 @@ void FakeTacticalClass::__DrawTimersSW(SuperClass* pSuper, int value, int interv
 	if (!interval)
 	{
 		const auto now = Game::AudioGetTime();
-		if (static_cast<uint64_t>(pSuper->BlinkTimer.QuadPart) < static_cast<uint64_t>(now.QuadPart)) {
+		if (static_cast<uint64_t>(pSuper->BlinkTimer.QuadPart) < static_cast<uint64_t>(now.QuadPart))
+		{
 			pSuper->BlinkTimer.QuadPart = now.QuadPart + 1000;
 			pSuper->BlinkState = !pSuper->BlinkState;
 		}
@@ -1269,16 +1291,19 @@ bool __fastcall FakeTacticalClass::TypeSelectFilter(TechnoClass* pTechno, Dynami
 	if (std::ranges::none_of(names, [id](const char* pID) { return IS_SAME_STR_(pID, id); }))
 		return false;
 
-	if (pTechnoType->Gunner && !TacticalExtData::IFVGroups.empty() && (size_t)pTechno->CurrentWeaponNumber >= pTypeExt->WeaponGroupAs.size()) {
+	if (pTechnoType->Gunner && !TacticalExtData::IFVGroups.empty() && (size_t)pTechno->CurrentWeaponNumber >= pTypeExt->WeaponGroupAs.size())
+	{
 		auto gunnerID = &pTypeExt->WeaponGroupAs[pTechno->CurrentWeaponNumber];
 
-		if (gunnerID->empty() || !GeneralUtils::IsValidString(gunnerID->c_str())) {
+		if (gunnerID->empty() || !GeneralUtils::IsValidString(gunnerID->c_str()))
+		{
 			sprintf_s(gunnerID->data(), 0x20, "%d", pTechno->CurrentWeaponNumber + 1);
 		}
 
-		if (std::ranges::none_of(TacticalExtData::IFVGroups, [gunnerID](const char* pID) {
-			return IS_SAME_STR_(pID, gunnerID->c_str());
-		}))
+		if (std::ranges::none_of(TacticalExtData::IFVGroups, [gunnerID](const char* pID)
+			{
+				return IS_SAME_STR_(pID, gunnerID->c_str());
+			}))
 			return false;
 	}
 
@@ -1322,7 +1347,6 @@ void TacticalExtData::Screen_Flash_AI()
 		_is_fading_out = false;
 		_fading_in_timer = FADE_IN_RATE;
 		IsPendingScreenFlash = false;
-
 	}
 
 	/**
@@ -1336,7 +1360,7 @@ void TacticalExtData::Screen_Flash_AI()
 			_is_fading_out = false;
 		}
 
-		unsigned adjust = (_fading_out_timer.GetTimeLeft())*ScreenFlashTrans / FADE_OUT_RATE;
+		unsigned adjust = (_fading_out_timer.GetTimeLeft()) * ScreenFlashTrans / FADE_OUT_RATE;
 		DSurface::Composite->Fill_Rect_Trans(&TacticalClass::view_bound(), &ScreenFlashColor, adjust);
 	}
 
@@ -1429,8 +1453,8 @@ ASMJIT_PATCH(0x6DBE18, TacticalClass_Save_Suffix, 0x5)
 	PhobosByteStream saver(sizeof(TacticalExtData));
 	PhobosStreamWriter writer(saver);
 
- writer.Save(TacticalExtData::Canary);
- writer.Save(buffer);
+	writer.Save(TacticalExtData::Canary);
+	writer.Save(buffer);
 
 	buffer->SaveToStream(writer);
 	saver.WriteToStream(TacticalExtData::g_pStm);

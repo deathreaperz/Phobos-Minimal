@@ -92,7 +92,7 @@ public:
 	{ }
 
 	COMPILETIMEEVAL RNGCallSyncLogEvent(int type, bool isCrititical, unsigned int idx1, unsigned int idx2, unsigned int Caller, unsigned int Frame, int Min, int Max)
-		: SyncLogEvent { true , Caller, Frame } ,
+		: SyncLogEvent { true , Caller, Frame },
 		Type { type },
 		IsCritical { isCrititical },
 		Index1 { idx1 },
@@ -100,8 +100,7 @@ public:
 		Min { Min },
 		Max { Max }
 
-	{
-	}
+	{ }
 };
 
 struct FacingChangeSyncLogEvent : SyncLogEvent
@@ -114,8 +113,7 @@ public:
 	COMPILETIMEEVAL FacingChangeSyncLogEvent(unsigned short facing, unsigned int Caller, unsigned int Frame)
 		: SyncLogEvent { true , Caller, Frame },
 		Facing { facing }
-	{
-	}
+	{ }
 };
 
 struct TargetChangeSyncLogEvent : SyncLogEvent
@@ -140,8 +138,7 @@ public:
 		ID { id },
 		TargetType { targetType },
 		TargetID { targetID }
-	{
-	}
+	{ }
 };
 
 struct MissionOverrideSyncLogEvent : SyncLogEvent
@@ -163,8 +160,7 @@ public:
 		Type { type },
 		ID { id },
 		Mission { mission }
-	{
-	}
+	{ }
 };
 
 struct AnimCreationSyncLogEvent : SyncLogEvent
@@ -179,8 +175,7 @@ public:
 
 	COMPILETIMEEVAL AnimCreationSyncLogEvent(const CoordStruct& coords, unsigned int Caller, unsigned int Frame)
 		: SyncLogEvent { true , Caller, Frame }, Coords { coords }
-	{
-	}
+	{ }
 };
 
 class TeamClass;

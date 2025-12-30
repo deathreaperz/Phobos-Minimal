@@ -39,7 +39,7 @@ void EBoltFake::_SetOwner(TechnoClass* pTechno, int weaponIndex)
 
 void EBoltFake::_RemoveFromOwner()
 {
-	if(!Phobos::Otamaa::ExeTerminated)
+	if (!Phobos::Otamaa::ExeTerminated)
 		TechnoExtContainer::Instance.Find(this->Owner)->ElectricBolts.remove(this);
 
 	this->Owner = nullptr;
@@ -88,7 +88,8 @@ ASMJIT_PATCH(0x4C285D, EBolt_DrawAll_BurstIndex, 0x5)
 			vtable == InfantryClass::vtable
 		);
 
-	if(isAllowed){
+	if (isAllowed)
+	{
 		int burstIndex = pTechno->CurrentBurstIndex;
 		pTechno->CurrentBurstIndex = EboltExtData::Container[pThis].BurstIndex;
 		CoordStruct fireCoords {};
@@ -100,7 +101,6 @@ ASMJIT_PATCH(0x4C285D, EBolt_DrawAll_BurstIndex, 0x5)
 
 	pThis->Owner = nullptr;
 	return 0x4C28B6;
-
 }
 
 ASMJIT_PATCH(0x4C299F, EBolt_DrawAll_EndOfLife, 0x6)
@@ -124,7 +124,8 @@ ASMJIT_PATCH(0x4C2A02, EBolt_DestroyVector, 0x6)
 	return SkipGameCode;
 }
 
-namespace EboltTemp {
+namespace EboltTemp
+{
 	EboltExtData* Data;
 }
 
@@ -149,7 +150,8 @@ ASMJIT_PATCH(0x4C24E4, Ebolt_DrawFist_Disable, 0x8)
 {
 	//GET_STACK(EBolt* const, pBolt, 0x40);
 
-	if (EboltTemp::Data && EboltTemp::Data->Disable[0]) {
+	if (EboltTemp::Data && EboltTemp::Data->Disable[0])
+	{
 		return 0x4C2515;
 	}
 
@@ -163,17 +165,19 @@ ASMJIT_PATCH(0x4C20BC, EBolt_DrawArcs, 0x5)
 	//GET_STACK(EBolt*, pBolt, 0x40);
 	GET_STACK(int, plotIndex, STACK_OFFSET(0x408, -0x3E0))
 
-	if(EboltTemp::Data){
-		return plotIndex < EboltTemp::Data->Arcs
-		? DoLoop : Break;
-	}
+		if (EboltTemp::Data)
+		{
+			return plotIndex < EboltTemp::Data->Arcs
+				? DoLoop : Break;
+		}
 
 	return 0x0;
 }
 
 ASMJIT_PATCH(0x4C25FD, Ebolt_DrawSecond_Disable, 0xA)
 {
-	if (EboltTemp::Data && EboltTemp::Data->Disable[1]) {
+	if (EboltTemp::Data && EboltTemp::Data->Disable[1])
+	{
 		return 0x4C262A;
 	}
 
@@ -182,7 +186,8 @@ ASMJIT_PATCH(0x4C25FD, Ebolt_DrawSecond_Disable, 0xA)
 
 ASMJIT_PATCH(0x4C26EE, Ebolt_DrawThird_Disable, 0x6)
 {
-	if (EboltTemp::Data && EboltTemp::Data->Disable[2]) {
+	if (EboltTemp::Data && EboltTemp::Data->Disable[2])
+	{
 		return 0x4C2710;
 	}
 
@@ -217,8 +222,10 @@ ASMJIT_PATCH(0x4C2AFF, EBolt_Fire_Particles, 5)
 {
 	GET(EBolt*, pThis, ESI);
 
-	if (auto pData = EboltExtData::Container.tryfind(pThis)) {
-		if (!pData->ParticleSysEnabled) {
+	if (auto pData = EboltExtData::Container.tryfind(pThis))
+	{
+		if (!pData->ParticleSysEnabled)
+		{
 			return DWORD(_EBolt_Fire_Particles_RET);
 		}
 

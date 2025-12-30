@@ -29,7 +29,6 @@
 //  	enum { return_value = 0x6DD910, continue_func = 0x0 };
 
 // 	if(((int)pThis->ActionKind == 14 || (int)pThis->ActionKind == 32) ){
-
 // 		if (lastAction == (int)pThis->ActionKind)
 // 			++StaticVars::TriggerCounts[pThis];
 // 		else
@@ -42,8 +41,6 @@
 // 	}
 
 // 	lastAction = (int)pThis->ActionKind;
-
-
 
 //  	//Debug::LogInfo("TAction[%x] triggering vanilla [%d]" , pThis , (int)pThis->ActionKind);
 
@@ -97,13 +94,11 @@ ASMJIT_PATCH(0x6DE189, TActionClass_MakeEnemy, 0x6)
 
 	// Maybe there's a better way, but I want to make it simple.
 	if (SessionClass::Instance->IsCampaign() || (!pHouse->Type->MultiplayPassive && !pTargetHouse->Type->MultiplayPassive)) {
-
 		if (pThis->Param3 != 0)
 			pHouse->UpdateAngerNodes(pThis->Param3, pTargetHouse);
 
 		if (pThis->Param3 < 0 && pHouse->AngerNodes.Count > 0) {
 			for (auto& pAngerNode : pHouse->AngerNodes) {
-
 				if (pAngerNode.House != pTargetHouse)
 					continue;
 

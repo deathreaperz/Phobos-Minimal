@@ -46,30 +46,30 @@
 #   error "Unsupported platform detected"
 #endif
 
-/* ============================================================================================== */
-/* Enums and types                                                                                */
-/* ============================================================================================== */
+ /* ============================================================================================== */
+ /* Enums and types                                                                                */
+ /* ============================================================================================== */
 
-/**
- * Defines the `ZyanMemoryPageProtection` enum.
- */
+ /**
+  * Defines the `ZyanMemoryPageProtection` enum.
+  */
 typedef enum ZyanMemoryPageProtection_
 {
 #if   defined(ZYAN_WINDOWS)
 
-    ZYAN_PAGE_READONLY          = PAGE_READONLY,
-    ZYAN_PAGE_READWRITE         = PAGE_READWRITE,
-    ZYAN_PAGE_EXECUTE           = PAGE_EXECUTE,
-    ZYAN_PAGE_EXECUTE_READ      = PAGE_EXECUTE_READ,
-    ZYAN_PAGE_EXECUTE_READWRITE = PAGE_EXECUTE_READWRITE
+	ZYAN_PAGE_READONLY = PAGE_READONLY,
+	ZYAN_PAGE_READWRITE = PAGE_READWRITE,
+	ZYAN_PAGE_EXECUTE = PAGE_EXECUTE,
+	ZYAN_PAGE_EXECUTE_READ = PAGE_EXECUTE_READ,
+	ZYAN_PAGE_EXECUTE_READWRITE = PAGE_EXECUTE_READWRITE
 
 #elif defined(ZYAN_POSIX)
 
-    ZYAN_PAGE_READONLY          = PROT_READ,
-    ZYAN_PAGE_READWRITE         = PROT_READ | PROT_WRITE,
-    ZYAN_PAGE_EXECUTE           = PROT_EXEC,
-    ZYAN_PAGE_EXECUTE_READ      = PROT_EXEC | PROT_READ,
-    ZYAN_PAGE_EXECUTE_READWRITE = PROT_EXEC | PROT_READ | PROT_WRITE
+	ZYAN_PAGE_READONLY = PROT_READ,
+	ZYAN_PAGE_READWRITE = PROT_READ | PROT_WRITE,
+	ZYAN_PAGE_EXECUTE = PROT_EXEC,
+	ZYAN_PAGE_EXECUTE_READ = PROT_EXEC | PROT_READ,
+	ZYAN_PAGE_EXECUTE_READWRITE = PROT_EXEC | PROT_READ | PROT_WRITE
 
 #endif
 } ZyanMemoryPageProtection;
@@ -116,7 +116,7 @@ ZYCORE_EXPORT ZyanU32 ZyanMemoryGetSystemAllocationGranularity(void);
  * @return  A zyan status code.
  */
 ZYCORE_EXPORT ZyanStatus ZyanMemoryVirtualProtect(void* address, ZyanUSize size,
-    ZyanMemoryPageProtection protection);
+	ZyanMemoryPageProtection protection);
 
 /**
  * Releases one or more memory pages starting at the given address.

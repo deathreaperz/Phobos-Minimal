@@ -14,7 +14,6 @@ static COMPILETIMEEVAL std::array<const char* const, (size_t)ParabolaFireMode::c
 	"SpeedAndAngle" ,
 };
 
-
 namespace detail
 {
 	template <>
@@ -31,7 +30,6 @@ namespace detail
 				}
 			}
 
-
 			Debug::INIParseFailed(pSection, pKey, parser.value(), "Parabola fire mode is invalid");
 		}
 
@@ -43,7 +41,7 @@ bool ParabolaTrajectoryType::Load(PhobosStreamReader& Stm, bool RegisterForChang
 {
 	return this->PhobosTrajectoryType::Load(Stm, false)
 		&&
-	Stm
+		Stm
 		.Process(this->TargetSnapDistance, false)
 		.Process(this->OpenFireMode, false)
 		.Process(this->ThrowHeight, false)
@@ -64,14 +62,13 @@ bool ParabolaTrajectoryType::Load(PhobosStreamReader& Stm, bool RegisterForChang
 		.Process(this->UseDisperseBurst, false)
 		.Process(this->AxisOfRotation, false)
 		;
-
 }
 
 bool ParabolaTrajectoryType::Save(PhobosStreamWriter& Stm) const
 {
 	return this->PhobosTrajectoryType::Save(Stm)
-	&&
-	Stm
+		&&
+		Stm
 		.Process(this->TargetSnapDistance)
 		.Process(this->OpenFireMode)
 		.Process(this->ThrowHeight)
@@ -92,12 +89,12 @@ bool ParabolaTrajectoryType::Save(PhobosStreamWriter& Stm) const
 		.Process(this->UseDisperseBurst)
 		.Process(this->AxisOfRotation)
 		;
-
 }
 
 bool ParabolaTrajectoryType::Read(CCINIClass* const pINI, const char* pSection)
 {
-	if(this->PhobosTrajectoryType::Read(pINI , pSection)){
+	if (this->PhobosTrajectoryType::Read(pINI, pSection))
+	{
 		INI_EX exINI(pINI);
 		this->DetonationDistance.Read(exINI, pSection, "Trajectory.Parabola.DetonationDistance");
 
@@ -136,8 +133,8 @@ bool ParabolaTrajectoryType::Read(CCINIClass* const pINI, const char* pSection)
 bool ParabolaTrajectory::Load(PhobosStreamReader& Stm, bool RegisterForChange)
 {
 	return this->PhobosTrajectory::Load(Stm, false)
-	&&
-	Stm
+		&&
+		Stm
 		.Process(this->BounceTimes)
 		.Process(this->OffsetCoord)
 		.Process(this->ShouldDetonate)
@@ -154,8 +151,8 @@ bool ParabolaTrajectory::Load(PhobosStreamReader& Stm, bool RegisterForChange)
 bool ParabolaTrajectory::Save(PhobosStreamWriter& Stm) const
 {
 	return this->PhobosTrajectory::Save(Stm)
-	&&
-	Stm
+		&&
+		Stm
 		.Process(this->BounceTimes)
 		.Process(this->OffsetCoord)
 		.Process(this->ShouldDetonate)
@@ -681,7 +678,7 @@ void ParabolaTrajectory::CalculateBulletVelocityRightNow(CoordStruct* pSourceCoo
 
 		// Step 3: Calculate the total time it takes for the projectile to meet the target using the heights of the ascending and descending phases
 		const double meetTime = Math::sqrt(2 * (maxHeight - sourceHeight) / gravity)
-						+ Math::sqrt(2 * (maxHeight - targetHeight) / gravity);
+			+ Math::sqrt(2 * (maxHeight - targetHeight) / gravity);
 
 		// Step 4: Calculate the horizontal component of the projectile velocity
 		pBullet->Velocity.X = distanceCoords.X / meetTime;
@@ -732,7 +729,7 @@ void ParabolaTrajectory::CalculateBulletVelocityRightNow(CoordStruct* pSourceCoo
 		// Step 1: Determine the maximum height that the projectile should reach
 		const int sourceHeight = pSourceCoords->Z, targetHeight = pBullet->TargetCoords.Z;
 		const int maxHeight = distanceCoords.Z > 0 ?
-				pType->ThrowHeight + targetHeight : pType->ThrowHeight + sourceHeight;
+			pType->ThrowHeight + targetHeight : pType->ThrowHeight + sourceHeight;
 
 		// Step 2: Calculate the vertical component of the projectile velocity
 		pBullet->Velocity.Z = Math::sqrt(2 * gravity * (maxHeight - sourceHeight));
@@ -1035,12 +1032,12 @@ VelocityClass ParabolaTrajectory::GetGroundNormalVector(CellClass* pCell)
 	{
 		Vector2D<double> factor { 0.0, 0.0 };
 
-		COMPILETIMEEVAL double _1_val = Unsorted::LevelHeight / std::bit_cast<double>(0x4071451937B0E741ull);//Math::sqrt_base_1) 
-		COMPILETIMEEVAL double _2_val = Unsorted::LeptonsPerCell / std::bit_cast<double>(0x4071451937B0E741ull); //Math::sqrt_base_1) 
-		COMPILETIMEEVAL double _3_val = Unsorted::LevelHeight / std::bit_cast<double>(0x40786C60A1BB02BCull); //Math::sqrt2 * _base_1) 
-		COMPILETIMEEVAL double _4_val = Unsorted::LeptonsPerCell / std::bit_cast<double>(0x40786C60A1BB02BCull); //Math::sqrt2 * _base_1) 
-		COMPILETIMEEVAL double _5_val = Unsorted::CellHeight / std::bit_cast<double>(0x407D279E51208C8Aull); //Math::sqrt2 * _base_2) 
-		COMPILETIMEEVAL double _6_val = Unsorted::LeptonsPerCell / std::bit_cast<double>(0x407D279E51208C8Aull); //Math::sqrt2 * _base_2) 
+		COMPILETIMEEVAL double _1_val = Unsorted::LevelHeight / std::bit_cast<double>(0x4071451937B0E741ull);//Math::sqrt_base_1)
+		COMPILETIMEEVAL double _2_val = Unsorted::LeptonsPerCell / std::bit_cast<double>(0x4071451937B0E741ull); //Math::sqrt_base_1)
+		COMPILETIMEEVAL double _3_val = Unsorted::LevelHeight / std::bit_cast<double>(0x40786C60A1BB02BCull); //Math::sqrt2 * _base_1)
+		COMPILETIMEEVAL double _4_val = Unsorted::LeptonsPerCell / std::bit_cast<double>(0x40786C60A1BB02BCull); //Math::sqrt2 * _base_1)
+		COMPILETIMEEVAL double _5_val = Unsorted::CellHeight / std::bit_cast<double>(0x407D279E51208C8Aull); //Math::sqrt2 * _base_2)
+		COMPILETIMEEVAL double _6_val = Unsorted::LeptonsPerCell / std::bit_cast<double>(0x407D279E51208C8Aull); //Math::sqrt2 * _base_2)
 
 		if (index <= 4)
 			factor = Vector2D<double> { _1_val, _2_val };

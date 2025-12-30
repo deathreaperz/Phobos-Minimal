@@ -13,7 +13,6 @@ enum class ParabolaFireMode : size_t
 	count
 };
 
-
 class ParabolaTrajectoryType final : public PhobosTrajectoryType
 {
 public:
@@ -64,8 +63,7 @@ public:
 	ParabolaTrajectory() : PhobosTrajectory { TrajectoryFlag::Parabola } { }
 	ParabolaTrajectory(BulletClass* pBullet, PhobosTrajectoryType* pType) :
 		PhobosTrajectory { TrajectoryFlag::Parabola, pBullet ,pType }
-	{
-	}
+	{ }
 
 	virtual ~ParabolaTrajectory() = default;
 
@@ -105,5 +103,4 @@ private:
 	bool BulletDetonatePreCheck();
 	bool BulletDetonateLastCheck(double gravity);
 	void BulletDetonateEffectuate(double velocityMult);
-
 };

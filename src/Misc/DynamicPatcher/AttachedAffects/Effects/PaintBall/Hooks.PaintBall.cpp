@@ -15,7 +15,7 @@ ASMJIT_PATCH(0x43FA19, BuildingClass_Mark_TintIntensity, 0x7)
 	GET(BuildingClass*, pThis, EDI);
 	GET(int, intensity, ESI);
 
-	TechnoExtData::ApplyCustomTint(pThis , nullptr , &intensity);
+	TechnoExtData::ApplyCustomTint(pThis, nullptr, &intensity);
 	R->ESI(intensity);
 
 	return 0;
@@ -156,14 +156,15 @@ ASMJIT_PATCH(0x423420, AnimClass_Draw_ParentBuildingCheck, 0x6)
 	{
 		bool UseNormalLight = pThis->Type->UseNormalLight;
 
-		if(auto pBld = cast_to<BuildingClass*>(pTechno)) {
+		if (auto pBld = cast_to<BuildingClass*>(pTechno))
+		{
 			if ((pBld->CurrentMission == Mission::Construction)
 				&& pBld->BState == BStateType::Construction && pBld->Type->Buildup)
-			if (BuildingTypeExtContainer::Instance.Find(pBld->Type)->BuildUp_UseNormalLIght.Get())
-				UseNormalLight = true;
+				if (BuildingTypeExtContainer::Instance.Find(pBld->Type)->BuildUp_UseNormalLIght.Get())
+					UseNormalLight = true;
 		}
 
-		TechnoExtData::ApplyTintColor(pTechno,true , true , allowBerserkTint);
+		TechnoExtData::ApplyTintColor(pTechno, true, true, allowBerserkTint);
 		TechnoExtData::ApplyCustomTint(pTechno, &color, !UseNormalLight ? &intensity : nullptr);
 	}
 
@@ -182,7 +183,7 @@ ASMJIT_PATCH(0x51946D, InfantryClass_Draw_TintIntensity, 0x6)
 	if (TechnoExtContainer::Instance.Find(pThis)->AirstrikeTargetingMe)
 		intensity = pThis->GetAirstrikeTintIntensity(intensity);
 
-		TechnoExtData::ApplyCustomTint(pThis, nullptr, &intensity);
+	TechnoExtData::ApplyCustomTint(pThis, nullptr, &intensity);
 	R->ESI(intensity);
 
 	return 0;
@@ -314,7 +315,6 @@ ASMJIT_PATCH(0x43DD8E, BuildingClass_Draw2_TintColor, 0xA)
 	return 0;
 }
 
-
 ASMJIT_PATCH(0x519082, InfantryClass_Draw_TintColor, 0x7)
 {
 	GET(InfantryClass*, pThis, EBP);
@@ -325,7 +325,6 @@ ASMJIT_PATCH(0x519082, InfantryClass_Draw_TintColor, 0x7)
 
 	return 0;
 }
-
 
 ASMJIT_PATCH(0x73BFBF, UnitClass_DrawAsVoxel_ForceShieldICColor, 0x6)
 {
@@ -368,7 +367,6 @@ ASMJIT_PATCH(0x42350C, AnimClass_Draw_ForceShieldICColor, 0x7)
 
 	return SkipGameCode;
 }
-
 
 ASMJIT_PATCH(0x4235D3, AnimClass_Draw_TintColor, 0x6)
 {

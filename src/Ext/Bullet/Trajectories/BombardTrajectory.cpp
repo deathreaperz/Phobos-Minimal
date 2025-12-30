@@ -80,14 +80,13 @@ void BombardTrajectory::CreateRandomAnim(CoordStruct coords, TechnoClass* pTechn
 
 	if (invoker)
 		AnimExtContainer::Instance.Find(pAnim)->Invoker = pTechno;
-
 }
 
 bool BombardTrajectory::Load(PhobosStreamReader& Stm, bool RegisterForChange)
 {
 	return PhobosTrajectory::Load(Stm, RegisterForChange) &&
 		this->Serialize(Stm);
-		;
+	;
 }
 
 bool BombardTrajectory::Save(PhobosStreamWriter& Stm) const
@@ -597,7 +596,8 @@ void BombardTrajectory::RefreshBulletLineTrail()
 	{
 		pBullet->LineTrailer = GameCreate<LineTrail>();
 
-		if (RulesClass::Instance->LineTrailColorOverride != ColorStruct::Empty) {
+		if (RulesClass::Instance->LineTrailColorOverride != ColorStruct::Empty)
+		{
 			pBullet->LineTrailer->Color = RulesClass::Instance->LineTrailColorOverride;
 		}
 		else

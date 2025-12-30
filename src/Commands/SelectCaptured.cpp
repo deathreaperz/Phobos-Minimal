@@ -34,7 +34,6 @@ const wchar_t* SelectCapturedCommandClass::GetUIDescription() const
 
 void SelectCapturedCommandClass::Execute(WWKey eInput) const
 {
-
 	MapClass::Instance->SetTogglePowerMode(0);
 	MapClass::Instance->SetWaypointMode(0, false);
 	MapClass::Instance->SetRepairMode(0);
@@ -72,7 +71,8 @@ void SelectCapturedCommandClass::Execute(WWKey eInput) const
 		StringTable::FetchString("MSG:NothingSelected")
 		;
 
-	if (capturedPresent) {
+	if (capturedPresent)
+	{
 		MapClass::Instance->MarkNeedsRedraw(1);
 	}
 

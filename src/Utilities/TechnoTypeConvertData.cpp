@@ -4,7 +4,7 @@
 #include <Utilities/Debug.h>
 #include <AnimClass.h>
 
-void TechnoTypeConvertData::ApplyConvert(const std::vector<TechnoTypeConvertData>& nPairs , HouseClass * pHouse, TechnoClass * pTarget, AnimTypeClass* SucceededAnim)
+void TechnoTypeConvertData::ApplyConvert(const std::vector<TechnoTypeConvertData>& nPairs, HouseClass* pHouse, TechnoClass* pTarget, AnimTypeClass* SucceededAnim)
 {
 	if (nPairs.empty())
 		return;
@@ -21,8 +21,8 @@ void TechnoTypeConvertData::ApplyConvert(const std::vector<TechnoTypeConvertData
 
 		if (!pFrom.empty())
 		{
-			for (auto* pFrm : pFrom) {
-
+			for (auto* pFrm : pFrom)
+			{
 				if (pFrm != pCurType)
 					continue;
 
@@ -35,17 +35,20 @@ void TechnoTypeConvertData::ApplyConvert(const std::vector<TechnoTypeConvertData
 						auto pDrawer = pTarget;
 						if (pTarget->InLimbo && pTarget->Transporter)
 							pDrawer = pTarget->Transporter;
-						else if(pTarget->InLimbo && !pTarget->Transporter)
+						else if (pTarget->InLimbo && !pTarget->Transporter)
 							pDrawer = nullptr;
 
-						if(pDrawer){
+						if (pDrawer)
+						{
 							auto pAnim = GameCreate<AnimClass>(SucceededAnim, pDrawer->Location);
 							pAnim->SetOwnerObject(pDrawer);
 						}
 					}
 				}
 			}
-		} else {
+		}
+		else
+		{
 			const auto bConvertStatus = TechnoExt_ExtData::ConvertToType(pTarget, pTo);
 
 			if (bConvertStatus)
@@ -105,7 +108,8 @@ void TechnoTypeConvertData::Parse(bool useDevelopversion, std::vector<TechnoType
 
 					for (auto pCur = strtok_s(nFirst.data(), Phobos::readDelims, &contexthere);
 							pCur;
-							pCur = strtok_s(nullptr, Phobos::readDelims, &contexthere)) {
+							pCur = strtok_s(nullptr, Phobos::readDelims, &contexthere))
+					{
 						TechnoTypeClass* buffer = nullptr;
 
 						if (Parser<TechnoTypeClass*>::Parse(pCur, &buffer) || GameStrings::IsBlank(pCur))

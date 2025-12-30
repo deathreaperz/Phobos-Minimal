@@ -1,6 +1,5 @@
 #include "Body.h"
 
-
 // =============================
 // load / save
 
@@ -179,18 +178,20 @@ static Point2D DiscLaserCoords[16] = {
 };
 
 void FakeDiskLaserClass::__AI()
-{ 
+{
 	int const state = this->DrawRateCounter;
 
 	// State < 0: Destroy
-	if (state < 0) {
+	if (state < 0)
+	{
 		this->DrawRateCounter = -1;
 		AbstractClass::Array2->erase(this);
 		return;
 	}
 
 	// State > 0: Countdown
-	if (state > 0) {
+	if (state > 0)
+	{
 		this->DrawRateCounter = state - 1;
 		return;
 	}
@@ -206,7 +207,8 @@ void FakeDiskLaserClass::__AI()
 	CoordStruct firerCoords = pFirer->GetCoords();
 
 	// If firer is in air, use target's Z
-	if (pFirer->IsInAir()) {
+	if (pFirer->IsInAir())
+	{
 		firerCoords.Z = pTarget->GetCoords().Z;
 	}
 
@@ -221,7 +223,8 @@ void FakeDiskLaserClass::__AI()
 	int range = static_cast<int>(delta.Length());
 
 	// Adjust range for buildings
-	if (auto pBuilding = cast_to<BuildingClass*, false>(pTarget)) {
+	if (auto pBuilding = cast_to<BuildingClass*, false>(pTarget))
+	{
 		int const height = pBuilding->Type->GetFoundationHeight(false);
 		int const width = pBuilding->Type->GetFoundationWidth();
 		range -= (height + width) * 64;
@@ -231,14 +234,16 @@ void FakeDiskLaserClass::__AI()
 	}
 
 	// Out of range - destroy
-	if (range > pWeapon->Range) {
+	if (range > pWeapon->Range)
+	{
 		this->DrawRateCounter = -1;
 		AbstractClass::Array2->erase(this);
 		return;
 	}
 
 	// Firer crashing - destroy
-	if (pFirer->IsCrashing) {
+	if (pFirer->IsCrashing)
+	{
 		this->DrawRateCounter = -1;
 		AbstractClass::Array2->erase(this);
 		return;
@@ -266,10 +271,12 @@ void FakeDiskLaserClass::__AI()
 		auto const pWeaponExt = WeaponTypeExtContainer::Instance.Find(pWeapon);
 		int const newCircumference = pWeaponExt->DiskLaser_Circumference;
 
-		if (WeaponTypeExtData::nOldCircumference != newCircumference) {
+		if (WeaponTypeExtData::nOldCircumference != newCircumference)
+		{
 			WeaponTypeExtData::nOldCircumference = newCircumference;
 
-			for (size_t i = 0u; i < std::size(DiscLaserCoords); ++i) {
+			for (size_t i = 0u; i < std::size(DiscLaserCoords); ++i)
+			{
 				DiscLaserCoords[i].X = static_cast<int>(newCircumference * WeaponTypeExtData::cosLUT[i]);
 				DiscLaserCoords[i].Y = static_cast<int>(newCircumference * WeaponTypeExtData::sinLUT[i]);
 			}
@@ -282,12 +289,15 @@ void FakeDiskLaserClass::__AI()
 	ColorStruct outerColor;
 	ColorStruct* pOuterSpread = &pWeapon->LaserOuterSpread;
 
-	if (pWeapon->IsHouseColor) {
+	if (pWeapon->IsHouseColor)
+	{
 		innerColor = pFirer->Owner->LaserColor;
 		outerColor.R = pFirer->Owner->LaserColor.R >> 1;
 		outerColor.G = pFirer->Owner->LaserColor.G >> 1;
 		outerColor.B = pFirer->Owner->LaserColor.B >> 1;
-	} else {
+	}
+	else
+	{
 		innerColor = pWeapon->LaserInnerColor;
 		outerColor = pWeapon->LaserOuterColor;
 	}
@@ -295,7 +305,8 @@ void FakeDiskLaserClass::__AI()
 	// Final convergence frame?
 	bool const isFinalFrame = (idx0 == idx1) && (offset38 != 0);
 
-	if (isFinalFrame) {
+	if (isFinalFrame)
+	{
 		// === FINAL FRAME: Fire at target ===
 
 		CoordStruct const laserStart {
@@ -306,9 +317,12 @@ void FakeDiskLaserClass::__AI()
 
 		// Get target coords
 		CoordStruct laserEnd;
-		if (auto pTargetObject = flag_cast_to<ObjectClass*, false>(pTarget)) {
+		if (auto pTargetObject = flag_cast_to<ObjectClass*, false>(pTarget))
+		{
 			laserEnd = pTargetObject->GetTargetCoords();
-		} else {
+		}
+		else
+		{
 			laserEnd = pTarget->GetCenterCoords();
 		}
 
@@ -322,7 +336,8 @@ void FakeDiskLaserClass::__AI()
 			pWeapon->LaserDuration
 		);
 
-		if(!pTypeExt->DiskLaserDetonate){
+		if (!pTypeExt->DiskLaserDetonate)
+		{
 			// Deal damage at target
 			DamageArea::Apply(
 				&laserEnd,
@@ -332,7 +347,9 @@ void FakeDiskLaserClass::__AI()
 				true,
 				nullptr
 			);
-		} else {
+		}
+		else
+		{
 			WeaponTypeExtData::DetonateAt2(this->Weapon, pTarget, pFirer, this->Damage, true, pFirer->Owner);
 		}
 
@@ -343,7 +360,8 @@ void FakeDiskLaserClass::__AI()
 		{
 			auto const pWarhead = pWeapon->Warhead;
 
-			if (RulesExtData::Instance()->DiskLaserAnimEnabled) {
+			if (RulesExtData::Instance()->DiskLaserAnimEnabled)
+			{
 				auto const pAnimType = MapClass::SelectDamageAnimation(
 					this->Damage,
 					pWarhead,
@@ -351,7 +369,8 @@ void FakeDiskLaserClass::__AI()
 					laserEnd
 				);
 
-				if (pAnimType) {
+				if (pAnimType)
+				{
 					AnimExtData::SetAnimOwnerHouseKind(
 						GameCreate<AnimClass>(pAnimType, laserEnd),
 						pFirer ? pFirer->Owner : nullptr,
@@ -369,12 +388,15 @@ void FakeDiskLaserClass::__AI()
 
 		// Play weapon sound
 		auto const& sound = pWeapon->Report;
-		if (sound.Count > 0) {
+		if (sound.Count > 0)
+		{
 			VocClass::SafeImmedietelyPlayAt(sound[pFirer->weapon_sound_randomnumber_3C8 % sound.Count], &laserStart, nullptr);
 		}
 
 		this->DrawRateCounter = -1;
-	} else {
+	}
+	else
+	{
 		// === CHARGING PHASE: Draw rotating laser pairs ===
 
 		int const duration = 8 - offset38;
@@ -396,7 +418,8 @@ void FakeDiskLaserClass::__AI()
 		// HOOK: 0x4A7755 - DiskLaserClass_Update_ChargedUpSound
 		// Play charge-up sound on first frame (with TechnoType extension)
 		// ============================================================
-		if (offset38 == 0) {
+		if (offset38 == 0)
+		{
 			VocClass::SafeImmedietelyPlayAt(pTypeExt->DiskLaserChargeUp.Get(RulesClass::Instance->DiskLaserChargeUp), &start1, nullptr);
 		}
 		// ============================================================
@@ -443,19 +466,22 @@ void FakeDiskLaserClass::__AI()
 void FakeDiskLaserClass::__Fire(TechnoClass* pFirer, AbstractClass* pTarget, WeaponTypeClass* pWeapon, int damageMultiplier)
 {
 	// Validate all required parameters
-	if (!pFirer) {
+	if (!pFirer)
+	{
 		this->DrawRateCounter = -1;
 		AbstractClass::Array2->push_back(this);
 		return;
 	}
 
-	if (!pTarget) {
+	if (!pTarget)
+	{
 		this->DrawRateCounter = -1;
 		AbstractClass::Array2->push_back(this);
 		return;
 	}
 
-	if (!pWeapon) {
+	if (!pWeapon)
+	{
 		this->DrawRateCounter = -1;
 		AbstractClass::Array2->push_back(this);
 		return;

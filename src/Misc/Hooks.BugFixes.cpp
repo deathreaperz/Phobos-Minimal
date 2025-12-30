@@ -156,7 +156,8 @@ static NOINLINE void IsTechnoShouldBeAliveAfterTemporal(TechnoClass* pThis)
 		// Also check for vftable here to guarantee the TemporalClass not being destoryed already.
 		if (IsTemporalptrValid(pThis->TemporalTargetingMe)) // TemporalClass::`vtable`
 		{
-			if (pThis->TemporalTargetingMe->Owner == pThis->TemporalTargetingMe->Target) {
+			if (pThis->TemporalTargetingMe->Owner == pThis->TemporalTargetingMe->Target)
+			{
 				pThis->BeingWarpedOut = false;
 				pThis->TemporalTargetingMe->Detach();
 				pThis->TemporalTargetingMe = nullptr;
@@ -171,7 +172,9 @@ static NOINLINE void IsTechnoShouldBeAliveAfterTemporal(TechnoClass* pThis)
 			//Debug::LogInfo(__FUNCTION__" Called ");
 			TechnoExtData::HandleRemove(pThis, nullptr, true, false);
 		}
-	} else if (!pThis->TemporalTargetingMe && pThis->BeingWarpedOut) {
+	}
+	else if (!pThis->TemporalTargetingMe && pThis->BeingWarpedOut)
+	{
 		pThis->BeingWarpedOut = false;
 	}
 }
@@ -220,7 +223,6 @@ ASMJIT_PATCH(0x41EB43, AITriggerTypeClass_Condition_SupportPowersup, 0x7)		//AIT
 	return R->Origin() + 0xC;
 }ASMJIT_PATCH_AGAIN(0x41EEE3, AITriggerTypeClass_Condition_SupportPowersup, 0x7)	//AITriggerTypeClass_OwnerHouseOwns_SupportPowersup
 
-
 // Dehardcode the stupid Wall-Gate relationships
 // Author: Uranusian
 ASMJIT_PATCH(0x441053, BuildingClass_Unlimbo_EWGate, 0x6)
@@ -244,13 +246,15 @@ ASMJIT_PATCH(0x480534, CellClass_AttachesToNeighbourOverlay, 5)
 	GET_STACK(int const, state, STACK_OFFS(0x10, -0x8));
 	const bool Wall = idxOverlay != -1 && OverlayTypeClass::Array->Items[idxOverlay]->Wall;
 
-	if (Wall) {
+	if (Wall)
+	{
 		return 0x480549;
-
 	}
 
-	if (auto pBuilding = pThis->GetBuilding()) {
-		if (pBuilding->Health > 0) {
+	if (auto pBuilding = pThis->GetBuilding())
+	{
+		if (pBuilding->Health > 0)
+		{
 			const auto pBType = pBuilding->Type;
 
 			if ((RulesClass::Instance->EWGates.contains(pBType)) && (state == 2 || state == 6))
@@ -376,7 +380,6 @@ ASMJIT_PATCH(0x73EFD8, UnitClass_Mission_Hunt_DeploysInto, 0x6)
 	break;
 	case 2:
 	{
-
 		// Skip MCV-specific & player control checks if coming from deploy script action.
 		if (pThis->Type->Category == Category::Support && !pThis->IsOwnedByCurrentPlayer)
 		{
@@ -420,14 +423,13 @@ ASMJIT_PATCH(0x4DACDD, FootClass_CrashingVoice, 0x6)
 					VocClass::SafeImmedietelyPlayAt(pType->VoiceCrashing, &nCoord);
 
 				VocClass::SafeImmedietelyPlayAt(pType->CrashingSound, &nCoord, &pThis->MoveSoundAudioController);
-
 			}
 			else
 			{
 				VocClass::SafeImmedietelyPlayAt(RulesClass::Instance->ScoldSound, &nCoord, &pThis->MoveSoundAudioController);
 			}
 		}
-		else if (pThis->IsMoveSoundPlaying ) // done playing
+		else if (pThis->IsMoveSoundPlaying) // done playing
 			pThis->MoveSoundAudioController.ShutUp();
 
 		pThis->WasCrashingAlready = pThis->IsCrashing;
@@ -444,9 +446,10 @@ ASMJIT_PATCH(0x65DF67, TeamTypeClass_CreateMembers_LoadOntoTransport, 0x6)
 	GET(TeamClass* const, pTeam, EBP);
 	GET(TeamTypeClass const*, pThis, EBX);
 
-	auto unmarkPayloadCreated = [](FootClass* member){TechnoExtContainer::Instance.Find(member)->PayloadCreated = false;};
+	auto unmarkPayloadCreated = [](FootClass* member) { TechnoExtContainer::Instance.Find(member)->PayloadCreated = false; };
 
-	if (!pTransport) {
+	if (!pTransport)
+	{
 		for (auto pNext = pPayload;
 		pNext && pNext != pTransport && pNext->Team == pTeam;
 		pNext = flag_cast_to<FootClass*>(pNext->NextObject))
@@ -565,12 +568,11 @@ ASMJIT_PATCH(0x4FD1CD, HouseClass_RecalcCenter_LimboDelivery, 0x6)
 	 || !MapClass::Instance->CoordinatesLegal(pBuilding->GetMapCoords()))
 		return R->Origin() == 0x4FD1CD ? SkipBuilding1 : SkipBuilding2;
 
-	if(VTable::Get(pBuilding) != BuildingClass::vtable)
+	if (VTable::Get(pBuilding) != BuildingClass::vtable)
 		Debug::FatalError("%x invalid building ptr !", pBuilding);
 
 	return 0;
 }ASMJIT_PATCH_AGAIN(0x4FD463, HouseClass_RecalcCenter_LimboDelivery, 0x6)
-
 
 ASMJIT_PATCH(0x4AC534, DisplayClass_ComputeStartPosition_IllegalCoords, 0x6)
 {
@@ -580,7 +582,6 @@ ASMJIT_PATCH(0x4AC534, DisplayClass_ComputeStartPosition_IllegalCoords, 0x6)
 
 	if (!MapClass::Instance->CoordinatesLegal(pTechno->GetMapCoords()))
 		return SkipTechno;
-
 
 	return 0;
 }
@@ -722,7 +723,6 @@ DEFINE_JUMP(LJMP, 0x447709, 0x447727);
 //		RetFireIllegal : Continue;
 //}
 
-
 // Updates layers of all animations attached to the given techno.
 static void UpdateAttachedAnimLayers(TechnoClass* pThis)
 {
@@ -811,7 +811,6 @@ ASMJIT_PATCH(0x68927B, ScenarioClass_ScanPlaceUnit_CheckMovement2, 0x5)
 	}
 
 	return 0;
-
 }
 
 // In vanilla YR, game destroys building animations directly by calling constructor.
@@ -830,8 +829,6 @@ ASMJIT_PATCH(0x68927B, ScenarioClass_ScanPlaceUnit_CheckMovement2, 0x5)
 //
 //	return 0;
 //}ASMJIT_PATCH_AGAIN(0x44E997, BuildingClass_Detach_RestoreAnims, 0x6)
-
-
 
 // WWP for some reason passed nullptr as source to On_Destroyed even though the real source existed
 ASMJIT_PATCH(0x738467, UnitClass_TakeDamage_FixOnDestroyedSource, 0x6)
@@ -877,7 +874,6 @@ ASMJIT_PATCH(0x53AD85, IonStormClass_AdjustLighting_ColorSchemes, 0x5)
 
 	return SkipGameCode;
 }
-
 
 //// Set ShadeCount to 53 to initialize the palette fully shaded - this is required to make it not draw over shroud for some reason.
 ASMJIT_PATCH(0x68C4C4, GenerateColorSpread_ShadeCountSet, 0x5)
@@ -965,9 +961,12 @@ ASMJIT_PATCH(0x6B75AC, SpawnManagerClass_AI_SetDestinationForMissiles, 0x5)
 	auto const pTarget = pSpawnManager->Target;
 
 	// Oct 27, 2025 - Starkku: Restore old behaviour for building destinations to eliminate inaccuracy issues.
-	if (pTarget->WhatAmI() == AbstractType::Building) {
+	if (pTarget->WhatAmI() == AbstractType::Building)
+	{
 		pSpawnTechno->SetDestination(pTarget, true);
-	} else {
+	}
+	else
+	{
 		const CoordStruct coord = pSpawnManager->Target->GetCenterCoords();
 		CellClass* pCellDestination = MapClass::Instance->TryGetCellAt(coord);
 		pSpawnTechno->SetDestination(pCellDestination, true);
@@ -1008,7 +1007,8 @@ ASMJIT_PATCH(0x4D4B43, FootClass_Mission_Capture_ForbidUnintended, 0x6)
 	GET(InfantryClass*, pThis, EDI);
 	enum { LosesDestination = 0x4D4BD1 };
 
-	if(pThis){
+	if (pThis)
+	{
 		const auto pBld = cast_to<BuildingClass*>(pThis->Destination);
 
 		if (!pBld || pThis->Target)
@@ -1219,8 +1219,8 @@ struct OverlayReader
 	}
 
 	OverlayReader(CCINIClass* pINI)
-		: ByteReader{ pINI, GameStrings::OverlayPack() }	{
-	}
+		: ByteReader { pINI, GameStrings::OverlayPack() }
+	{ }
 
 	~OverlayReader() = default;
 
@@ -1237,7 +1237,6 @@ ASMJIT_PATCH(0x5FD2E0, OverlayClass_ReadINI, 0x7)
 
 	if (ScenarioClass::NewINIFormat > 1)
 	{
-
 		OverlayReader reader(pINI);
 
 		for (short i = 0; i < 0x200; ++i)
@@ -1392,7 +1391,6 @@ ASMJIT_PATCH(0x5FD6A0, OverlayClass_WriteINI, 0x6)
 	return 0x5FD8EB;
 }
 
-
 // Ares InitialPayload fix: Man, what can I say
 // Otamaa : this can cause deadlock , or crashes , better write proper fix
 // ASMJIT_PATCH(0x65DE21, TeamTypeClass_CreateMembers_MutexOut, 0x6)
@@ -1414,7 +1412,7 @@ ASMJIT_PATCH(0x74691D, UnitClass_UpdateDisguise_EMP, 0x6)
 		|| Math::abs(pThis->AngleRotatedSideways) > 0.25)
 	{
 		pThis->ClearDisguise();
-		R->Stack(0x7 , false);
+		R->Stack(0x7, false);
 	}
 
 	return 0x0;
@@ -1460,9 +1458,12 @@ ASMJIT_PATCH(0x412B40, AircraftTrackerClass_FillCurrentVector, 0x5)
 	const int sectorIndexXEnd = std::clamp((mapCoords.X + range) / sectorWidth, 0, 19);
 	const int sectorIndexYEnd = std::clamp((mapCoords.Y + range) / sectorHeight, 0, 19);
 
-	for (int y = sectorIndexYStart; y <= sectorIndexYEnd; y++) {
-		for (int x = sectorIndexXStart; x <= sectorIndexXEnd; x++) {
-			for (auto const pTechno : pThis->TrackerVectors[y][x]) {
+	for (int y = sectorIndexYStart; y <= sectorIndexYEnd; y++)
+	{
+		for (int x = sectorIndexXStart; x <= sectorIndexXEnd; x++)
+		{
+			for (auto const pTechno : pThis->TrackerVectors[y][x])
+			{
 				pThis->CurrentVector.push_back(pTechno);
 			}
 		}
@@ -1645,7 +1646,7 @@ static bool IsHashable(ObjectClass* pObj)
 
 		return false;
 	}
-		case AbstractType::Particle:
+	case AbstractType::Particle:
 	{
 		auto const pParticle = static_cast<ParticleClass*>(pObj);
 		return pParticle->Type->Damage;
@@ -1754,11 +1755,11 @@ ASMJIT_PATCH(0x71464A, TechnoTypeClass_ReadINI_Speed, 0x7)
 	return SkipGameCode;
 }
 
-
 // In the following three places the distance check was hardcoded to compare with 20, 17 and 16 respectively,
 // which means it didn't consider the actual speed of the unit. Now we check it and the units won't get stuck
 // even at high speeds - NetsuNegi
-ASMJIT_PATCH(0x72958E, TunnelLocomotionClass_ProcessDigging_SlowdownDistance, 0x8) {
+ASMJIT_PATCH(0x72958E, TunnelLocomotionClass_ProcessDigging_SlowdownDistance, 0x8)
+{
 	enum { KeepMoving = 0x72980F, CloseEnough = 0x7295CE };
 
 	//this fix reqire change of `pType->Speed`
@@ -1766,11 +1767,11 @@ ASMJIT_PATCH(0x72958E, TunnelLocomotionClass_ProcessDigging_SlowdownDistance, 0x
 	GET(TunnelLocomotionClass* const, pLoco, ESI);
 
 	auto& currLoc = pLoco->LinkedTo->Location;
-	int distance = (int) CoordStruct{currLoc.X - pLoco->_CoordsNow.X, currLoc.Y - pLoco->_CoordsNow.Y,0}.Length() ;
+	int distance = (int)CoordStruct { currLoc.X - pLoco->_CoordsNow.X, currLoc.Y - pLoco->_CoordsNow.Y,0 }.Length();
 
 	auto const pTypeExt = TechnoTypeExtContainer::Instance.Find(pLoco->LinkedTo->GetTechnoType());
 	int currentSpeed = pTypeExt->SubterraneanSpeed >= 0 ?
-			pTypeExt->SubterraneanSpeed : RulesExtData::Instance()->SubterraneanSpeed;
+		pTypeExt->SubterraneanSpeed : RulesExtData::Instance()->SubterraneanSpeed;
 
 	// Calculate speed multipliers.
 	pLoco->LinkedTo->SpeedPercentage = 1.0; // Subterranean locomotor doesn't normally use this so it would be 0.0 here and cause issues.		int maxSpeed = pTypeExt->This()->Speed;
@@ -1789,7 +1790,8 @@ ASMJIT_PATCH(0x72958E, TunnelLocomotionClass_ProcessDigging_SlowdownDistance, 0x
 	return 0x7295CE;
 }
 
-ASMJIT_PATCH(0x75BD70, WalkLocomotionClass_ProcessMoving_SlowdownDistance, 0x9) {
+ASMJIT_PATCH(0x75BD70, WalkLocomotionClass_ProcessMoving_SlowdownDistance, 0x9)
+{
 	enum { KeepMoving = 0x75BF85, CloseEnough = 0x75BD79 };
 
 	GET(FootClass* const, pLinkedTo, ECX);
@@ -1798,7 +1800,8 @@ ASMJIT_PATCH(0x75BD70, WalkLocomotionClass_ProcessMoving_SlowdownDistance, 0x9) 
 	//return distance < 17 ? CloseEnough : KeepMoving;
 }
 
-ASMJIT_PATCH(0x5B11DD, MechLocomotionClass_ProcessMoving_SlowdownDistance, 0x9) {
+ASMJIT_PATCH(0x5B11DD, MechLocomotionClass_ProcessMoving_SlowdownDistance, 0x9)
+{
 	enum { KeepMoving = 0x5B14AA, CloseEnough = 0x5B11E6 };
 
 	GET(FootClass* const, pLinkedTo, ECX);
@@ -1812,14 +1815,14 @@ ASMJIT_PATCH(0x4232BF, AnimClass_DrawIt_MakeInfantry, 0x6)
 {
 	GET(AnimClass*, pThis, ESI);
 
-	if (pThis->Type->MakeInfantry != -1) {
+	if (pThis->Type->MakeInfantry != -1)
+	{
 		R->EAX(pThis->GetCell()->Color1.Red);
 		return 0x4232C5;
 	}
 
 	return 0;
 }
-
 
 // Map <Player @ X> as object owner name to correct HouseClass index.
 ASMJIT_PATCH(0x50C186, GetHouseIndexFromName_PlayerAtX, 0x6)
@@ -1833,8 +1836,10 @@ ASMJIT_PATCH(0x50C186, GetHouseIndexFromName_PlayerAtX, 0x6)
 
 	int playerAtIndex = HouseClass::GetPlayerAtFromString(name);
 
-	if (playerAtIndex != -1) {
-		if (auto const pHouse = HouseClass::FindByPlayerAt(playerAtIndex)) {
+	if (playerAtIndex != -1)
+	{
+		if (auto const pHouse = HouseClass::FindByPlayerAt(playerAtIndex))
+		{
 			R->EDX(pHouse->ArrayIndex);
 			return ReturnFromFunction;
 		}
@@ -1908,8 +1913,8 @@ ASMJIT_PATCH(0x743664, UnitClass_ReadFromINI_Follower3, 0x6)
 #pragma region End_Piggyback PowerOn
 // Author: tyuah8
 
-NOINLINE LocomotionClass* getILoco(REGISTERS* R) {
-
+NOINLINE LocomotionClass* getILoco(REGISTERS* R)
+{
 	ILocomotion* pIloco = nullptr;
 
 	if (R->Origin() == 0x719F17)
@@ -1923,8 +1928,10 @@ NOINLINE LocomotionClass* getILoco(REGISTERS* R) {
 //TODO :Evaluate these bullshit
 ASMJIT_PATCH(0x4AF94D, LocomotionClass_End_Piggyback_PowerOn, 0x7)//Drive
 {
-	if(const auto pLoco = getILoco(R)) {
-		if(auto pLinkedTo = pLoco->LinkedTo ? pLoco->LinkedTo : pLoco->Owner){
+	if (const auto pLoco = getILoco(R))
+	{
+		if (auto pLinkedTo = pLoco->LinkedTo ? pLoco->LinkedTo : pLoco->Owner)
+		{
 			if (!pLinkedTo->Deactivated && !pLinkedTo->IsUnderEMP())
 				pLoco->Power_On();
 			else
@@ -1936,7 +1943,6 @@ ASMJIT_PATCH(0x4AF94D, LocomotionClass_End_Piggyback_PowerOn, 0x7)//Drive
 ASMJIT_PATCH_AGAIN(0x69F05D, LocomotionClass_End_Piggyback_PowerOn, 0x7) //Ship
 ASMJIT_PATCH_AGAIN(0x54DADC, LocomotionClass_End_Piggyback_PowerOn, 0x5)//Jumpjet
 
-
 #pragma endregion
 
 ASMJIT_PATCH(0x4C75DA, EventClass_RespondToEvent_Stop, 0x6)
@@ -1946,7 +1952,7 @@ ASMJIT_PATCH(0x4C75DA, EventClass_RespondToEvent_Stop, 0x6)
 	GET(TechnoClass* const, pTechno, ESI);
 
 	// Check aircraft
-	const auto pAircraft = cast_to<AircraftClass* , false>(pTechno);
+	const auto pAircraft = cast_to<AircraftClass*, false>(pTechno);
 	const bool commonAircraft = pAircraft && !pAircraft->Airstrike && !pAircraft->Spawned;
 	const auto mission = pTechno->CurrentMission;
 
@@ -1993,7 +1999,7 @@ ASMJIT_PATCH(0x4C75DA, EventClass_RespondToEvent_Stop, 0x6)
 	}
 	else
 	{
-		const auto pFoot = flag_cast_to<FootClass* , false>(pTechno);
+		const auto pFoot = flag_cast_to<FootClass*, false>(pTechno);
 
 		// Clear archive target for infantries and vehicles like receive a mega mission
 		if (pFoot && !pAircraft)
@@ -2024,19 +2030,22 @@ ASMJIT_PATCH(0x4C75DA, EventClass_RespondToEvent_Stop, 0x6)
 	return SkipGameCode;
 }
 
-size_t __fastcall Gamestrtohex(char* str) {
+size_t __fastcall Gamestrtohex(char* str)
+{
 	JMP_FAST(0x412610);
 }
 
 #include <TaskForceClass.h>
 
 // Suppress Ares' swizzle warning
-static size_t __fastcall HexStr2Int_replacement(const char* str) {
+static size_t __fastcall HexStr2Int_replacement(const char* str)
+{
 	// Fake a pointer to trick Ares
 	return std::hash<std::string_view>{}(str) & 0xFFFFFF;
 }
 
-ASMJIT_PATCH(0x6E5FA3, HexStr2Int_replacement_logTagType, 0x8) {
+ASMJIT_PATCH(0x6E5FA3, HexStr2Int_replacement_logTagType, 0x8)
+{
 	GET(char*, HexID, EDI);
 	//GET(TagTypeClass*, pType, ESI);
 
@@ -2053,7 +2062,7 @@ ASMJIT_PATCH(0x6E8300, HexStr2Int_replacement_logTaskForce, 0xA)
 	//GET(TaskForceClass*, pType, ESI);
 
 	size_t ID = Gamestrtohex(HexID);
-	Debug::Log("TaskForce[%s] want to remap as [%x] \n", HexID , ID);
+	Debug::Log("TaskForce[%s] want to remap as [%x] \n", HexID, ID);
 	//PhobosSwizzle::Instance.Here_I_Am((void*)ID, pType);
 
 	return 0x6E8315;
@@ -2069,13 +2078,13 @@ DEFINE_JUMP(LJMP, 0x65B3F7, 0x65B416);//RadSite, no effect
 
 #pragma region TeamCloseRangeFix
 
-  static int __fastcall Check2DDistanceInsteadOf3D(ObjectClass* pSource, void* _, AbstractClass* pTarget)
-  {
-  	return (pSource->IsInAir() && pSource->WhatAmI() != AbstractType::Aircraft) // Jumpjets or sth in the air
-  		? pSource->DistanceFrom(pTarget) // 2D distance
-  		: pSource->DistanceFromSquared(pTarget); // 3D distance (vanilla)
-  }
-  DEFINE_FUNCTION_JUMP(CALL, 0x6EBCC9, Check2DDistanceInsteadOf3D);
+static int __fastcall Check2DDistanceInsteadOf3D(ObjectClass* pSource, void* _, AbstractClass* pTarget)
+{
+	return (pSource->IsInAir() && pSource->WhatAmI() != AbstractType::Aircraft) // Jumpjets or sth in the air
+		? pSource->DistanceFrom(pTarget) // 2D distance
+		: pSource->DistanceFromSquared(pTarget); // 3D distance (vanilla)
+}
+DEFINE_FUNCTION_JUMP(CALL, 0x6EBCC9, Check2DDistanceInsteadOf3D);
 
 #pragma endregion
 
@@ -2103,10 +2112,12 @@ ASMJIT_PATCH(0x71872C, TeleportLocomotionClass_MakeRoom_OccupationFix, 0x9)
 }
 
 // Fix a crash at 0x7BAEA1 when trying to access a point outside of surface bounds.
-class NOVTABLE FakeXSurface final : public XSurface {
+class NOVTABLE FakeXSurface final : public XSurface
+{
 public:
 
-	int _GetPixel(Point2D const& point) const {
+	int _GetPixel(Point2D const& point) const
+	{
 		int color = 0;
 
 		Point2D finalPoint = point;
@@ -2118,14 +2129,12 @@ public:
 
 		if (pointer != nullptr)
 		{
-
 			if (BytesPerPixel == 2)
 				color = *static_cast<unsigned short*>(pointer);
 			else
 				color = *static_cast<unsigned char*>(pointer);
 
 			((Surface*)this)->Unlock();
-
 		}
 
 		return color;
@@ -2155,15 +2164,14 @@ ASMJIT_PATCH(0x75EE49, WaveClass_DrawSonic_CrashFix, 0x7)
 		R->EAX(12);
 
 	return 0;
-
 }
 
 ASMJIT_PATCH(0x73AE70, UnitClass_UpdatePosition_Bridge, 0x5)
 {
 	GET(UnitClass*, pThis, EBP);
 	return pThis->OnBridge
-	&& GroundType::Array[static_cast<int>(LandType::Road)].
-	Cost[static_cast<int>(pThis->Type->SpeedType)] == 0.0f ? 0x73AEB4 : 0;
+		&& GroundType::Array[static_cast<int>(LandType::Road)].
+		Cost[static_cast<int>(pThis->Type->SpeedType)] == 0.0f ? 0x73AEB4 : 0;
 }
 
 // Change enter to move when unlink
@@ -2200,9 +2208,12 @@ ASMJIT_PATCH(0x6F4BB3, TechnoClass_ReceiveCommand_RequestUntether, 0x7)
 	// - This is because when both parties who are `RadioLink` to each other need to `Unlink`, they need to `Untether` first,
 	//   and this requires ensuring that both parties have `IsTether` flag (0x6F4C50), otherwise `Untether` cannot be successful,
 	//   which may lead to some unexpected situations.
-	if(!pThis->IsTethered) {
-		for (int i = 0; i < pThis->RadioLinks.Capacity; ++i) {
-			if (const auto pLink = pThis->RadioLinks.Items[i]) {
+	if (!pThis->IsTethered)
+	{
+		for (int i = 0; i < pThis->RadioLinks.Capacity; ++i)
+		{
+			if (const auto pLink = pThis->RadioLinks.Items[i])
+			{
 				if (pLink->IsTethered) // If there's another tether link, reset flag to true
 					pThis->IsTethered = true; // Ensures that other links can be properly untether afterwards
 			}
@@ -2257,7 +2268,7 @@ ASMJIT_PATCH(0x4E0024, FootClass_FindTankBunker_CheckValid, 0x8)
 	GET(FootClass*, pThis, EDI);
 	GET(BuildingClass*, pBuilding, ESI);
 
-	return pThis->IsInAir() ||pThis->IsInSameZoneAs(pBuilding) ? 0 : R->Origin() + 0x8;
+	return pThis->IsInAir() || pThis->IsInSameZoneAs(pBuilding) ? 0 : R->Origin() + 0x8;
 }
 
 ASMJIT_PATCH(0x4DFD92, FootClass_FindBattleBunker_CheckValid, 0x8)
@@ -2319,7 +2330,6 @@ ASMJIT_PATCH(0x73C43F, UnitClass_DrawAsVXL_Shadow_IsLocomotorFix, 0x6)
 DEFINE_JUMP(LJMP, 0x715326, 0x715333); // TechnoTypeClass::LoadFromINI
 // Then EDI is BarrelAnimData now, not incorrect TurretAnimData
 
-
 ASMJIT_PATCH(0x481778, CellClass_ScatterContent_Scatter, 0x6)
 {
 	enum { NextTechno = 0x4817D9 };
@@ -2347,7 +2357,7 @@ const bool CanElectricAssault(FootClass* pThis, BuildingClass* pBuilding)
 {
 	const auto pWarhead = pThis->GetWeapon(1)->WeaponType->Warhead;
 	const auto pWHExt = WarheadTypeExtContainer::Instance.Find(pWarhead);
-	return pWHExt->GetVerses(TechnoExtData::GetTechnoArmor(pThis , pWarhead)).Verses != 0.0;
+	return pWHExt->GetVerses(TechnoExtData::GetTechnoArmor(pThis, pWarhead)).Verses != 0.0;
 }
 
 ASMJIT_PATCH(0x4D7005, FootClass_ElectricAssultFix, 0x5)			// Mission_AreaGuard
@@ -2361,7 +2371,8 @@ ASMJIT_PATCH(0x4D7005, FootClass_ElectricAssultFix, 0x5)			// Mission_AreaGuard
 		: 0;
 }ASMJIT_PATCH_AGAIN(0x4D51B2, FootClass_ElectricAssultFix, 0x5)	// Mission_Guard
 
-ASMJIT_PATCH(0x7077FD, TechnoClass_PointerExpired_SpawnOwnerFix, 0x6) {
+ASMJIT_PATCH(0x7077FD, TechnoClass_PointerExpired_SpawnOwnerFix, 0x6)
+{
 	GET_STACK(bool, removed, STACK_OFFSET(0x20, 0x8));
 	// Skip the reset for SpawnOwner if !removed.
 	return removed ? 0 : 0x707803;
@@ -2377,7 +2388,6 @@ ASMJIT_PATCH(0x44E910, BuildingClass_PointerExpired_C4ExpFix, 0x6)
 // I think no one wants to see wild pointers caused by WW's negligence
 ASMJIT_PATCH(0x4D9A1B, FootClass_PointerExpired_RemoveDestination, 0x6)
 {
-
 	GET_STACK(bool, removed, STACK_OFFSET(0x1C, 0x8));
 
 	if (removed)
@@ -2386,7 +2396,6 @@ ASMJIT_PATCH(0x4D9A1B, FootClass_PointerExpired_RemoveDestination, 0x6)
 	R->BL(true);
 	return 0x4D9A25;
 }
-
 
 //namespace RemoveSpawneeHelper
 //{
@@ -2454,7 +2463,7 @@ ASMJIT_PATCH(0x73F0A7, UnitClass_IsCellOccupied_Start, 0x9)
 #include <Locomotor/ShipLocomotionClass.h>
 #include <Ext/Infantry/Body.h>
 
-DEFINE_FUNCTION_JUMP(CALL6 ,0x51A657 , FakeInfantryClass::_DummyScatter);
+DEFINE_FUNCTION_JUMP(CALL6, 0x51A657, FakeInfantryClass::_DummyScatter);
 
 ASMJIT_PATCH(0x737945, UnitClass_ReceiveCommand_MoveTransporter, 0x7)
 {
@@ -2471,12 +2480,12 @@ ASMJIT_PATCH(0x737945, UnitClass_ReceiveCommand_MoveTransporter, 0x7)
 	return SkipGameCode;
 }
 
-ASMJIT_PATCH(0x710352, FootClass_ImbueLocomotor_ResetStatusses , 0x7)
+ASMJIT_PATCH(0x710352, FootClass_ImbueLocomotor_ResetStatusses, 0x7)
 {
 	GET(FootClass*, pTarget, ESI);
 
 	pTarget->OnBridge = false;
-	if (const auto pUnit = cast_to<UnitClass* , false>(pTarget))
+	if (const auto pUnit = cast_to<UnitClass*, false>(pTarget))
 		pUnit->Unloading = false;
 
 	pTarget->Mark(MarkType::Up);
@@ -2575,7 +2584,6 @@ ASMJIT_PATCH(0x6F9222, TechnoClass_SelectAutoTarget_HealingTargetAir, 0x6)
 
 ASMJIT_PATCH(0x418CF3, AircraftClass_Mission_Attack_PlanningFix, 0x5)
 {
-
 	GET(AircraftClass* const, pThis, ESI);
 
 	const auto pSpawnOwner = pThis->SpawnOwner;
@@ -2583,7 +2591,8 @@ ASMJIT_PATCH(0x418CF3, AircraftClass_Mission_Attack_PlanningFix, 0x5)
 	if (!pSpawnOwner || pThis->Ammo <= 0 || !pThis->TryNextPlanningTokenNode())
 		return 0;
 
-	if(pSpawnOwner) {
+	if (pSpawnOwner)
+	{
 		pThis->SetDestination(pSpawnOwner, true);
 		pThis->QueueMission(Mission::Move, false);
 	}
@@ -2595,81 +2604,87 @@ ASMJIT_PATCH(0x418CF3, AircraftClass_Mission_Attack_PlanningFix, 0x5)
 
 DWORD WINAPI Mouse_Thread(MouseThreadParameter* lpThreadParameter)
 {
-    lpThreadParameter->SomeState18 = 1;  // ← Fixed: was dword14
-    lpThreadParameter->SkipSleep = 0;
+	lpThreadParameter->SomeState18 = 1;  // ← Fixed: was dword14
+	lpThreadParameter->SkipSleep = 0;
 
-    if (lpThreadParameter->SkipProcessing) {
-        lpThreadParameter->SkipSleep = 1;
-    } else {
-        do
-        {
-            if (Imports::WaitForSingleObject.invoke()(MouseThreadParameter::Mutex(), 10000u) == 258) {
-                Debug::Log("Warning: Probable deadlock occurred on MouseMutex.");
-            }
-            if (WWMouseClass::Thread_Instance()) {
-                WWMouseClass::Thread_Instance->Process();
-            }
-            Imports::ReleaseMutex.invoke()(MouseThreadParameter::Mutex());
-            Imports::Sleep.invoke()((long long)lpThreadParameter->SleepTime);
-            ++lpThreadParameter->RefCount;
-        }
-        while (!lpThreadParameter->SkipProcessing);
-        lpThreadParameter->SkipSleep = 1;
-    }
-    return 0;
+	if (lpThreadParameter->SkipProcessing)
+	{
+		lpThreadParameter->SkipSleep = 1;
+	}
+	else
+	{
+		do
+		{
+			if (Imports::WaitForSingleObject.invoke()(MouseThreadParameter::Mutex(), 10000u) == 258)
+			{
+				Debug::Log("Warning: Probable deadlock occurred on MouseMutex.");
+			}
+			if (WWMouseClass::Thread_Instance())
+			{
+				WWMouseClass::Thread_Instance->Process();
+			}
+			Imports::ReleaseMutex.invoke()(MouseThreadParameter::Mutex());
+			Imports::Sleep.invoke()((long long)lpThreadParameter->SleepTime);
+			++lpThreadParameter->RefCount;
+		}
+		while (!lpThreadParameter->SkipProcessing);
+		lpThreadParameter->SkipSleep = 1;
+	}
+	return 0;
 }
 
-void __fastcall StartMouseThread() {
-    HANDLE MutexA = MouseThreadParameter::Mutex();
-    char Buffer[1024];
+void __fastcall StartMouseThread()
+{
+	HANDLE MutexA = MouseThreadParameter::Mutex();
+	char Buffer[1024];
 
-    if (!MouseThreadParameter::Mutex()) {
-        MutexA = Imports::CreateMutexA.invoke()(0, 0, 0);
-        MouseThreadParameter::Mutex = MutexA;
-    }
+	if (!MouseThreadParameter::Mutex())
+	{
+		MutexA = Imports::CreateMutexA.invoke()(0, 0, 0);
+		MouseThreadParameter::Mutex = MutexA;
+	}
 
-    if (!MouseThreadParameter::ThreadNotActive())
-    {
-        if (MutexA)
-        {
+	if (!MouseThreadParameter::ThreadNotActive())
+	{
+		if (MutexA)
+		{
+			MouseThreadParameter::Thread().SkipProcessing = 0;
+			MouseThreadParameter::Thread().SkipSleep = 0;
+			MouseThreadParameter::Thread().SomeState18 = 0;
+			MouseThreadParameter::Thread().SleepTime = 16;
+			MouseThreadParameter::Thread().dword14 = 0;
+			MouseThreadParameter::Thread().RefCount = 0;
 
-            MouseThreadParameter::Thread().SkipProcessing = 0;
-            MouseThreadParameter::Thread().SkipSleep = 0;
-            MouseThreadParameter::Thread().SomeState18 = 0;
-            MouseThreadParameter::Thread().SleepTime = 16;
-            MouseThreadParameter::Thread().dword14 = 0;
-            MouseThreadParameter::Thread().RefCount = 0;
+			HANDLE Thread = Imports::CreateThread.invoke()(
+				0, 0x1000u,
+				(LPTHREAD_START_ROUTINE)Mouse_Thread,
+				&MouseThreadParameter::Thread(),  // Pass address of struct
+				0,
+				&MouseThreadParameter::StaticThreadID()  // ← Use separate variable!
+			);
 
-            HANDLE Thread = Imports::CreateThread.invoke()(
-                0, 0x1000u,
-                (LPTHREAD_START_ROUTINE)Mouse_Thread,
-                &MouseThreadParameter::Thread(),  // Pass address of struct
-                0,
-                &MouseThreadParameter::StaticThreadID()  // ← Use separate variable!
-            );
+			MouseThreadParameter::Thread_Handle() = Thread;  // ← Store in separate variable!
 
-            MouseThreadParameter::Thread_Handle() = Thread;  // ← Store in separate variable!
+			if (Thread)
+			{
+				MouseThreadParameter::ThreadNotActive() = 1;
+				if (!Imports::SetThreadPriority.invoke()(Thread, 15))
+				{
+					DWORD LastError = GetLastError();
+					Imports::FormatMessageA.invoke()(0x1000u, 0, LastError, 0, Buffer, 0x400u, 0);
+					Debug::Log("Unable to change the priority of the mouse thread - %s\n", Buffer);
 
-            if (Thread)
-            {
-                MouseThreadParameter::ThreadNotActive() = 1;
-                if (!Imports::SetThreadPriority.invoke()(Thread, 15))
-                {
-                    DWORD LastError = GetLastError();
-                    Imports::FormatMessageA.invoke()(0x1000u, 0, LastError, 0, Buffer, 0x400u, 0);
-                    Debug::Log("Unable to change the priority of the mouse thread - %s\n", Buffer);
-
-                    while (!MouseThreadParameter::Thread().SkipSleep)
-                    {
-                        Imports::Sleep.invoke()(0);
-                    }
-                    Imports::WaitForSingleObject.invoke()(MouseThreadParameter::Thread_Handle(), 5000u);
-                    Imports::CloseHandle.invoke()(MouseThreadParameter::Thread_Handle());
-                    MouseThreadParameter::ThreadNotActive() = 0;
-                }
-            }
-        }
-    }
+					while (!MouseThreadParameter::Thread().SkipSleep)
+					{
+						Imports::Sleep.invoke()(0);
+					}
+					Imports::WaitForSingleObject.invoke()(MouseThreadParameter::Thread_Handle(), 5000u);
+					Imports::CloseHandle.invoke()(MouseThreadParameter::Thread_Handle());
+					MouseThreadParameter::ThreadNotActive() = 0;
+				}
+			}
+		}
+	}
 }
 
 //massive FPS losses
@@ -2711,7 +2726,6 @@ DEFINE_PATCH(0x42A7E3, 0x20);
 DEFINE_PATCH(0x42A7FA, 0x02);
 
 #pragma endregion
-
 
 // AStarClass::FindHierarchicalPath
 // Replace sign-extend to zero-extend
@@ -3012,7 +3026,6 @@ static bool __fastcall AircraftClass_Unlimbo_Wrapper(AircraftClass* pThis, disca
 	PrePlacedAircraftFixTemp::SkipCrashing = false;
 
 	return retVal;
-
 }
 DEFINE_FUNCTION_JUMP(CALL6, 0x41B39B, AircraftClass_Unlimbo_Wrapper);
 
@@ -3024,10 +3037,6 @@ ASMJIT_PATCH(0x4DEBC4, FootClass_Crash_PreplacedAircraft, 0x7)
 		return ReturnFromFunction;
 
 	return 0;
-
 }
 
-
-
 #pragma endregion
-

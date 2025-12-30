@@ -30,7 +30,7 @@ bool SWColumnClass::Draw(bool forced)
 	{
 		const int cameoHarfInterval = (Phobos::UI::SuperWeaponSidebar_CameoHeight - cameoHeight) / 2;
 
-		for (const auto &button : this->Buttons)
+		for (const auto& button : this->Buttons)
 		{
 			RectangleStruct drawRect { this->Rect.X, button->Rect.Y - cameoHarfInterval, cameoBackgroundWidth, Phobos::UI::SuperWeaponSidebar_CameoHeight };
 			PCX::Instance->BlitToSurface(&drawRect, DSurface::Composite, pCenterPCX);
@@ -88,18 +88,18 @@ bool SWColumnClass::AddButton(int superIdx)
 		const unsigned int ownerBits = 1u << HouseClass::CurrentPlayer->Type->ArrayIndex;
 
 		auto Compare = [ownerBits](const int left, const int right)
-		{
-			const auto pExtA = SWTypeExtContainer::Instance.Find(SuperWeaponTypeClass::Array->get_or_default(left));
-			const auto pExtB = SWTypeExtContainer::Instance.Find(SuperWeaponTypeClass::Array->get_or_default(right));
+			{
+				const auto pExtA = SWTypeExtContainer::Instance.Find(SuperWeaponTypeClass::Array->get_or_default(left));
+				const auto pExtB = SWTypeExtContainer::Instance.Find(SuperWeaponTypeClass::Array->get_or_default(right));
 
-			if (pExtB && (pExtB->SuperWeaponSidebar_PriorityHouses & ownerBits) && (!pExtA || !(pExtA->SuperWeaponSidebar_PriorityHouses & ownerBits)))
-				return false;
+				if (pExtB && (pExtB->SuperWeaponSidebar_PriorityHouses & ownerBits) && (!pExtA || !(pExtA->SuperWeaponSidebar_PriorityHouses & ownerBits)))
+					return false;
 
-			if ((!pExtB || !(pExtB->SuperWeaponSidebar_PriorityHouses & ownerBits)) && pExtA && (pExtA->SuperWeaponSidebar_PriorityHouses & ownerBits))
-				return true;
+				if ((!pExtB || !(pExtB->SuperWeaponSidebar_PriorityHouses & ownerBits)) && pExtA && (pExtA->SuperWeaponSidebar_PriorityHouses & ownerBits))
+					return true;
 
-			return BuildType::SortsBefore(AbstractType::Special, left, AbstractType::Special, right);
-		};
+				return BuildType::SortsBefore(AbstractType::Special, left, AbstractType::Special, right);
+			};
 
 		const int backIdx = buttons.back()->SuperIndex;
 
@@ -146,15 +146,17 @@ bool SWColumnClass::RemoveButton(int superIdx)
 	ScenarioExtData::Instance()->SWSidebar_Indices.erase(superIdx);
 	const auto pButton = *it;
 	GScreenClass::Instance->RemoveButton(pButton);
-	GameDelete<true,false>(pButton);
+	GameDelete<true, false>(pButton);
 	buttons.erase(it);
 	return true;
 }
 
 void SWColumnClass::ClearButtons(bool remove)
 {
-	if (remove) {
-		for (const auto& button : this->Buttons) {
+	if (remove)
+	{
+		for (const auto& button : this->Buttons)
+		{
 			GScreenClass::Instance->RemoveButton(button);
 			GameDelete<true, false>(button);
 		}

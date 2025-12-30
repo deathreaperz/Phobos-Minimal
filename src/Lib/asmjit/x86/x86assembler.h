@@ -14,7 +14,6 @@ ASMJIT_BEGIN_SUB_NAMESPACE(x86)
 
 //! \addtogroup asmjit_x86
 //! \{
-
 //! X86/X64 assembler implementation.
 //!
 //! x86::Assembler is a code emitter that emits machine code directly into the \ref CodeBuffer. The assembler is capable
@@ -647,56 +646,52 @@ ASMJIT_BEGIN_SUB_NAMESPACE(x86)
 //! }
 //! ```
 class ASMJIT_VIRTAPI Assembler
-  : public BaseAssembler,
-    public EmitterImplicitT<Assembler> {
+	: public BaseAssembler,
+	public EmitterImplicitT<Assembler>
+{
 public:
-  ASMJIT_NONCOPYABLE(Assembler)
-  using Base = BaseAssembler;
+	ASMJIT_NONCOPYABLE(Assembler)
+		using Base = BaseAssembler;
 
-  //! \name Construction & Destruction
-  //! \{
+	//! \name Construction & Destruction
+	//! \{
+	ASMJIT_API explicit Assembler(CodeHolder* code = nullptr) noexcept;
+	ASMJIT_API ~Assembler() noexcept override;
 
-  ASMJIT_API explicit Assembler(CodeHolder* code = nullptr) noexcept;
-  ASMJIT_API ~Assembler() noexcept override;
+	//! \}
 
-  //! \}
+	//! \cond INTERNAL
+	//! \name Internal
+	//! \{
+	// NOTE: x86::Assembler uses _private_data to store 'address-override' bit that is used to decide whether to emit
+	// address-override (67H) prefix based on the memory BASE+INDEX registers. It's either `kX86MemInfo_67H_X86` or
+	// `kX86MemInfo_67H_X64`.
+	ASMJIT_INLINE_NODEBUG uint32_t _address_override_mask() const noexcept { return _private_data; }
+	ASMJIT_INLINE_NODEBUG void _set_address_override_mask(uint32_t m) noexcept { _private_data = m; }
 
-  //! \cond INTERNAL
-  //! \name Internal
-  //! \{
+	//! \}
+	//! \endcond
 
-  // NOTE: x86::Assembler uses _private_data to store 'address-override' bit that is used to decide whether to emit
-  // address-override (67H) prefix based on the memory BASE+INDEX registers. It's either `kX86MemInfo_67H_X86` or
-  // `kX86MemInfo_67H_X64`.
-  ASMJIT_INLINE_NODEBUG uint32_t _address_override_mask() const noexcept { return _private_data; }
-  ASMJIT_INLINE_NODEBUG void _set_address_override_mask(uint32_t m) noexcept { _private_data = m; }
+	//! \cond INTERNAL
+	//! \name Emit
+	//! \{
+	ASMJIT_API Error _emit(InstId inst_id, const Operand_& o0, const Operand_& o1, const Operand_& o2, const Operand_* op_ext) override;
 
-  //! \}
-  //! \endcond
+	//! \}
+	//! \endcond
 
-  //! \cond INTERNAL
-  //! \name Emit
-  //! \{
+	//! \name Align
+	//! \{
+	ASMJIT_API Error align(AlignMode align_mode, uint32_t alignment) override;
 
-  ASMJIT_API Error _emit(InstId inst_id, const Operand_& o0, const Operand_& o1, const Operand_& o2, const Operand_* op_ext) override;
+	//! \}
 
-  //! \}
-  //! \endcond
+	//! \name Events
+	//! \{
+	ASMJIT_API Error on_attach(CodeHolder& code) noexcept override;
+	ASMJIT_API Error on_detach(CodeHolder& code) noexcept override;
 
-  //! \name Align
-  //! \{
-
-  ASMJIT_API Error align(AlignMode align_mode, uint32_t alignment) override;
-
-  //! \}
-
-  //! \name Events
-  //! \{
-
-  ASMJIT_API Error on_attach(CodeHolder& code) noexcept override;
-  ASMJIT_API Error on_detach(CodeHolder& code) noexcept override;
-
-  //! \}
+	//! \}
 };
 
 //! \}

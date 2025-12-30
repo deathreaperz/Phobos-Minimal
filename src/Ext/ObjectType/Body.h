@@ -12,7 +12,8 @@ public:
 
 	virtual ~ObjectTypeExtData() = default;
 
-	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override {
+	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override
+	{
 		this->AbstractTypeExtData::InvalidatePointer(ptr, bRemoved);
 	}
 
@@ -28,7 +29,8 @@ public:
 
 	virtual int GetSize() const { return sizeof(*this); };
 
-	virtual void CalculateCRC(CRCEngine& crc) const {
+	virtual void CalculateCRC(CRCEngine& crc) const
+	{
 		this->AbstractTypeExtData::CalculateCRC(crc);
 	}
 

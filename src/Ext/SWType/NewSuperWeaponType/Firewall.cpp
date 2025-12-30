@@ -5,7 +5,8 @@
 
 SuperWeaponType SW_Firewall::FirewallType = SuperWeaponType::Invalid;
 
-SW_Firewall::~SW_Firewall() {
+SW_Firewall::~SW_Firewall()
+{
 	SW_Firewall::FirewallType = SuperWeaponType::Invalid;
 }
 
@@ -30,7 +31,8 @@ bool SW_Firewall::Activate(SuperClass* pThis, const CellStruct& Coords, bool IsP
 
 	AresHouseExt::SetFirestormState(pThis->Owner, true);
 
-	if (IsPlayer) {
+	if (IsPlayer)
+	{
 		pThis->Owner->RecheckTechTree = true;
 	}
 
@@ -41,7 +43,8 @@ void SW_Firewall::Deactivate(SuperClass* pThis, CellStruct cell, bool isPlayer)
 {
 	AresHouseExt::SetFirestormState(pThis->Owner, false);
 
-	if (isPlayer) {
+	if (isPlayer)
+	{
 		pThis->Owner->RecheckTechTree = true;
 	}
 }

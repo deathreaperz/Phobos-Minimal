@@ -10,65 +10,78 @@
 
 #include <Phobos.SaveGame.h>
 
-void FakeWaveClass::_DamageCell(CoordStruct* pLoc){
-	if(auto pOwner = this->Owner) {
+void FakeWaveClass::_DamageCell(CoordStruct* pLoc)
+{
+	if (auto pOwner = this->Owner)
+	{
 		const auto cell = CellClass::Coord2Cell(pLoc);
 		const auto pCell = MapClass::Instance->GetCellAt(cell);
 		const auto pWpn = this->_GetExtData()->Weapon;
 		const auto pWpnExt = WeaponTypeExtContainer::Instance.Find(pWpn);
-		const bool isAlt = pCell->ContainsBridge()  && this->LimboCoords.Z >= Unsorted::LevelHeight * (pCell->Level + 4);
+		const bool isAlt = pCell->ContainsBridge() && this->LimboCoords.Z >= Unsorted::LevelHeight * (pCell->Level + 4);
 		const auto pWH = pWpnExt->AmbientDamage_Warhead.Get(pWpn->Warhead);
 
-		for (auto Occupier =  pCell->Cell_Occupier(isAlt); Occupier; Occupier = Occupier->NextObject ) {
+		for (auto Occupier = pCell->Cell_Occupier(isAlt); Occupier; Occupier = Occupier->NextObject)
+		{
 			if (Occupier == this->Target && pWpnExt->AmbientDamage_IgnoreTarget)
 				continue;
 
-            if ( Occupier != pOwner
-              && Occupier->IsAlive
-              && Occupier->IsOnMap
-              && !Occupier->InLimbo
-              && Occupier->Health > 0 )
-            {
-				if (const auto pTechnoVictim = flag_cast_to<TechnoClass* , false>(Occupier)){
-					if (pTechnoVictim->IsSinking || pTechnoVictim->IsCrashing) {
+			if (Occupier != pOwner
+			  && Occupier->IsAlive
+			  && Occupier->IsOnMap
+			  && !Occupier->InLimbo
+			  && Occupier->Health > 0)
+			{
+				if (const auto pTechnoVictim = flag_cast_to<TechnoClass*, false>(Occupier))
+				{
+					if (pTechnoVictim->IsSinking || pTechnoVictim->IsCrashing)
+					{
 						continue;
 					}
 
-					if (const auto pUnit = cast_to<UnitClass* , false>(Occupier)) {
-						if (pUnit->DeathFrameCounter > 0) {
+					if (const auto pUnit = cast_to<UnitClass*, false>(Occupier))
+					{
+						if (pUnit->DeathFrameCounter > 0)
+						{
 							continue;
 						}
 					}
 				}
 
 				WarheadTypeExtData::DetonateAt(pWH, Occupier, pCell->GetCoordsWithBridge(), pOwner, pWpn->AmbientDamage);
-            }
-        }
+			}
+		}
 
-		if(pCell->OverlayTypeIndex != -1){
+		if (pCell->OverlayTypeIndex != -1)
+		{
 			auto pOverlay = OverlayTypeClass::Array->Items[pCell->OverlayTypeIndex];
-			if(pOverlay->ChainReaction){
+			if (pOverlay->ChainReaction)
+			{
 				pCell->ChainReaction();
 			}
 
-			if(pOverlay->Wall && pWH->Wall) {
+			if (pOverlay->Wall && pWH->Wall)
+			{
 				pCell->ReduceWall(pWpn->Damage);
 			}
 		}
 
-		if(pCell->Tile_Is_DestroyableCliff()){
-			if(ScenarioClass::Instance->Random.RandomRanged(0,99) < RulesClass::Instance->CollapseChance) {
+		if (pCell->Tile_Is_DestroyableCliff())
+		{
+			if (ScenarioClass::Instance->Random.RandomRanged(0, 99) < RulesClass::Instance->CollapseChance)
+			{
 				MapClass::Instance->DestroyCliff(pCell);
 			}
 		}
 
-		if(pCell->OverlayTypeIndex == -1) {
+		if (pCell->OverlayTypeIndex == -1)
+		{
 			TechnoClass::ClearWhoTargetingThis(pCell);
 		}
 	}
 }
 
-DEFINE_FUNCTION_JUMP(LJMP , 0x75F330 ,FakeWaveClass::_DamageCell)
+DEFINE_FUNCTION_JUMP(LJMP, 0x75F330, FakeWaveClass::_DamageCell)
 
 void WaveExtData::InitWeaponData()
 {
@@ -129,15 +142,15 @@ WORD const src, WORD& dest, int const intensity, WaveClass* const pWave, WaveCol
 	Drawing::Int_To_RGB(src, modified.R, modified.G, modified.B);
 
 	// ugly hack to fix byte wraparound problems
-	auto const ApplyIntensityToChannel = [&modified, &colorDatas , &intensity]
+	auto const ApplyIntensityToChannel = [&modified, &colorDatas, &intensity]
 	(int Point3D::* intentmember, BYTE ColorStruct::* member)
-	{
-		auto const component = std::clamp(modified.*member
-			+ ((intensity * colorDatas->Intent_Color.*intentmember * modified.*member) >> 16)
-			+ ((intensity * colorDatas->Color.*member) >> 8), 0, 255);
+		{
+			auto const component = std::clamp(modified.*member
+				+ ((intensity * colorDatas->Intent_Color.*intentmember * modified.*member) >> 16)
+				+ ((intensity * colorDatas->Color.*member) >> 8), 0, 255);
 
-		modified.*member = static_cast<BYTE>(component);
-	};
+			modified.*member = static_cast<BYTE>(component);
+		};
 
 	ApplyIntensityToChannel(&Point3D::X, &ColorStruct::R);
 	ApplyIntensityToChannel(&Point3D::Y, &ColorStruct::G);
@@ -255,7 +268,6 @@ bool WaveExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool WaveExtContainer::SaveAll(json& root)
@@ -323,10 +335,10 @@ ASMJIT_PATCH(0x763226, WaveClass_DTOR, 0x6)
 
 #include <Misc/Hooks.Otamaa.h>
 
-void FakeWaveClass::_Detach(AbstractClass* target , bool all)
+void FakeWaveClass::_Detach(AbstractClass* target, bool all)
 {
 	//WaveExtContainer::Instance.InvalidatePointerFor(pThis , target , all);
-	this->WaveClass::PointerExpired(target , all);
+	this->WaveClass::PointerExpired(target, all);
 }
 
 DEFINE_FUNCTION_JUMP(VTABLE, 0x7F6C1C, FakeWaveClass::_Detach)

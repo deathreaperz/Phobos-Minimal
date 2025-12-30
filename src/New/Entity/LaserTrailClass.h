@@ -19,7 +19,7 @@ public:
 	CoordStruct FLH;
 	bool IsOnTurret;
 	ColorStruct CurrentColor;
-	OptionalStruct<CoordStruct,true> LastLocation;
+	OptionalStruct<CoordStruct, true> LastLocation;
 	bool CanDraw;
 	bool Cloaked;
 	int InitialDelay;
@@ -30,7 +30,7 @@ public:
 		CoordStruct flh = { 0, 0, 0 }, bool isOnTurret = false) :
 		Type { pTrailType }
 		, Visible { true }
-		, FLH {flh}
+		, FLH { flh }
 		, IsOnTurret { isOnTurret }
 		, CurrentColor { (pTrailType->IsHouseColor.Get() && (nHouseColor != ColorStruct::Empty)) ? nHouseColor : pTrailType->Color }
 		, LastLocation { }
@@ -42,15 +42,15 @@ public:
 	{ }
 
 	COMPILETIMEEVAL LaserTrailClass() :
-		Type {nullptr}
-		, Visible {false}
+		Type { nullptr }
+		, Visible { false }
 		, FLH { }
-		, IsOnTurret {false}
-		, CurrentColor {0, 0, 0}
+		, IsOnTurret { false }
+		, CurrentColor { 0, 0, 0 }
 		, LastLocation { }
-		, CanDraw {true}
+		, CanDraw { true }
 		, Cloaked { false }
-		, InitialDelay {0}
+		, InitialDelay { 0 }
 		, InitialDelayTimer { }
 		, Permanent {}
 	{ }
@@ -95,7 +95,6 @@ private:
 
 		return CanDraw;
 	}
-
 };
 
 template <>

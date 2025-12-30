@@ -50,9 +50,3 @@ public:
 
 	static void DrawProducingProgress();
 };
-
-
-
-
-
-

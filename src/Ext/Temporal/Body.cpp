@@ -1,4 +1,4 @@
- #include "Body.h"
+#include "Body.h"
 
 #include <Utilities/Macro.h>
 
@@ -25,7 +25,8 @@
 
 void FakeTemporalClass::CreateWarpAwayAnimation(WeaponTypeClass* pWeapon)
 {
-	if (auto pAnimType = WarheadTypeExtContainer::Instance.Find(pWeapon->Warhead)->Temporal_WarpAway.Get(RulesClass::Instance()->WarpAway)) {
+	if (auto pAnimType = WarheadTypeExtContainer::Instance.Find(pWeapon->Warhead)->Temporal_WarpAway.Get(RulesClass::Instance()->WarpAway))
+	{
 		AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pAnimType, this->Target->Location, 0, 1, AnimFlag::AnimFlag_600, 0, 0),
 			this->Owner ? this->Owner->Owner : nullptr,
 			this->Target->Owner,
@@ -38,12 +39,14 @@ void FakeTemporalClass::CreateWarpAwayAnimation(WeaponTypeClass* pWeapon)
 void HandleBuildingDestruction(TemporalClass* pTemporal, BuildingClass* building)
 {
 	// Handle occupiers
-	if (building->GetOccupantCount() > 0) {
+	if (building->GetOccupantCount() > 0)
+	{
 		building->KillOccupants(nullptr);
 	}
 
 	// Handle superweapon suspension
-	if (pTemporal->SourceSW) {
+	if (pTemporal->SourceSW)
+	{
 		pTemporal->SourceSW->SetOnHold(false);
 		pTemporal->SourceSW = 0;
 	}
@@ -55,18 +58,26 @@ void HandleBuildingDestruction(TemporalClass* pTemporal, BuildingClass* building
 		&& building->RadioLinks.Items
 		&& building->RadioLinks.IsAllocated
 		&& building->RadioLinks.IsInitialized
-		) {
-		for (auto i = 0; i < building->RadioLinks.Capacity; ++i) {
-			if (auto const pAir = cast_to<AircraftClass*>(building->RadioLinks[i])) {
-				if (pAir->IsAlive && !pAir->InLimbo && !pAir->TemporalTargetingMe) {
+		)
+	{
+		for (auto i = 0; i < building->RadioLinks.Capacity; ++i)
+		{
+			if (auto const pAir = cast_to<AircraftClass*>(building->RadioLinks[i]))
+			{
+				if (pAir->IsAlive && !pAir->InLimbo && !pAir->TemporalTargetingMe)
+				{
 					const auto pExt = TechnoTypeExtContainer::Instance.Find(pAir->Type);
 
 					if (pAir->IsInAir() || !AircraftTypeExtContainer::Instance.Find(pAir->Type)->ExtendedAircraftMissions_FastScramble
-									.Get(RulesExtData::Instance()->ExpandAircraftMission)) {
-						if ((pExt->Crashable.isset() && !pExt->Crashable) || !pAir->Crash(pTemporal->Owner)) {
+									.Get(RulesExtData::Instance()->ExpandAircraftMission))
+					{
+						if ((pExt->Crashable.isset() && !pExt->Crashable) || !pAir->Crash(pTemporal->Owner))
+						{
 							TechnoExtData::HandleRemove(pAir, pTemporal->Owner, false, false);
 						}
-					} else {
+					}
+					else
+					{
 						//Ask plane to fly
 						building->SendCommand(RadioCommand::AnswerLeave, pAir);
 						pAir->DockedTo = nullptr;
@@ -82,7 +93,7 @@ void HandleBuildingDestruction(TemporalClass* pTemporal, BuildingClass* building
 
 // bugfix #379: Temporal friendly kills give veterancy
 // bugfix #1266: Temporal kills gain double experience
-void HandleDestruction(TemporalClass* pTemporal , TechnoClass* target , WeaponTypeClass* pWeapon)
+void HandleDestruction(TemporalClass* pTemporal, TechnoClass* target, WeaponTypeClass* pWeapon)
 {
 	auto pOwnerExt = TechnoExtContainer::Instance.Find(pTemporal->Owner);
 	auto pWarheadExt = WarheadTypeExtContainer::Instance.Find(pWeapon->Warhead);
@@ -99,40 +110,50 @@ void HandleDestruction(TemporalClass* pTemporal , TechnoClass* target , WeaponTy
 	const auto pWeaponExt = WeaponTypeExtContainer::Instance.Find(pWeapon);
 	auto const pTargetExt = TechnoExtContainer::Instance.Find(target);
 
-	if (auto pTargetShield = pTargetExt->GetShield()) {
-		if (pTargetShield->IsAvailable()) {
+	if (auto pTargetShield = pTargetExt->GetShield())
+	{
+		if (pTargetShield->IsAvailable())
+		{
 			pTargetShield->OnTemporalUpdate(pTemporal);
 		}
 	}
 
 	pTargetExt->RadarJammer.reset();
 
-	if (target && target->IsAlive) {
+	if (target && target->IsAlive)
+	{
 		AresAE::UpdateTempoal(&pTargetExt->AeData, target);
 
-		if (target && target->IsAlive) {
-			for (auto& ae : pTargetExt->PhobosAE) {
-				if (ae) {
+		if (target && target->IsAlive)
+		{
+			for (auto& ae : pTargetExt->PhobosAE)
+			{
+				if (ae)
+				{
 					ae->AI_Temporal();
 				}
 			}
 
-			if (target && target->IsAlive) {
+			if (target && target->IsAlive)
+			{
 				pTargetExt->UpdateRearmInTemporal();
 
-				auto pBuilding = cast_to<BuildingClass*,false>(target);
+				auto pBuilding = cast_to<BuildingClass*, false>(target);
 				bool erase = true;
 
 				if (!pBuilding && pWeaponExt->Abductor_Temporal)
 					erase = !AresWPWHExt::conductAbduction(pWeapon, pTemporal->Owner, target, CoordStruct::Empty);
 
-				if (erase) {
-					if (pBuilding) {
+				if (erase)
+				{
+					if (pBuilding)
+					{
 						HandleBuildingDestruction(pTemporal, pBuilding);
 					}
 
 					// Handle bunker connections for target
-					if (auto pBunker = cast_to<BuildingClass*>(target->BunkerLinkedItem)) {
+					if (auto pBunker = cast_to<BuildingClass*>(target->BunkerLinkedItem))
+					{
 						pBunker->UnloadBunker();
 					}
 
@@ -140,7 +161,8 @@ void HandleDestruction(TemporalClass* pTemporal , TechnoClass* target , WeaponTy
 					target->KillPassengers(pTemporal->Owner);
 
 					// Handle slave manager
-					if (auto pSlave = target->SlaveManager) {
+					if (auto pSlave = target->SlaveManager)
+					{
 						pSlave->Killed(pTemporal->Owner, nullptr);
 					}
 
@@ -159,7 +181,8 @@ void HandleDestruction(TemporalClass* pTemporal , TechnoClass* target , WeaponTy
 
 void FakeTemporalClass::_Update()
 {
-	if (this->Target && this->Target->TemporalTargetingMe == this && this->NextTemporal) {
+	if (this->Target && this->Target->TemporalTargetingMe == this && this->NextTemporal)
+	{
 		this->Target->TemporalTargetingMe = 0;
 		this->Target->BeingWarpedOut = 0;
 		this->Detach();
@@ -167,63 +190,74 @@ void FakeTemporalClass::_Update()
 	}
 	bool shouldProcessMainLogic = true;
 
-	if (this->Owner && this->Owner->InOpenToppedTransport && this->Target) {
-
+	if (this->Owner && this->Owner->InOpenToppedTransport && this->Target)
+	{
 		CoordStruct targetPos = this->Target->GetCoords();
 		CoordStruct ownerPos = this->Owner->GetCoords();
 		CoordStruct distanceVector = ownerPos - targetPos;
 
 		int disatanceMax = RulesClass::Instance->OpenToppedWarpDistance;
 
-		if (auto const pTransport = this->Owner->Transporter) {
-			if (pTransport->IsAlive) {
+		if (auto const pTransport = this->Owner->Transporter)
+		{
+			if (pTransport->IsAlive)
+			{
 				const auto& _cDiscance = TechnoTypeExtContainer::Instance.Find(pTransport->GetTechnoType())->OpenTopped_WarpDistance;
-				if (_cDiscance.isset()) {
+				if (_cDiscance.isset())
+				{
 					disatanceMax = _cDiscance.Get();
 				}
 			}
 		}
 
-		if (distanceVector.Length() > (disatanceMax << 8)) {
+		if (distanceVector.Length() > (disatanceMax << 8))
+		{
 			this->LetGo();
 			shouldProcessMainLogic = false;
 		}
 	}
 
-	if (shouldProcessMainLogic) {
+	if (shouldProcessMainLogic)
+	{
 		this->WarpRemaining -= TechnoExt_ExtData::GetWarpPerStep(this, 0);
 
-		if (!this->Owner) {
+		if (!this->Owner)
+		{
 			this->Detach();
 			return;
 		}
 
-		if(this->WarpRemaining <= 0) {
+		if (this->WarpRemaining <= 0)
+		{
 			this->WarpRemaining = 0;//lets reset the warp remaning
 			int WeaponIdx = TechnoExtContainer::Instance.Find(this->Owner)->idxSlot_Warp;
 			auto pWpStruct = this->Owner->GetWeapon(WeaponIdx);
 			auto pWeapon = pWpStruct->WeaponType;
 
-			if (auto pTarget = this->Target) {
+			if (auto pTarget = this->Target)
+			{
 				this->CreateWarpAwayAnimation(pWeapon);
 
-				if (pTarget && pTarget->IsAlive) {
+				if (pTarget && pTarget->IsAlive)
+				{
 					HandleDestruction(this, pTarget, pWeapon);
 				}
 			}
 
 			this->ResetTemporalState();
-			if(this->Owner)
+			if (this->Owner)
 				this->Owner->EnterIdleMode(false, 1);
 		}
 	}
 }
 
-void FakeTemporalClass::_Detonate(TechnoClass* pTarget) 	{
+void FakeTemporalClass::_Detonate(TechnoClass* pTarget)
+{
 	if (!pTarget || !this->Owner) return;
 
 	// Clean up owner's existing temporal effect
-	if (this->Owner->TemporalImUsing && this->Owner->TemporalImUsing->Target) {
+	if (this->Owner->TemporalImUsing && this->Owner->TemporalImUsing->Target)
+	{
 		this->Owner->TemporalImUsing->LetGo();
 	}
 
@@ -232,11 +266,13 @@ void FakeTemporalClass::_Detonate(TechnoClass* pTarget) 	{
 
 	// bugfix #874 B: Temporal warheads affect Warpable=no units
 	// it has been checked: this is warpable. free captured and destroy spawned units.
-	if (pTarget->SpawnManager) {
+	if (pTarget->SpawnManager)
+	{
 		pTarget->SpawnManager->KillNodes();
 	}
 
-	if (pTarget->CaptureManager) {
+	if (pTarget->CaptureManager)
+	{
 		pTarget->CaptureManager->FreeAll();
 	}
 
@@ -248,79 +284,96 @@ void FakeTemporalClass::_Detonate(TechnoClass* pTarget) 	{
 	auto pWeapon = this->Owner->GetWeapon(wpIdx)->WeaponType;
 	const auto pWHExt = WarheadTypeExtContainer::Instance.Find(pWeapon->Warhead);
 
-	if (TemporalClass* existingTemporal = pTarget->TemporalTargetingMe) {
+	if (TemporalClass* existingTemporal = pTarget->TemporalTargetingMe)
+	{
 		// Link to existing temporal chain
 		this->NextTemporal = existingTemporal;
 		this->PrevTemporal = existingTemporal->PrevTemporal;
 		existingTemporal->PrevTemporal = this;
 
-		if (this->PrevTemporal) {
+		if (this->PrevTemporal)
+		{
 			this->PrevTemporal->NextTemporal = this;
 		}
-
-	} else {
-
+	}
+	else
+	{
 		pTarget->TemporalTargetingMe = this;
 
-		if(pWHExt->Temporal_HealthFactor > 1.0){
+		if (pWHExt->Temporal_HealthFactor > 1.0)
+		{
 			this->WarpRemaining = int(pTarget->GetHealthPercentage() * pWHExt->Temporal_HealthFactor);
-		} else {
+		}
+		else
+		{
 			this->WarpRemaining = 10 * pTargetType->Strength;
 		}
 
-		if(!pWHExt->Malicious && !pWHExt->Nonprovocative){
-			if(auto pTargetOwner = pTarget->Owner) {
-				if (pUnit) {
-					if (pUnit->Type->Harvester && pTargetOwner == HouseClass::CurrentPlayer()) {
+		if (!pWHExt->Malicious && !pWHExt->Nonprovocative)
+		{
+			if (auto pTargetOwner = pTarget->Owner)
+			{
+				if (pUnit)
+				{
+					if (pUnit->Type->Harvester && pTargetOwner == HouseClass::CurrentPlayer())
+					{
 						auto nDest = pTarget->GetDestination();
 
-						if (RadarEventClass::Create(RadarEventType::HarvesterAttacked, CellClass::Coord2Cell(nDest))) {
+						if (RadarEventClass::Create(RadarEventType::HarvesterAttacked, CellClass::Coord2Cell(nDest)))
+						{
 							VoxClass::Play(GameStrings::EVA_OreMinerUnderAttack());
 						}
 					}
-
-				} else if (pBuilding) {
-					if (!pBuilding->Type->Insignificant && !pBuilding->IsStrange()) {
+				}
+				else if (pBuilding)
+				{
+					if (!pBuilding->Type->Insignificant && !pBuilding->IsStrange())
+					{
 						((FakeHouseClass*)pTargetOwner)->_Attacked(pBuilding, pWeapon->Warhead);
 					}
-
 				}
 			}
 		}
-
 	}
 
 	pTarget->BeingWarpedOut = true;
 
-	if (pTargetType->IsGattling) {
+	if (pTargetType->IsGattling)
+	{
 		pTarget->GattlingRateDown(1);
 	}
 
-	if (pBuilding) {
+	if (pBuilding)
+	{
 		auto pBldExt = BuildingExtContainer::Instance.Find(pBuilding);
 		pBldExt->MyPrismForwarding->RemoveFromNetwork(true);
 		pBuilding->DisableTemporal();
 
 		pBuilding->CashProductionTimer.Pause();
 
-		for (size_t i = 0; i < std::size(pBuilding->Upgrades); ++i) {
-			if (pBuilding->Upgrades[i]) {
+		for (size_t i = 0; i < std::size(pBuilding->Upgrades); ++i)
+		{
+			if (pBuilding->Upgrades[i])
+			{
 				pBldExt->CashUpgradeTimers[i].Pause();
 			}
 		}
 
-		if(pBuilding->Owner){
-			if(pBuilding->Type->Radar)
+		if (pBuilding->Owner)
+		{
+			if (pBuilding->Type->Radar)
 				pBuilding->Owner->RecheckRadar = true;
 
 			pBuilding->Owner->RecheckTechTree = 1;
 		}
 	}
 
-	if (pTargetType->OpenTopped) {
+	if (pTargetType->OpenTopped)
+	{
 		for (auto pPassenger = pTarget->Passengers.GetFirstPassenger();
 			pPassenger;
-			pPassenger = flag_cast_to<FootClass*>(pPassenger->NextObject)) {
+			pPassenger = flag_cast_to<FootClass*>(pPassenger->NextObject))
+		{
 			const auto pTemporal = pPassenger->TemporalImUsing;
 
 			if (pTemporal && pTemporal->Target)
@@ -329,7 +382,8 @@ void FakeTemporalClass::_Detonate(TechnoClass* pTarget) 	{
 	}
 
 	TemporalClass* targetTemporal = pTarget->TemporalImUsing;
-	if (targetTemporal && targetTemporal->Target) {
+	if (targetTemporal && targetTemporal->Target)
+	{
 		targetTemporal->LetGo();
 	}
 
@@ -343,9 +397,8 @@ void FakeTemporalClass::_Detonate(TechnoClass* pTarget) 	{
 // load / save
 
 template <typename T>
-void TemporalExtData::Serialize(T& Stm) {
-
-
+void TemporalExtData::Serialize(T& Stm)
+{
 }
 
 // =============================
@@ -386,7 +439,6 @@ bool TemporalExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool TemporalExtContainer::SaveAll(json& root)

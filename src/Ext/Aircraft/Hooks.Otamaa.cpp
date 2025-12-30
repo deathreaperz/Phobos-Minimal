@@ -255,9 +255,12 @@ ASMJIT_PATCH(0x416FFD, AircraftClass_MI_Move_Carryall_AllowWater_LZClear, 0x6) /
 {
 	GET(AircraftClass*, pThis, ESI);
 
-	if (AircraftExtData::IsValidLandingZone(pThis)) {
+	if (AircraftExtData::IsValidLandingZone(pThis))
+	{
 		R->AL(true);
-	} else {
+	}
+	else
+	{
 		R->AL(pThis->IsLandingZoneClear(pThis->Destination));
 	}
 
@@ -531,7 +534,6 @@ int Mission_Attack(AircraftClass* pThis)
 			if (fireCount > 1 &&
 				WeaponTypeExtContainer::Instance.Find(pWeaponStr->WeaponType)->Strafing_Shots < fireCount)
 			{
-
 				if (!pThis->Ammo)
 					pThis->__DoingOverfly = false;
 

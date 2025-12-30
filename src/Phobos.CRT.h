@@ -11,22 +11,26 @@ class PhobosCRT final
 	NO_CONSTRUCT_CLASS(PhobosCRT)
 public:
 
-	static OPTIONALINLINE bool iequals(std::string_view a, std::string_view b) {
+	static OPTIONALINLINE bool iequals(std::string_view a, std::string_view b)
+	{
 		if (a.size() != b.size()) return false;
 		return _strnicmp(a.data(), b.data(), a.size()) == 0;
 	}
 
-	 template<typename CharPtr>
-	 static CharPtr __cdecl strchr_selector(CharPtr str, char ch) {
+	template<typename CharPtr>
+	static CharPtr __cdecl strchr_selector(CharPtr str, char ch)
+	{
 		return strchr(str, ch);
-	 }
+	}
 
-	 template<typename CharPtr ,typename CharRetPtr>
-	 static CharRetPtr __cdecl strstr_selector(CharPtr a1, CharPtr a2) {
-		 return strstr(a1, a2);
-	 }
+	template<typename CharPtr, typename CharRetPtr>
+	static CharRetPtr __cdecl strstr_selector(CharPtr a1, CharPtr a2)
+	{
+		return strstr(a1, a2);
+	}
 
-	static COMPILETIMEEVAL bool is_space(char c) {
+	static COMPILETIMEEVAL bool is_space(char c)
+	{
 		return c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\f' || c == '\v';
 	}
 
@@ -210,7 +214,8 @@ public:
 		return s;
 	}
 
-	static COMPILETIMEEVAL std::string_view FORCEDINLINE trim(std::string_view sv) {
+	static COMPILETIMEEVAL std::string_view FORCEDINLINE trim(std::string_view sv)
+	{
 		size_t begin = 0;
 		size_t end = sv.size();
 

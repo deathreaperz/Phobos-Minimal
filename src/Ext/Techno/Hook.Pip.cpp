@@ -32,7 +32,6 @@ namespace Tiberiumpip
 
 	int GetEmptyShapeIndex(bool isWeeder, TechnoTypeExtData* pTypeData)
 	{
-
 		if (isWeeder && pTypeData->Weeder_PipEmptyIndex.isset())
 			return pTypeData->Weeder_PipEmptyIndex;
 		else if (pTypeData->Tiberium_EmptyPipIdx.isset())
@@ -155,7 +154,6 @@ namespace Tiberiumpip
 			nOffs.Y += nOffsetY;
 		}
 	}
-
 }
 
 #ifdef _done
@@ -621,18 +619,21 @@ void __fastcall FakeTechnoClass::__Draw_Pips(TechnoClass* techno, discard_t, Poi
 	}
 
 	{
-		if (isBuilding) {
+		if (isBuilding)
+		{
 			DrawBuildingOccupants((BuildingClass*)techno, &drawState, &pipInfo, clipRect);
 		}
 
 		switch (technoTypeClass->PipScale)
 		{
 		default: { break; }
-		case PipScale::Ammo: {
+		case PipScale::Ammo:
+		{
 			DrawAmmoPip(techno, isBuilding, pips2_SHP, &drawState, &pipInfo, clipRect);
 			break;
 		}
-		case PipScale::Tiberium: {
+		case PipScale::Tiberium:
+		{
 			bool showTiberium = true;
 
 			if (isBuilding)
@@ -647,22 +648,26 @@ void __fastcall FakeTechnoClass::__Draw_Pips(TechnoClass* techno, discard_t, Poi
 				}
 			}
 
-			if (showTiberium) {
+			if (showTiberium)
+			{
 				Tiberiumpip::DrawTiberiumPip(techno, technoTypeClass, pipInfo.maxPips, pipInfo.shape, pipInfo.convert, &drawState.pos, clipRect, drawState.spacigns_.X, drawState.spacigns_.Y);
 			}
 			break;
 		}
-		case PipScale::MindControl: {
+		case PipScale::MindControl:
+		{
 			DrawMindControlPip(techno, &drawState, &pipInfo, clipRect);
 			break;
 		}
-		case PipScale::Passengers: {
+		case PipScale::Passengers:
+		{
 			if (technoTypeClass->Passengers > 0)
 				DrawPassengerPips(techno, technoTypeClass, &drawState, &pipInfo, clipRect);
 
 			break;
 		}
-		case PipScale::Power: {
+		case PipScale::Power:
+		{
 			//none
 		}
 		case PipScale(6):
@@ -723,9 +728,7 @@ static void DrawSpawnPips(TechnoClass* techno, bool isBuilding, TechnoTypeClass*
 		DrawSinglePip(&pipPos, pipInfo->convert, pipInfo->shape,
 			i < currentSpawnsCount ? pTypeExt->SpawnsPip : pTypeExt->EmptySpawnsPip,
 			clipRect);
-
 	}
-
 }
 
 // Draw building occupant pips
@@ -745,13 +748,11 @@ static void DrawBuildingOccupants(BuildingClass* building, PipDrawState* drawSta
 
 	for (int i = 0; i < maxOccupants; i++)
 	{
-
 		PipIndex frameIndex = PipIndex::PersonEmpty;
 		if (i < currentOccupants)
 		{
 			if (auto const pInfantry = building->Occupants.Items[i])
 			{
-
 				const auto pIfnExt = TechnoTypeExtContainer::Instance.Find(pInfantry->Type);
 
 				if (const auto pGarrisonPip = pIfnExt->PipGarrison.Get(nullptr))
@@ -850,7 +851,6 @@ static void DrawAmmoPip(TechnoClass* techno, bool isBuilding, SHPStruct* pipShap
 
 		for (int i = 0; i < pipInfo->maxPips && remaining > 0; i++)
 		{
-
 			int frame = i >= pipInfo->count ? emptyFrame : ammoFrame;
 
 			Point2D pipPos {

@@ -63,7 +63,6 @@ public:
 
 	static inline bool IsStickyButton(const GadgetClass* pButton)
 	{
-
 		return pButton == GadgetClass::StickyButton();;
 	}
 
@@ -103,7 +102,6 @@ private:
 	int Height { 0 };
 	int Width { 0 };
 	ColorStruct Color { };
-
 
 	MessageToggleClass* Button_Main { nullptr };
 	MessageToggleClass* Button_Toggle { nullptr };

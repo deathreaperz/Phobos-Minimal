@@ -59,8 +59,7 @@ struct TunnelData
 
 	COMPILETIMEEVAL TunnelData() noexcept : Vector {}, MaxCap { 1 } { }
 	COMPILETIMEEVAL ~TunnelData() noexcept = default;
-	COMPILETIMEEVAL TunnelData(int MaxCap) noexcept : Vector {} , MaxCap { MaxCap } {}
-
+	COMPILETIMEEVAL TunnelData(int MaxCap) noexcept : Vector {}, MaxCap { MaxCap } { }
 
 	bool Load(PhobosStreamReader& Stm, bool RegisterForChange)
 	{ return Serialize(Stm); }
@@ -329,7 +328,8 @@ public:
 	void UpdateShotCount(SuperWeaponTypeClass* pFor);
 	void UpdateShotCountB(SuperWeaponTypeClass* pFor);
 
-	COMPILETIMEEVAL LauchData GetShotCount(SuperWeaponTypeClass* pFor){
+	COMPILETIMEEVAL LauchData GetShotCount(SuperWeaponTypeClass* pFor)
+	{
 		if ((size_t)pFor->ArrayIndex < this->LaunchDatas.size())
 			return this->LaunchDatas[pFor->ArrayIndex];
 
@@ -413,10 +413,12 @@ public:
 			if (!items[i])
 				continue;
 
-			if (pHouse->CanExpectToBuild(items[i], idxParentCountry)) {
-
-				if COMPILETIMEEVAL (T::AbsID == BuildingTypeClass::AbsID) {
-					if (HouseExtData::IsDisabledFromShell(pHouse, (const BuildingTypeClass*)items[i])) {
+			if (pHouse->CanExpectToBuild(items[i], idxParentCountry))
+			{
+				if COMPILETIMEEVAL(T::AbsID == BuildingTypeClass::AbsID)
+				{
+					if (HouseExtData::IsDisabledFromShell(pHouse, (const BuildingTypeClass*)items[i]))
+					{
 						continue;
 					}
 				}
@@ -449,7 +451,7 @@ public:
 	static int CheckBuildingBuildLimit(HouseClass* pHouse, BuildingTypeClass* pItem, bool const includeQueued);
 	static int CountOwnedIncludeDeploy(const HouseClass* pThis, const TechnoTypeClass* pItem);
 
-	static std::vector<int> GetBuildLimitGroupLimits(HouseClass* pHouse,TechnoTypeClass* pType);
+	static std::vector<int> GetBuildLimitGroupLimits(HouseClass* pHouse, TechnoTypeClass* pType);
 	static CanBuildResult BuildLimitGroupCheck(HouseClass* pThis, TechnoTypeClass* pItem, bool buildLimitOnly, bool includeQueued);
 	static int QueuedNum(const HouseClass* pHouse, const TechnoTypeClass* pType);
 	static void RemoveProduction(const HouseClass* pHouse, const TechnoTypeClass* pType, int num);
@@ -482,14 +484,13 @@ public:
 	static void IncremetCrateTracking(HouseClass* pHouse, Powerup type);
 	static void InitializeTrackers(HouseClass* pHouse);
 
-	static bool IsMutualAllies(HouseClass const* pThis , HouseClass const* pHouse);
+	static bool IsMutualAllies(HouseClass const* pThis, HouseClass const* pHouse);
 
 private:
 	bool UpdateHarvesterProduction();
 
 	template <typename T>
 	void Serialize(T& Stm);
-
 };
 
 class HouseExtContainer final : public Container<HouseExtData>
@@ -534,7 +535,7 @@ public:
 	bool _IsAlliedWith(HouseClass* pOther);
 	void _Detach(AbstractClass* target, bool all);
 	int _Expert_AI();
-	void _GiveTiberium(float amout , int type);
+	void _GiveTiberium(float amout, int type);
 	bool _IsIonCannonEligibleTarget(TechnoClass* pTechno) const;
 	void _UpdateAngerNodes(int score_add, HouseClass* pHouse);
 	void _AITryFireSW();
@@ -544,11 +545,13 @@ public:
 	void _UpdateSpySat();
 	void _Attacked(BuildingClass* source, WarheadTypeClass* warhead);
 
-	HouseExtData* _GetExtData() {
+	HouseExtData* _GetExtData()
+	{
 		return *reinterpret_cast<HouseExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 
-	HouseTypeExtData* _GetTypeExtData() {
+	HouseTypeExtData* _GetTypeExtData()
+	{
 		return *reinterpret_cast<HouseTypeExtData**>(((DWORD)this->Type) + AbstractExtOffset);
 	}
 };

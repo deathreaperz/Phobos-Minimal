@@ -17,7 +17,8 @@ public:
 	void LoadFromStream(PhobosStreamReader& Stm);
 	void SaveToStream(PhobosStreamWriter& Stm);
 
-	static void COMPILETIMEEVAL OPTIONALINLINE AddDefaults() {
+	static void COMPILETIMEEVAL OPTIONALINLINE AddDefaults()
+	{
 		Array.reserve(6u);
 
 		FindOrAllocate(GameStrings::POWER());

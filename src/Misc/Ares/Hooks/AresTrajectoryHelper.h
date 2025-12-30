@@ -7,7 +7,8 @@ class AbstractClass;
 class HouseClass;
 class CellClass;
 class WeaponTypeClass;
-struct BulletObstacleHelper {
+struct BulletObstacleHelper
+{
 	static COMPILETIMEEVAL bool IsCliffHit(
 		CellClass const* pSource, CellClass const* pBefore,
 		CellClass const* pAfter)
@@ -26,7 +27,8 @@ struct BulletObstacleHelper {
 	}
 };
 
-struct AresBulletObstacleHelper {
+struct AresBulletObstacleHelper
+{
 	// gets whether collision checks are needed
 	static bool SubjectToAnything(BulletTypeClass* pType);
 
@@ -58,7 +60,8 @@ struct AresBulletObstacleHelper {
 		WeaponTypeClass* pWeapon, HouseClass* pOwner);
 };
 
-struct PhobosBulletObstacleHelper {
+struct PhobosBulletObstacleHelper
+{
 	static CellClass* GetObstacle(CellClass* pSourceCell,
 		CellClass* pTargetCell,
 		CellClass* pCurrentCell,

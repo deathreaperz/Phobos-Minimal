@@ -128,7 +128,6 @@ void* __cdecl CustomMemoryManager::RecreatedCalloc(size_t num, size_t size)
 		{
 			return nullptr;
 		}
-
 	}
 	while (true);
 }
@@ -486,8 +485,8 @@ char* CustomMemoryManager::StrDup(char* str)
 	{
 		len++;
 	}
-	char*  c_str = (char*)RecreatedNHMalloc(len + 1, 1);
-	char*  p = c_str;
+	char* c_str = (char*)RecreatedNHMalloc(len + 1, 1);
+	char* p = c_str;
 	while (*str)
 	{
 		*p++ = *str++;

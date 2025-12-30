@@ -32,7 +32,6 @@
 
 #include "Header.h"
 
-
 #include <Misc/PhobosGlobal.h>
 
 #include <RadarEventClass.h>
@@ -51,7 +50,7 @@ ASMJIT_PATCH(0x46920B, BulletClass_Detonate, 6)
 	auto const pTechno = pThis->Owner ? pThis->Owner : nullptr;
 	auto const pOwnerHouse = pTechno ? pTechno->Owner : BulletExtContainer::Instance.Find(pThis)->Owner;
 
-	pWHExt->Detonate(pTechno, pOwnerHouse, pThis, *pCoordsDetonation , pThis->WeaponType ? pThis->WeaponType->Damage : 0);
+	pWHExt->Detonate(pTechno, pOwnerHouse, pThis, *pCoordsDetonation, pThis->WeaponType ? pThis->WeaponType->Damage : 0);
 	PhobosGlobal::Instance()->DetonateDamageArea = false;
 
 	// this snapping stuff does not belong here. it should go into BulletClass::Fire
@@ -59,16 +58,18 @@ ASMJIT_PATCH(0x46920B, BulletClass_Detonate, 6)
 	auto snapped = false;
 
 	static auto const SnapDistance = 64;
-	if (pThis->Target && pThis->DistanceFrom(pThis->Target) < SnapDistance) {
+	if (pThis->Target && pThis->DistanceFrom(pThis->Target) < SnapDistance)
+	{
 		coords = pThis->Target->GetCoords();
 		snapped = true;
 	}
 
 	// these effects should be applied no matter what happens to the target
-	 WarheadTypeExtData::CreateIonBlast(pWarhead, coords);
+	WarheadTypeExtData::CreateIonBlast(pWarhead, coords);
 
 	bool targetStillOnMap = true;
-	if (snapped && pWeaponExt && AresWPWHExt::conductAbduction(pThis->WeaponType, pThis->Owner, pThis->Target, coords)) {
+	if (snapped && pWeaponExt && AresWPWHExt::conductAbduction(pThis->WeaponType, pThis->Owner, pThis->Target, coords))
+	{
 		// ..and neuter the bullet, since it's not supposed to hurt the prisoner after the abduction
 		pThis->Health = 0;
 		pThis->DamageMultiplier = 0;
@@ -79,14 +80,15 @@ ASMJIT_PATCH(0x46920B, BulletClass_Detonate, 6)
 	// if the target gets abducted, there's nothing there to apply IC, EMP, etc. to
 	// mind that conductAbduction() neuters the bullet, so if you wish to change
 	// this check, you have to fix that as well
-	if (targetStillOnMap) {
-
+	if (targetStillOnMap)
+	{
 		auto const damage = pThis->WeaponType ? pThis->WeaponType->Damage : 0;
 		pWHExt->applyIronCurtain(coords, pOwnerHouse, damage);
 		WarheadTypeExtData::applyEMP(pWarhead, coords, pThis->Owner);
 		AresAE::applyAttachedEffect(pWarhead, coords, pOwnerHouse);
 
-		if (snapped && AresWPWHExt::applyOccupantDamage(pThis)) {
+		if (snapped && AresWPWHExt::applyOccupantDamage(pThis))
+		{
 			// ..and neuter the bullet, since it's not supposed to hurt the prisoner after the abduction
 			pThis->Health = 0;
 			pThis->DamageMultiplier = 0;
@@ -94,11 +96,11 @@ ASMJIT_PATCH(0x46920B, BulletClass_Detonate, 6)
 		}
 	}
 
-	if(pWHExt->PermaMC)
+	if (pWHExt->PermaMC)
 		return 0x469AA4u;
 
 	if (!pWHExt->MindControl_UseTreshold)
 		return 0u;
 
-	return BulletExtData::ApplyMCAlternative(pThis) ? 0x469AA4u  : 0u;
+	return BulletExtData::ApplyMCAlternative(pThis) ? 0x469AA4u : 0u;
 }

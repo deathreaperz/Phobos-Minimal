@@ -44,7 +44,7 @@ ASMJIT_PATCH(0x4179F7, AircraftClass_EnterIdleMode_NoCrash, 0x6)
 	}
 	else if (!pThis->Destination)
 	{
-		const auto pCell =  pThis->GoodLandingZone_();
+		const auto pCell = pThis->GoodLandingZone_();
 		pThis->SetDestination(pCell, true);
 	}
 
@@ -80,7 +80,6 @@ ASMJIT_PATCH(0x41A5C7, AircraftClass_Mission_Guard_StartAreaGuard, 0x6)
 	return SkipGameCode;
 }
 
-
 ASMJIT_PATCH(0x4CE42A, FlyLocomotionClass_StateUpdate_NoLanding, 0x6) // Prevent aircraft from hovering due to cyclic enter Guard and AreaGuard missions when above buildings
 {
 	enum { SkipGameCode = 0x4CE441 };
@@ -110,7 +109,6 @@ int __fastcall AircraftClass_MI_Attack_SelectWeapon_BeforeFiring(AircraftClass* 
 	if (!pExt->Strafe_BombsDroppedThisRound)
 		pExt->CurrentAircraftWeaponIndex = MaxImpl(pThis->SelectWeapon(pTarget), 0);
 
-
 	return pExt->CurrentAircraftWeaponIndex;
 }
 
@@ -131,7 +129,6 @@ ASMJIT_PATCH(0x418544, AircraftClass_Mission_Attack_StrafingDestinationFix, 0x6)
 		pThis->SetDestination(pThis->Target, true);
 
 	return 0;
-
 }ASMJIT_PATCH_AGAIN(0x41874E, AircraftClass_Mission_Attack_StrafingDestinationFix, 0x6)
 
 ASMJIT_PATCH(0x4180F4, AircraftClass_MI_Attack_WeaponRange, 0x5)
@@ -153,7 +150,7 @@ ASMJIT_PATCH(0x4197F3, AircraftClass_GetFireLocation_Strafing, 0x5)
 	if (!pTarget)
 		return 0;
 
-	auto const pObject = flag_cast_to<ObjectClass* , false>(pTarget);
+	auto const pObject = flag_cast_to<ObjectClass*, false>(pTarget);
 
 	if (!pObject || !pObject->IsInAir())
 		return 0;
@@ -199,15 +196,19 @@ ASMJIT_PATCH(0x417FF1, AircraftClass_MI_Attack_StrafeShots, 0x6)
 	}
 
 	// No need to evaluate this before any strafing shots have been fired.
-	if (pExt->Strafe_BombsDroppedThisRound){
+	if (pExt->Strafe_BombsDroppedThisRound)
+	{
 		auto const pWeapon = pThis->GetWeapon(pExt->CurrentAircraftWeaponIndex)->WeaponType;
 		auto const pWeaponExt = WeaponTypeExtContainer::Instance.Find(pWeapon);
 
 		int count = pWeaponExt->Strafing_Shots.Get(5);
 
-		if (count > 5) {
-			if (pThis->MissionStatus == (int)AirAttackStatus::FireAtTarget3_Strafe) {
-				if ((count - 3 - pExt->Strafe_BombsDroppedThisRound) > 0) {
+		if (count > 5)
+		{
+			if (pThis->MissionStatus == (int)AirAttackStatus::FireAtTarget3_Strafe)
+			{
+				if ((count - 3 - pExt->Strafe_BombsDroppedThisRound) > 0)
+				{
 					pThis->MissionStatus = (int)AirAttackStatus::FireAtTarget2_Strafe;
 				}
 			}
@@ -224,50 +225,57 @@ COMPILETIMEEVAL FORCEDINLINE bool AircraftCanStrafeWithWeapon(WeaponTypeClass* p
 	return pWeapon && WeaponTypeExtContainer::Instance.Find(pWeapon)->Strafing
 		.Get(pWeapon->Projectile->ROT <= 1
 			&& !pWeapon->Projectile->Inviso)
-			&& !BulletTypeExtContainer::Instance.Find(pWeapon->Projectile)->TrajectoryType;
+		&& !BulletTypeExtContainer::Instance.Find(pWeapon->Projectile)->TrajectoryType;
 }
 
 bool FireWeapon(AircraftClass* pAir, AbstractClass* pTarget)
 {
 	const auto pExt = AircraftExtContainer::Instance.Find(pAir);
 	const int weaponIndex = pExt->CurrentAircraftWeaponIndex;
-	const bool Scatter = TechnoTypeExtContainer::Instance.Find(pAir->Type)->FiringForceScatter ;
+	const bool Scatter = TechnoTypeExtContainer::Instance.Find(pAir->Type)->FiringForceScatter;
 	auto pDecideTarget = (pExt->Strafe_TargetCell ? pExt->Strafe_TargetCell : pTarget);
 
-	if (const auto pWeaponStruct = pAir->GetWeapon(weaponIndex)) {
-		if (const auto weaponType = pWeaponStruct->WeaponType) {
+	if (const auto pWeaponStruct = pAir->GetWeapon(weaponIndex))
+	{
+		if (const auto weaponType = pWeaponStruct->WeaponType)
+		{
 			auto const pWeaponExt = WeaponTypeExtContainer::Instance.Find(weaponType);
 			bool isStrafe = pAir->Is_Strafe();
 
-			if (weaponType->Burst > 0) {
-				for (int i = 0; i < weaponType->Burst; i++) {
+			if (weaponType->Burst > 0)
+			{
+				for (int i = 0; i < weaponType->Burst; i++)
+				{
 					if (isStrafe && weaponType->Burst < 2 && pWeaponExt->Strafing_SimulateBurst)
 						pAir->CurrentBurstIndex = pExt->Strafe_BombsDroppedThisRound % 2 == 0;
 
 					pAir->Fire(pDecideTarget, weaponIndex);
 				}
 
-				if (isStrafe) {
+				if (isStrafe)
+				{
 					pExt->Strafe_BombsDroppedThisRound++;
 
-					if (pWeaponExt->Strafing_UseAmmoPerShot) {
+					if (pWeaponExt->Strafing_UseAmmoPerShot)
+					{
 						pAir->Ammo--;
 						pAir->loseammo_6c8 = false;
 
-						if (!pAir->Ammo) {
+						if (!pAir->Ammo)
+						{
 							pAir->SetTarget(nullptr);
 							pAir->SetDestination(nullptr, true);
 						}
 					}
 				}
 			}
-
 		}
 	}
 
-	if (pDecideTarget) {
-		if (Scatter) {
-
+	if (pDecideTarget)
+	{
+		if (Scatter)
+		{
 			auto coord = pDecideTarget->GetCoords();
 
 			if (auto pCell = MapClass::Instance->TryGetCellAt(coord))
@@ -367,7 +375,7 @@ ASMJIT_PATCH(0x418506, AircraftClass_MI_Attack_Delay1B, 0x6)
 	bool IsEmptyAmmo = pThis->Ammo == 0;
 	bool IsNegativeAmmo = pThis->Ammo < 0;
 	pThis->IsLocked = true;
-	pThis->MissionStatus =  !IsNegativeAmmo && !IsEmptyAmmo ? 1 : 10;
+	pThis->MissionStatus = !IsNegativeAmmo && !IsEmptyAmmo ? 1 : 10;
 	R->EAX(GetDelay(pThis, false));
 
 	return 0x418539;
@@ -443,7 +451,7 @@ ASMJIT_PATCH(0x4CF68D, FlyLocomotionClass_DrawMatrix_OnAirport, 0x5)
 {
 	GET(ILocomotion*, iloco, ESI);
 	auto loco = static_cast<FlyLocomotionClass*>(iloco);
-	auto pAir = cast_to<AircraftClass* , false>(loco->LinkedTo);
+	auto pAir = cast_to<AircraftClass*, false>(loco->LinkedTo);
 
 	if (pAir && pAir->GetHeight() <= 0)
 	{
@@ -485,7 +493,7 @@ long __stdcall AircraftClass_IFlyControl_IsStrafe(IFlyControl* ifly)
 
 DEFINE_FUNCTION_JUMP(VTABLE, 0x7E2268, AircraftClass_IFlyControl_IsStrafe);
 
-static FORCEDINLINE bool CheckSpyPlaneCameraCount(AircraftClass* pThis ,WeaponTypeClass* pWeapon)
+static FORCEDINLINE bool CheckSpyPlaneCameraCount(AircraftClass* pThis, WeaponTypeClass* pWeapon)
 {
 	auto const pExt = AircraftExtContainer::Instance.Find(pThis);
 
@@ -501,25 +509,26 @@ static FORCEDINLINE bool CheckSpyPlaneCameraCount(AircraftClass* pThis ,WeaponTy
 	return true;
 }
 
-ASMJIT_PATCH(0x41564C, AircraftClass_Mission_SpyPlaneApproach_MaxCount, 0x6) {
+ASMJIT_PATCH(0x41564C, AircraftClass_Mission_SpyPlaneApproach_MaxCount, 0x6)
+{
 	GET(AircraftClass*, pThis, ESI);
 	GET(int, range, EBX);
 
 	const auto pPrimary = pThis->GetWeapon(0);
 
-	if (range <= pPrimary->WeaponType->Range.value ) {
-
+	if (range <= pPrimary->WeaponType->Range.value)
+	{
 		if (!CheckSpyPlaneCameraCount(pThis, pPrimary->WeaponType))
 			return 0x41570C;
 
-		pThis->vt_entry_48C(nullptr ,0u,false , nullptr);
-		pThis->UpdateSight(false , 0 , false , nullptr , pPrimary->WeaponType->Damage);
+		pThis->vt_entry_48C(nullptr, 0u, false, nullptr);
+		pThis->UpdateSight(false, 0, false, nullptr, pPrimary->WeaponType->Damage);
 
 		MapRevealer const revealer(pThis->Location);
 		revealer.UpdateShroud(0u, static_cast<size_t>(MaxImpl(pThis->LastSightRange + 3, 0)), false);
 
 		auto cameraSound = TechnoTypeExtContainer::Instance.Find(pThis->Type)
-				->SpyplaneCameraSound.Get(RulesClass::Instance->SpyPlaneCamera);
+			->SpyplaneCameraSound.Get(RulesClass::Instance->SpyPlaneCamera);
 
 		VocClass::SafeImmedietelyPlayAt(cameraSound, &pThis->Location);
 	}
@@ -536,8 +545,8 @@ ASMJIT_PATCH(0x4157D3, AircraftClass_Mission_SpyPlaneOverfly_MaxCount, 0x6)
 
 	const auto pPrimary = pThis->GetWeapon(0);
 
-	if (range <= pPrimary->WeaponType->Range.value) {
-
+	if (range <= pPrimary->WeaponType->Range.value)
+	{
 		if (!CheckSpyPlaneCameraCount(pThis, pPrimary->WeaponType))
 			return 0x415863;
 
@@ -612,13 +621,16 @@ ASMJIT_PATCH(0x41A96C, AircraftClass_Mission_AreaGuard, 0x6)
 			{
 				auto coords = pArchive->GetCoords();
 
-				if (!pThis->TargetingTimer.HasTimeLeft() && pThis->TargetAndEstimateDamage(&coords, ThreatType::Area)) {
+				if (!pThis->TargetingTimer.HasTimeLeft() && pThis->TargetAndEstimateDamage(&coords, ThreatType::Area))
+				{
 					// Without an airport, there is no need to record the previous location
 					if (pThis->MissionStatus)
 						pThis->SetArchiveTarget(nullptr);
 
 					pThis->QueueMission(Mission::Attack, false);
-				} else {
+				}
+				else
+				{
 					// Check dock building
 					if (!pThis->MissionStatus && !pThis->FindDockingBayInVector(reinterpret_cast<DynamicVectorClass<TechnoTypeClass*>*>(&pThis->Type->Dock), 0, 0))
 						pThis->MissionStatus = 1;
@@ -645,7 +657,7 @@ ASMJIT_PATCH(0x41A96C, AircraftClass_Mission_AreaGuard, 0x6)
 }ASMJIT_PATCH_AGAIN(0x41A982, AircraftClass_Mission_AreaGuard, 0x6)
 
 // AttackMove: return when no ammo or arrived destination
-DEFINE_FUNCTION_JUMP(VTABLE, 0x7E290C,  FakeAircraftTypeClass::_CanAttackMove)
+DEFINE_FUNCTION_JUMP(VTABLE, 0x7E290C, FakeAircraftTypeClass::_CanAttackMove)
 
 ASMJIT_PATCH(0x4DF3BA, FootClass_UpdateAttackMove_AircraftHoldAttackMoveTarget, 0x6)
 {
@@ -688,20 +700,20 @@ ASMJIT_PATCH(0x416A0A, AircraftClass_Mission_Move_SmoothMoving, 0x5)
 	return EnterIdleAndReturn;
 }ASMJIT_PATCH_AGAIN(0x4168C7, AircraftClass_Mission_Move_SmoothMoving, 0x5)
 
- ASMJIT_PATCH(0x4DDD66, FootClass_IsLZClear_ReplaceHardcode, 0x6) // To avoid that the aircraft cannot fly towards the water surface normally
- {
- 	enum { SkipGameCode = 0x4DDD8A };
+ASMJIT_PATCH(0x4DDD66, FootClass_IsLZClear_ReplaceHardcode, 0x6) // To avoid that the aircraft cannot fly towards the water surface normally
+{
+	enum { SkipGameCode = 0x4DDD8A };
 
- 	GET(FootClass* const, pThis, EBP);
- 	GET_STACK(CellStruct, cell, STACK_OFFSET(0x20, 0x4));
+	GET(FootClass* const, pThis, EBP);
+	GET_STACK(CellStruct, cell, STACK_OFFSET(0x20, 0x4));
 
- 	const auto pType = pThis->GetTechnoType();
+	const auto pType = pThis->GetTechnoType();
 
- 	// In vanilla, only aircrafts or `foots with fly locomotion` will call this virtual function
- 	// So I don't know why WW use hard-coded `SpeedType::Track` and `MovementZone::Normal` to check this
- 	R->AL(MapClass::Instance->GetCellAt(cell)->IsClearToMove(pType->SpeedType, false, false, ZoneType::None, pType->MovementZone, -1, true));
- 	return SkipGameCode;
- }
+	// In vanilla, only aircrafts or `foots with fly locomotion` will call this virtual function
+	// So I don't know why WW use hard-coded `SpeedType::Track` and `MovementZone::Normal` to check this
+	R->AL(MapClass::Instance->GetCellAt(cell)->IsClearToMove(pType->SpeedType, false, false, ZoneType::None, pType->MovementZone, -1, true));
+	return SkipGameCode;
+}
 
 ASMJIT_PATCH(0x418CD1, AircraftClass_MI_Attack_ContinueFlyToDestination, 0x6)
 {
@@ -778,7 +790,7 @@ ASMJIT_PATCH(0x4C7403, EventClass_Execute_AircraftAreaGuard, 0x6)
 	{
 		// Skip assigning destination / target here.
 		R->ESI(&pThis->Data.MegaMission.Target);
-		return 0x4C7426 ;
+		return 0x4C7426;
 	}
 
 	return 0;

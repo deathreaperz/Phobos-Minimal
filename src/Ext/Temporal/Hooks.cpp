@@ -21,14 +21,18 @@ ASMJIT_PATCH(0x71ADE0, TemporalClass_LetGo_Replace, 0x6)
 {
 	GET(TemporalClass*, pThis, ECX);
 
-	if (auto pTarget = pThis->Target) {
-		if (auto pBuilding = cast_to<BuildingClass*, false>(pTarget)) {
+	if (auto pTarget = pThis->Target)
+	{
+		if (auto pBuilding = cast_to<BuildingClass*, false>(pTarget))
+		{
 			auto pBldExt = BuildingExtContainer::Instance.Find(pBuilding);
 
 			pBuilding->CashProductionTimer.Resume();
 
-			for (size_t i = 0; i < std::size(pBuilding->Upgrades); ++i) {
-				if (pBuilding->Upgrades[i]) {
+			for (size_t i = 0; i < std::size(pBuilding->Upgrades); ++i)
+			{
+				if (pBuilding->Upgrades[i])
+				{
 					pBldExt->CashUpgradeTimers[i].Resume();
 				}
 			}
@@ -64,7 +68,6 @@ ASMJIT_PATCH(0x71ADE0, TemporalClass_LetGo_Replace, 0x6)
 		pOwner->EnterIdleMode(false, 1);
 
 	return 0x71AE49;
-
 }
 
 ASMJIT_PATCH(0x71AB10, TemporalClass_GetWarpPerStep, 6)
@@ -101,10 +104,11 @@ ASMJIT_PATCH(0x71AC50, TemporalClass_LetItGo_ExpireEffect, 0x5)
 						, pTarget->GetOwningHouse(), pThis->Owner, false, false);
 				}
 
-				if (peWHext->TemporalExpiredApplyDamage.Get() && pThis->WarpRemaining > 0 && pTarget->IsAlive && !pTarget->IsSinking && !pTarget->IsCrashing) {
+				if (peWHext->TemporalExpiredApplyDamage.Get() && pThis->WarpRemaining > 0 && pTarget->IsAlive && !pTarget->IsSinking && !pTarget->IsCrashing)
+				{
 					auto const pTargetStreght = pTarget->GetTechnoType()->Strength;
 					auto damage = int((pTargetStreght * ((((double)pThis->WarpRemaining) / 10.0 / pTargetStreght)
-							* (pWeapon->Damage * peWHext->TemporalDetachDamageFactor.Get()) / 100)));
+						* (pWeapon->Damage * peWHext->TemporalDetachDamageFactor.Get()) / 100)));
 
 					pTarget->ReceiveDamage(&damage, pTempOwner->DistanceFrom(pTarget), Warhead, pTempOwner, false, ScenarioClass::Instance->Random.RandomBool(), pTempOwner->Owner);
 				}
@@ -119,6 +123,6 @@ ASMJIT_PATCH(0x71AE50, TemporalClass_CanWarpTarget, 8)
 {
 	GET(TemporalClass*, pTemp, ECX);
 	GET_STACK(TechnoClass*, pTarget, 0x4);
-	R->EAX(TechnoExt_ExtData::Warpable(pTemp , pTarget));
+	R->EAX(TechnoExt_ExtData::Warpable(pTemp, pTarget));
 	return 0x71AF19;
 }

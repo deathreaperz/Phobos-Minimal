@@ -30,7 +30,6 @@ public:
 		void Serialize(T& Stm);
 	};
 
-
 	class ExtContainer final : public Container<ParasiteExt::ExtData>
 	{
 	public:
@@ -41,15 +40,14 @@ public:
 	*/
 };
 
-
-class FakeParasiteClass : public ParasiteClass { 
+class FakeParasiteClass : public ParasiteClass
+{
 public:
 
 	FORCEDINLINE FakeParasiteClass* _AsParasite() const
 	{
 		return ((FakeParasiteClass*)this);
 	}
-
 
 	CoordStruct __Detach_From_Victim();
 	bool __Victims_Cell_Valid();
@@ -63,13 +61,10 @@ public:
 
 	HRESULT __stdcall _Load(IStream* pStm)
 	{
-
 	}
 
 	HRESULT __stdcall _Save(IStream* pStm, BOOL clearDirty)
 	{
-
 	}
-
 };
 static_assert(sizeof(FakeParasiteClass) == sizeof(ParasiteClass), "FakeParasiteClass size mismatch");

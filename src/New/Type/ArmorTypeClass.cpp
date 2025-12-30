@@ -69,7 +69,8 @@ void ArmorTypeClass::LoadFromINI(CCINIClass* pINI)
 
 void ArmorTypeClass::EvaluateDefault()
 {
-	for (size_t i = 0; i < Array.size(); ++i) {
+	for (size_t i = 0; i < Array.size(); ++i)
+	{
 		auto pArmor = Array[i].get();
 
 		if (IsDefault(pArmor->Name.data()) || pArmor->DefaultString.empty() || !strlen(pArmor->DefaultString.c_str()))
@@ -137,7 +138,8 @@ void ArmorTypeClass::LoadForWarhead(CCINIClass* pINI, WarheadTypeClass* pWH)
 			pWHExt->Verses[i].LastParseIsValid = true;
 		}
 		//if the armor last read value is valid , dont fill it with default value
-		else if(!pWHExt->Verses[i].LastParseIsValid) {
+		else if (!pWHExt->Verses[i].LastParseIsValid)
+		{
 			if (pArmor->DefaultTo != -1)
 			{
 				const auto nDefault = pArmor->DefaultTo;
@@ -179,7 +181,6 @@ void ArmorTypeClass::LoadForWarhead_NoParse(WarheadTypeClass* pWH)
 					section, i, pArmor->Name.data(), nDefault, ArmorTypeClass::Array[nDefault]->Name.data());
 
 				pWHExt->Verses[i] = ArmorTypeClass::Array[nDefault]->DefaultVersesValue;
-
 			}
 			else
 			{
@@ -195,7 +196,6 @@ void ArmorTypeClass::LoadForWarhead_NoParse(WarheadTypeClass* pWH)
 
 void ArmorTypeClass::PrepareForWarhead(CCINIClass* pINI, WarheadTypeClass* pWH)
 {
-
 }
 
 template <typename T>

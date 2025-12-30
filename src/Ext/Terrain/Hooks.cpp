@@ -15,21 +15,26 @@ ASMJIT_PATCH(0x71C5D2, TerrainClass_CatchFire_AttachFireAnim, 0x6)
 {
 	GET(FakeTerrainClass*, pThis, EDI);
 
-	if(pThis->Type->SpawnsTiberium || !pThis->Type->IsFlammable)
+	if (pThis->Type->SpawnsTiberium || !pThis->Type->IsFlammable)
 		return 0x71C69D;
 
-	if (auto fire = pThis->_GetTypeExtData()->TreeFires.GetElements(RulesClass::Instance->TreeFire)) {
+	if (auto fire = pThis->_GetTypeExtData()->TreeFires.GetElements(RulesClass::Instance->TreeFire))
+	{
 		AnimTypeClass* pAnimType = nullptr;
 
 		auto Loc = pThis->Location + CoordStruct { 0 , 0, 80 };
 
-		if (fire.size() == 1) {
+		if (fire.size() == 1)
+		{
 			pAnimType = fire[0];
-		} else {
+		}
+		else
+		{
 			pAnimType = fire[ScenarioClass::Instance->Random.RandomRanged(0, fire.size() - 1)];
 		}
 
-		if (pAnimType) {
+		if (pAnimType)
+		{
 			auto pAnim = GameCreate<AnimClass>(pAnimType, Loc, 0, 255, AnimFlag::AnimFlag_600, 0, 0);
 			pAnim->SetOwnerObject(pThis);
 			pThis->_GetExtData()->AttachedFireAnim.reset(pAnim);
@@ -74,17 +79,16 @@ ASMJIT_PATCH(0x71C2BC, TerrainClass_Draw_CustomPal, 0x6)
 	GET(ConvertClass*, pConvert, EDX);
 	GET(TerrainTypeClass*, pThisType, EAX);
 
-
 	const auto pTerrainExt = TerrainTypeExtContainer::Instance.Find(pThisType);
 
-	if (const auto pConvertData = pTerrainExt->CustomPalette.GetConvert()) {
+	if (const auto pConvertData = pTerrainExt->CustomPalette.GetConvert())
+	{
 		auto const pCell = pThis->GetCell();
 		int wallOwnerIndex = pCell->WallOwnerIndex;
 		int colorSchemeIndex = HouseClass::CurrentPlayer->ColorSchemeIndex;
 
 		if (wallOwnerIndex >= 0)
 			colorSchemeIndex = HouseClass::Array->operator[](wallOwnerIndex)->ColorSchemeIndex;
-
 
 		pConvert = pTerrainExt->CustomPalette.ColorschemeDataVector->Items[colorSchemeIndex]->LightConvert;
 		R->EBP(pCell->Color1.Red);
@@ -101,21 +105,25 @@ ASMJIT_PATCH(0x5F4FEF, ObjectClass_Put_RegisterLogic_Terrain, 0x6)
 
 	enum { FurtherCheck = 0x5F501B, NoUpdate = 0x5F5045 };
 
-	if(pThis->WhatAmI() == AbstractType::VeinholeMonster) {
+	if (pThis->WhatAmI() == AbstractType::VeinholeMonster)
+	{
 		return FurtherCheck;
 	}
 
-	if (!pType->IsLogic) {
+	if (!pType->IsLogic)
+	{
 		return NoUpdate;
 	}
 
-	if (pThis->WhatAmI() == TerrainClass::AbsID) {
+	if (pThis->WhatAmI() == TerrainClass::AbsID)
+	{
 		auto const pTerrainType = static_cast<TerrainTypeClass* const>(pType);
 		if (!pTerrainType->SpawnsTiberium
 			&& !pTerrainType->IsFlammable
 			&& !pTerrainType->IsAnimated
 			&& !pTerrainType->IsVeinhole
-			) {
+			)
+		{
 			return NoUpdate;
 		}
 	}
@@ -123,7 +131,6 @@ ASMJIT_PATCH(0x5F4FEF, ObjectClass_Put_RegisterLogic_Terrain, 0x6)
 	return FurtherCheck;
 }
 //#endif
-
 
 ASMJIT_PATCH(0x71C6EE, TerrainClass_FireOut_Crumbling, 0x6)
 {

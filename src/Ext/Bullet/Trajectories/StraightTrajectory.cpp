@@ -10,27 +10,25 @@
 bool StraightTrajectoryType::Load(PhobosStreamReader& Stm, bool RegisterForChange)
 {
 	return PhobosTrajectoryType::Load(Stm, RegisterForChange) &&
-	Stm
+		Stm
 		.Process(this->SnapOnTarget)
 		.Process(this->SnapThreshold)
 		.Process(this->TargetSnapDistance)
 		.Process(this->PassThrough)
 		.Process(this->DetonationDistance_ApplyRangeModifiers)
 		;
-
 }
 
 bool StraightTrajectoryType::Save(PhobosStreamWriter& Stm) const
 {
 	return PhobosTrajectoryType::Save(Stm) &&
-	Stm
+		Stm
 		.Process(this->SnapOnTarget)
 		.Process(this->SnapThreshold)
 		.Process(this->TargetSnapDistance)
 		.Process(this->PassThrough)
 		.Process(this->DetonationDistance_ApplyRangeModifiers)
 		;
-
 }
 
 int StraightTrajectory::GetVelocityZ(CoordStruct& source) const
@@ -52,7 +50,8 @@ int StraightTrajectory::GetFirerZPosition() const
 {
 	CoordStruct coords = AttachedTo->SourceCoords;
 
-	if (AttachedTo->Owner) {
+	if (AttachedTo->Owner)
+	{
 		if (auto const pCell = AttachedTo->Owner->GetCell())
 			coords = pCell->GetCoordsWithBridge();
 	}
@@ -64,7 +63,8 @@ CoordStruct StraightTrajectory::GetTargetPosition() const
 {
 	CoordStruct coords = AttachedTo->TargetCoords;
 
-	if (auto pTarget = AttachedTo->Target) {
+	if (auto pTarget = AttachedTo->Target)
+	{
 		if (auto const pCell = MapClass::Instance()->TryGetCellAt(pTarget->GetCoords()))
 			coords = pCell->GetCoordsWithBridge();
 	}
@@ -119,7 +119,7 @@ bool StraightTrajectoryType::Read(CCINIClass* const pINI, const char* pSection)
 bool StraightTrajectory::Load(PhobosStreamReader& Stm, bool RegisterForChange)
 {
 	return PhobosTrajectory::Load(Stm, RegisterForChange) &&
-	Stm
+		Stm
 		.Process(this->FirerZPosition)
 		.Process(this->TargetZPosition)
 		;
@@ -127,8 +127,8 @@ bool StraightTrajectory::Load(PhobosStreamReader& Stm, bool RegisterForChange)
 
 bool StraightTrajectory::Save(PhobosStreamWriter& Stm) const
 {
-	return PhobosTrajectory::Save(Stm)  &&
-	Stm
+	return PhobosTrajectory::Save(Stm) &&
+		Stm
 		.Process(this->FirerZPosition)
 		.Process(this->TargetZPosition)
 		;
@@ -168,7 +168,6 @@ bool StraightTrajectory::OnAI()
 	}
 
 	return (pBullet->TargetCoords.DistanceFrom(pBullet->Location) < (double)this->DetonationDistance.value);
-
 }
 
 void StraightTrajectory::OnAIPreDetonate()
@@ -276,7 +275,6 @@ bool StraightTrajectoryVarianB::OnAI()
 	}
 
 	return (pBullet->TargetCoords.DistanceFrom(pBullet->Location) < this->DetonationDistance.ToDouble());
-
 }
 
 void StraightTrajectoryVarianB::OnAIPreDetonate()

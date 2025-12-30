@@ -6,7 +6,8 @@
 class WeaponTypeClass;
 class TechnoClass;
 class ParticleSystemTypeClass;
-struct EboltExtData {
+struct EboltExtData
+{
 	int Color[3] {};
 	bool Disable[3] { false };
 	int Arcs { 8 };
@@ -41,7 +42,7 @@ struct EboltExtData {
 	}
 
 public:
-	static void GetColors(int(&color)[3], EBolt* pBolt , Nullable<ColorStruct>& clr1, Nullable<ColorStruct>& clr2, Nullable<ColorStruct>& clr3);
+	static void GetColors(int(&color)[3], EBolt* pBolt, Nullable<ColorStruct>& clr1, Nullable<ColorStruct>& clr2, Nullable<ColorStruct>& clr3);
 
 	static EBolt* _CreateOneOf(WeaponTypeClass* pWeapon, TechnoClass* pFirer);
 	static EBolt* _CreateOneOf(bool disable1, bool disable2, bool dosable3, bool alternateColor, int arch, int lifetime, Nullable<ColorStruct>& clr1, Nullable<ColorStruct>& clr2, Nullable<ColorStruct>& clr3);
@@ -50,4 +51,3 @@ public:
 public:
 	static PhobosMap<EBolt*, EboltExtData> Container;
 };
-

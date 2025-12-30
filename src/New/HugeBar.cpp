@@ -74,7 +74,6 @@ void HugeBar::LoadFromINI(CCINIClass* pINI)
 		return;
 	}
 
-
 	static fmt::basic_memory_buffer<char> buffer;
 	buffer.clear();
 	fmt::format_to(std::back_inserter(buffer), "HugeBar_{}", typeName);
@@ -127,7 +126,8 @@ void HugeBar::InvalidatePointer(void* ptr, bool removed)
 	}
 }
 
-void HugeBar::Clear() {
+void HugeBar::Clear()
+{
 	Technos.clear();
 }
 
@@ -248,11 +248,10 @@ void HugeBar::ProcessHugeBar()
 
 		int iCurrent = -1;
 		int iMax = 0;
-		TechnoExtData::GetValuesForDisplay(pTechno, configs[i]->InfoType, iCurrent, iMax , 0);
+		TechnoExtData::GetValuesForDisplay(pTechno, configs[i]->InfoType, iCurrent, iMax, 0);
 
 		if (iCurrent <= -1 || iMax <= 0)
 			continue;
-
 
 		configs[i]->DrawHugeBar(iCurrent, iMax);
 	}
@@ -280,7 +279,7 @@ void HugeBar::DrawHugeBar(int iCurrent, int iMax)
 
 		SHPStruct* pShp_Pips = this->HugeBar_Pips_Shape;
 		ConvertClass* pPal_Pips = FileSystem::PALETTE_PAL;
-		if(auto pCust_1 = this->HugeBar_Pips_Palette.GetConvert())
+		if (auto pCust_1 = this->HugeBar_Pips_Palette.GetConvert())
 			pPal_Pips = pCust_1;
 
 		int iPipFrame = this->HugeBar_Pips_Frame.Get(ratio, RulesClass::Instance->ConditionYellow, RulesClass::Instance->ConditionRed);
@@ -479,7 +478,7 @@ void HugeBar::HugeBar_DrawValue(Point2D& posDraw, int iCurrent, int iMax)
 	{
 		SHPStruct* pShp = this->Value_Shape;
 		ConvertClass* pPal = FileSystem::PALETTE_PAL;
-		if(auto pCust_1 = this->Value_Palette.GetConvert())
+		if (auto pCust_1 = this->Value_Palette.GetConvert())
 			pPal = pCust_1;
 
 		if (this->Anchor.Vertical == VerticalPosition::Bottom)
@@ -535,10 +534,13 @@ void HugeBar::HugeBar_DrawValue(Point2D& posDraw, int iCurrent, int iMax)
 		static fmt::basic_memory_buffer<wchar_t> text;
 		text.clear();
 
-		if (this->Value_Percentage) {
-			fmt::format_to(std::back_inserter(text) ,L"{}%" ,static_cast<int>(ratio * 100));
-		} else {
-			fmt::format_to(std::back_inserter(text) ,L"{}/{}" , iCurrent, iMax);
+		if (this->Value_Percentage)
+		{
+			fmt::format_to(std::back_inserter(text), L"{}%", static_cast<int>(ratio * 100));
+		}
+		else
+		{
+			fmt::format_to(std::back_inserter(text), L"{}/{}", iCurrent, iMax);
 		}
 
 		text.push_back(L'\0');

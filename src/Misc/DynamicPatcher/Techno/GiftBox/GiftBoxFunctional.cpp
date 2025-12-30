@@ -13,7 +13,6 @@ const bool OpenDisallowed(TechnoClass* const pTechno)
 {
 	if (pTechno)
 	{
-
 		if (pTechno->InLimbo)
 			return false;
 
@@ -40,7 +39,6 @@ void GiftBoxFunctional::Init(TechnoExtData* pExt, TechnoTypeExtData* pTypeExt)
 			pTypeExt->MyGiftBoxData.DelayMax);
 
 	pExt->MyGiftBox = std::make_unique<GiftBox>(nDelay);
-
 }
 
 void GiftBoxFunctional::Destroy(TechnoExtData* pExt, TechnoTypeExtData* pTypeExt)
@@ -53,7 +51,6 @@ void GiftBoxFunctional::Destroy(TechnoExtData* pExt, TechnoTypeExtData* pTypeExt
 		pExt->MyGiftBox->Release(pExt->This(), pTypeExt->MyGiftBoxData);
 		pExt->MyGiftBox->IsOpen = true;
 	}
-
 }
 
 void GiftBoxFunctional::AI(TechnoExtData* pExt, TechnoTypeExtData* pTypeExt)
@@ -61,7 +58,8 @@ void GiftBoxFunctional::AI(TechnoExtData* pExt, TechnoTypeExtData* pTypeExt)
 	if (!pExt->MyGiftBox || OpenDisallowed(pExt->This()))
 		return;
 
-	if (!pTypeExt->MyGiftBoxData.Enable){
+	if (!pTypeExt->MyGiftBoxData.Enable)
+	{
 		pExt->MyGiftBox.reset(nullptr);
 		return;
 	}
@@ -70,7 +68,6 @@ void GiftBoxFunctional::AI(TechnoExtData* pExt, TechnoTypeExtData* pTypeExt)
 		!pTypeExt->MyGiftBoxData.OpenWhenHealthPercent.isset() &&
 		pExt->MyGiftBox->CanOpen())
 	{
-
 		pExt->MyGiftBox->Release(pExt->This(), pTypeExt->MyGiftBoxData);
 		pExt->MyGiftBox->IsOpen = true;
 	}
@@ -81,7 +78,7 @@ void GiftBoxFunctional::AI(TechnoExtData* pExt, TechnoTypeExtData* pTypeExt)
 		{
 			pExt->This()->Limbo();
 			//Debug::LogInfo(__FUNCTION__" Called ");
-			TechnoExtData::HandleRemove(pExt->This(),nullptr , false , false);
+			TechnoExtData::HandleRemove(pExt->This(), nullptr, false, false);
 			return;
 		}
 
@@ -95,7 +92,7 @@ void GiftBoxFunctional::AI(TechnoExtData* pExt, TechnoTypeExtData* pTypeExt)
 			return;
 		}
 
-		if(pExt->This()->IsAlive)
+		if (pExt->This()->IsAlive)
 		{
 			auto const nDelay = pTypeExt->MyGiftBoxData.DelayMax == 0 ?
 				pTypeExt->MyGiftBoxData.Delay :
@@ -106,12 +103,10 @@ void GiftBoxFunctional::AI(TechnoExtData* pExt, TechnoTypeExtData* pTypeExt)
 			pExt->MyGiftBox->Reset(nDelay);
 		}
 	}
-
 }
 
 void GiftBoxFunctional::TakeDamage(TechnoExtData* pExt, TechnoTypeExtData* pTypeExt, WarheadTypeClass* pWH, DamageState nState)
 {
-
 	if (!pExt->MyGiftBox.get())
 		return;
 
@@ -204,7 +199,6 @@ void GetGifts(const GiftBoxData& nData, std::vector<TechnoTypeClass*>& nOut)
 
 				for (int i = 0; i < times; i++)
 				{
-
 					if (Helpers_DP::Bingo(nData.Chances, (index)))
 					{
 						nOut.push_back(id);
@@ -241,12 +235,14 @@ void GiftBox::Release(TechnoClass* pOwner, GiftBoxData& nData)
 	const auto pHouse = pOwner->GetOwningHouse();
 	CoordStruct location = pOwner->GetCoords();
 
-	if (auto pCell = MapClass::Instance->TryGetCellAt(location)) {
+	if (auto pCell = MapClass::Instance->TryGetCellAt(location))
+	{
 		AbstractClass* pDest = nullptr;
 		AbstractClass* pFocus = nullptr;
 		const auto IsBuilding = pOwner->WhatAmI() == BuildingClass::AbsID;
 
-		if (!IsBuilding) {
+		if (!IsBuilding)
+		{
 			pDest = static_cast<FootClass*>(pOwner)->Destination;
 			pFocus = pOwner->ArchiveTarget;
 		}
@@ -254,8 +250,10 @@ void GiftBox::Release(TechnoClass* pOwner, GiftBoxData& nData)
 		std::vector<TechnoTypeClass*> nOut;
 		GetGifts(nData, nOut);
 
-		for (auto const& pTech : nOut) {
-			if (nData.RandomRange > 0) {
+		for (auto const& pTech : nOut)
+		{
+			if (nData.RandomRange > 0)
+			{
 				if (auto const pNewCell = GeneralUtils::GetCell(pCell, location, (short)(nData.RandomRange.Get()), nData.EmptyCell))
 					pCell = pNewCell;
 			}
@@ -280,23 +278,28 @@ void GiftBox::Release(TechnoClass* pOwner, GiftBoxData& nData)
 					const bool isNotMoving = pTech->Speed == 0;
 
 					{
-						if (auto const pFlyLoco = locomotion_cast<FlyLocomotionClass*>(pFoot->Locomotor)){
+						if (auto const pFlyLoco = locomotion_cast<FlyLocomotionClass*>(pFoot->Locomotor))
+						{
 							bool airportBound = pFoot->WhatAmI() == AbstractType::AircraftType && static_cast<AircraftTypeClass*>(pTech)->AirportBound;
 
-							if(!isNotMoving){
+							if (!isNotMoving)
+							{
 								if (pCell->GetContent() || airportBound)
 									pGift->EnterIdleMode(false, true);
 								else
 									pFlyLoco->Move_To(pCell->GetCoordsWithBridge());
-
-							} else if (inAir) {
+							}
+							else if (inAir)
+							{
 								AircraftTrackerClass::Instance->Add(pFoot);
 							}
 						}
 						else if (auto const pJJLoco = locomotion_cast<JumpjetLocomotionClass*>(pFoot->Locomotor))
 						{
-							if (!isNotMoving) {
-								if (pTech->BalloonHover) {
+							if (!isNotMoving)
+							{
+								if (pTech->BalloonHover)
+								{
 									// Order BalloonHover jumpjets to ascend.
 									pJJLoco->IsMoving = true;
 									pJJLoco->HeadToCoord = pGift->GetCoords();
@@ -304,12 +307,15 @@ void GiftBox::Release(TechnoClass* pOwner, GiftBoxData& nData)
 
 									if (!inAir)
 										AircraftTrackerClass::Instance->Add(pFoot);
-
-								} else if (inAir) {
+								}
+								else if (inAir)
+								{
 									// Order non-BalloonHover jumpjets to land.
 									pJJLoco->Move_To(location);
 								}
-							} else if (inAir) {
+							}
+							else if (inAir)
+							{
 								AircraftTrackerClass::Instance->Add(pFoot);
 							}
 						}
@@ -318,7 +324,7 @@ void GiftBox::Release(TechnoClass* pOwner, GiftBoxData& nData)
 
 				if (pOwner->IsSelected)
 				{
-					auto const feedback = std::exchange(Unsorted::MoveFeedback() , false);
+					auto const feedback = std::exchange(Unsorted::MoveFeedback(), false);
 					pGift->Select();
 					Unsorted::MoveFeedback() = feedback;
 				}

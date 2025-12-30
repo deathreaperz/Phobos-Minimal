@@ -194,7 +194,6 @@ ASMJIT_PATCH(0x64C81E, ExecuteDoList_SendStatistics_2, 0x6)
 		: DontSend;
 }
 
-
 // add a call to RegisterGameEndTime here to set the correct GameEndTime
 ASMJIT_PATCH(0x64C84B, ExecuteDoList_SendStatistics_3, 0x5)
 {
@@ -269,10 +268,12 @@ ASMJIT_PATCH(0x6C92CB, StandaloneScore_SinglePlayerScoreDialog_Trackers, 0x6)
 }
 
 template <typename T>
-void FillTracker(HouseClass* pHouse, TrackerClass& tracker) {
-	for (int i = 0; i < T::Array->Count; ++i) {
-
-		if (T::Array->Items[i] && T::Array->Items[i]->Owner == pHouse) {
+void FillTracker(HouseClass* pHouse, TrackerClass& tracker)
+{
+	for (int i = 0; i < T::Array->Count; ++i)
+	{
+		if (T::Array->Items[i] && T::Array->Items[i]->Owner == pHouse)
+		{
 			tracker.Increment(T::Array->Items[i]->Type->ArrayIndex);
 		}
 	}
@@ -286,19 +287,20 @@ ASMJIT_PATCH(0x6C7B68, SendStatistic_Trackers, 0x6)
 
 	const auto pExt = HouseExtContainer::Instance.Find(pHouse);
 
-
-	auto FillPacket = [pPacket ,last](TrackerClass& tracker , PacketFieldRep field)
-	{
-		int size = 0;
-		for (int i = 0; i < tracker.GetCounts(); ++i) {
-			if (tracker.GetCount(i)){
-				size = i + 1;
+	auto FillPacket = [pPacket, last](TrackerClass& tracker, PacketFieldRep field)
+		{
+			int size = 0;
+			for (int i = 0; i < tracker.GetCounts(); ++i)
+			{
+				if (tracker.GetCount(i))
+				{
+					size = i + 1;
+				}
 			}
-		}
 
-		Game::PacketFields[(int)field].str[3] = last;
-		pPacket->AddField<void*>(Game::PacketFields[(int)field].str, (void*)tracker.GetData(), size);
-	};
+			Game::PacketFields[(int)field].str[3] = last;
+			pPacket->AddField<void*>(Game::PacketFields[(int)field].str, (void*)tracker.GetData(), size);
+		};
 
 	//Send Previous Built Data
 	pExt->BuiltAircraftTypes.ToNetwork();
@@ -371,8 +373,10 @@ FORCEDINLINE HouseClass* GetHouseClassptr(UnitTrackerClass* pTrack)
 	return reinterpret_cast<HouseClass*>(ptr - offset);
 }
 
-void HouseExtData::IncremetCrateTracking(HouseClass* pHouse, Powerup type) {
-	if (IsStatisticsEnabled() || SessionClass::Instance->GameMode == GameMode::Internet) {
+void HouseExtData::IncremetCrateTracking(HouseClass* pHouse, Powerup type)
+{
+	if (IsStatisticsEnabled() || SessionClass::Instance->GameMode == GameMode::Internet)
+	{
 		HouseExtContainer::Instance.Find(pHouse)->CollectedCrates.Increment((int)type);
 	}
 }
@@ -384,28 +388,32 @@ ASMJIT_PATCH(0x448524, BuildingClass_Captured_SendStatistics, 0x7)
 	GET(BuildingClass*, pThis, ESI);
 
 	if ((IsStatisticsEnabled() || (SessionClass::Instance->GameMode == GameMode::Internet))
-		&& !pThis->Type->DontScore ) {
+		&& !pThis->Type->DontScore)
+	{
 		HouseExtContainer::Instance.Find(pNewOwner)->BuiltInfantryTypes.Increment(pThis->Type->ArrayIndex);
 	}
 
 	return DontSend;
 }
 
-void __fastcall increment_tracker_inf(UnitTrackerClass* pTracker, DWORD, int idx) {
+void __fastcall increment_tracker_inf(UnitTrackerClass* pTracker, DWORD, int idx)
+{
 	HouseExtContainer::Instance.Find(GetHouseClassptr<0xB30>(pTracker))->BuiltInfantryTypes.Increment(idx);
 }
 DEFINE_FUNCTION_JUMP(CALL, 0x4FF854, increment_tracker_inf));
-void __fastcall increment_tracker_destroyedinf(UnitTrackerClass* pTracker, DWORD, int idx) {
+void __fastcall increment_tracker_destroyedinf(UnitTrackerClass* pTracker, DWORD, int idx)
+{
 	HouseExtContainer::Instance.Find(GetHouseClassptr<0x2B50>(pTracker))->KilledInfantryTypes.Increment(idx);
 }
 //Destroyed
 DEFINE_FUNCTION_JUMP(CALL, 0x703152, increment_tracker_destroyedinf));
 DEFINE_FUNCTION_JUMP(CALL, 0x7034B4, increment_tracker_destroyedinf));
 
-void __fastcall increment_tracker_Unit(UnitTrackerClass* pTracker, DWORD, int idx) {
+void __fastcall increment_tracker_Unit(UnitTrackerClass* pTracker, DWORD, int idx)
+{
 	HouseExtContainer::Instance.Find(GetHouseClassptr<0x1338>(pTracker))->BuiltInfantryTypes.Increment(idx);
 }
-DEFINE_FUNCTION_JUMP(CALL,0x4FF893, increment_tracker_Unit));
+DEFINE_FUNCTION_JUMP(CALL, 0x4FF893, increment_tracker_Unit));
 void __fastcall increment_tracker_destroyedunit(UnitTrackerClass* pTracker, DWORD, int idx)
 {
 	HouseExtContainer::Instance.Find(GetHouseClassptr<0x3358>(pTracker))->KilledUnitTypes.Increment(idx);
@@ -414,10 +422,11 @@ void __fastcall increment_tracker_destroyedunit(UnitTrackerClass* pTracker, DWOR
 DEFINE_FUNCTION_JUMP(CALL, 0x703198, increment_tracker_destroyedunit));
 DEFINE_FUNCTION_JUMP(CALL, 0x7034F4, increment_tracker_destroyedunit));
 
-void __fastcall increment_tracker_Aircraft(UnitTrackerClass* pTracker, DWORD, int idx) {
+void __fastcall increment_tracker_Aircraft(UnitTrackerClass* pTracker, DWORD, int idx)
+{
 	HouseExtContainer::Instance.Find(GetHouseClassptr<0x328>(pTracker))->BuiltAircraftTypes.Increment(idx);
 }
-DEFINE_FUNCTION_JUMP(CALL,0x4FF7FB, increment_tracker_Aircraft));
+DEFINE_FUNCTION_JUMP(CALL, 0x4FF7FB, increment_tracker_Aircraft));
 //destroyed
 void __fastcall increment_tracker_destroyedaircraft(UnitTrackerClass* pTracker, DWORD, int idx)
 {
@@ -426,12 +435,13 @@ void __fastcall increment_tracker_destroyedaircraft(UnitTrackerClass* pTracker, 
 DEFINE_FUNCTION_JUMP(CALL, 0x703108, increment_tracker_destroyedaircraft));
 DEFINE_FUNCTION_JUMP(CALL, 0x703474, increment_tracker_destroyedaircraft));
 
-void __fastcall increment_tracker_Building(UnitTrackerClass* pTracker, DWORD, int idx) {
+void __fastcall increment_tracker_Building(UnitTrackerClass* pTracker, DWORD, int idx)
+{
 	HouseExtContainer::Instance.Find(GetHouseClassptr<0x1B40>(pTracker))->BuiltBuildingTypes.Increment(idx);
 }
-DEFINE_FUNCTION_JUMP(CALL,0x4FF7BD, increment_tracker_Building));
+DEFINE_FUNCTION_JUMP(CALL, 0x4FF7BD, increment_tracker_Building));
 //destroyed
-void __fastcall increment_tracker_destroyedbuilding (UnitTrackerClass* pTracker, DWORD, int idx)
+void __fastcall increment_tracker_destroyedbuilding(UnitTrackerClass* pTracker, DWORD, int idx)
 {
 	HouseExtContainer::Instance.Find(GetHouseClassptr<0x3B60>(pTracker))->KilledBuildingTypes.Increment(idx);
 }
@@ -450,10 +460,10 @@ ASMJIT_PATCH(0x448524, BuildingClass_Captured_SendStatistics, 0x7)
 
 void HouseExtData::IncremetCrateTracking(HouseClass* pHouse, Powerup type)
 {
-	if ((IsStatisticsEnabled() || (SessionClass::Instance->GameMode == GameMode::Internet)) && (int)type < 19u) {
+	if ((IsStatisticsEnabled() || (SessionClass::Instance->GameMode == GameMode::Internet)) && (int)type < 19u)
+	{
 		pHouse->CollectedCrates.IncrementUnitCount((int)type);
 	}
 }
-
 
 #endif

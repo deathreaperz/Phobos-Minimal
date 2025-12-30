@@ -64,7 +64,7 @@ static inline bool MouseOverMessageLists()
 		const int textHeight = messages.Height;
 		int height = messages.MessagePos.Y;
 
-		for ( ; pText; pText = static_cast<TextLabelClass*>(pText->GetNext()))
+		for (; pText; pText = static_cast<TextLabelClass*>(pText->GetNext()))
 			height += textHeight;
 
 		if (position.Y < (height + 2))
@@ -109,7 +109,8 @@ ASMJIT_PATCH(0x623A9F, DSurface_sub_623880_DrawBitFontStrings, 0x5)
 
 ASMJIT_PATCH(0x55DDA0, MainLoop_Additionals, 0x5)
 {
-	if (EventExt::ProtocolZero::Enable) {
+	if (EventExt::ProtocolZero::Enable)
+	{
 		EventExt::ProtocolZero::Raise();
 	}
 
@@ -272,18 +273,17 @@ ASMJIT_PATCH(0x48CE7E, MainGame_BeforeMainLoop, 7)
 	return 0;
 }
 
-
 // Completely skip vanilla GScreenClass::Render code in the main thread
 // if we run in multithread mode.
 
-DEFINE_FUNCTION_JUMP(LJMP, 0x4F4480 , FakeGScreenClass::_Render);
+DEFINE_FUNCTION_JUMP(LJMP, 0x4F4480, FakeGScreenClass::_Render);
 
 // We want to lock access to game resources when we're doing game logic potientially related to graphics.
 // The main thread should let the drawing thread run if it complains that it's too hungry and vice versa.
 
 ASMJIT_PATCH(0x55D878, MainLoop_StartLock, 6)
 {
-	if(R->Origin() == 0x55DBC3)
+	if (R->Origin() == 0x55DBC3)
 		DisplayClass::GetLayer(Layer::Air)->Sort();
 
 	if (!Multithreading::IsInMultithreadMode)
@@ -311,7 +311,6 @@ ASMJIT_PATCH(0x55DDAA, MainLoop_StopLock, 5)
 	Multithreading::DrawingMutex.unlock(); // TODO: shut up the warning
 	return 0;
 }ASMJIT_PATCH_AGAIN(0x55D903, MainLoop_StopLock, 7)
-
 
 // We don't want to draw the tactical view when the player has paused the game.
 // Technically it can be done with a busy wait loop, but mutexes are better for performance.

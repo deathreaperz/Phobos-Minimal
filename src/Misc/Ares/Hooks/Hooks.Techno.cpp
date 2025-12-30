@@ -31,7 +31,6 @@
 #include <SpawnManagerClass.h>
 #include <AirstrikeClass.h>
 
-
 ASMJIT_PATCH(0x702DD6, TechnoClass_RegisterDestruction_Trigger, 0x6)
 {
 	GET(TechnoClass*, pThis, ESI);
@@ -86,7 +85,6 @@ ASMJIT_PATCH(0x6F47A0, TechnoClass_GetBuildTime, 5)
 
 		//if the house dont have power at all disable all the penalties
 		{
-
 			const double nLowPowerPenalty = pTypeExt->BuildTime_LowPowerPenalty.Get(RulesClass::Instance->LowPowerPenaltyModifier);
 			const double nMinLowPoweProductionSpeed = pTypeExt->BuildTime_MinLowPower.Get(RulesClass::Instance->MinLowPowerProductionSpeed);
 			const double nMaxLowPowerProductionSpeed = pTypeExt->BuildTime_MaxLowPower.Get(RulesClass::Instance->MaxLowPowerProductionSpeed);
@@ -102,7 +100,8 @@ ASMJIT_PATCH(0x6F47A0, TechnoClass_GetBuildTime, 5)
 				powerdivisor = nMaxLowPowerProductionSpeed;
 			}
 
-			if (powerdivisor < 0.01) {
+			if (powerdivisor < 0.01)
+			{
 				powerdivisor = 0.01;
 			}
 
@@ -111,17 +110,17 @@ ASMJIT_PATCH(0x6F47A0, TechnoClass_GetBuildTime, 5)
 
 		if (nFactorySpeed > 0)
 		{//Multiple Factory
-
 			const int factoryCount = pOwner->FactoryCount(what, isNaval);
 			const int divisor = (cap > 0 && factoryCount >= cap) ? cap : factoryCount;
 
-			for (int i = divisor - 1; i > 0 ; --i) {
+			for (int i = divisor - 1; i > 0; --i)
+			{
 				finalSpeed = int(finalSpeed * nFactorySpeed);
 			}
 		}
 
 		const auto bonus = BuildingTypeExtData::GetExternalFactorySpeedBonus(pThis);
-		if(bonus > 0.0)
+		if (bonus > 0.0)
 			finalSpeed = int((double)finalSpeed * bonus);
 	}
 
@@ -230,11 +229,12 @@ ASMJIT_PATCH(0x70380A, TechnoClass_Cloak_CloakSound, 6)
 	const auto pExt = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType());
 	R->ECX(pExt->CloakSound.Get(RulesClass::Instance->CloakSound));
 
-	if (const auto pAnimType = pExt->CloakAnim.Get(RulesExtData::Instance()->CloakAnim)) {
-			AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pAnimType, pThis->GetCoords()),
-			pThis->Owner,
-			nullptr,
-			false
+	if (const auto pAnimType = pExt->CloakAnim.Get(RulesExtData::Instance()->CloakAnim))
+	{
+		AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pAnimType, pThis->GetCoords()),
+		pThis->Owner,
+		nullptr,
+		false
 		);
 	}
 	return 0x703810;
@@ -249,7 +249,8 @@ ASMJIT_PATCH(0x70375B, TechnoClass_Uncloak_DecloakSound, 6)
 
 	R->ECX(pTypeExt->DecloakSound.Get(nDefault));
 
-	if (const auto pAnimType = pTypeExt->DecloakAnim.Get(RulesExtData::Instance()->DecloakAnim)) {
+	if (const auto pAnimType = pTypeExt->DecloakAnim.Get(RulesExtData::Instance()->DecloakAnim))
+	{
 		AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pAnimType, pThis->GetCoords()),
 			pThis->Owner,
 			nullptr,
@@ -316,24 +317,29 @@ ASMJIT_PATCH(0x707B09, TechnoClass_PointerGotInvalid_SpawnCloakOwner, 6)
 
 	// issues 1002020, 896263, 895954: clear stale mind control pointer to prevent
 	// crashes when accessing properties of the destroyed controllers.
-	if (pThis->MindControlledBy == ptr) {
+	if (pThis->MindControlledBy == ptr)
+	{
 		pThis->MindControlledBy = nullptr;
 	}
 
-	if(pThis->CaptureManager) {
+	if (pThis->CaptureManager)
+	{
 		pThis->CaptureManager->DetachTarget(ptr);
 	}
 
 	// #912875: respect the remove flag for invalidating SpawnManager owners
-	if(pThis->SpawnManager && (pThis->Owner != ptr || !(!remove && pThis->Owner == ptr))){
+	if (pThis->SpawnManager && (pThis->Owner != ptr || !(!remove && pThis->Owner == ptr)))
+	{
 		pThis->SpawnManager->UnlinkPointer(ptr);
 	}
 
 	return 0x707B29;
 }
 
-void PlayEva(const char* pEva, CDTimerClass& nTimer, double nRate) {
-	if (!nTimer.GetTimeLeft()) {
+void PlayEva(const char* pEva, CDTimerClass& nTimer, double nRate)
+{
+	if (!nTimer.GetTimeLeft())
+	{
 		nTimer.Start(GameOptionsClass::Instance->GetAnimSpeed(static_cast<int>(nRate * 900.0)));
 		VoxClass::Play(pEva);
 	}
@@ -447,11 +453,11 @@ ASMJIT_PATCH(0x6F6AC9, TechnoClass_Remove_Early, 6)
 	// #617 powered units
 	TechnoExtContainer::Instance.Find(pThis)->PoweredUnit.reset();
 
-
 	//#1573, #1623, #255 attached effects
-	AresAE::Remove(&TechnoExtContainer::Instance.Find(pThis)->AeData , pThis);
+	AresAE::Remove(&TechnoExtContainer::Instance.Find(pThis)->AeData, pThis);
 
-	if (TechnoExtContainer::Instance.Find(pThis)->TechnoValueAmount != 0) {
+	if (TechnoExtContainer::Instance.Find(pThis)->TechnoValueAmount != 0)
+	{
 		TechnoExt_ExtData::Ares_AddMoneyStrings(pThis, true);
 	}
 
@@ -465,7 +471,8 @@ ASMJIT_PATCH(0x6F6F20, TechnoClass_Put_BuildingLight, 6)
 	//const auto pExt = TechnoExtContainer::Instance.Find(pThis);
 	const auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType());
 
-	if(R->Origin() == 0x6F6F20){
+	if (R->Origin() == 0x6F6F20)
+	{
 		HugeBar::InitializeHugeBar(pThis);
 		//TechnoExtData::UnlimboAttachments(pThis);
 	}
@@ -481,7 +488,6 @@ ASMJIT_PATCH(0x6F6F20, TechnoClass_Put_BuildingLight, 6)
 
 	return 0x0;
 }ASMJIT_PATCH_AGAIN(0x6F6D0E, TechnoClass_Put_BuildingLight, 7)
-
 
 ASMJIT_PATCH(0x707D20, TechnoClass_GetCrew, 5)
 {
@@ -610,7 +616,8 @@ ASMJIT_PATCH(0x6FD438, TechnoClass_FireLaser, 6)
 		pBeam->IsHouseColor = true;
 
 	// Fixes drawing thick lasers for non-PrismSupport building-fired lasers.
-	if (pData->Laser_Thickness > 1) {
+	if (pData->Laser_Thickness > 1)
+	{
 		pBeam->Thickness = pData->Laser_Thickness;
 	}
 
@@ -623,7 +630,7 @@ ASMJIT_PATCH(0x6f526c, TechnoClass_DrawExtras_PowerOff, 5)
 {
 	GET(TechnoClass*, pTechno, EBP);
 
-	if(!pTechno->IsAlive)
+	if (!pTechno->IsAlive)
 		return 0x6F5347;
 
 	GET_STACK(RectangleStruct*, pRect, 0xA0);
@@ -704,17 +711,16 @@ ASMJIT_PATCH(0x6f526c, TechnoClass_DrawExtras_PowerOff, 5)
 }
 
 void __fastcall FakeTechnoClass::__Draw_Stuff_When_Selected(TechnoClass* pThis, discard_t, Point2D* pPoint, Point2D* pOriginalPoint, RectangleStruct* pRect)
-{
-}
+{ }
 
-DEFINE_FUNCTION_JUMP(LJMP, 0x70AA60 , FakeTechnoClass::__Draw_Stuff_When_Selected)
+DEFINE_FUNCTION_JUMP(LJMP, 0x70AA60, FakeTechnoClass::__Draw_Stuff_When_Selected)
 DEFINE_FUNCTION_JUMP(VTABLE, 0x7E26FC, FakeTechnoClass::__Draw_Stuff_When_Selected)
 DEFINE_FUNCTION_JUMP(VTABLE, 0x7E90EC, FakeTechnoClass::__Draw_Stuff_When_Selected)
 DEFINE_FUNCTION_JUMP(VTABLE, 0x7EB4B0, FakeTechnoClass::__Draw_Stuff_When_Selected)
 DEFINE_FUNCTION_JUMP(VTABLE, 0x7F4DB8, FakeTechnoClass::__Draw_Stuff_When_Selected)
 DEFINE_FUNCTION_JUMP(VTABLE, 0x7F60C8, FakeTechnoClass::__Draw_Stuff_When_Selected)
 
-DEFINE_FUNCTION_JUMP(VTABLE , 0x7E4314 , FakeBuildingClass::_DrawStuffsWhenSelected)
+DEFINE_FUNCTION_JUMP(VTABLE, 0x7E4314, FakeBuildingClass::_DrawStuffsWhenSelected)
 
 // complete replacement
 ASMJIT_PATCH(0x70FC90, TechnoClass_Deactivate_AresReplace, 6)
@@ -783,7 +789,6 @@ ASMJIT_PATCH(0x6FB1B5, TechnoClass_CreateGap_LargeGap, 7)
 	return R->Origin() + 0xD;
 }ASMJIT_PATCH_AGAIN(0x6FB4A3, TechnoClass_CreateGap_LargeGap, 7)
 
-
 // Radar Jammers (#305) unjam all on owner change
 ASMJIT_PATCH(0x7014D5, TechnoClass_SetOwningHouse_Additional, 6)
 {
@@ -807,19 +812,21 @@ ASMJIT_PATCH(0x7014D5, TechnoClass_SetOwningHouse_Additional, 6)
 	//		pSpawn->ResetTarget();
 	//}
 
-	if (auto& pJammer = TechnoExtContainer::Instance.Find(pThis)->RadarJammer) {
+	if (auto& pJammer = TechnoExtContainer::Instance.Find(pThis)->RadarJammer)
+	{
 		pJammer->UnjamAll();
 	}
 
-	if (auto pBuilding = cast_to<BuildingClass*, false>(pThis)) {
-
+	if (auto pBuilding = cast_to<BuildingClass*, false>(pThis))
+	{
 		const auto nTunnelVec = HouseExtData::GetTunnelVector(pBuilding->Type, pThis->Owner);
 
 		if (!nTunnelVec || TunnelFuncs::FindSameTunnel(pBuilding))
 			return 0x0;
 
 		for (auto nPos = nTunnelVec->Vector.begin();
-			nPos != nTunnelVec->Vector.end(); ++nPos) {
+			nPos != nTunnelVec->Vector.end(); ++nPos)
+		{
 			TunnelFuncs::KillFootClass(*nPos, nullptr);
 		}
 
@@ -844,11 +851,11 @@ ASMJIT_PATCH(0x702E64, TechnoClass_RegisterDestruction_Bounty, 6)
 
 ASMJIT_PATCH(0x6F3F43, TechnoClass_Init, 6)
 {
-	GET(TechnoClass* , pThis, ESI);
+	GET(TechnoClass*, pThis, ESI);
 
 	auto const pType = pThis->GetTechnoType();
 
-	if(pType)
+	if (pType)
 	{
 		auto const pExt = TechnoExtContainer::Instance.Find(pThis);
 
@@ -857,13 +864,13 @@ ASMJIT_PATCH(0x6F3F43, TechnoClass_Init, 6)
 		pExt->TiberiumStorage.m_values.resize(TiberiumClass::Array->Count);
 		HouseExtData* pHouseExt = nullptr;
 
-		if (pThis->Owner) {
+		if (pThis->Owner)
+		{
 			pThis->IsOwnedByCurrentPlayer = pThis->Owner == HouseClass::CurrentPlayer();
 			pHouseExt = HouseExtContainer::Instance.Find(pThis->Owner);
 		}
 
 		auto const pTypeExt = TechnoTypeExtContainer::Instance.Find(pType);
-
 
 		//TechnoExtData::InitializeAttachments(pThis);
 
@@ -879,35 +886,41 @@ ASMJIT_PATCH(0x6F3F43, TechnoClass_Init, 6)
 		if (pHouseExt && pTypeExt->Harvester_Counted)
 			pHouseExt->OwnedCountedHarvesters.emplace(pThis);
 
-		if (pType->Spawns) {
+		if (pType->Spawns)
+		{
 			pSpawnManager = GameCreate<SpawnManagerClass>(pThis, pType->Spawns, pType->SpawnsNumber, pType->SpawnRegenRate, pType->SpawnReloadRate);
 		}
 
-		if (pType->Enslaves) {
+		if (pType->Enslaves)
+		{
 			pSlaveManager = GameCreate<SlaveManagerClass>(pThis, pType->Enslaves, pType->SlavesNumber, pType->SlaveRegenRate, pType->SlaveReloadRate);
 		}
 
-		if (pType->AirstrikeTeam > 0 && pType->AirstrikeTeamType) {
+		if (pType->AirstrikeTeam > 0 && pType->AirstrikeTeamType)
+		{
 			pAirstrike = GameCreate<AirstrikeClass>(pThis);
 		}
 
 		const bool IsFoot = pThis->WhatAmI() != BuildingClass::AbsID;
 		const int WeaponCount = pType->TurretCount <= 0 ? 2 : pType->WeaponCount;
 
-		for (auto i = 0; i < WeaponCount; ++i) {
-
-			if (auto const pWeapon = pType->GetWeapon(i)->WeaponType) {
+		for (auto i = 0; i < WeaponCount; ++i)
+		{
+			if (auto const pWeapon = pType->GetWeapon(i)->WeaponType)
+			{
 				TechnoExt_ExtData::InitWeapon(pThis, pType, pWeapon, i, pCapturer, pParasite, pTemporal, "Weapon", IsFoot);
 			}
 
-			if (auto const pWeaponE = pType->GetEliteWeapon(i)->WeaponType) {
+			if (auto const pWeaponE = pType->GetEliteWeapon(i)->WeaponType)
+			{
 				TechnoExt_ExtData::InitWeapon(pThis, pType, pWeaponE, i, pCapturer, pParasite, pTemporal, "EliteWeapon", IsFoot);
 			}
 		}
 
 		pThis->CaptureManager = pCapturer;
 		pThis->TemporalImUsing = pTemporal;
-		if (IsFoot) {
+		if (IsFoot)
+		{
 			((FootClass*)pThis)->ParasiteImUsing = pParasite;
 		}
 
@@ -915,17 +928,21 @@ ASMJIT_PATCH(0x6F3F43, TechnoClass_Init, 6)
 		pThis->SlaveManager = pSlaveManager;
 		pThis->Airstrike = pAirstrike;
 
-		if (auto pOwner = pThis->Owner) {
+		if (auto pOwner = pThis->Owner)
+		{
 			const auto pHouseType = pOwner->Type;
 			const auto pParentHouseType = pHouseType->FindParentCountry();
 			TechnoExtContainer::Instance.Find(pThis)->OriginalHouseType = pParentHouseType ? pParentHouseType : pHouseType;
-		} else {
+		}
+		else
+		{
 			Debug::LogInfo("Techno[{}] Init Without any ownership!", pType->ID);
 		}
 
 		// if override is in effect, do not create initial payload.
 		// this object might have been deployed, undeployed, ...
-		if (Unsorted::ScenarioInit && Unsorted::CurrentFrame) {
+		if (Unsorted::ScenarioInit && Unsorted::CurrentFrame)
+		{
 			TechnoExtContainer::Instance.Find(pThis)->PayloadCreated = true;
 		}
 
@@ -964,7 +981,7 @@ ASMJIT_PATCH(0x6F3F43, TechnoClass_Init, 6)
 // 	R->EAX(pCoord->X);
 //	return pTarget == AbstractType::Aircraft ? 0x6F75B2 : 0x6F7568;
 // }
-DEFINE_PATCH_ADDR_OFFSET(byte, 0x6F7561, 0x2 , 0x2);
+DEFINE_PATCH_ADDR_OFFSET(byte, 0x6F7561, 0x2, 0x2);
 
 // No data found on .inj for this
 //ASMJIT_PATCH(0x5F7933, TechnoTypeClass_FindFactory_ExcludeDisabled, 0x6)
@@ -1073,7 +1090,6 @@ ASMJIT_PATCH(0x717823, TechnoTypeClass_UpdatePalette_Reset, 0x6)
 	return 0;
 }ASMJIT_PATCH_AGAIN(0x717855, TechnoTypeClass_UpdatePalette_Reset, 0x6)
 
-
 ASMJIT_PATCH(0x71136F, TechnoTypeClass_CTOR_Initialize, 0x6)
 {
 	GET(TechnoTypeClass*, pThis, ESI);
@@ -1135,7 +1151,6 @@ ASMJIT_PATCH(0x6FE53F, TechnoClass_FireAt_CreateBullet, 0x6)
 	GET(int, damage, EDI);
 	GET_BASE(AbstractClass*, pTarget, 0x8);
 
-
 	// replace skipped instructions
 	REF_STACK(int, Speed, 0x28);
 	Speed = speed;
@@ -1156,7 +1171,6 @@ ASMJIT_PATCH(0x6FE53F, TechnoClass_FireAt_CreateBullet, 0x6)
 
 #include <Ext/Scenario/Body.h>
 
-
 ASMJIT_PATCH(0x6FF7FF, TechnoClass_Fire_UnlimboDetonate, 0x6)
 {
 	GET(TechnoClass* const, pThis, ESI);
@@ -1166,8 +1180,10 @@ ASMJIT_PATCH(0x6FF7FF, TechnoClass_Fire_UnlimboDetonate, 0x6)
 	const auto pWHExt = WarheadTypeExtContainer::Instance.Find(pWH);
 
 	if (pThis->IsAlive && pThis->Health > 0 && pBullet
-		&& !UnlimboDetonateFireTemp::InLimbo && !pWH->Parasite && pWHExt->UnlimboDetonate) {
-		if (pWHExt->UnlimboDetonate_KeepSelected) {
+		&& !UnlimboDetonateFireTemp::InLimbo && !pWH->Parasite && pWHExt->UnlimboDetonate)
+	{
+		if (pWHExt->UnlimboDetonate_KeepSelected)
+		{
 			TechnoExtContainer::Instance.Find(pThis)->IsSelected = UnlimboDetonateFireTemp::InSelected;
 			ScenarioExtData::Instance()->LimboLaunchers.emplace(pThis);
 		}
@@ -1180,7 +1196,8 @@ ASMJIT_PATCH(0x6FF7FF, TechnoClass_Fire_UnlimboDetonate, 0x6)
 
 ASMJIT_PATCH(0x48DC90, MapClass_UnselectAll_ClearLimboLaunchers, 0x5)
 {
-	for (const auto pExt : ScenarioExtData::Instance()->LimboLaunchers) {
+	for (const auto pExt : ScenarioExtData::Instance()->LimboLaunchers)
+	{
 		TechnoExtContainer::Instance.Find(pExt)->IsSelected = false;
 	}
 
@@ -1195,7 +1212,8 @@ ASMJIT_PATCH(0x6F826E, TechnoClass_EvaluateObject_CivilianEnemy, 0x5)
 	GET(TechnoClass*, pTarget, ESI);
 	GET(TechnoTypeClass*, pTargetType, EBP);
 
-	enum {
+	enum
+	{
 		Undecided = 0,
 		ConsiderEnemy = 0x6F8483,
 		ConsiderCivilian = 0x6F83B1,
@@ -1205,18 +1223,22 @@ ASMJIT_PATCH(0x6F826E, TechnoClass_EvaluateObject_CivilianEnemy, 0x5)
 	const auto pExt = TechnoTypeExtContainer::Instance.Find(pTargetType);
 
 	// always consider this an enemy
-	if (pExt->CivilianEnemy) {
+	if (pExt->CivilianEnemy)
+	{
 		return ConsiderEnemy;
 	}
 
 	// if the potential target is attacking an allied object, consider it an enemy
 	// to not allow civilians to overrun a player
-	if (const auto pTargetTarget = flag_cast_to<TechnoClass*>(pTarget->Target)) {
-		if (pThis->Owner->IsAlliedWith(pTargetTarget)) {
+	if (const auto pTargetTarget = flag_cast_to<TechnoClass*>(pTarget->Target))
+	{
+		if (pThis->Owner->IsAlliedWith(pTargetTarget))
+		{
 			const auto pData = RulesExtData::Instance();
 
 			if (pThis->Owner->IsControlledByHuman() ?
-				pData->AutoRepelPlayer : pData->AutoRepelAI) {
+				pData->AutoRepelPlayer : pData->AutoRepelAI)
+			{
 				return ConsiderEnemy;
 			}
 		}
@@ -1230,9 +1252,12 @@ ASMJIT_PATCH(0x7162B0, TechnoTypeClass_GetPipMax_MindControl, 0x6)
 	GET(TechnoTypeClass* const, pThis, ECX);
 
 	int count = 0;
-	for (int i = 0; i < 3; ++i) {
-		if (auto pWeapon = pThis->GetWeapon(i)->WeaponType) {
-			if (pWeapon->Warhead->MindControl && pWeapon->Damage > 0) {
+	for (int i = 0; i < 3; ++i)
+	{
+		if (auto pWeapon = pThis->GetWeapon(i)->WeaponType)
+		{
+			if (pWeapon->Warhead->MindControl && pWeapon->Damage > 0)
+			{
 				count = pWeapon->Damage;
 				break;
 			}
@@ -1265,7 +1290,7 @@ ASMJIT_PATCH(0x6FE31C, TechnoClass_Fire_AllowDamage, 8)
 // health bar for detected submerged units
 ASMJIT_PATCH(0x6F534E, TechnoClass_DrawExtras_Insignia, 0x5)
 {
-	enum { SkipGameCode = 0x6F5388  , CheckDrawHealthAllowed = 0x6F538E};
+	enum { SkipGameCode = 0x6F5388, CheckDrawHealthAllowed = 0x6F538E };
 
 	GET(TechnoClass*, pThis, EBP);
 	GET_STACK(Point2D*, pLocation, STACK_OFFS(0x98, -0x4));
@@ -1418,26 +1443,25 @@ ASMJIT_PATCH(0x4DF3A6, FootClass_UpdateAttackMove_Follow, 0x6)
 	Mission mission = pThis->GetCurrentMission();
 
 	// Refresh mega mission if mission is somehow changed to incorrect missions.
-	if (mission != Mission::Attack && mission != Mission::Move){
-
+	if (mission != Mission::Attack && mission != Mission::Move)
+	{
 		bool continueMission = true;
 
 		// Aug 30, 2025 - Starkku: SimpleDeployer needs special handling here.
 		// Without this if you interrupt waypoint mode path with deploy command
 		// it will not execute properly as it interrupts it with movement.
 
-		if (mission == Mission::Unload) {
-			if (auto const pUnit = cast_to<UnitClass*>(pThis)) {
+		if (mission == Mission::Unload)
+		{
+			if (auto const pUnit = cast_to<UnitClass*>(pThis))
+			{
 				if (pUnit->Type->IsSimpleDeployer)
 					continueMission = false;
-
-
 			}
 		}
 
 		if (continueMission)
 			pThis->ContinueMegaMission();
-
 	}
 
 	auto const pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType());
@@ -1445,7 +1469,7 @@ ASMJIT_PATCH(0x4DF3A6, FootClass_UpdateAttackMove_Follow, 0x6)
 	if (pTypeExt->AttackMove_Follow || pTypeExt->AttackMove_Follow_IfMindControlIsFull && pThis->CaptureManager && pThis->CaptureManager->CannotControlAnyMore())
 	{
 		auto const& pTechnoVectors = Helpers::Alex::getCellSpreadItems(pThis->GetCoords(),
-			pThis->GetGuardRange(2) / Unsorted::LeptonsPerCell, pTypeExt->AttackMove_Follow_IncludeAir,false , true , true , false);
+			pThis->GetGuardRange(2) / Unsorted::LeptonsPerCell, pTypeExt->AttackMove_Follow_IncludeAir, false, true, true, false);
 
 		TechnoClass* pClosestTarget = nullptr;
 		int closestRange = 65536;

@@ -68,6 +68,5 @@ private:
 			.Process(Delay)
 			.Process(CanDive)
 			.Success() && Stm.RegisterChange(this);
-
 	}
 };

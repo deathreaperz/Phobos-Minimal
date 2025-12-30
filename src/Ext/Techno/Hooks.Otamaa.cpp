@@ -91,7 +91,7 @@ ASMJIT_PATCH(0x70D690, TechnoClass_FireDeathWeapon_Replace, 0x5) //4
 
 		if (pPrimary && pPrimary->WeaponType)
 		{
-			if(pTypeExt->DeathWeapon_CheckAmmo && pThis->Ammo <= 0 )
+			if (pTypeExt->DeathWeapon_CheckAmmo && pThis->Ammo <= 0)
 				return 0x70D796;
 
 			DetonateDeathWeapon(pThis, pType, pPrimary->WeaponType, nMult, false);
@@ -100,7 +100,6 @@ ASMJIT_PATCH(0x70D690, TechnoClass_FireDeathWeapon_Replace, 0x5) //4
 		{
 			DetonateDeathWeapon(pThis, pType, RulesClass::Instance->DeathWeapon, nMult, true);
 		}
-
 	}
 	else
 	{
@@ -117,7 +116,7 @@ ASMJIT_PATCH(0x4DABBC, ObjectClass_WasFallingDown, 0x6)
 	if (pThis->IsFallingDown)
 		return 0x0;
 
-	if (((pThis->AbstractFlags & AbstractFlags::Techno) == AbstractFlags::None) || pThis->WhatAmI() == AircraftClass::AbsID )
+	if (((pThis->AbstractFlags & AbstractFlags::Techno) == AbstractFlags::None) || pThis->WhatAmI() == AircraftClass::AbsID)
 		return 0x0;
 
 	auto const pTechno = static_cast<TechnoClass*>(pThis);
@@ -127,16 +126,16 @@ ASMJIT_PATCH(0x4DABBC, ObjectClass_WasFallingDown, 0x6)
 
 		{
 			auto const GetLandingAnim = [pExt, pTechno]()
-			{
-				auto pDecidedAnim = pExt->Landing_Anim.Get();
-				if (auto const pCell = pTechno->GetCell())
 				{
-					if (!pCell->ContainsBridge() && pCell->LandType == LandType::Water)
-						pDecidedAnim = pExt->Landing_AnimOnWater.Get();
-				}
+					auto pDecidedAnim = pExt->Landing_Anim.Get();
+					if (auto const pCell = pTechno->GetCell())
+					{
+						if (!pCell->ContainsBridge() && pCell->LandType == LandType::Water)
+							pDecidedAnim = pExt->Landing_AnimOnWater.Get();
+					}
 
-				return pDecidedAnim;
-			};
+					return pDecidedAnim;
+				};
 
 			if (auto pDecidedAnim = GetLandingAnim())
 			{
@@ -192,14 +191,14 @@ ASMJIT_PATCH(0x4CEB51, FlyLocomotionClass_LandingAnim, 0x8)
 
 	{
 		auto GetDefaultType = [pType]()
-		{
-			if (pType->IsDropship)
-				return RulesExtData::Instance()->DropShip_LandAnim.Get();
-			else if (pType->Carryall)
-				return RulesExtData::Instance()->CarryAll_LandAnim.Get();
+			{
+				if (pType->IsDropship)
+					return RulesExtData::Instance()->DropShip_LandAnim.Get();
+				else if (pType->Carryall)
+					return RulesExtData::Instance()->CarryAll_LandAnim.Get();
 
-			return (AnimTypeClass*)nullptr;
-		};
+				return (AnimTypeClass*)nullptr;
+			};
 
 		const auto pCell = pLinked->GetCell();
 		const auto pFirst = pCell->LandType == LandType::Water && !pCell->ContainsBridge() && pExt->Landing_AnimOnWater.Get()
@@ -234,7 +233,6 @@ ASMJIT_PATCH(0x4DECBB, FootClass_Destroy_SpinSpeed, 0x5) //A
 
 	pThis->RockingForwardsPerFrame = static_cast<float>(ScenarioClass::Instance->Random.RandomDouble() * 0.1 * pExt->CrashSpinVerticalRate.Get());
 
-
 	return 0x4DED4B;
 }
 
@@ -244,8 +242,10 @@ ASMJIT_PATCH(0x4D42C4, FootClass_Mission_Patrol_IsCow, 0x6) //8
 
 	GET(FootClass* const, pThis, ESI);
 
-	if(const auto pInf = cast_to<InfantryClass*, false>(pThis)) {
-		if (InfantryTypeExtContainer::Instance.Find(pInf->Type)->Is_Cow) {
+	if (const auto pInf = cast_to<InfantryClass*, false>(pThis))
+	{
+		if (InfantryTypeExtContainer::Instance.Find(pInf->Type)->Is_Cow)
+		{
 			pThis->UpdateIdleAction();
 			return pThis->Destination ? Skip : SetMissionRate;
 		}
@@ -262,7 +262,6 @@ ASMJIT_PATCH(0x4D42C4, FootClass_Mission_Patrol_IsCow, 0x6) //8
 // 	R->BL(InfantryTypeExt::ExtMap.Find(pThis->Type)->Is_Cow);
 // 	return 0x51CEAA;
 // }
-
 
 ASMJIT_PATCH(0x70FDC2, TechnoClass_Drain_LocalDrainAnim, 0x5) //A
 {

@@ -67,7 +67,7 @@ public:
 		this->AbsType = AnimClass::AbsID;
 	}
 
-	AnimExtData(AnimClass* pObj, noinit_t nn) : ObjectExtData(pObj, nn) {}
+	AnimExtData(AnimClass* pObj, noinit_t nn) : ObjectExtData(pObj, nn) { }
 
 	virtual ~AnimExtData() = default;
 	//{
@@ -108,7 +108,7 @@ public:
 public:
 
 	static const std::pair<bool, OwnerHouseKind> SetAnimOwnerHouseKind(AnimClass* pAnim, HouseClass* pInvoker, HouseClass* pVictim, bool defaultToVictimOwner);
-	static const std::pair<bool, OwnerHouseKind> SetAnimOwnerHouseKind(AnimClass* pAnim, HouseClass* pInvoker, HouseClass* pVictim, TechnoClass* pTechnoInvoker, bool defaultToVictimOwner , bool forceOwnership);
+	static const std::pair<bool, OwnerHouseKind> SetAnimOwnerHouseKind(AnimClass* pAnim, HouseClass* pInvoker, HouseClass* pVictim, TechnoClass* pTechnoInvoker, bool defaultToVictimOwner, bool forceOwnership);
 	static TechnoClass* GetTechnoInvoker(AnimClass* pThis);
 	static AbstractClass* GetTarget(AnimClass* const);
 	static void ChangeAnimType(AnimClass* pAnim, AnimTypeClass* pNewType, bool resetLoops, bool restart);
@@ -162,8 +162,8 @@ class NOVTABLE FakeAnimClass : public AnimClass
 {
 public:
 
-
-	FORCEDINLINE HouseClass* _GetOwningHouse() {
+	FORCEDINLINE HouseClass* _GetOwningHouse()
+	{
 		return this->Owner;
 	}
 
@@ -179,22 +179,25 @@ public:
 	void _CreateFootApplyOccupyBits();
 	void _CreateFoot();
 
-	void _SpreadTiberium(CoordStruct& coords , bool isOnbridge);
-	void _PlayExtraAnims(bool onWater , bool onBridge);
+	void _SpreadTiberium(CoordStruct& coords, bool isOnbridge);
+	void _PlayExtraAnims(bool onWater, bool onBridge);
 	void _DrawTrailerAnim();
 	CoordStruct* __GetCenterCoords(CoordStruct* pBuffer);
 
 	int _BounceAI();
 
-	FORCEDINLINE AnimClass* _AsAnim() const {
+	FORCEDINLINE AnimClass* _AsAnim() const
+	{
 		return (AnimClass*)this;
 	}
 
-	FORCEDINLINE AnimExtData* _GetExtData() {
+	FORCEDINLINE AnimExtData* _GetExtData()
+	{
 		return *reinterpret_cast<AnimExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 
-	FORCEDINLINE AnimTypeExtData* _GetTypeExtData() {
+	FORCEDINLINE AnimTypeExtData* _GetTypeExtData()
+	{
 		return *reinterpret_cast<AnimTypeExtData**>(((DWORD)this->Type) + AbstractExtOffset);
 	}
 };

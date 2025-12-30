@@ -19,7 +19,8 @@ ASMJIT_PATCH(0x6ABC9D, SidebarClass_GetObjectTabIndex_Super, 0x5)
 
 	GET(int const, typeIdx, EDX);
 
-	if ((size_t)typeIdx < (size_t)SuperWeaponTypeClass::Array->Count) { 
+	if ((size_t)typeIdx < (size_t)SuperWeaponTypeClass::Array->Count)
+	{
 		R->EAX(SWTypeExtContainer::Instance.Find(SuperWeaponTypeClass::Array->Items[typeIdx])->TabIndex);
 		return ApplyTabIndex;
 	}
@@ -27,28 +28,35 @@ ASMJIT_PATCH(0x6ABC9D, SidebarClass_GetObjectTabIndex_Super, 0x5)
 	return 0;
 }
 
-ASMJIT_PATCH(0x6CE1A0, SuperClass_AI_FlashingBar, 0x5) {
+ASMJIT_PATCH(0x6CE1A0, SuperClass_AI_FlashingBar, 0x5)
+{
 	GET(SuperClass*, pThis, ECX);
 
-	enum { Continue = 0x0 , RetFalse = 0x6CE1E7 , RetTrue = 0x6CE1E4 };
+	enum { Continue = 0x0, RetFalse = 0x6CE1E7, RetTrue = 0x6CE1E4 };
 
-	if(!SWTypeExtContainer::Instance.Find(pThis->Type)->SuperWeaponSidebar_Allow)
+	if (!SWTypeExtContainer::Instance.Find(pThis->Type)->SuperWeaponSidebar_Allow)
 		return RetFalse;
 
-	if (pThis->IsOnHold) {
+	if (pThis->IsOnHold)
+	{
 		return RetFalse;
 	}
 
-	if (pThis->Type->UseChargeDrain) {
-		if (pThis->ChargeDrainState == ChargeDrainState::Charging) {
+	if (pThis->Type->UseChargeDrain)
+	{
+		if (pThis->ChargeDrainState == ChargeDrainState::Charging)
+		{
 			return RetFalse;
 		}
-	} else if (!pThis->IsCharged ) {
+	}
+	else if (!pThis->IsCharged)
+	{
 		return RetFalse;
 	}
 
 	int FlashSidebarTabFrames = pThis->Type->FlashSidebarTabFrames;
-	if ( FlashSidebarTabFrames == -1 ) {
+	if (FlashSidebarTabFrames == -1)
+	{
 		return RetTrue;
 	}
 
@@ -56,5 +64,5 @@ ASMJIT_PATCH(0x6CE1A0, SuperClass_AI_FlashingBar, 0x5) {
 	return 0x6CE1E9;
 }
 
- // Skip tabIndex check
+// Skip tabIndex check
 #pragma endregion

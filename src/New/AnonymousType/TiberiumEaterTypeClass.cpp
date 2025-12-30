@@ -42,7 +42,8 @@ void TiberiumEaterTypeClass::LoadFromINI(CCINIClass* pINI, const char* pSection)
 	this->Anims.Read(exINI, pSection, "TiberiumEater.Anims");
 
 	this->Anims_Tiberiums.resize(TiberiumClass::Array->size());
-	for (size_t idx = 0; idx < TiberiumClass::Array->size(); ++idx) {
+	for (size_t idx = 0; idx < TiberiumClass::Array->size(); ++idx)
+	{
 		IMPL_SNPRNINTF(tempBuffer, sizeof(tempBuffer), "TiberiumEater.Anims.Tiberium%d", idx);
 		this->Anims_Tiberiums[idx].Read(exINI, pSection, tempBuffer);
 	}

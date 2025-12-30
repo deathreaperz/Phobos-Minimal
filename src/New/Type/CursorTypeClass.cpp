@@ -109,8 +109,10 @@ void CursorTypeClass::LoadFromINIList_New(CCINIClass* pINI, bool bDebug)
 
 	Array.reserve(pKeyCount);
 
-	for (int i = 0; i < pKeyCount; ++i) {
-		if (auto const pItem = FindOrAllocate(pINI->GetKeyName(section, i))) {
+	for (int i = 0; i < pKeyCount; ++i)
+	{
+		if (auto const pItem = FindOrAllocate(pINI->GetKeyName(section, i)))
+		{
 			pItem->LoadFromINI(pINI);
 		}
 	}

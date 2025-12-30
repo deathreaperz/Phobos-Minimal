@@ -12,16 +12,19 @@ ASMJIT_PATCH(0x4666F7, BulletClass_AI_Trajectories, 0x6)
 	GET(FakeBulletClass*, pThis, EBP);
 
 	auto pExt = pThis->_GetExtData();
-	auto pTypeExt  = pThis->_GetTypeExtData();
+	auto pTypeExt = pThis->_GetTypeExtData();
 
 	auto& pTraj = pExt->Trajectory;
 
-	if (!pThis->SpawnNextAnim && pTraj) {
+	if (!pThis->SpawnNextAnim && pTraj)
+	{
 		return pTraj->OnAI() ? Detonate : 0x0;
 	}
 
-	if (pExt->InterceptedStatus & InterceptedStatus::Targeted) {
-		if (const auto pTarget = cast_to<BulletClass*>(pThis->Target)) {
+	if (pExt->InterceptedStatus & InterceptedStatus::Targeted)
+	{
+		if (const auto pTarget = cast_to<BulletClass*>(pThis->Target))
+		{
 			const auto pTargetTypeExt = BulletTypeExtContainer::Instance.Find(pTarget->Type);
 			const auto pTargetExt = BulletExtContainer::Instance.Find(pTarget);
 
@@ -39,13 +42,15 @@ ASMJIT_PATCH(0x4666F7, BulletClass_AI_Trajectories, 0x6)
 			return 0x467FEE;
 	}
 
-	if (!pThis->IsAlive) {
-        return 0x467FEE;
-    }
+	if (!pThis->IsAlive)
+	{
+		return 0x467FEE;
+	}
 
-	if (!PhobosTrajectory::BlockDrawTrail(pTraj)) {
-
-		if(!pExt->LaserTrails.empty()) {
+	if (!PhobosTrajectory::BlockDrawTrail(pTraj))
+	{
+		if (!pExt->LaserTrails.empty())
+		{
 			CoordStruct futureCoords
 			{
 				pThis->Location.X + static_cast<int>(pThis->Velocity.X),
@@ -155,17 +160,17 @@ ASMJIT_PATCH(0x46745C, BulletClass_AI_Position_Trajectories, 0x7)
 	LEA_STACK(VelocityClass*, pSpeed, STACK_OFFS(0x1AC, 0x11C));
 	LEA_STACK(VelocityClass*, pPosition, STACK_OFFS(0x1AC, 0x144));
 
-	auto pExt =  pThis->_GetExtData();
+	auto pExt = pThis->_GetExtData();
 
 	if (auto& pTraj = pExt->Trajectory)
 		pTraj->OnAIVelocity(pSpeed, pPosition);
 
-
 	// Trajectory can use Velocity only for turning Image's direction
 	// The true position in the next frame will be calculate after here
-	if (pExt->Trajectory) {
-
-		if(!pExt->LaserTrails.empty()){
+	if (pExt->Trajectory)
+	{
+		if (!pExt->LaserTrails.empty())
+		{
 			CoordStruct futureCoords
 			{
 				static_cast<int>(pSpeed->X + pPosition->X),
@@ -196,7 +201,6 @@ ASMJIT_PATCH(0x4677D3, BulletClass_AI_TargetCoordCheck_Trajectories, 0x5)
 
 ASMJIT_PATCH(0x467927, BulletClass_AI_TechnoCheck_Trajectories, 0x5)
 {
-
 	GET(BulletClass*, pThis, EBP);
 	GET(TechnoClass*, pTechno, ESI);
 

@@ -8,21 +8,24 @@ COMPILETIMEEVAL OPTIONALINLINE size_t SignSequenceLength { std::char_traits<char
 size_t ShapeTextPrinter::GetSignIndex(const char sign)
 {
 	const char* end = SignSequence + SignSequenceLength;
-	const char* iter = std::find(SignSequence, end , sign);
+	const char* iter = std::find(SignSequence, end, sign);
 	return iter != end ? std::distance(SignSequence, iter) : -1;
 }
 
-void ShapeTextPrinter::BuildFrames(std::vector<int>& result, const std::string& text, const int baseNumberFrame , const int baseSignFrame)
+void ShapeTextPrinter::BuildFrames(std::vector<int>& result, const std::string& text, const int baseNumberFrame, const int baseSignFrame)
 {
 	result.reserve(text.size());
 
-	for (const auto& item : text) {
-
+	for (const auto& item : text)
+	{
 		int frame = 0;
 
-		if (isdigit(item)) {
+		if (isdigit(item))
+		{
 			frame = baseNumberFrame + item - '0';
-		} else {
+		}
+		else
+		{
 			const size_t signIndex = GetSignIndex(item);
 
 			if (signIndex < SignSequenceLength)
@@ -52,7 +55,7 @@ void ShapeTextPrinter::PrintShape
 		return;
 
 	std::vector<int> frames {};
-	ShapeTextPrinter::BuildFrames(frames , text, data.BaseNumberFrame, data.BaseExtraFrame);
+	ShapeTextPrinter::BuildFrames(frames, text, data.BaseNumberFrame, data.BaseExtraFrame);
 
 	for (int& frame : frames)
 	{

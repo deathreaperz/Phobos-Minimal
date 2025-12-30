@@ -26,7 +26,6 @@ ASMJIT_PATCH(0x6F6637, TechnoClass_DrawHealthBar_HideBuildingsPips, 0x5)
 		->HealthBar_HidePips ? SkipDrawPips : Continue;
 }
 
-
 // destroying a building (no health left) resulted in a single green pip shown
 // in the health bar for a split second. this makes the last pip red.
 ASMJIT_PATCH(0x6F661D, TechnoClass_DrawHealthBar_DestroyedBuilding_RedPip, 0x7)
@@ -34,7 +33,6 @@ ASMJIT_PATCH(0x6F661D, TechnoClass_DrawHealthBar_DestroyedBuilding_RedPip, 0x7)
 	GET(BuildingClass*, pBld, ESI);
 	return (pBld->Health <= 0 || pBld->IsRedHP()) ? 0x6F6628 : 0x6F6630;
 }
-
 
 ASMJIT_PATCH(0x6F64A0, TechnoClass_DrawHealthBar_Hide, 0x5)
 {
@@ -116,7 +114,6 @@ static bool DrawHPBar(TechnoClass* pThis)
 
 	if (pExt->Is_DriverKilled)
 		return false;
-
 
 	if (what == UnitClass::AbsID)
 	{
@@ -214,9 +211,12 @@ void __fastcall FakeTechnoClass::__DrawHealthBar_Selection(TechnoClass* techno, 
 	if (techno->IsSelected && Phobos::Config::EnableSelectBox && !pTypeExt->HideSelectBox)
 		TechnoExtData::DrawSelectBox(techno, position, clipRect);
 
-	if (technoType == AbstractType::Building) {
+	if (technoType == AbstractType::Building)
+	{
 		DrawBuildingHealthBar(techno, position, clipRect, &assets);
-	} else {
+	}
+	else
+	{
 		DrawUnitHealthBar(techno, technoType, position, clipRect, &assets);
 	}
 }
@@ -288,11 +288,13 @@ static void DrawBuildingHealthBar(TechnoClass* techno, Point2D* position, Rectan
 	// Determine health bar color based on health percentage
 	int colorIndex = 1; // Green
 
-	if (healthRatio <= RulesClass::Instance->ConditionYellow) {
+	if (healthRatio <= RulesClass::Instance->ConditionYellow)
+	{
 		colorIndex = 2; // Yellow
 	}
 
-	if (healthRatio <= RulesClass::Instance->ConditionRed) {
+	if (healthRatio <= RulesClass::Instance->ConditionRed)
+	{
 		colorIndex = 4; // Red
 	}
 
@@ -378,8 +380,6 @@ static void DrawUnitHealthBar(TechnoClass* techno, AbstractType unitType, Point2
 	};
 
 	{ // these are draw before HP itself drawn
-
-
 		if (const auto pShieldData = pExt->Shield.get())
 		{
 			if (pShieldData->IsAvailable() && !pShieldData->IsBrokenAndNonRespawning())
@@ -390,7 +390,8 @@ static void DrawUnitHealthBar(TechnoClass* techno, AbstractType unitType, Point2
 	}
 
 	// Setup drawing parameters based on unit type
-	if (techno->IsSelected) {
+	if (techno->IsSelected)
+	{
 		Point2D bracketPos = position->operator+(drawState.pipBrdDelta);
 		DrawSingleHPPip(&bracketPos, assets->convert, assets->bracketShape, drawState.pipBrdFrame, clipRect, PIPBAR_FLAGS);
 	}
@@ -409,11 +410,13 @@ static void DrawUnitHealthBar(TechnoClass* techno, AbstractType unitType, Point2
 	// Determine health bar color frame
 	int healthFrameIndex = pTypeExt->HealthBarSHP_HealthFrame->Y; // Green
 
-	if (healthRatio <= RulesClass::Instance->ConditionYellow) {
+	if (healthRatio <= RulesClass::Instance->ConditionYellow)
+	{
 		healthFrameIndex = pTypeExt->HealthBarSHP_HealthFrame->Z; // Yellow
 	}
 
-	if (techno->Health <= 0 || healthRatio <= RulesClass::Instance->ConditionRed) {
+	if (techno->Health <= 0 || healthRatio <= RulesClass::Instance->ConditionRed)
+	{
 		healthFrameIndex = pTypeExt->HealthBarSHP_HealthFrame->X; // Red
 	}
 

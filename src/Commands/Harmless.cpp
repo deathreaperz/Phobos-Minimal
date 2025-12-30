@@ -35,9 +35,9 @@ void HarmlessCommandClass::AI()
 	if (!InHarmlessMode)
 		return;
 
-	for (auto pTechno : *TechnoClass::Array) {
-
-		if(pTechno->Owner != HouseClass::CurrentPlayer())
+	for (auto pTechno : *TechnoClass::Array)
+	{
+		if (pTechno->Owner != HouseClass::CurrentPlayer())
 			pTechno->QueueMission(Mission::Harmless, true);
 	}
 }

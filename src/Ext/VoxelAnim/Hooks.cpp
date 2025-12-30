@@ -18,7 +18,6 @@
 
 #include <Misc/DynamicPatcher/Trails/TrailsManager.h>
 
-
 ASMJIT_PATCH(0x74A70E, VoxelAnimClass_AI_Additional, 0x6) // C
 {
 	GET(VoxelAnimClass* const, pThis, EBX);
@@ -43,11 +42,12 @@ ASMJIT_PATCH(0x74A70E, VoxelAnimClass_AI_Additional, 0x6) // C
 
 	TrailsManager::AI(pThis);
 
-	if (pThis->Type->TrailerAnim && pTypeExt->TrailerAnim_SpawnDelay >= 1) {
+	if (pThis->Type->TrailerAnim && pTypeExt->TrailerAnim_SpawnDelay >= 1)
+	{
 		auto& timer = pThisExt->TrailerSpawnDelayTimer;
 
-		if(timer.Expired()) {
-
+		if (timer.Expired())
+		{
 			timer.Start(pTypeExt->TrailerAnim_SpawnDelay);
 
 			CoordStruct _coord = pThis->Bounce.GetCoords();
@@ -90,7 +90,8 @@ ASMJIT_PATCH(0x74A021, VoxelAnimClass_AI_Expired, 0x6)
 	{
 		Helper::Otamaa::Detonate(pTypeExt->Weapon, pThis->Type->Damage, pThis->Type->Warhead, pTypeExt->Warhead_Detonate, nLocation, pInvoker, pOwner, pTypeExt->ExpireDamage_ConsiderInvokerVet);
 
-		if (auto const pExpireAnim = pThis->Type->ExpireAnim) {
+		if (auto const pExpireAnim = pThis->Type->ExpireAnim)
+		{
 			AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pExpireAnim, nLocation, 0, 1, AnimFlag::AnimFlag_2600, -30, 0),
 				pOwner,
 				nullptr,
@@ -99,10 +100,12 @@ ASMJIT_PATCH(0x74A021, VoxelAnimClass_AI_Expired, 0x6)
 			);
 		}
 	}
-	else {
+	else
+	{
 		if (!pTypeExt->ExplodeOnWater.Get())
 		{
-			if (auto pSplashAnim = Helper::Otamaa::PickSplashAnim(pTypeExt->SplashList, pTypeExt->WakeAnim, pTypeExt->SplashList_Pickrandom.Get(), pThis->Type->IsMeteor)) {
+			if (auto pSplashAnim = Helper::Otamaa::PickSplashAnim(pTypeExt->SplashList, pTypeExt->WakeAnim, pTypeExt->SplashList_Pickrandom.Get(), pThis->Type->IsMeteor))
+			{
 				AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pSplashAnim, nLocation, 0, 1, AnimFlag::AnimFlag_600, false),
 					pOwner,
 					nullptr,
@@ -110,12 +113,15 @@ ASMJIT_PATCH(0x74A021, VoxelAnimClass_AI_Expired, 0x6)
 					false, false
 				);
 			}
-		}else
+		}
+		else
 		{
-			auto const& [bPlayWHAnim , nDamage] = Helper::Otamaa::Detonate(pTypeExt->Weapon, pThis->Type->Damage, pThis->Type->Warhead, pTypeExt->Warhead_Detonate, pThis->GetCoords(), pInvoker, pOwner, pTypeExt->ExpireDamage_ConsiderInvokerVet);
+			auto const& [bPlayWHAnim, nDamage] = Helper::Otamaa::Detonate(pTypeExt->Weapon, pThis->Type->Damage, pThis->Type->Warhead, pTypeExt->Warhead_Detonate, pThis->GetCoords(), pInvoker, pOwner, pTypeExt->ExpireDamage_ConsiderInvokerVet);
 
-			if (bPlayWHAnim) {
-				if(auto pSplashAnim = MapClass::SelectDamageAnimation(nDamage,pThis->Type->Warhead, pThis->GetCell()->LandType , pThis->GetCoords())) {
+			if (bPlayWHAnim)
+			{
+				if (auto pSplashAnim = MapClass::SelectDamageAnimation(nDamage, pThis->Type->Warhead, pThis->GetCell()->LandType, pThis->GetCoords()))
+				{
 					AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pSplashAnim, nLocation, 0, 1, AnimFlag::AnimFlag_2600, -30),
 						pOwner,
 						nullptr,

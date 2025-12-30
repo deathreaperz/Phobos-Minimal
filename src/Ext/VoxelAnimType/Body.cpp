@@ -5,7 +5,8 @@
 
 #include <Phobos.SaveGame.h>
 
-void VoxelAnimTypeExtData::Initialize(){
+void VoxelAnimTypeExtData::Initialize()
+{
 	LaserTrail_Types.reserve(1);
 }
 
@@ -27,7 +28,7 @@ bool VoxelAnimTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	this->ExplodeOnWater.Read(exINI, pID, "ExplodeOnWater");
 	this->Damage_DealtByOwner.Read(exINI, pID, "Damage.DealtByOwner");
 	this->ExpireDamage_ConsiderInvokerVet.Read(exINI, pID, "ExpireDamage.ConsiderInvokerVeterancy");
-	this->Weapon.Read(exINI, pID, "Weapon" , true);
+	this->Weapon.Read(exINI, pID, "Weapon", true);
 	this->TrailerAnim_SpawnDelay.Read(exINI, pID, "Trailer.SpawnDelay");
 	this->Trails.Read(exINI, pID, false);
 #pragma endregion
@@ -51,7 +52,7 @@ void VoxelAnimTypeExtData::Serialize(T& Stm)
 		.Process(Weapon)
 		.Process(ExpireDamage_ConsiderInvokerVet)
 		.Process(TrailerAnim_SpawnDelay)
-		.Process(this->Trails) ;
+		.Process(this->Trails);
 }
 
 // =============================
@@ -92,7 +93,6 @@ bool VoxelAnimTypeExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool VoxelAnimTypeExtContainer::SaveAll(json& root)
@@ -133,12 +133,10 @@ void VoxelAnimTypeExtContainer::LoadFromINI(ext_t::base_type* key, CCINIClass* p
 		//this function can be called again multiple time but without need to re-init the data
 		ptr->SetInitState(InitState::Ruled);
 	}
-
 }
 
 void VoxelAnimTypeExtContainer::WriteToINI(ext_t::base_type* key, CCINIClass* pINI)
 {
-
 	if (auto ptr = this->TryFind(key))
 	{
 		if (!pINI)

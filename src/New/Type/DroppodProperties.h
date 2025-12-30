@@ -24,7 +24,6 @@ struct DroppodProperties
 
 	bool Load(PhobosStreamReader& Stm, bool RegisterForChange)
 	{
-
 		return Stm
 			.Process(this->Droppod_PodImage_Infantry)
 			.Process(this->Droppod_Puff)
@@ -77,7 +76,6 @@ struct NullableDroppodProperties
 
 	bool Load(PhobosStreamReader& Stm, bool RegisterForChange)
 	{
-
 		return Stm
 			.Process(this->Droppod_PodImage_Infantry)
 			.Process(this->Droppod_Puff)

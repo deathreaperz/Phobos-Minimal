@@ -43,7 +43,6 @@ MapRevealer::MapRevealer(const CoordStruct& coords) :
 	MapWidth {},
 	MapHeight {}
 {
-
 	const auto base = this->TranslateBaseCell(coords);
 	this->BaseCell = base;
 	this->CellOffset = this->GetOffset(coords, base);
@@ -62,19 +61,17 @@ MapRevealer::MapRevealer(const CoordStruct& coords) :
 	this->CheckedCells[2].Y = static_cast<short>(this->MapHeight + this->MapWidth - 15);
 }
 
-MapRevealer::MapRevealer(const CoordStruct* pCoords) : MapRevealer { *pCoords } {}
+MapRevealer::MapRevealer(const CoordStruct* pCoords) : MapRevealer { *pCoords } { }
 
 MapRevealer::MapRevealer(const CellStruct& cell) :
 	MapRevealer(MapClass::Instance->GetCellAt(cell)->GetCoordsWithBridge())
-{
-}
+{ }
 
 MapRevealer::MapRevealer(const CellStruct* pCell) :
 	MapRevealer(MapClass::Instance->GetCellAt(*pCell)->GetCoordsWithBridge())
-{
-}
+{ }
 
-static COMPILETIMEEVAL reference<int ,0xABDE88> SightFrom {};
+static COMPILETIMEEVAL reference<int, 0xABDE88> SightFrom {};
 
 template <typename T>
 void MapRevealer::RevealImpl(const CoordStruct& coords, int const radius, HouseClass* const pHouse, bool const onlyOutline, bool const allowRevealByHeight, T func) const
@@ -92,12 +89,16 @@ void MapRevealer::RevealImpl(const CoordStruct& coords, int const radius, HouseC
 
 		auto const checkLevel = allowRevealByHeight && RulesClass::Instance->RevealByHeight;
 
-		for (CellSpreadEnumerator it((short)spread, (short)start); it; ++it) {
+		for (CellSpreadEnumerator it((short)spread, (short)start); it; ++it)
+		{
 			auto const cell = base + *it;
 
-			if (this->IsCellAvailable(cell)) {
-				if (Math::abs(it->X) <= static_cast<int>(spread) && it->pow() < spread_limit_sqr) {
-					if (!checkLevel || this->CheckLevel(*it, level)) {
+			if (this->IsCellAvailable(cell))
+			{
+				if (Math::abs(it->X) <= static_cast<int>(spread) && it->pow() < spread_limit_sqr)
+				{
+					if (!checkLevel || this->CheckLevel(*it, level))
+					{
 						func(MapClass::Instance->GetCellAt(cell));
 					}
 				}
@@ -108,15 +109,17 @@ void MapRevealer::RevealImpl(const CoordStruct& coords, int const radius, HouseC
 
 void MapRevealer::Reveal0(const CoordStruct& coords, int const radius, HouseClass* const pHouse, bool onlyOutline, bool unknown, bool fog, bool allowRevealByHeight, bool add) const
 {
-	this->RevealImpl(coords, radius, pHouse, onlyOutline, allowRevealByHeight, [=](CellClass* const pCell) {
-		this->Process0(pCell, unknown, fog, add);
+	this->RevealImpl(coords, radius, pHouse, onlyOutline, allowRevealByHeight, [=](CellClass* const pCell)
+ {
+	 this->Process0(pCell, unknown, fog, add);
 	});
 }
 
 void MapRevealer::Reveal1(const CoordStruct& coords, int const radius, HouseClass* const pHouse, bool onlyOutline, bool fog, bool allowRevealByHeight, bool add) const
 {
-	this->RevealImpl(coords, radius, pHouse, onlyOutline, allowRevealByHeight, [=](CellClass* const pCell) {
-		this->Process1(pCell, fog, add);
+	this->RevealImpl(coords, radius, pHouse, onlyOutline, allowRevealByHeight, [=](CellClass* const pCell)
+ {
+	 this->Process1(pCell, fog, add);
 	});
 }
 
@@ -148,12 +151,17 @@ void MapRevealer::Process0(CellClass* const pCell, bool unknown, bool fog, bool 
 {
 	pCell->UINTFlags &= ~0x40;
 
-	if (this->IsCellAllowed(pCell->MapCoords)) {
-		if (fog) {
-			if ((pCell->UINTFlags & 0x3) != 0x3 && pCell->UINTFlags & 0x8) {
+	if (this->IsCellAllowed(pCell->MapCoords))
+	{
+		if (fog)
+		{
+			if ((pCell->UINTFlags & 0x3) != 0x3 && pCell->UINTFlags & 0x8)
+			{
 				MouseClass::Instance->MapCellFoggedness(pCell->MapCoords, HouseClass::CurrentPlayer());
 			}
-		} else {
+		}
+		else
+		{
 			if ((pCell->UINTAltFlags & 0x18) != 0x18
 				|| (pCell->UINTFlags & 3) != 3)
 			{
@@ -177,12 +185,17 @@ void MapRevealer::Process1(CellClass* const pCell, bool fog, bool add) const
 {
 	pCell->UINTFlags &= ~0x40;
 
-	if (fog) {
-		if ((pCell->UINTFlags & 3) != 3 && pCell->UINTAltFlags & 0x08) {
+	if (fog)
+	{
+		if ((pCell->UINTFlags & 3) != 3 && pCell->UINTAltFlags & 0x08)
+		{
 			MouseClass::Instance->MapCellFoggedness(pCell->MapCoords, HouseClass::CurrentPlayer());
 		}
-	} else {
-		if (this->IsCellAllowed(pCell->MapCoords)) {
+	}
+	else
+	{
+		if (this->IsCellAllowed(pCell->MapCoords))
+		{
 			MouseClass::Instance->RevealFogShroud(pCell->MapCoords, HouseClass::CurrentPlayer, add);
 		}
 	}

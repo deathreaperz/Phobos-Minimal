@@ -5,7 +5,8 @@
 
 #include <MapClass.h>
 
-CellStruct FakeScenarioClass::_Get_Waypoint_Location(int idx) {
+CellStruct FakeScenarioClass::_Get_Waypoint_Location(int idx)
+{
 	return ScenarioExtData::Instance()->Waypoints[idx];
 }
 
@@ -28,7 +29,7 @@ ASMJIT_PATCH(0x68BD08, ScenarioClass_Get_Waypoint, 0x7)
 ASMJIT_PATCH(0x68BD60, ScenarioClass_Clear_All_Waypoints, 0x6)
 {
 	if (auto const pScen = ScenarioExtData::Instance())
-			pScen->Waypoints.clear();
+		pScen->Waypoints.clear();
 
 	return 0x68BD79;
 }
@@ -70,7 +71,6 @@ ASMJIT_PATCH(0x68BDC0, ScenarioClass_ReadWaypoints, 0x8)
 		else
 			Debug::LogInfo("[Phobos Developer Warning] Invalid waypoint {}!", id);
 
-
 		//Debug::LogInfo("Parse waypoint Result [%d][%d, %d] ! ", id, buffer.X, buffer.Y);
 		ScenarioExtData::Instance()->Waypoints[id] = buffer;
 	}
@@ -88,7 +88,7 @@ ASMJIT_PATCH(0x68BE90, ScenarioClass_Write_Waypoints, 0x5) //was 5 and crash ?
 {
 	GET_STACK(INIClass*, pINI, 0x4);
 	pINI->Clear(GameStrings::Waypoints(), nullptr);
-	for (const auto& [nidx,nCell] : ScenarioExtData::Instance()->Waypoints)
+	for (const auto& [nidx, nCell] : ScenarioExtData::Instance()->Waypoints)
 	{
 		if (!nCell.IsValid())
 			continue;
@@ -194,12 +194,12 @@ ASMJIT_PATCH(0x68843B, ScenStruct_ScenStruct_2, 0x6)
 	REF_STACK(CellStruct, buffer, STACK_OFFS(0x40, 0x20));
 	GET(int, i, ESI);
 
-	if (ScenarioClass::Instance->IsDefinedWaypoint(i)) {
+	if (ScenarioClass::Instance->IsDefinedWaypoint(i))
+	{
 		buffer = ScenarioExtData::Instance()->Waypoints[i];
-		if(waypoints.push_back(buffer))
-			Debug::LogInfo("Multiplayer start waypoint found at cell [{}][{},{}] , With waypoints Size {} ",i, buffer.X, buffer.Y , waypoints.Count);
+		if (waypoints.push_back(buffer))
+			Debug::LogInfo("Multiplayer start waypoint found at cell [{}][{},{}] , With waypoints Size {} ", i, buffer.X, buffer.Y, waypoints.Count);
 	}
-
 
 	return 0x6884EF;
 }

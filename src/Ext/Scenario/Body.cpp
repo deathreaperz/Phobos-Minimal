@@ -14,8 +14,10 @@ void ScenarioExtData::SaveVariablesToFile(bool isGlobal)
 
 	bool is_newFile = false;
 
-	if(!pFile->Exists()){
-		if(!pFile->CreateFileA()) {
+	if (!pFile->Exists())
+	{
+		if (!pFile->CreateFileA())
+		{
 			return;
 		}
 
@@ -24,18 +26,20 @@ void ScenarioExtData::SaveVariablesToFile(bool isGlobal)
 			return;
 	}
 
-	if(!pFile->Open(FileAccessMode::Write)) {
-		Debug::LogInfo(__FUNCTION__" Failed to Open file {} for" , fileName);
+	if (!pFile->Open(FileAccessMode::Write))
+	{
+		Debug::LogInfo(__FUNCTION__" Failed to Open file {} for", fileName);
 		return;
 	}
 
 	UniqueGamePtr<CCINIClass> pINI { GameCreate<CCINIClass>() };
 
-	if(!is_newFile)
+	if (!is_newFile)
 		pINI->ReadCCFile(pFile.get());
 
 	const auto variables = ScenarioExtData::GetVariables(isGlobal);
-	for (auto& [idx, var] : *variables) {
+	for (auto& [idx, var] : *variables)
+	{
 		pINI->WriteInteger(isGlobal ? "GlobalVariables" : ScenarioClass::Instance()->FileName, var.Name, var.Value, false);
 	}
 
@@ -63,8 +67,9 @@ void ScenarioExtData::LoadVariablesToFile(bool isGlobal)
 	ini.ReadCCFile(&file);
 
 	const auto variables = ScenarioExtData::GetVariables(isGlobal);
-	std::ranges::for_each(*variables, [&](const auto& variable) {
-		ini.ReadInteger(isGlobal ? "GlobalVariables" : ScenarioClass::Instance()->FileName, variable.second.Name, variable.second.Value);
+	std::ranges::for_each(*variables, [&](const auto& variable)
+ {
+	 ini.ReadInteger(isGlobal ? "GlobalVariables" : ScenarioClass::Instance()->FileName, variable.second.Name, variable.second.Value);
 	});
 }
 
@@ -95,7 +100,7 @@ void ScenarioExtData::SetVariableToByID(const bool IsGlobal, int nIndex, char bS
 	}
 }
 
-void ScenarioExtData::GetVariableStateByID(const bool IsGlobal,int nIndex, char* pOut)
+void ScenarioExtData::GetVariableStateByID(const bool IsGlobal, int nIndex, char* pOut)
 {
 	//Debug::LogInfo("{} , Executed !", __FUNCTION__);
 
@@ -105,7 +110,6 @@ void ScenarioExtData::GetVariableStateByID(const bool IsGlobal,int nIndex, char*
 		*pOut = static_cast<char>(itr->Value);
 	else
 		Debug::LogInfo("Failed When Trying to Get [{}]Variables with Indx [{}] ", (int)IsGlobal, nIndex);
-
 }
 
 void ScenarioExtData::ReadVariables(const bool IsGlobal, CCINIClass* pINI)
@@ -141,7 +145,8 @@ void ScenarioExtData::ReadVariables(const bool IsGlobal, CCINIClass* pINI)
 		}
 	}
 
-	if (IsGlobal) {
+	if (IsGlobal)
+	{
 		ScenarioExtData::Instance()->LoadVariablesToFile(true);
 
 		if (!Phobos::Config::SaveVariablesOnScenarioEnd)
@@ -166,7 +171,7 @@ void ScenarioExtData::Remove(ScenarioClass* pThis)
 void ScenarioExtData::s_LoadFromINIFile(ScenarioClass* pThis, CCINIClass* pINI)
 {
 	//Data->Initialize();
-	Data->LoadFromINIFile(pINI , false);
+	Data->LoadFromINIFile(pINI, false);
 }
 
 void ScenarioExtData::LoadBasicFromINIFile(CCINIClass* pINI)
@@ -192,14 +197,17 @@ void ScenarioExtData::FetchVariables(ScenarioClass* pScen)
 void ScenarioExtData::DetonateMasterBullet(const CoordStruct& coords, TechnoClass* pOwner, int damage, HouseClass* pFiringHouse, AbstractClass* pTarget, bool isBright, WeaponTypeClass* pWeapon, WarheadTypeClass* pWarhead)
 {
 	BulletTypeClass* pType = pWeapon ? pWeapon->Projectile : BulletTypeExtData::GetDefaultBulletType();
-	auto pBullet = pType->CreateBullet(nullptr, nullptr, 0 , nullptr, 0, false);
-	const int speed = WarheadTypeExtContainer::Instance.Find(pWarhead)->DetonateOnAllMapObjects  ? 100 : 0;
+	auto pBullet = pType->CreateBullet(nullptr, nullptr, 0, nullptr, 0, false);
+	const int speed = WarheadTypeExtContainer::Instance.Find(pWarhead)->DetonateOnAllMapObjects ? 100 : 0;
 
 	pBullet->Construct(pType, pTarget, pOwner, damage, pWarhead, speed, isBright);
 
-	if (pWeapon) {
+	if (pWeapon)
+	{
 		pBullet->SetWeaponType(pWeapon);
-	} else {
+	}
+	else
+	{
 		pBullet->SetWeaponType(nullptr);
 	}
 
@@ -209,7 +217,8 @@ void ScenarioExtData::DetonateMasterBullet(const CoordStruct& coords, TechnoClas
 
 	auto pBulletExt = BulletExtContainer::Instance.Find(pBullet);
 
-	if (pFiringHouse) {
+	if (pFiringHouse)
+	{
 		pBulletExt->Owner = pFiringHouse;
 	}
 
@@ -223,12 +232,14 @@ void ScenarioExtData::ReadMissionMDINI()
 {
 	CCFileClass file { GameStrings::MISSIONMD_INI };
 
-	if (!file.Exists()) {
+	if (!file.Exists())
+	{
 		Debug::LogInfo(__FUNCTION__ " Failed to Find file {} for", file.FileName);
 		return;
 	}
 
-	if (!file.Open(FileAccessMode::ReadWrite)) {
+	if (!file.Open(FileAccessMode::ReadWrite))
+	{
 		Debug::LogInfo(__FUNCTION__ " Failed to Open file {} for", file.FileName);
 		return;
 	}
@@ -263,14 +274,13 @@ void ScenarioExtData::LoadFromINIFile(CCINIClass* pINI, bool parseFailAddr)
 {
 	//auto pThis = this->AttachedToObject;
 
-	 INI_EX exINI(pINI);
+	INI_EX exINI(pINI);
 
 	this->ShowBriefing.Read(exINI, GameStrings::Basic, "ShowBriefing");
 	this->BriefingTheme = pINI->ReadTheme(GameStrings::Basic, "BriefingTheme", this->BriefingTheme);
 	this->OriginalFilename.Read(exINI, GameStrings::Basic, "OriginalFilename");
 
 	this->ReadMissionMDINI();
-
 }
 
 // =============================
@@ -295,7 +305,6 @@ ASMJIT_PATCH(0x6BEB7D, ScenarioClass_DTOR, 0x6)
 	ScenarioExtData::Remove(pItem);
 	return 0;
 }
-
 
 ASMJIT_PATCH(0x689310, ScenarioClass_SaveLoad_Prefix, 0x5)
 {
@@ -341,7 +350,7 @@ ASMJIT_PATCH(0x68945B, ScenarioClass_Save_Suffix, 0x8)
 	buffer->SaveToStream(writer);
 	//if (!
 	saver.WriteToStream(ScenarioExtData::g_pStm)
-	//) Debug::LogInfo("Faild To Write ScenarioExtData to the Stream ! ")
+		//) Debug::LogInfo("Faild To Write ScenarioExtData to the Stream ! ")
 		;
 
 	return 0;
@@ -363,12 +372,14 @@ ASMJIT_PATCH(0x68AD2F, ScenarioClass_LoadFromINI_AfterPlayerDataInit, 0x5)
 
 	INI_EX exINI(pINI);
 
-	if (SessionClass::IsCampaign()) {
+	if (SessionClass::IsCampaign())
+	{
 		GameModeOptionsClass::Instance->MCVRedeploy = pINI->ReadBool(GameStrings::Basic(), GameStrings::MCVRedeploys(), RulesExtData::Instance()->MCVRedeploysInCampaign);
 	}
 
-	HouseClass::Array->for_each([](HouseClass* pHouse){
-		HouseExtContainer::Instance.Find(pHouse)->FreeRadar = ScenarioClass::Instance->FreeRadar;
+	HouseClass::Array->for_each([](HouseClass* pHouse)
+{
+	HouseExtContainer::Instance.Find(pHouse)->FreeRadar = ScenarioClass::Instance->FreeRadar;
 	});
 
 	return 0x0;

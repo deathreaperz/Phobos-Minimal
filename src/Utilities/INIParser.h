@@ -41,7 +41,8 @@
 #include <Utilities/Debug.h>
 #endif
 
-class INI_EX {
+class INI_EX
+{
 	CCINIClass* IniFile;
 
 public:
@@ -59,23 +60,28 @@ public:
 		: IniFile { &iniFile }
 	{ }
 
-	OPTIONALINLINE const char* c_str() const {
+	OPTIONALINLINE const char* c_str() const
+	{
 		return Phobos::readBuffer;
 	}
 
-	OPTIONALINLINE char* value() const {
+	OPTIONALINLINE char* value() const
+	{
 		return Phobos::readBuffer;
 	}
 
-	OPTIONALINLINE COMPILETIMEEVAL size_t max_size() const {
+	OPTIONALINLINE COMPILETIMEEVAL size_t max_size() const
+	{
 		return Phobos::readLength;
 	}
 
-	COMPILETIMEEVAL OPTIONALINLINE bool empty() const {
+	COMPILETIMEEVAL OPTIONALINLINE bool empty() const
+	{
 		return !Phobos::readBuffer[0];
 	}
 
-	COMPILETIMEEVAL OPTIONALINLINE CCINIClass* GetINI() const {
+	COMPILETIMEEVAL OPTIONALINLINE CCINIClass* GetINI() const
+	{
 		return IniFile;
 	}
 
@@ -83,7 +89,8 @@ public:
 		: IniFile { other.IniFile }
 	{ }
 
-	INI_EX& operator=(INI_EX const& other) {
+	INI_EX& operator=(INI_EX const& other)
+	{
 		// Use copy and swap idiom to implement assignment.
 		INI_EX copy(other);
 		swap(*this, copy);
@@ -107,21 +114,25 @@ public:
 		std::swap(lhs.IniFile, rhs.IniFile);
 	}
 
-	CCINIClass* operator->() const {
+	CCINIClass* operator->() const
+	{
 		return IniFile;
 	}
 
-	operator bool() const {
+	operator bool() const
+	{
 		return IniFile;
 	}
 
 	// basic string reader
-	int ReadString(const char* pSection, const char* pKey) {
+	int ReadString(const char* pSection, const char* pKey)
+	{
 		const int ret = IniFile->ReadString(
 			pSection, pKey, Phobos::readDefval, this->value(), this->max_size());
 
 #ifdef CHECK_
-		if (ret > 0 && (!*Phobos::readBuffer || !strlen(Phobos::readBuffer))) {
+		if (ret > 0 && (!*Phobos::readBuffer || !strlen(Phobos::readBuffer)))
+		{
 			Debug::LogInfo("ReadString returning empty strings![{}][{}] ,", pSection, pKey);
 			DebugBreak();
 		}
@@ -131,8 +142,10 @@ public:
 
 	// parser template
 	template <typename T, size_t Count>
-	bool Read(const char* pSection, const char* pKey, T* pBuffer) {
-		if (this->ReadString(pSection, pKey) > 0) {
+	bool Read(const char* pSection, const char* pKey, T* pBuffer)
+	{
+		if (this->ReadString(pSection, pKey) > 0)
+		{
 			return Parser<T, Count>::Parse(this->value(), pBuffer) == Count;
 		}
 		return false;
@@ -141,7 +154,8 @@ public:
 	template <typename T, size_t Count>
 	size_t ReadAndCount(const char* pSection, const char* pKey, T* pBuffer)
 	{
-		if (this->ReadString(pSection, pKey) > 0) {
+		if (this->ReadString(pSection, pKey) > 0)
+		{
 			return Parser<T, Count>::Parse(this->value(), pBuffer);
 		}
 
@@ -150,23 +164,28 @@ public:
 
 	// helpers
 
-	bool ReadBool(const char* pSection, const char* pKey, bool* bBuffer) {
+	bool ReadBool(const char* pSection, const char* pKey, bool* bBuffer)
+	{
 		return Read<bool, 1>(pSection, pKey, bBuffer);
 	}
 
-	bool Read2Bool(const char *pSection, const char *pKey, bool *bBuffer) {
+	bool Read2Bool(const char* pSection, const char* pKey, bool* bBuffer)
+	{
 		return Read<bool, 2>(pSection, pKey, bBuffer);
 	}
 
-	bool Read3Bool(const char *pSection, const char *pKey, bool *bBuffer) {
+	bool Read3Bool(const char* pSection, const char* pKey, bool* bBuffer)
+	{
 		return Read<bool, 3>(pSection, pKey, bBuffer);
 	}
 
-	bool ReadInteger(const char *pSection, const char *pKey, int *nBuffer) {
+	bool ReadInteger(const char* pSection, const char* pKey, int* nBuffer)
+	{
 		return Read<int, 1>(pSection, pKey, nBuffer);
 	}
 
-	bool Read2Integers(const char* pSection, const char* pKey, int* nBuffer) {
+	bool Read2Integers(const char* pSection, const char* pKey, int* nBuffer)
+	{
 		return Read<int, 2>(pSection, pKey, nBuffer);
 	}
 
@@ -175,7 +194,8 @@ public:
 		return ReadAndCount<int, 2>(pSection, pKey, nBuffer);
 	}
 
-	bool Read3Integers(const char* pSection, const char* pKey, int* nBuffer) {
+	bool Read3Integers(const char* pSection, const char* pKey, int* nBuffer)
+	{
 		return Read<int, 3>(pSection, pKey, nBuffer);
 	}
 
@@ -184,27 +204,33 @@ public:
 		return ReadAndCount<int, 3>(pSection, pKey, nBuffer);
 	}
 
-	bool Read4Integers(const char* pSection, const char* pKey, int* nBuffer) {
+	bool Read4Integers(const char* pSection, const char* pKey, int* nBuffer)
+	{
 		return Read<int, 4>(pSection, pKey, nBuffer);
 	}
 
-	bool ReadBytes(const char *pSection, const char *pKey, BYTE*nBuffer) {
+	bool ReadBytes(const char* pSection, const char* pKey, BYTE* nBuffer)
+	{
 		return Read<BYTE, 1>(pSection, pKey, nBuffer);
 	}
 
-	bool Read2Bytes(const char *pSection, const char *pKey, BYTE*nBuffer) {
+	bool Read2Bytes(const char* pSection, const char* pKey, BYTE* nBuffer)
+	{
 		return Read<BYTE, 2>(pSection, pKey, nBuffer);
 	}
 
-	bool Read3Bytes(const char *pSection, const char *pKey, BYTE*nBuffer) {
+	bool Read3Bytes(const char* pSection, const char* pKey, BYTE* nBuffer)
+	{
 		return Read<BYTE, 3>(pSection, pKey, nBuffer);
 	}
 
-	bool ReadDouble(const char* pSection, const char* pKey, double* nBuffer) {
+	bool ReadDouble(const char* pSection, const char* pKey, double* nBuffer)
+	{
 		return Read<double, 1>(pSection, pKey, nBuffer);
 	}
 
-	bool Read2Double(const char *pSection, const char *pKey, double *nBuffer) {
+	bool Read2Double(const char* pSection, const char* pKey, double* nBuffer)
+	{
 		return Read<double, 2>(pSection, pKey, nBuffer);
 	}
 
@@ -213,7 +239,7 @@ public:
 		return ReadAndCount<double, 2>(pSection, pKey, nBuffer);
 	}
 
-	bool Read3Double(const char *pSection, const char *pKey, double *nBuffer)
+	bool Read3Double(const char* pSection, const char* pKey, double* nBuffer)
 	{
 		return Read<double, 3>(pSection, pKey, nBuffer);
 	}
@@ -223,17 +249,17 @@ public:
 		return ReadAndCount<double, 3>(pSection, pKey, nBuffer);
 	}
 
-	bool ReadFloat(const char *pSection, const char *pKey, float *nBuffer)
+	bool ReadFloat(const char* pSection, const char* pKey, float* nBuffer)
 	{
 		return Read<float, 1>(pSection, pKey, nBuffer);
 	}
 
-	bool Read2Float(const char *pSection, const char *pKey, float *nBuffer)
+	bool Read2Float(const char* pSection, const char* pKey, float* nBuffer)
 	{
 		return Read<float, 2>(pSection, pKey, nBuffer);
 	}
 
-	bool Read3Float(const char *pSection, const char *pKey, float *nBuffer)
+	bool Read3Float(const char* pSection, const char* pKey, float* nBuffer)
 	{
 		return Read<float, 3>(pSection, pKey, nBuffer);
 	}
@@ -261,14 +287,17 @@ public:
 		return (*nBuffer != -1);
 	}
 
-	bool ReadArmor(const char *pSection, const char *pKey, int *nBuffer) {
+	bool ReadArmor(const char* pSection, const char* pKey, int* nBuffer)
+	{
 		*nBuffer = IniFile->ReadArmorType(pSection, pKey, *nBuffer);
 		return (*nBuffer != -1);
 	}
 
 	// WARNING : const char* memory address may temporary and can invalidated
-	bool ParseList(std::vector<const char*>& values, const char* pSection, const char* pKey) {
-		if (this->ReadString(pSection, pKey)) {
+	bool ParseList(std::vector<const char*>& values, const char* pSection, const char* pKey)
+	{
+		if (this->ReadString(pSection, pKey))
+		{
 			values.clear();
 			char* context = nullptr;
 
@@ -281,13 +310,17 @@ public:
 		return false;
 	}
 
-	bool ParseList(std::vector<std::string>& values, const char* pSection, const char* pKey) {
-		if (this->ReadString(pSection, pKey)) {
+	bool ParseList(std::vector<std::string>& values, const char* pSection, const char* pKey)
+	{
+		if (this->ReadString(pSection, pKey))
+		{
 			values.clear();
 			char* context = nullptr;
 
-			for (auto pCur = strtok_s(this->value(), Phobos::readDelims, &context); pCur; pCur = strtok_s(nullptr, Phobos::readDelims, &context)){
-				if(strlen(pCur)) {
+			for (auto pCur = strtok_s(this->value(), Phobos::readDelims, &context); pCur; pCur = strtok_s(nullptr, Phobos::readDelims, &context))
+			{
+				if (strlen(pCur))
+				{
 					values.push_back(pCur);
 				}
 			}

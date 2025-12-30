@@ -90,7 +90,6 @@ void SelectBoxTypeClass::Serialize(T& Stm)
 				}
 				return result;
 			}
-
 		};
 
 	debugProcess(this->Shape, "Shape");

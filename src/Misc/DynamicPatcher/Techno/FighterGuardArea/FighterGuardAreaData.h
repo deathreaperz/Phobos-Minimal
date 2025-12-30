@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef _aaaaaaa 
+#ifdef _aaaaaaa
 #include <Utilities/TemplateDef.h>
 
 struct FighterAreaGuardData
@@ -49,7 +49,6 @@ private:
 			.Process(Clockwise)
 			.Process(Randomwise)
 			;
-
 	}
 };
 #endif

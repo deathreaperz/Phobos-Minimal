@@ -18,12 +18,15 @@
 
 ASMJIT_PATCH(0x777C41, UI_ApplyAppIcon, 0x9)
 {
-	GET(HINSTANCE , instance , ESI);
+	GET(HINSTANCE, instance, ESI);
 
-	if (!Phobos::AppIconPath.empty()) {
+	if (!Phobos::AppIconPath.empty())
+	{
 		Debug::LogInfo("Applying AppIcon from \"{}\"", Phobos::AppIconPath.c_str());
 		R->EAX(LoadImageA(instance, Phobos::AppIconPath.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE));
-	}else{
+	}
+	else
+	{
 		R->EAX(LoadIconA(instance, (LPCSTR)93));
 	}
 
@@ -33,13 +36,13 @@ ASMJIT_PATCH(0x777C41, UI_ApplyAppIcon, 0x9)
 ASMJIT_PATCH(0x640B8D, LoadingScreen_DisableEmptySpawnPositions, 0x6)
 {
 	GET(bool const, esi, ESI);
-	return(Phobos::UI::DisableEmptySpawnPositions || !esi) ? 0x640CE2: 0x640B93;
+	return(Phobos::UI::DisableEmptySpawnPositions || !esi) ? 0x640CE2 : 0x640B93;
 }
 
- //Allow size = 0 for map previews
+//Allow size = 0 for map previews
 ASMJIT_PATCH(0x641B41, LoadingScreen_SkipPreview, 0x8)
 {
-	enum { Continue = 0x0 , return_true = 0x641D59 };
+	enum { Continue = 0x0, return_true = 0x641D59 };
 
 	GET(RectangleStruct*, pRect, EAX);
 	return (pRect->Width > 0 && pRect->Height > 0)
@@ -70,7 +73,7 @@ ASMJIT_PATCH(0x641EE0, PreviewClass_ReadPreview, 0x6)
 	return 0x64203D;
 }
 
-ASMJIT_PATCH(0x4A25E3, CreditsClass_GraphicLogic_Additionals , 0x8)
+ASMJIT_PATCH(0x4A25E3, CreditsClass_GraphicLogic_Additionals, 0x8)
 {
 	const auto pPlayer = HouseClass::CurrentPlayer();
 	if (HouseExtData::IsObserverPlayer(pPlayer) || pPlayer->Defeated)
@@ -86,9 +89,9 @@ ASMJIT_PATCH(0x4A25E3, CreditsClass_GraphicLogic_Additionals , 0x8)
 	const auto pSideExt = SideExtContainer::Instance.Find(pSide);
 	RectangleStruct vRect = DSurface::Sidebar->Get_Rect();
 	const auto pHouseExt = HouseExtContainer::Instance.Find(pPlayer);
-	static fmt::basic_memory_buffer<wchar_t , 50> counter;
-	static fmt::basic_memory_buffer<wchar_t , 50> ShowPower;
-	static fmt::basic_memory_buffer<wchar_t , 10> Harv;
+	static fmt::basic_memory_buffer<wchar_t, 50> counter;
+	static fmt::basic_memory_buffer<wchar_t, 50> ShowPower;
+	static fmt::basic_memory_buffer<wchar_t, 10> Harv;
 
 	if (Phobos::UI::BattlePointsSidebar_AlwaysShow || pHouseExt->AreBattlePointsEnabled())
 	{
@@ -115,30 +118,30 @@ ASMJIT_PATCH(0x4A25E3, CreditsClass_GraphicLogic_Additionals , 0x8)
 	}
 
 	if (Phobos::UI::ShowHarvesterCounter && Phobos::Config::ShowHarvesterCounter)
-	 {
+	{
 		Harv.clear();
 
-	 	const auto nActive = HouseExtData::ActiveHarvesterCount(pPlayer);
-	 	const auto nTotal = HouseExtData::TotalHarvesterCount(pPlayer);
-	 	const auto nPercentage = nTotal == 0 ? 1.0 : (double)nActive / (double)nTotal;
+		const auto nActive = HouseExtData::ActiveHarvesterCount(pPlayer);
+		const auto nTotal = HouseExtData::TotalHarvesterCount(pPlayer);
+		const auto nPercentage = nTotal == 0 ? 1.0 : (double)nActive / (double)nTotal;
 
-	 	const ColorStruct clrToolTip = nPercentage > Phobos::UI::HarvesterCounter_ConditionYellow
-	 		? Drawing::TooltipColor() : nPercentage > Phobos::UI::HarvesterCounter_ConditionRed
-	 		? pSideExt->Sidebar_HarvesterCounter_Yellow : pSideExt->Sidebar_HarvesterCounter_Red;
+		const ColorStruct clrToolTip = nPercentage > Phobos::UI::HarvesterCounter_ConditionYellow
+			? Drawing::TooltipColor() : nPercentage > Phobos::UI::HarvesterCounter_ConditionRed
+			? pSideExt->Sidebar_HarvesterCounter_Yellow : pSideExt->Sidebar_HarvesterCounter_Red;
 
 		fmt::format_to(std::back_inserter(Harv), L"{}{}/{}", Phobos::UI::HarvesterLabel, nActive, nTotal);
 		Harv.push_back(L'\0');
 
-	 	Point2D vPos {
-	 		DSurface::Sidebar->Get_Width() / 2 + 50 + pSideExt->Sidebar_HarvesterCounter_Offset.Get().X,
-	 		2 + pSideExt->Sidebar_HarvesterCounter_Offset.Get().Y
-	 	};
+		Point2D vPos {
+			DSurface::Sidebar->Get_Width() / 2 + 50 + pSideExt->Sidebar_HarvesterCounter_Offset.Get().X,
+			2 + pSideExt->Sidebar_HarvesterCounter_Offset.Get().Y
+		};
 
-	 	DSurface::Sidebar->DSurfaceDrawText(
+		DSurface::Sidebar->DSurfaceDrawText(
 		Harv.data()
 			, &vRect, &vPos, clrToolTip.ToInit(), 0,
-	 		TextPrintType::UseGradPal | TextPrintType::Center | TextPrintType::Metal12);
-	 }
+			TextPrintType::UseGradPal | TextPrintType::Center | TextPrintType::Metal12);
+	}
 
 	if (Phobos::UI::ShowPowerDelta && Phobos::Config::ShowPowerDelta && pPlayer->Buildings.Count)
 	{
@@ -148,7 +151,7 @@ ASMJIT_PATCH(0x4A25E3, CreditsClass_GraphicLogic_Additionals , 0x8)
 		if (pPlayer->PowerBlackoutTimer.InProgress())
 		{
 			clrToolTip = pSideExt->Sidebar_PowerDelta_Grey.Get();
-			ShowPower.append(Phobos::UI::PowerBlackoutLabel,  Phobos::UI::PowerBlackoutLabel + std::wcslen(Phobos::UI::PowerBlackoutLabel));
+			ShowPower.append(Phobos::UI::PowerBlackoutLabel, Phobos::UI::PowerBlackoutLabel + std::wcslen(Phobos::UI::PowerBlackoutLabel));
 		}
 		else
 		{
@@ -161,8 +164,7 @@ ASMJIT_PATCH(0x4A25E3, CreditsClass_GraphicLogic_Additionals , 0x8)
 				? pSideExt->Sidebar_PowerDelta_Green.Get() : LESS_EQUAL(percent, Phobos::UI::PowerDelta_ConditionRed)
 				? pSideExt->Sidebar_PowerDelta_Yellow.Get() : pSideExt->Sidebar_PowerDelta_Red;
 
-			fmt::format_to(std::back_inserter(ShowPower),L"{}{}", Phobos::UI::PowerLabel, delta);
-
+			fmt::format_to(std::back_inserter(ShowPower), L"{}{}", Phobos::UI::PowerLabel, delta);
 		}
 		ShowPower.push_back(L'\0');
 
@@ -205,8 +207,10 @@ ASMJIT_PATCH(0x715A4D, Replace_XXICON_With_New, 0x7)         //TechnoTypeClass::
 	_strlwr_s(pFilename);
 
 	if (_stricmp(pFilename, GameStrings::XXICON_SHP())
-		&& strstr(pFilename, GameStrings::dot_SHP())) {
-		if (const auto pFile = FakeFileLoader::_Retrieve(RulesExtData::Instance()->MissingCameo.data(), false)) {
+		&& strstr(pFilename, GameStrings::dot_SHP()))
+	{
+		if (const auto pFile = FakeFileLoader::_Retrieve(RulesExtData::Instance()->MissingCameo.data(), false))
+		{
 			R->EAX(pFile);
 			return R->Origin() + 0xC;
 		}
@@ -217,10 +221,10 @@ ASMJIT_PATCH(0x715A4D, Replace_XXICON_With_New, 0x7)         //TechnoTypeClass::
 ASMJIT_PATCH_AGAIN(0x6CEE31, Replace_XXICON_With_New, 0x7)   //SWTypeClass::ReadINI
 ASMJIT_PATCH_AGAIN(0x716D13, Replace_XXICON_With_New, 0x7)   //TechnoTypeClass::Load
 
-
 ASMJIT_PATCH(0x6A8463, StripClass_OperatorLessThan_CameoPriority, 5)
 {
-	enum {
+	enum
+	{
 		rTrue = 0x6A8692,
 		rFalse = 0x6A86A0,
 		rTrue_ = 0x6A8477,
@@ -310,7 +314,8 @@ ASMJIT_PATCH(0x683E41, ScenarioClass_Start_ShowBriefing, 0x6)
 }
 
 // Skip redrawing the screen if we're gonna show the briefing screen immediately after loading screen finishes on initially launched mission.
-ASMJIT_PATCH(0x683F66, PauseGame_ShowBriefing, 0x5) {
+ASMJIT_PATCH(0x683F66, PauseGame_ShowBriefing, 0x5)
+{
 	return BriefingTemp::ShowBriefing ? 0x683FAA : 0;
 }
 
@@ -324,14 +329,16 @@ ASMJIT_PATCH(0x55D14F, AuxLoop_ShowBriefing, 0x5)
 }
 
 // Skip redrawing the screen if we're gonna show the briefing screen immediately after loading screen finishes on succeeding missions.
-ASMJIT_PATCH(0x685D95, DoWin_ShowBriefing, 0x5) {
+ASMJIT_PATCH(0x685D95, DoWin_ShowBriefing, 0x5)
+{
 	return BriefingTemp::ShowBriefing ? 0x685D9F : 0;
 }
 
 // Set briefing dialog resume button text.
 ASMJIT_PATCH(0x65F764, BriefingDialog_ShowBriefing, 0x5)
 {
-	if (BriefingTemp::ShowBriefing) {
+	if (BriefingTemp::ShowBriefing)
+	{
 		SendMessageA(GetDlgItem(R->ESI<HWND>(), 1059), 1202, 0, reinterpret_cast<LPARAM>(Phobos::UI::ShowBriefingResumeButtonLabel));
 	}
 
@@ -341,7 +348,8 @@ ASMJIT_PATCH(0x65F764, BriefingDialog_ShowBriefing, 0x5)
 // Set briefing dialog resume button status bar label.
 ASMJIT_PATCH(0x604985, GetDialogUIStatusLabels_ShowBriefing, 0x5)
 {
-	if (BriefingTemp::ShowBriefing) {
+	if (BriefingTemp::ShowBriefing)
+	{
 		R->EAX(Phobos::UI::ShowBriefingResumeButtonStatusLabel);
 		return 0x60498A;
 	}

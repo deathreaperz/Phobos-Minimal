@@ -40,7 +40,8 @@
 	\tparam count The maximum number of elements.
 */
 template<typename T, size_t count = 1>
-class Parser {
+class Parser
+{
 public:
 	using OutType = T;
 	using BaseType = std::remove_pointer_t<T>;
@@ -62,33 +63,40 @@ public:
 		\author AlexB
 		\date 2013-03-10
 	*/
-	static size_t Parse(const char* pValue, OutType* outValue) {
+	static size_t Parse(const char* pValue, OutType* outValue)
+	{
 		char buffer[0x80];
-		for (size_t i = 0; i < Count; ++i) {
+		for (size_t i = 0; i < Count; ++i)
+		{
 			// skip the leading spaces
-			while (isspace(static_cast<unsigned char>(*pValue))) {
+			while (isspace(static_cast<unsigned char>(*pValue)))
+			{
 				++pValue;
 			}
 
 			// read the next part
 			int n = 0;
-			if (sscanf_s(pValue, "%[^,]%n", buffer, sizeof(buffer), &n) != 1) {
+			if (sscanf_s(pValue, "%[^,]%n", buffer, sizeof(buffer), &n) != 1)
+			{
 				return i;
 			}
 
 			// skip all read chars and the comma
 			pValue += n;
-			if (*pValue) {
+			if (*pValue)
+			{
 				++pValue;
 			}
 
 			// trim the trailing spaces
-			while (n && isspace(static_cast<unsigned char>(buffer[n - 1]))) {
+			while (n && isspace(static_cast<unsigned char>(buffer[n - 1])))
+			{
 				buffer[n-- - 1] = '\0';
 			}
 
 			// interprete the value
-			if (!Parser<OutType>::TryParse(buffer, &outValue[i])) {
+			if (!Parser<OutType>::TryParse(buffer, &outValue[i]))
+			{
 				return i;
 			}
 		}
@@ -113,14 +121,17 @@ public:
 		\author AlexB
 		\date 2013-03-11
 	*/
-	static bool TryParse(const char* pValue, OutType* outValue) {
+	static bool TryParse(const char* pValue, OutType* outValue)
+	{
 		OutType buffer[Count] = {};
 
-		if (Parse(pValue, &buffer) != Count) {
+		if (Parse(pValue, &buffer) != Count)
+		{
 			return false;
 		}
 
-		for (size_t i = 0; i < Count; ++i) {
+		for (size_t i = 0; i < Count; ++i)
+		{
 			outValue[i] = buffer[i];
 		}
 
@@ -129,7 +140,8 @@ public:
 };
 
 template<typename T>
-class Parser<T, 1> {
+class Parser<T, 1>
+{
 public:
 	using OutType = T;
 	using BaseType = std::remove_pointer_t<T>;
@@ -148,7 +160,8 @@ public:
 		\author AlexB
 		\date 2013-03-11
 	*/
-	static int Parse(const char* pValue, OutType* outValue) {
+	static int Parse(const char* pValue, OutType* outValue)
+	{
 		return TryParse(pValue, outValue) ? 1 : 0;
 	}
 
@@ -165,10 +178,13 @@ public:
 		\author AlexB
 		\date 2013-03-11
 	*/
-	static bool TryParse(const char* pValue, OutType* outValue) {
+	static bool TryParse(const char* pValue, OutType* outValue)
+	{
 		// non-specialized: read AbstractTypes
-		if (auto pType = BaseType::Find(pValue)) {
-			if (outValue) {
+		if (auto pType = BaseType::Find(pValue))
+		{
+			if (outValue)
+			{
 				*outValue = pType;
 			}
 			return true;
@@ -180,7 +196,8 @@ public:
 	{
 		// non-specialized: read AbstractTypes
 		const auto type = BaseType::FindIndexById(pValue);
-		if (type != -1) {
+		if (type != -1)
+		{
 			*outValue = type;
 			return true;
 		}
@@ -193,9 +210,10 @@ public:
 // functions will eventually call them.
 
 template<>
-OPTIONALINLINE bool Parser<bool>::TryParse(const char* pValue, OutType* outValue) {
-
-	switch (toupper(static_cast<unsigned char>(*pValue))) {
+OPTIONALINLINE bool Parser<bool>::TryParse(const char* pValue, OutType* outValue)
+{
+	switch (toupper(static_cast<unsigned char>(*pValue)))
+	{
 	case '1':
 	case 'T':
 	case 'Y':
@@ -216,20 +234,25 @@ OPTIONALINLINE bool Parser<bool>::TryParse(const char* pValue, OutType* outValue
 };
 
 template<>
-OPTIONALINLINE bool Parser<int>::TryParse(const char* pValue, OutType* outValue) {
+OPTIONALINLINE bool Parser<int>::TryParse(const char* pValue, OutType* outValue)
+{
 	const char* pFmt = nullptr;
-	if (*pValue == '$') {
+	if (*pValue == '$')
+	{
 		pFmt = "$%x";
 	}
-	else if (tolower(static_cast<unsigned char>(pValue[strlen(pValue) - 1])) == 'h') {
+	else if (tolower(static_cast<unsigned char>(pValue[strlen(pValue) - 1])) == 'h')
+	{
 		pFmt = "%xh";
 	}
-	else {
+	else
+	{
 		pFmt = "%d";
 	}
 
 	int buffer = 0;
-	if (sscanf_s(pValue, pFmt, &buffer) == 1) {
+	if (sscanf_s(pValue, pFmt, &buffer) == 1)
+	{
 		*outValue = buffer;
 		return true;
 	}
@@ -237,8 +260,8 @@ OPTIONALINLINE bool Parser<int>::TryParse(const char* pValue, OutType* outValue)
 }
 
 template<>
-OPTIONALINLINE bool Parser<double>::TryParse(const char* pValue, OutType* outValue) {
-
+OPTIONALINLINE bool Parser<double>::TryParse(const char* pValue, OutType* outValue)
+{
 	errno = 0;
 	char* end = nullptr;
 
@@ -251,21 +274,26 @@ OPTIONALINLINE bool Parser<double>::TryParse(const char* pValue, OutType* outVal
 
 	float floatValue = static_cast<float>(value);
 
-	if (strchr(pValue, '%')) {
+	if (strchr(pValue, '%'))
+	{
 		floatValue *= 0.01f;
 	}
 
-	if (outValue) {
+	if (outValue)
+	{
 		*outValue = floatValue;
 	}
 	return true;
 };
 
 template<>
-OPTIONALINLINE bool Parser<float>::TryParse(const char* pValue, OutType* outValue) {
+OPTIONALINLINE bool Parser<float>::TryParse(const char* pValue, OutType* outValue)
+{
 	double buffer = 0.0;
-	if (Parser<double>::TryParse(pValue, &buffer)) {
-		if (outValue) {
+	if (Parser<double>::TryParse(pValue, &buffer))
+	{
+		if (outValue)
+		{
 			*outValue = static_cast<float>(buffer);
 		}
 		return true;
@@ -274,22 +302,28 @@ OPTIONALINLINE bool Parser<float>::TryParse(const char* pValue, OutType* outValu
 }
 
 template<>
-OPTIONALINLINE bool Parser<BYTE>::TryParse(const char* pValue, OutType* outValue) {
+OPTIONALINLINE bool Parser<BYTE>::TryParse(const char* pValue, OutType* outValue)
+{
 	// no way to read unsigned char, use short instead.
 	const char* pFmt = nullptr;
-	if (*pValue == '$') {
+	if (*pValue == '$')
+	{
 		pFmt = "$%hx";
 	}
-	else if (tolower(static_cast<unsigned char>(pValue[strlen(pValue) - 1])) == 'h') {
+	else if (tolower(static_cast<unsigned char>(pValue[strlen(pValue) - 1])) == 'h')
+	{
 		pFmt = "%hxh";
 	}
-	else {
+	else
+	{
 		pFmt = "%hu";
 	}
 
 	WORD buffer;
-	if (sscanf_s(pValue, pFmt, &buffer) == 1) {
-		if (buffer <= UCHAR_MAX) {
+	if (sscanf_s(pValue, pFmt, &buffer) == 1)
+	{
+		if (buffer <= UCHAR_MAX)
+		{
 			*outValue = static_cast<BYTE>(buffer);
 			return true;
 		}

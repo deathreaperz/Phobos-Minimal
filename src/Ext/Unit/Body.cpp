@@ -49,7 +49,6 @@ bool UnitExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool UnitExtContainer::SaveAll(json& root)
@@ -76,7 +75,8 @@ bool UnitExtContainer::SaveAll(json& root)
 	return true;
 }
 
-bool UnitExtContainer::HasDeployingAnim(TechnoTypeClass* pUnitType) {
+bool UnitExtContainer::HasDeployingAnim(TechnoTypeClass* pUnitType)
+{
 	return pUnitType->DeployingAnim || !TechnoTypeExtContainer::Instance.Find(pUnitType)->DeployingAnims.empty();
 }
 
@@ -232,7 +232,7 @@ void FakeUnitClass::_Deploy()
 	}
 }
 
-DEFINE_FUNCTION_JUMP(LJMP, 0x739AC0 , FakeUnitClass::_Deploy)
+DEFINE_FUNCTION_JUMP(LJMP, 0x739AC0, FakeUnitClass::_Deploy)
 
 void FakeUnitClass::_UnDeploy()
 {
@@ -283,7 +283,6 @@ void FakeUnitClass::_UnDeploy()
 			VocClass::SafeImmedietelyPlayAt(pType->UndeploySound, pThis->Location);
 		}
 	}
-
 }
 
 DEFINE_FUNCTION_JUMP(LJMP, 0x739CD0, FakeUnitClass::_UnDeploy)
@@ -294,22 +293,23 @@ int FakeUnitClass::_Mission_AreaGuard()
 	auto nFrame = pTypeExt->Harvester_KickDelay.Get(RulesClass::Instance->SlaveMinerKickFrameDelay);
 
 	if (this->SlaveManager
-			&& !(nFrame < 0 || nFrame + this->CurrentMissionStartTime >= Unsorted::CurrentFrame)) {
-
+			&& !(nFrame < 0 || nFrame + this->CurrentMissionStartTime >= Unsorted::CurrentFrame))
+	{
 		this->SlaveManager->Guard();
 		return static_cast<int>((this->GetCurrentMissionControl()->Rate
-				* 900) + ScenarioClass::Instance->Random(1, 5));
-
-	} else {
-
-		if (TechnoExtData::CannotMove(this)) {
-
+			* 900) + ScenarioClass::Instance->Random(1, 5));
+	}
+	else
+	{
+		if (TechnoExtData::CannotMove(this))
+		{
 			if (this->CanPassiveAcquireTargets() && this->TargetingTimer.Completed())
 				this->TargetAndEstimateDamage(&this->Location, ThreatType::Range);
 
 			int delay = 1;
 
-			if (!this->Target) {
+			if (!this->Target)
+			{
 				this->UpdateIdleAction();
 				delay = static_cast<int>(this->GetCurrentMissionControl()->Rate
 					* 900) + ScenarioClass::Instance->Random(1, 5);
@@ -322,8 +322,8 @@ int FakeUnitClass::_Mission_AreaGuard()
 	return FootClass::Mission_AreaGuard();
 }
 
-DEFINE_FUNCTION_JUMP(VTABLE , 0x7F5E90 , FakeUnitClass::_Mission_AreaGuard)
-DEFINE_FUNCTION_JUMP(CALL , 0x744100, FakeUnitClass::_Mission_AreaGuard)
+DEFINE_FUNCTION_JUMP(VTABLE, 0x7F5E90, FakeUnitClass::_Mission_AreaGuard)
+DEFINE_FUNCTION_JUMP(CALL, 0x744100, FakeUnitClass::_Mission_AreaGuard)
 
 #include <Ext/WarheadType/Body.h>
 #include <Ext/AnimType/Body.h>
@@ -336,7 +336,8 @@ DEFINE_FUNCTION_JUMP(CALL , 0x744100, FakeUnitClass::_Mission_AreaGuard)
 DamageState FakeUnitClass::_Take_Damage(int* damage, int distance, WarheadTypeClass* warhead, TechnoClass* source, bool ignoreDefenses, bool PreventsPassengerEscape, HouseClass* sourceHouse)
 {
 	DamageState _res = DamageState::Unaffected;
-	if (this->DeathFrameCounter > 0) {
+	if (this->DeathFrameCounter > 0)
+	{
 		return _res;
 	}
 
@@ -344,14 +345,17 @@ DamageState FakeUnitClass::_Take_Damage(int* damage, int distance, WarheadTypeCl
 	bool isPlayerControlled = this->Owner->ControlledByCurrentPlayer();
 	bool selected = this->IsSelected && isPlayerControlled;
 
-	if (!ignoreDefenses) {
-		if (auto pBld = cast_to<BuildingClass*>(this->GetRadioContact())) {
+	if (!ignoreDefenses)
+	{
+		if (auto pBld = cast_to<BuildingClass*>(this->GetRadioContact()))
+		{
 			// #895584: ships not taking damage when repaired in a shipyard. bug
 			// was that the logic that prevented units from being damaged when
 			// exiting a war factory applied here, too. added the Naval check.
 			if (pBld->Type->WeaponsFactory
 				&& !pBld->Type->Naval
-				&& MapClass::Instance->TryGetCellAt(this->Location)->GetBuilding() == pBld) {
+				&& MapClass::Instance->TryGetCellAt(this->Location)->GetBuilding() == pBld)
+			{
 				return _res;
 			}
 		}
@@ -377,7 +381,6 @@ DamageState FakeUnitClass::_Take_Damage(int* damage, int distance, WarheadTypeCl
 				&& this->DeathFrameCounter <= 0
 				)
 			{
-
 				this->Stun();
 				const auto loco = this->Locomotor.GetInterfacePtr();
 
@@ -389,7 +392,8 @@ DamageState FakeUnitClass::_Take_Damage(int* damage, int distance, WarheadTypeCl
 		}
 	}
 
-	if (_res != DamageState::PostMortem && this->DeathFrameCounter > 0) {
+	if (_res != DamageState::PostMortem && this->DeathFrameCounter > 0)
+	{
 		return DamageState::PostMortem;
 	}
 
@@ -405,7 +409,6 @@ DamageState FakeUnitClass::_Take_Damage(int* damage, int distance, WarheadTypeCl
 		{
 			if (_res != DamageState::Unaffected)
 			{
-
 				if (this->Type->Harvester
 					&& pWHExt->Malicious
 					&& !pWHExt->Nonprovocative
@@ -426,9 +429,10 @@ DamageState FakeUnitClass::_Take_Damage(int* damage, int distance, WarheadTypeCl
 					&& !source->TemporalTargetingMe
 					&& !this->IsTethered
 					&& this->Owner->IsAlliedWith(source->Owner)
-					&& isPlayerControlled) {
-
-					if (this->ShouldCrushIt(source)) {
+					&& isPlayerControlled)
+				{
+					if (this->ShouldCrushIt(source))
+					{
 						this->SetDestination(source, true);
 						this->QueueMission(Mission::Move, false);
 						return _res;
@@ -439,7 +443,8 @@ DamageState FakeUnitClass::_Take_Damage(int* damage, int distance, WarheadTypeCl
 						&& this->GetHealthPercentage() <= RulesClass::Instance->ConditionYellow)
 					{
 						TechnoClass* pDock = nullptr;
-						for (int i = 0; i < pType->Dock.Count; ++i) {
+						for (int i = 0; i < pType->Dock.Count; ++i)
+						{
 							pDock = this->FindDockingBay(pType->Dock.Items[i], 0, false);
 							if (pDock)
 								break;
@@ -450,7 +455,8 @@ DamageState FakeUnitClass::_Take_Damage(int* damage, int distance, WarheadTypeCl
 							return _res;
 						}
 
-						if (!this->HasLinkOrFreeSlot(pDock) && this->SendCommand(RadioCommand::RequestLink, pDock) == RadioCommand::AnswerPositive) {
+						if (!this->HasLinkOrFreeSlot(pDock) && this->SendCommand(RadioCommand::RequestLink, pDock) == RadioCommand::AnswerPositive)
+						{
 							this->QueueMission(Mission::Enter, false);
 						}
 					}
@@ -460,7 +466,8 @@ DamageState FakeUnitClass::_Take_Damage(int* damage, int distance, WarheadTypeCl
 			return _res;
 		}
 
-		if (auto pBunker = cast_to<BuildingClass*>(this->BunkerLinkedItem)) {
+		if (auto pBunker = cast_to<BuildingClass*>(this->BunkerLinkedItem))
+		{
 			pBunker->ClearBunker();
 		}
 
@@ -484,21 +491,27 @@ DamageState FakeUnitClass::_Take_Damage(int* damage, int distance, WarheadTypeCl
 					auto coord_splash = this->Location;
 					coord_splash += CoordStruct(0, 0, 5);
 					GameCreate<AnimClass>(RulesClass::Instance->SplashList.Items[RulesClass::Instance->SplashList.Count - 1], this->Location, 0, 1, AnimFlag(0x600), 0, 0);
-				} else {
-
+				}
+				else
+				{
 					pExt->ReceiveDamage = true;
 					AnimTypeExtData::ProcessDestroyAnims(this, source, warhead);
 					this->Explode();
 				}
-			} else {
+			}
+			else
+			{
 				this->Destroyed(source);
 				this->Health = 1;
 				this->IsAlive = 1;
 				this->IsSinking = 1;
 				this->Stun();
 			}
-		} else {
-			if (this->DeathFrameCounter == -1) {
+		}
+		else
+		{
+			if (this->DeathFrameCounter == -1)
+			{
 				this->DeathFrameCounter = 0;
 				this->Destroyed(source);
 			}
@@ -509,8 +522,10 @@ DamageState FakeUnitClass::_Take_Damage(int* damage, int distance, WarheadTypeCl
 
 		this->Mark(MarkType::Remove);
 
-		if (this->Passengers.NumPassengers > 0 && this->Passengers.GetFirstPassenger()) {
-			if (pTypeExt->Passengers_SyncOwner && pTypeExt->Passengers_SyncOwner_RevertOnExit) {
+		if (this->Passengers.NumPassengers > 0 && this->Passengers.GetFirstPassenger())
+		{
+			if (pTypeExt->Passengers_SyncOwner && pTypeExt->Passengers_SyncOwner_RevertOnExit)
+			{
 				auto pPassenger = this->Passengers.GetFirstPassenger();
 				auto pPassengerExt = TechnoExtContainer::Instance.Find(pPassenger);
 
@@ -539,7 +554,6 @@ DamageState FakeUnitClass::_Take_Damage(int* damage, int distance, WarheadTypeCl
 			  && (ScenarioClass::Instance->TruckCrate && !pType->IsTrain
 				  || ScenarioClass::Instance->TrainCrate && pType->IsTrain))
 			{
-
 				const auto crate_cell = MapClass::Instance->NearByLocation(this->GetMapCoords(), SpeedType::Track, ZoneType::None, MovementZone::Normal, 0, 1, 1, true, false, false, true, CellStruct::Empty, false, false);
 				if (crate_cell.IsValid())
 				{
@@ -571,7 +585,7 @@ ASMJIT_PATCH(0x7359DC, UnitClass_DTOR, 0x7)
 
 void FakeUnitClass::_Detach(AbstractClass* target, bool all)
 {
-	if(auto pExt = this->_GetExtData())
+	if (auto pExt = this->_GetExtData())
 		pExt->InvalidatePointer(target, all);
 	this->UnitClass::PointerExpired(target, all);
 }

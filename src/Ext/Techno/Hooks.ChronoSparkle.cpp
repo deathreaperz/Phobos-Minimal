@@ -5,7 +5,7 @@
 
 #include <TacticalClass.h>
 
-void PlayChronoSparkleAnim(TechnoClass* pTechno, CoordStruct* pLoc, int X_Offs = 120, int nDelay = 24 , bool bHidden = false , int ZAdjust = 0)
+void PlayChronoSparkleAnim(TechnoClass* pTechno, CoordStruct* pLoc, int X_Offs = 120, int nDelay = 24, bool bHidden = false, int ZAdjust = 0)
 {
 	if (bHidden || (Unsorted::CurrentFrame % nDelay))
 		return;
@@ -21,19 +21,24 @@ void PlayChronoSparkleAnim(TechnoClass* pTechno, CoordStruct* pLoc, int X_Offs =
 	HouseClass* pVictim = pTechno->GetOwningHouse();
 	TechnoClass* pTInvoker = nullptr;
 
-	if (const auto pInvoker = pTechno->TemporalTargetingMe) {
-		if (VTable::Get(pInvoker) == TemporalClass::vtable){
+	if (const auto pInvoker = pTechno->TemporalTargetingMe)
+	{
+		if (VTable::Get(pInvoker) == TemporalClass::vtable)
+		{
 			// we want the owner exist so the temporal will be cleaned up
 			// if these were nullptr and the warp remaining is less than 0
 			// the target unit will be stuck in the temporal limbo
 			if (!pInvoker->Target && pInvoker->WarpRemaining <= 0)
 				pInvoker->Target = pTechno;
 
-			if (auto pOwnerOfTemp = pInvoker->Owner) {
+			if (auto pOwnerOfTemp = pInvoker->Owner)
+			{
 				pOwner = pOwnerOfTemp->GetOwningHouse();
 				pTInvoker = pOwnerOfTemp;
 			}
-		} else {
+		}
+		else
+		{
 			pTechno->TemporalTargetingMe = nullptr;
 		}
 	}
@@ -44,7 +49,7 @@ void PlayChronoSparkleAnim(TechnoClass* pTechno, CoordStruct* pLoc, int X_Offs =
 ASMJIT_PATCH(0x73622F, UnitClass_AI_ChronoSparkle, 0x5)
 {
 	GET(TechnoClass*, pThis, ESI);
-	PlayChronoSparkleAnim(pThis, &pThis->Location, 120 , RulesExtData::Instance()->ChronoSparkleDisplayDelay);
+	PlayChronoSparkleAnim(pThis, &pThis->Location, 120, RulesExtData::Instance()->ChronoSparkleDisplayDelay);
 	return 0x7362A7;
 }
 
@@ -53,7 +58,6 @@ ASMJIT_PATCH(0x51BAF6, InfantryClass_AI_ChronoSparkle, 0x5)
 	GET(TechnoClass*, pThis, ESI);
 	PlayChronoSparkleAnim(pThis, &pThis->Location, 120, RulesExtData::Instance()->ChronoSparkleDisplayDelay);
 	return 0x51BB6E;
-
 }
 
 ASMJIT_PATCH(0x414C06, AircraftClass_AI_ChronoSparkle, 0x5)
@@ -85,10 +89,10 @@ ASMJIT_PATCH(0x4403D4, BuildingClass_AI_ChronoSparkle, 0x6)
 			{
 				if (!((Unsorted::CurrentFrame + i) % RulesExtData::Instance()->ChronoSparkleDisplayDelay))
 				{
-					const auto offset =  TacticalClass::Instance->ApplyMatrix_Pixel(
+					const auto offset = TacticalClass::Instance->ApplyMatrix_Pixel(
 						(pType->MaxNumberOccupants <= 10 ?
-						pType->MuzzleFlash[i] :
-						BuildingTypeExtContainer::Instance.Find(pType)->OccupierMuzzleFlashes[i])
+							pType->MuzzleFlash[i] :
+							BuildingTypeExtContainer::Instance.Find(pType)->OccupierMuzzleFlashes[i])
 					);
 
 					auto coords = pThis->GetRenderCoords();
@@ -100,8 +104,10 @@ ASMJIT_PATCH(0x4403D4, BuildingClass_AI_ChronoSparkle, 0x6)
 					HouseClass* pOwner = nullptr;
 					HouseClass* pVictim = pThis->GetOwningHouse();
 					TechnoClass* pTInvoker = nullptr;
-					if (const auto pInvoker = pThis->TemporalTargetingMe) {
-						if (auto pOwnerOfTemp = pInvoker->Owner) {
+					if (const auto pInvoker = pThis->TemporalTargetingMe)
+					{
+						if (auto pOwnerOfTemp = pInvoker->Owner)
+						{
 							pOwner = pOwnerOfTemp->GetOwningHouse();
 							pTInvoker = pOwnerOfTemp;
 						}
@@ -112,7 +118,8 @@ ASMJIT_PATCH(0x4403D4, BuildingClass_AI_ChronoSparkle, 0x6)
 			}
 		}
 
-		if ((!showOccupy || displayOnBuilding)) {
+		if ((!showOccupy || displayOnBuilding))
+		{
 			auto nLoc = pThis->GetCenterCoords();
 			PlayChronoSparkleAnim(pThis, &nLoc, 0);
 		}

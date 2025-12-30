@@ -81,7 +81,6 @@ bool PoweredUnitClass::Update()
 	if (queueMission == Mission::Selling || queueMission == Mission::Construction)
 		return true;
 
-
 	auto const pOwner = pTechno->Owner;
 	auto const hasPower = this->IsPoweredBy(pOwner);
 
@@ -103,4 +102,3 @@ bool PoweredUnitClass::Update()
 
 	return true;
 }
-

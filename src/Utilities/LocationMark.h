@@ -19,7 +19,7 @@ struct LocationMark
 		, Direction { direction }
 	{ }
 
-	COMPILETIMEEVAL LocationMark(DirStruct direction , CoordStruct location) :
+	COMPILETIMEEVAL LocationMark(DirStruct direction, CoordStruct location) :
 		Location { location }
 		, Direction { direction }
 	{ }

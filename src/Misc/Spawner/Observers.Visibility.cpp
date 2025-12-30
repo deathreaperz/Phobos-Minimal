@@ -30,7 +30,6 @@
 // 	return pThis->Owner->IsAlliedWith(pObject->GetOwningHouse()) ? 0x70059D : 0x7005E6;
 // }
 
-
 ASMJIT_PATCH(0x692686, DisplayClass_DecideAction_Cloak, 0x6)
 {
 	GET(TechnoClass*, pTechno, EDI);
@@ -86,7 +85,7 @@ ASMJIT_PATCH(0x692540, ScrollClass_Coordthing_TechnoClass_Cloak, 0x5)
 	GET(TechnoClass*, pTechno, ESI);
 	const auto pTechnoOwner = pTechno->Owner;
 
-	if (pTechnoOwner && HouseExtData::IsMutualAllies(pTechnoOwner , HouseClass::CurrentPlayer))
+	if (pTechnoOwner && HouseExtData::IsMutualAllies(pTechnoOwner, HouseClass::CurrentPlayer))
 		return AllowCoordthing;
 
 	return CheckSensedByHouses;
@@ -103,7 +102,7 @@ ASMJIT_PATCH(0x6925AA, ScrollClass_Coordthing_BuildingClass_Cloak, 0x6)
 	GET(TechnoClass*, pTechno, ESI);
 	const auto pTechnoOwner = pTechno->Owner;
 
-	if (pTechnoOwner && HouseExtData::IsMutualAllies(pTechnoOwner ,HouseClass::CurrentPlayer))
+	if (pTechnoOwner && HouseExtData::IsMutualAllies(pTechnoOwner, HouseClass::CurrentPlayer))
 		return AllowCoordthing;
 
 	return CheckSensedByHouses;
@@ -119,7 +118,7 @@ ASMJIT_PATCH(0x6DA412, Tactical_SelectAt_Cloak, 0x6)
 	GET(TechnoClass*, pTechno, EAX);
 	const auto pTechnoOwner = pTechno->Owner;
 
-	if (pTechnoOwner && HouseExtData::IsMutualAllies(pTechnoOwner ,HouseClass::CurrentPlayer))
+	if (pTechnoOwner && HouseExtData::IsMutualAllies(pTechnoOwner, HouseClass::CurrentPlayer))
 		return AllowSelect;
 
 	return CheckSensedByHouses;
@@ -136,7 +135,7 @@ ASMJIT_PATCH(0x6F4F19, TechnoClass_6F4EB0_Cloak, 0x6)
 	GET(TechnoClass*, pTechno, ESI);
 	const auto pTechnoOwner = pTechno->Owner;
 
-	if (pTechnoOwner && HouseExtData::IsMutualAllies(pTechnoOwner ,HouseClass::CurrentPlayer))
+	if (pTechnoOwner && HouseExtData::IsMutualAllies(pTechnoOwner, HouseClass::CurrentPlayer))
 		return DontUnselect;
 
 	return CheckSensedByHouses;
@@ -153,7 +152,7 @@ ASMJIT_PATCH(0x4ABE3C, DisplayClass_MouseLeftRelease_Cloak, 0xA)
 	GET(TechnoClass*, pTechno, ESI);
 	const auto pTechnoOwner = pTechno->Owner;
 
-	if (pTechnoOwner && HouseExtData::IsMutualAllies(pTechnoOwner ,HouseClass::CurrentPlayer))
+	if (pTechnoOwner && HouseExtData::IsMutualAllies(pTechnoOwner, HouseClass::CurrentPlayer))
 		return AllowSelect;
 
 	if (pTechno->IsSensorVisibleToPlayer())
@@ -173,7 +172,7 @@ ASMJIT_PATCH(0x70D386, TechnoClass_Radar_Cloak, 0xA)
 	GET(TechnoClass*, pTechno, ESI);
 	const auto pTechnoOwner = pTechno->Owner;
 
-	if (pTechnoOwner && HouseExtData::IsMutualAllies(pTechnoOwner ,HouseClass::CurrentPlayer))
+	if (pTechnoOwner && HouseExtData::IsMutualAllies(pTechnoOwner, HouseClass::CurrentPlayer))
 		return Show;
 
 	if (pTechno->IsSensorVisibleToPlayer())
@@ -193,7 +192,7 @@ ASMJIT_PATCH(0x4AE62B, DisplayClass_HelpText_Cloak, 0x5)
 	GET(TechnoClass*, pTechno, ECX);
 	const auto pTechnoOwner = pTechno->Owner;
 
-	if (pTechnoOwner && HouseExtData::IsMutualAllies(pTechnoOwner ,HouseClass::CurrentPlayer))
+	if (pTechnoOwner && HouseExtData::IsMutualAllies(pTechnoOwner, HouseClass::CurrentPlayer))
 		return CheckIsInvisible;
 
 	if (pTechno->IsSensorVisibleToPlayer())
@@ -248,16 +247,18 @@ ASMJIT_PATCH(0x6F677D, TechnoClass_DrawSelection_Observer1, 0x5)
 }
 #pragma endregion
 
-
-ASMJIT_PATCH(0x70DA7D, TechnoClass_RadarTrackingUpdate_Detected_ObserverSkip, 0x6) {
+ASMJIT_PATCH(0x70DA7D, TechnoClass_RadarTrackingUpdate_Detected_ObserverSkip, 0x6)
+{
 	return HouseClass::IsCurrentPlayerObserver() ? 0x70DADC : 0;
 }
 
-ASMJIT_PATCH(0x703819, TechnoClass_Cloak_Deselect_IsCurrentPlayerOberver, 0x6)  {
+ASMJIT_PATCH(0x703819, TechnoClass_Cloak_Deselect_IsCurrentPlayerOberver, 0x6)
+{
 	return HouseClass::IsCurrentPlayerObserver() ? 0x70383C : 0x0;
 }
 
-ASMJIT_PATCH(0x65FA70, RadarEventClass_Create_ObserverSkipSensed, 0x6) {
+ASMJIT_PATCH(0x65FA70, RadarEventClass_Create_ObserverSkipSensed, 0x6)
+{
 	GET(RadarEventType, nType, ECX);
 	return nType == RadarEventType::EnemySensed && HouseClass::IsCurrentPlayerObserver() ? 0x65FB52 : 0;
 }

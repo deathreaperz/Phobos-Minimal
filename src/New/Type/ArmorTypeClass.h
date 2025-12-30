@@ -25,8 +25,10 @@ public:
 
 	ArmorTypeClass(const char* const pTitle);
 
-	static COMPILETIMEEVAL void AddDefaults() {
-		for (auto const& nDefault : Unsorted::ArmorNameArray) {
+	static COMPILETIMEEVAL void AddDefaults()
+	{
+		for (auto const& nDefault : Unsorted::ArmorNameArray)
+		{
 			if (auto pVanillaArmor = FindOrAllocate(nDefault))
 				pVanillaArmor->IsVanillaArmor = true;
 		}

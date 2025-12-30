@@ -44,8 +44,8 @@ ASMJIT_PATCH(0x736F78, UnitClass_UpdateFiring_FireErrorIsFACING, 0x6)
 	return 0x736FB1;
 }
 
-ASMJIT_PATCH(0x736E6E, UnitClass_UpdateFiring_OmniFireTurnToTarget, 0x9) {
-
+ASMJIT_PATCH(0x736E6E, UnitClass_UpdateFiring_OmniFireTurnToTarget, 0x9)
+{
 	GET(FireError, err, EBP);
 	GET(UnitClass* const, pThis, ESI);
 	GET(int const, wpIdx, EDI);

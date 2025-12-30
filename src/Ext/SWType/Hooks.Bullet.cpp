@@ -32,7 +32,6 @@ ASMJIT_PATCH(0x46B371, BulletClass_NukeMaker, 5)
 		// get the per-SW nuke payload weapon
 		if (WeaponTypeClass const* const pPayload = pSWExt->Nuke_Payload)
 		{
-
 			// these are not available during initialisation, so we gotta
 			// fall back now if they are invalid.
 			auto const damage = pSWExt->GetNewSWType()->GetDamage(pSWExt);
@@ -187,4 +186,3 @@ ASMJIT_PATCH(0x467E59, BulletClass_Update_NukeBall, 5)
 //	R->EAX(SW_NuclearMissile::DropNukeAt(pNukeSW, targetcoord, nullptr, pThis->Owner ? pThis->Owner->Owner : HouseExtData::FindFirstCivilianHouse(), pPaylod));
 //	return ret;
 //}
-

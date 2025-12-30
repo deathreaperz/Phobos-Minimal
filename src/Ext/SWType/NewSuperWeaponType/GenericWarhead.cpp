@@ -44,12 +44,13 @@ bool SW_GenericWarhead::Activate(SuperClass* pThis, const CellStruct& Coords, bo
 	const auto nDeferement = pData->SW_Deferment.Get(-1);
 	const auto pWarhead = this->GetWarhead(pData);
 
-	if (!pWarhead) {
+	if (!pWarhead)
+	{
 		Debug::LogInfo("launch GenericWarhead SW ([{}]) Without Warhead", pThis->Type->ID);
 		return true;
 	}
 
-	if(nDeferement <= 0)
+	if (nDeferement <= 0)
 		GenericWarheadStateMachine::SentPayload(pFirer, pThis, pData, this, Coords);
 	else
 		this->newStateMachine(nDeferement, Coords, pThis, pFirer);
@@ -85,15 +86,16 @@ void GenericWarheadStateMachine::Update()
 		pData->PrintMessage(pData->Message_Activate, this->Super->Owner);
 
 		const auto sound = pData->SW_ActivationSound.Get(-1);
-		if (sound != -1) {
+		if (sound != -1)
+		{
 			VocClass::PlayGlobal(sound, Panning::Center, 1.0);
 		}
 
-		SentPayload(this->Firer , this->Super , pData, pData->GetNewSWType(), this->Coords);
+		SentPayload(this->Firer, this->Super, pData, pData->GetNewSWType(), this->Coords);
 	}
 }
 
-void GenericWarheadStateMachine::SentPayload(TechnoClass* pFirer, SuperClass* pSuper, SWTypeExtData* pData, SWTypeHandler* pNewType , const CellStruct& loc)
+void GenericWarheadStateMachine::SentPayload(TechnoClass* pFirer, SuperClass* pSuper, SWTypeExtData* pData, SWTypeHandler* pNewType, const CellStruct& loc)
 {
 	const auto pWarhead = pNewType->GetWarhead(pData);
 	auto const pCell = MapClass::Instance->GetCellAt(loc);
@@ -140,7 +142,7 @@ void GenericWarheadStateMachine::SentPayload(TechnoClass* pFirer, SuperClass* pS
 
 bool  GenericWarheadStateMachine::Load(PhobosStreamReader& Stm, bool RegisterForChange)
 {
-	return SWStateMachine::Load(Stm , RegisterForChange)
+	return SWStateMachine::Load(Stm, RegisterForChange)
 		&& Stm
 		.Process(Firer)
 		.Success();
@@ -156,5 +158,5 @@ bool  GenericWarheadStateMachine::Save(PhobosStreamWriter& Stm) const
 
 void  GenericWarheadStateMachine::InvalidatePointer(AbstractClass* ptr, bool remove)
 {
-	AnnounceInvalidPointer(Firer, ptr ,remove);
+	AnnounceInvalidPointer(Firer, ptr, remove);
 }

@@ -60,8 +60,7 @@ public:
 			;
 	}
 
-
-	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override  { }
+	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override { }
 	virtual bool Load(PhobosStreamReader& Stm, bool RegisterForChange) override;
 	virtual bool Save(PhobosStreamWriter& Stm) const override;
 
@@ -88,10 +87,10 @@ public:
 	double RotateAngle {};
 	int WaitOneFrame {};
 
-	BombardTrajectory() : PhobosTrajectory { TrajectoryFlag::Bombard } {}
-	BombardTrajectory(BulletClass* pBullet , PhobosTrajectoryType* pType) :
+	BombardTrajectory() : PhobosTrajectory { TrajectoryFlag::Bombard } { }
+	BombardTrajectory(BulletClass* pBullet, PhobosTrajectoryType* pType) :
 		PhobosTrajectory { TrajectoryFlag::Bombard , pBullet,  pType }
-	{}
+	{ }
 	virtual ~BombardTrajectory() = default;
 
 	template<typename T>

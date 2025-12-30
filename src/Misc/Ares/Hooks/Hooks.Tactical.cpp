@@ -35,28 +35,30 @@ ASMJIT_PATCH(0x420F75, AlphaLightClass_UpdateScreen_ShouldDraw, 5)
 
 	bool shouldDraw = !pAlpha->IsObjectGone;
 
-	if(shouldDraw && pAlpha->AttachedTo) {
+	if (shouldDraw && pAlpha->AttachedTo)
+	{
 		const auto table = VTable::Get(pAlpha->AttachedTo);
-		if (table == InfantryClass::vtable || table == UnitClass::vtable || table == AircraftClass::vtable || table == BuildingClass::vtable) {
+		if (table == InfantryClass::vtable || table == UnitClass::vtable || table == AircraftClass::vtable || table == BuildingClass::vtable)
+		{
 			shouldDraw =
 				((TechnoClass*)pAlpha->AttachedTo)->VisualCharacter(VARIANT_TRUE, ((TechnoClass*)pAlpha->AttachedTo)->Owner) == VisualType::Normal
-			&& !((TechnoClass*)pAlpha->AttachedTo)->Disguised;
+				&& !((TechnoClass*)pAlpha->AttachedTo)->Disguised;
 		}
 	}
 
 	return shouldDraw ? 0x420F80 : 0x42132A;
-
 }
 
 ASMJIT_PATCH(0x4210AC, AlphaLightClass_UpdateScreen_Header, 5)
 {
 	GET(AlphaShapeClass*, pAlpha, EDX);
-	GET(SHPStruct *, pImage, ECX);
+	GET(SHPStruct*, pImage, ECX);
 
 	if (const auto pTechno = flag_cast_to <TechnoClass*>(pAlpha->AttachedTo))
 	{
 		unsigned int idx = 0;
-		if (pImage->Frames > 0) {
+		if (pImage->Frames > 0)
+		{
 			const int countFrames = Conversions::Int2Highest(pImage->Frames);
 			const DirStruct PrimaryFacing = pTechno->PrimaryFacing.Current();
 			idx = (PrimaryFacing.Raw >> (16 - countFrames));
@@ -75,9 +77,11 @@ ASMJIT_PATCH(0x4211AC, AlphaLightClass_UpdateScreen_Body, 8)
 
 	const auto pAlpha = AlphaShapeClass::Array->Items[AlphaLightIndex];
 
-	if(const auto pTechno = flag_cast_to<TechnoClass*>(pAlpha->AttachedTo)) {
+	if (const auto pTechno = flag_cast_to<TechnoClass*>(pAlpha->AttachedTo))
+	{
 		unsigned int idx = 0;
-		if (pImage->Frames > 0) {
+		if (pImage->Frames > 0)
+		{
 			const int countFrames = Conversions::Int2Highest(pImage->Frames);
 			const DirStruct PrimaryFacing = pTechno->PrimaryFacing.Current();
 			idx = (PrimaryFacing.Raw >> (16 - countFrames));
@@ -98,8 +102,10 @@ ASMJIT_PATCH(0x42146E, TacticalClass_UpdateAlphasInRectangle_Header, 5)
 	const auto pAlpha = AlphaShapeClass::Array->Items[AlphaLightIndex];
 	unsigned int idx = 0;
 
-	if (const auto pTechno = flag_cast_to<TechnoClass*>(pAlpha->AttachedTo))  {
-		if (pImage->Frames > 0) {
+	if (const auto pTechno = flag_cast_to<TechnoClass*>(pAlpha->AttachedTo))
+	{
+		if (pImage->Frames > 0)
+		{
 			const int countFrames = Conversions::Int2Highest(pImage->Frames);
 			const DirStruct PrimaryFacing = pTechno->PrimaryFacing.Current();
 			idx = (PrimaryFacing.Raw >> (16 - countFrames));
@@ -116,8 +122,10 @@ ASMJIT_PATCH(0x42152C, TacticalClass_UpdateAlphasInRectangle_Body, 8)
 	GET(SHPStruct*, pImage, ECX);
 
 	const auto pAlpha = AlphaShapeClass::Array->Items[AlphaLightIndex];
-	if (const auto pTechno = flag_cast_to<TechnoClass*>(pAlpha->AttachedTo)) {
-		if (pImage->Frames > 0) {
+	if (const auto pTechno = flag_cast_to<TechnoClass*>(pAlpha->AttachedTo))
+	{
+		if (pImage->Frames > 0)
+		{
 			const int countFrames = Conversions::Int2Highest(pImage->Frames);
 			const DirStruct PrimaryFacing = pTechno->PrimaryFacing.Current();
 			R->ESP((PrimaryFacing.Raw >> (16 - countFrames)));
@@ -134,9 +142,11 @@ ASMJIT_PATCH(0x421371, TacticalClass_UpdateAlphasInRectangle_ShouldDraw, 5)
 
 	bool shouldDraw = !pAlpha->IsObjectGone;
 
-	if (shouldDraw && pAlpha->AttachedTo) {
+	if (shouldDraw && pAlpha->AttachedTo)
+	{
 		const auto table = VTable::Get(pAlpha->AttachedTo);
-		if (table == InfantryClass::vtable || table == UnitClass::vtable || table == AircraftClass::vtable || table == BuildingClass::vtable ) {
+		if (table == InfantryClass::vtable || table == UnitClass::vtable || table == AircraftClass::vtable || table == BuildingClass::vtable)
+		{
 			shouldDraw = ((TechnoClass*)pAlpha->AttachedTo)->IsAlive && ((TechnoClass*)pAlpha->AttachedTo)->VisualCharacter(VARIANT_TRUE, ((TechnoClass*)pAlpha->AttachedTo)->Owner) == VisualType::Normal &&
 				!((TechnoClass*)pAlpha->AttachedTo)->Disguised;
 		}

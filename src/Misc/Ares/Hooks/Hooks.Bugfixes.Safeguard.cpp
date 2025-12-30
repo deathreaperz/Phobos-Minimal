@@ -14,16 +14,17 @@ ASMJIT_PATCH(0x547043, IsometricTileTypeClass_ReadFromFile, 0x6)
 {
 	GET(int, FileSize, EBX);
 	GET(IsometricTileTypeClass*, pTileType, ESI);
-	LEA_STACK(CCFileClass* , pFile , 0xC);
+	LEA_STACK(CCFileClass*, pFile, 0xC);
 
 	if (FileSize == 0)
 	{
 		auto what = (pTileType->ID + strlen(pTileType->ID) + 1 - pTileType->ID);
 		auto pFileName = pFile->FileName;
 
-		if (what > 9) {
+		if (what > 9)
+		{
 			Debug::FatalErrorAndExit("Maximum allowed length for tile names, excluding the extension, is 9 characters.\n"
-					"The tileset using filename '%s - %s' exceeds this limit - the game cannot proceed.", pTileType->ID , pFileName);
+					"The tileset using filename '%s - %s' exceeds this limit - the game cannot proceed.", pTileType->ID, pFileName);
 		}
 
 		Debug::FatalErrorAndExit("The tileset '%s - %s' contains a file that could not be loaded for some reason - make sure the file exists."
@@ -49,10 +50,13 @@ ASMJIT_PATCH(0x7272B5, TriggerTypeClass_LoadFromINI_House, 6)
 	GET(TriggerTypeClass* const, pTrig, EBP);
 	GET(const char*, pHouse, ESI);
 
-	if (index < 0) {
+	if (index < 0)
+	{
 		Debug::FatalError("TriggerType '%s' refers to a house named '%s', which does not exist. In case no house is needed, use '<none>' explicitly.", pTrig->ID, pHouse);
 		R->EDX<HouseTypeClass*>(nullptr);
-	} else {
+	}
+	else
+	{
 		R->EDX<HouseTypeClass*>(HouseTypeClass::Array->Items[index]);
 	}
 
@@ -64,9 +68,9 @@ ASMJIT_PATCH(0x749088, FixedWidthCounter_ResetWithGivenCount, 6)
 {
 	GET(unsigned int, Width, EAX);
 
-	if (Width > 512) {
-
-		if(CounterLog)
+	if (Width > 512)
+	{
+		if (CounterLog)
 			Debug::LogInfo("Counter attempted to overflow (given width of {} exceeds maximum allowed width of 512).", Width);
 
 		R->EAX(512);

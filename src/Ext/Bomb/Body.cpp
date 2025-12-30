@@ -11,8 +11,8 @@
 #include <Phobos.SaveGame.h>
 
 template <typename T>
-void BombExtData::Serialize(T& Stm) {
-
+void BombExtData::Serialize(T& Stm)
+{
 	Stm
 		.Process(this->Weapon)
 		;
@@ -32,7 +32,6 @@ bool BombExtContainer::LoadAll(const json& root)
 
 		for (auto& entry : container[BombExtData::ClassName])
 		{
-
 			uint32_t oldPtr = 0;
 			if (!ExtensionSaveJson::ReadHex(entry, "OldPtr", oldPtr))
 				return false;
@@ -99,12 +98,13 @@ ASMJIT_PATCH(0x4385FC, BombClass_CTOR, 0x6)
 
 ASMJIT_PATCH(0x4393F2, BombClass_SDDTOR, 0x5)
 {
-	GET(BombClass *, pItem, ECX);
+	GET(BombClass*, pItem, ECX);
 	BombExtContainer::Instance.Remove(pItem);
 	return 0;
 }
 
-void FakeBombClass::__Detonate() { 
+void FakeBombClass::__Detonate()
+{
 	static COMPILETIMEEVAL reference<int, 0xABAD1C> WoodBridgeSet {};
 
 	auto const pTarget = this->Target;
@@ -115,10 +115,13 @@ void FakeBombClass::__Detonate() {
 	bool const wasInLimbo = pTarget->InLimbo;
 	pTarget->AttachedBomb = nullptr;
 
-	if (wasInLimbo) {
+	if (wasInLimbo)
+	{
 		pTarget->BombVisible = false;
-		this->State = BombState::Removed ;
-	} else {
+		this->State = BombState::Removed;
+	}
+	else
+	{
 		pTarget->BombVisible = false;
 		this->State = BombState::Removed;
 
@@ -137,7 +140,8 @@ void FakeBombClass::__Detonate() {
 		MapClass::Instance->FlashbangWarheadAt(nDamage, pBombWH, coords);
 		const auto pDetonateCoords = MapClass::Instance->GetCellAt(coords);
 
-		if (auto pAnimType = MapClass::Instance->SelectDamageAnimation(nDamage, pBombWH, pDetonateCoords->LandType, coords)) {
+		if (auto pAnimType = MapClass::Instance->SelectDamageAnimation(nDamage, pBombWH, pDetonateCoords->LandType, coords))
+		{
 			AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pAnimType, coords, 0, 1, AnimFlag::AnimFlag_2600, -15, false),
 				OwningHouse,
 				this->Target ? this->Target->GetOwningHouse() : nullptr,
@@ -146,19 +150,21 @@ void FakeBombClass::__Detonate() {
 			);
 		}
 
-		if(pExt->Weapon->Ivan_KillsBridges) {
+		if (pExt->Weapon->Ivan_KillsBridges)
+		{
 			// Bridge Repair Hut special handling
 			auto const pTargetBuilding = cast_to<BuildingClass*, false>(this->Target);
 
-			if (pTargetBuilding && pTargetBuilding->Type->BridgeRepairHut) {
-
+			if (pTargetBuilding && pTargetBuilding->Type->BridgeRepairHut)
+			{
 				bool foundBridge = false;
 				auto buildingMapCoords = pTargetBuilding->GetMapCoords();
 
 				// Scan 5x5 area around target
-				for (int y = -2; y < 3; ++y) {
-					for (int x = -2; x < 3; ++x) {
-
+				for (int y = -2; y < 3; ++y)
+				{
+					for (int x = -2; x < 3; ++x)
+					{
 						CellStruct targetCell = buildingMapCoords;
 						targetCell.X += static_cast<short>(x);
 						targetCell.Y += static_cast<short>(y);
@@ -172,16 +178,17 @@ void FakeBombClass::__Detonate() {
 						bool const isWoodBridge = (tileType >= WoodBridgeSet && tileType < WoodBridgeSet + 16);
 						bool const isBridgeOverlay = (overlay >= 74 && overlay <= 101);
 
-						if (isWoodBridge || isBridgeOverlay) {
+						if (isWoodBridge || isBridgeOverlay)
+						{
 							foundBridge = true;
 						}
 					}
 				}
 
-				(MapClass::Instance->*(foundBridge ? 
+				(MapClass::Instance->*(foundBridge ?
 					&MapClass::DestroyWoodBridgeAt :
 					&MapClass::DestroyConcreteBridgeAt))
-				(buildingMapCoords);
+					(buildingMapCoords);
 			}
 		}
 	}
@@ -203,11 +210,15 @@ int FakeBombClass::__GetBombFrame()
 
 	int result = 0;
 
-	if (frames >= 2) {
-		if (this->Type != BombType::NormalBomb) {
+	if (frames >= 2)
+	{
+		if (this->Type != BombType::NormalBomb)
+		{
 			// DeathBomb → last frame
 			result = frames - 1;
-		} else {
+		}
+		else
+		{
 			const int delay = pData->Ivan_Delay.Get(RulesClass::Instance->IvanTimedDelay);
 			const int flickerRate = pData->Ivan_FlickerRate.Get(RulesClass::Instance->IvanIconFlickerRate);
 			const int elapsed = Unsorted::CurrentFrame - this->PlantingFrame;
@@ -215,12 +226,15 @@ int FakeBombClass::__GetBombFrame()
 			const int half = frames / 2;
 			int capped = half - 1;
 
-			if (flickerRate <= 0) {
+			if (flickerRate <= 0)
+			{
 				// no flicker: use only half the frames
 				int frame = elapsed / (delay / (2 * half));
 				if (frame > capped) frame = capped;
 				result = frame;
-			} else {
+			}
+			else
+			{
 				// flicker: use full even/odd pattern
 				int frame = elapsed / (delay / half);
 				if (frame > capped) frame = capped;

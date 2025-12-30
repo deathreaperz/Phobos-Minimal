@@ -67,7 +67,7 @@ bool TerrainTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	this->LightGreenTint.Read(exINI, pSection, GameStrings::LightGreenTint());
 	this->LightBlueTint.Read(exINI, pSection, GameStrings::LightBlueTint());
 
-	this->AttachedAnim.Read(exINI, pSection, "AttachedAnims",true);
+	this->AttachedAnim.Read(exINI, pSection, "AttachedAnims", true);
 	this->Warhead.Read(exINI, pSection, "SpawnsTiberium.ExplodeWarhead");
 	this->Damage.Read(exINI, pSection, "SpawnsTiberium.ExplodeDamage");
 	this->AreaDamage.Read(exINI, pSection, "SpawnsTiberium.ExplodeDealAreaDamage");
@@ -135,7 +135,6 @@ void TerrainTypeExtData::Serialize(T& Stm)
 		.Process(this->TreeFires)
 		.Process(this->SpawnsTiberium_Particle)
 		;
-
 }
 
 void TerrainTypeExtData::Remove(TerrainClass* pTerrain)
@@ -187,7 +186,6 @@ bool TerrainTypeExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool TerrainTypeExtContainer::SaveAll(json& root)
@@ -228,12 +226,10 @@ void TerrainTypeExtContainer::LoadFromINI(ext_t::base_type* key, CCINIClass* pIN
 		//this function can be called again multiple time but without need to re-init the data
 		ptr->SetInitState(InitState::Ruled);
 	}
-
 }
 
 void TerrainTypeExtContainer::WriteToINI(ext_t::base_type* key, CCINIClass* pINI)
 {
-
 	if (auto ptr = this->TryFind(key))
 	{
 		if (!pINI)

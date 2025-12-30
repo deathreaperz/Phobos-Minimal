@@ -29,7 +29,6 @@ TSJumpJetLocomotionClass::TSJumpJetLocomotionClass() :
 	IsLanding {},
 	IsMoving {}
 {
-
 }
 
 IFACEMETHODIMP TSJumpJetLocomotionClass::Link_To_Object(void* object)
@@ -84,7 +83,7 @@ IFACEMETHODIMP_(bool) TSJumpJetLocomotionClass::Process()
 		{
 			if (CurrentState != TSJumpJetLocomotionClass::JumpjetState::GROUNDED)
 			{
-				auto result = LinkedTo->ReceiveDamage(&LinkedTo->Health, 0, RulesClass::Instance->C4Warhead, nullptr, true, true ,nullptr);
+				auto result = LinkedTo->ReceiveDamage(&LinkedTo->Health, 0, RulesClass::Instance->C4Warhead, nullptr, true, true, nullptr);
 				if (result == DamageState::NowDead)
 				{
 					return false;
@@ -135,7 +134,7 @@ IFACEMETHODIMP_(bool) TSJumpJetLocomotionClass::Process()
 
 	if (In_Which_Layer() != layer)
 	{
-		MapClass::Logics->AddObject(LinkedTo , false);
+		MapClass::Logics->AddObject(LinkedTo, false);
 	}
 
 	return false;
@@ -158,8 +157,8 @@ IFACEMETHODIMP_(void) TSJumpJetLocomotionClass::Move_To(Coordinate to)
 							LinkedTo->GetTechnoType()->SpeedType,
 							ZoneType::None,
 							MovementZone::Fly,
-							MapClass::Instance->GetCellAt(to)->ContainsBridge(),0,
-							0, true,false ,false , false ,CellStruct::Empty, false , true
+							MapClass::Instance->GetCellAt(to)->ContainsBridge(), 0,
+							0, true, false, false, false, CellStruct::Empty, false, true
 		);
 
 		Coordinate free = Closest_Free_Spot(CellClass::Cell2Coord(cell));
@@ -239,7 +238,8 @@ IFACEMETHODIMP_(HRESULT) TSJumpJetLocomotionClass::GetClassID(CLSID* pClassID)
 IFACEMETHODIMP_(HRESULT) TSJumpJetLocomotionClass::Load(IStream* stream)
 {
 	HRESULT result = LocomotionClass::Internal_Load(this, stream);
-	if (SUCCEEDED(result)) {
+	if (SUCCEEDED(result))
+	{
 		new (this) TSJumpJetLocomotionClass(noinit_t());
 	}
 
@@ -411,14 +411,13 @@ void TSJumpJetLocomotionClass::Process_Cruise()
 void TSJumpJetLocomotionClass::Process_Descent()
 {
 	CellClass* cellptr = MapClass::Instance->GetCellAt(HeadToCoord);
-	Move move = LinkedTo->IsCellOccupied(cellptr ,FacingType::None ,-1 , nullptr, true);
+	Move move = LinkedTo->IsCellOccupied(cellptr, FacingType::None, -1, nullptr, true);
 	int spot = Game::Spot_Index(&HeadToCoord);
 	bool stop = true;
 
 	if ((cellptr->IsSpotFree(spot, cellptr->ContainsBridge()) || IsLanding) &&
 		(MapClass::Instance->GetCellAt(HeadToCoord)->ContainsBridge() || move <= Move::MovingBlock && (move != Move::MovingBlock || IsLanding)))
 	{
-
 		if (!IsLanding)
 		{
 			IsLanding = true;
@@ -453,12 +452,12 @@ void TSJumpJetLocomotionClass::Process_Descent()
 			LinkedTo->Mark(MarkType::Down);
 			HeadToCoord = CoordStruct::Empty;
 			IsMoving = false;
-			LinkedTo->SetDestination(nullptr , false);
+			LinkedTo->SetDestination(nullptr, false);
 			LinkedTo->UpdatePosition(PCPType::End);
 
 			if (LinkedTo != nullptr && LinkedTo->IsAlive && !LinkedTo->InLimbo && !LinkedTo->IsFallingDown)
 			{
-				LinkedTo->See(0,0);
+				LinkedTo->See(0, 0);
 				AircraftTrackerClass::Instance->Remove(LinkedTo);
 				CurrentState = TSJumpJetLocomotionClass::JumpjetState::GROUNDED;
 				IsLanding = false;
@@ -524,7 +523,6 @@ void TSJumpJetLocomotionClass::Movement_AI()
 	if (MapClass::Instance->GetCellAt(LinkedTo->GetCoords())->ContainsBridge() &&
 			LinkedTo->Location.Z >= ground_height + 4 * Unsorted::PixelLeptonHeight)
 	{
-
 		ground_height += CellClass::BridgeHeight;
 	}
 
@@ -588,7 +586,7 @@ void TSJumpJetLocomotionClass::Movement_AI()
 
 	Coordinate new_coord {};
 	auto cur_facing = Facing.Current();
-	Game::Coord_Move(&new_coord  , &LinkedTo->Location, &cur_facing, (int)CurrentSpeed);
+	Game::Coord_Move(&new_coord, &LinkedTo->Location, &cur_facing, (int)CurrentSpeed);
 	LinkedTo->SetLocation(new_coord);
 
 	if (LinkedTo != nullptr)

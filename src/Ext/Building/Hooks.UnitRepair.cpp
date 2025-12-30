@@ -1,6 +1,5 @@
 #include "Body.h"
 
-
 ASMJIT_PATCH(0x44B8F1, BuildingClass_Mission_Repair_Hospital, 0x6)
 {
 	enum { SkipGameCode = 0x44B8F7 };
@@ -10,7 +9,6 @@ ASMJIT_PATCH(0x44B8F1, BuildingClass_Mission_Repair_Hospital, 0x6)
 	__asm { fld repairRate }
 	return SkipGameCode;
 }
-
 
 ASMJIT_PATCH(0x44BD38, BuildingClass_Mission_Repair_UnitRepair, 0x6)
 {
@@ -51,7 +49,7 @@ ASMJIT_PATCH(0x44C836, BuildingClass_Mission_Repair_UnitReload, 0x6)
 				{
 					if (auto const pLink = pThis->GetNthLink(i))
 					{
-						if (!pLink->IsInAir()  && pLink->Health < pLink->GetTechnoType()->Strength && pThis->SendCommand(RadioCommand::QueryMoving, pLink) == RadioCommand::AnswerPositive)
+						if (!pLink->IsInAir() && pLink->Health < pLink->GetTechnoType()->Strength && pThis->SendCommand(RadioCommand::QueryMoving, pLink) == RadioCommand::AnswerPositive)
 							pThis->SendCommand(RadioCommand::RequestRepair, pLink);
 					}
 				}
@@ -66,7 +64,7 @@ ASMJIT_PATCH(0x44C836, BuildingClass_Mission_Repair_UnitReload, 0x6)
 
 ASMJIT_PATCH(0x6F4CF0, TechnoClass_ReceiveCommand_Repair, 0x5)
 {
-	enum { AnswerNegative = 0x6F4CB4 , Continue = 0x0 };
+	enum { AnswerNegative = 0x6F4CB4, Continue = 0x0 };
 
 	GET(TechnoClass*, pThis, ESI);
 	GET_STACK(TechnoClass*, pFrom, STACK_OFFSET(0x18, 0x4));
@@ -75,7 +73,7 @@ ASMJIT_PATCH(0x6F4CF0, TechnoClass_ReceiveCommand_Repair, 0x5)
 	int repairStep = pType->GetRepairStep();
 	int repairCost = pType->GetRepairStepCost();
 
-	if (auto const pBuilding = cast_to<BuildingClass* , false>(pFrom))
+	if (auto const pBuilding = cast_to<BuildingClass*, false>(pFrom))
 	{
 		auto const pTypeExt = BuildingTypeExtContainer::Instance.Find(pBuilding->Type);
 		auto pbldExt = BuildingExtContainer::Instance.Find(pBuilding);
@@ -86,14 +84,15 @@ ASMJIT_PATCH(0x6F4CF0, TechnoClass_ReceiveCommand_Repair, 0x5)
 		repairStep = pTypeExt->Units_RepairStep.Get(repairStep);
 		double repairPercent = pTypeExt->Units_RepairPercent.Get(RulesClass::Instance->RepairPercent);
 
-		if (pTypeExt->Units_UseRepairCost.Get(pThis->WhatAmI() != AbstractType::Infantry)) {
-
+		if (pTypeExt->Units_UseRepairCost.Get(pThis->WhatAmI() != AbstractType::Infantry))
+		{
 			repairCost = static_cast<int>((pType->GetCost() / (pType->Strength / static_cast<double>(repairStep))) * repairPercent);
 
 			if (repairCost < 1)
 				repairCost = 1;
-
-		} else {
+		}
+		else
+		{
 			repairCost = 0;
 		}
 	}

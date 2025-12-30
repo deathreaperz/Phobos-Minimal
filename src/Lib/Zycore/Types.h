@@ -34,108 +34,108 @@
 
 #include <Zycore/Defines.h>
 
-/* ============================================================================================== */
-/* Integer types                                                                                  */
-/* ============================================================================================== */
+ /* ============================================================================================== */
+ /* Integer types                                                                                  */
+ /* ============================================================================================== */
 
 #if defined(ZYAN_NO_LIBC) || \
     (defined(ZYAN_MSVC) && defined(ZYAN_KERNEL)) // The WDK LibC lacks stdint.h.
-    // No LibC mode, use compiler built-in types / macros.
+	// No LibC mode, use compiler built-in types / macros.
 #   if defined(ZYAN_MSVC) || defined(ZYAN_ICC)
-        typedef unsigned __int8                 ZyanU8;
-        typedef unsigned __int16                ZyanU16;
-        typedef unsigned __int32                ZyanU32;
-        typedef unsigned __int64                ZyanU64;
-        typedef   signed __int8                 ZyanI8;
-        typedef   signed __int16                ZyanI16;
-        typedef   signed __int32                ZyanI32;
-        typedef   signed __int64                ZyanI64;
+typedef unsigned __int8                 ZyanU8;
+typedef unsigned __int16                ZyanU16;
+typedef unsigned __int32                ZyanU32;
+typedef unsigned __int64                ZyanU64;
+typedef   signed __int8                 ZyanI8;
+typedef   signed __int16                ZyanI16;
+typedef   signed __int32                ZyanI32;
+typedef   signed __int64                ZyanI64;
 #       if _WIN64
-           typedef ZyanU64                      ZyanUSize;
-           typedef ZyanI64                      ZyanISize;
-           typedef ZyanU64                      ZyanUPointer;
-           typedef ZyanI64                      ZyanIPointer;
+typedef ZyanU64                      ZyanUSize;
+typedef ZyanI64                      ZyanISize;
+typedef ZyanU64                      ZyanUPointer;
+typedef ZyanI64                      ZyanIPointer;
 #       else
-           typedef ZyanU32                      ZyanUSize;
-           typedef ZyanI32                      ZyanISize;
-           typedef ZyanU32                      ZyanUPointer;
-           typedef ZyanI32                      ZyanIPointer;
+typedef ZyanU32                      ZyanUSize;
+typedef ZyanI32                      ZyanISize;
+typedef ZyanU32                      ZyanUPointer;
+typedef ZyanI32                      ZyanIPointer;
 #       endif
 #   elif defined(ZYAN_GNUC)
 #       ifdef __UINT8_TYPE__
-            typedef __UINT8_TYPE__              ZyanU8;
+typedef __UINT8_TYPE__              ZyanU8;
 #       else
-            typedef unsigned char               ZyanU8;
+typedef unsigned char               ZyanU8;
 #       endif
 #       ifdef __UINT16_TYPE__
-            typedef __UINT16_TYPE__             ZyanU16;
+typedef __UINT16_TYPE__             ZyanU16;
 #       else
-            typedef unsigned short int          ZyanU16;
+typedef unsigned short int          ZyanU16;
 #       endif
 #       ifdef __UINT32_TYPE__
-            typedef __UINT32_TYPE__             ZyanU32;
+typedef __UINT32_TYPE__             ZyanU32;
 #       else
-            typedef unsigned int                ZyanU32;
+typedef unsigned int                ZyanU32;
 #       endif
 #       ifdef __UINT64_TYPE__
-            typedef __UINT64_TYPE__             ZyanU64;
+typedef __UINT64_TYPE__             ZyanU64;
 #       else
 #           if defined(__x86_64__) && !defined(__ILP32__)
-                typedef unsigned long int       ZyanU64;
+typedef unsigned long int       ZyanU64;
 #           else
-                typedef unsigned long long int  ZyanU64;
+typedef unsigned long long int  ZyanU64;
 #           endif
 #       endif
 #       ifdef __INT8_TYPE__
-            typedef __INT8_TYPE__               ZyanI8;
+typedef __INT8_TYPE__               ZyanI8;
 #       else
-            typedef signed char                 ZyanI8;
+typedef signed char                 ZyanI8;
 #       endif
 #       ifdef __INT16_TYPE__
-            typedef __INT16_TYPE__              ZyanI16;
+typedef __INT16_TYPE__              ZyanI16;
 #       else
-            typedef signed short int            ZyanI16;
+typedef signed short int            ZyanI16;
 #       endif
 #       ifdef __INT32_TYPE__
-            typedef __INT32_TYPE__              ZyanI32;
+typedef __INT32_TYPE__              ZyanI32;
 #       else
-            typedef signed int                  ZyanI32;
+typedef signed int                  ZyanI32;
 #       endif
 #       ifdef __INT64_TYPE__
-            typedef __INT64_TYPE__              ZyanI64;
+typedef __INT64_TYPE__              ZyanI64;
 #       else
 #           if defined(__x86_64__) && !defined( __ILP32__)
-                typedef signed long int         ZyanI64;
+typedef signed long int         ZyanI64;
 #           else
-                typedef signed long long int    ZyanI64;
+typedef signed long long int    ZyanI64;
 #           endif
 #       endif
 #       ifdef __SIZE_TYPE__
-            typedef __SIZE_TYPE__               ZyanUSize;
+typedef __SIZE_TYPE__               ZyanUSize;
 #       else
-            typedef long unsigned int           ZyanUSize;
+typedef long unsigned int           ZyanUSize;
 #       endif
 #       ifdef __PTRDIFF_TYPE__
-            typedef __PTRDIFF_TYPE__            ZyanISize;
+typedef __PTRDIFF_TYPE__            ZyanISize;
 #       else
-            typedef long int                    ZyanISize;
+typedef long int                    ZyanISize;
 #       endif
 #       ifdef __UINTPTR_TYPE__
-            typedef __UINTPTR_TYPE__            ZyanUPointer;
+typedef __UINTPTR_TYPE__            ZyanUPointer;
 #       else
 #           if defined(__x86_64__) && !defined( __ILP32__)
-                typedef unsigned long int       ZyanUPointer;
+typedef unsigned long int       ZyanUPointer;
 #           else
-                typedef unsigned int            ZyanUPointer;
+typedef unsigned int            ZyanUPointer;
 #           endif
 #       endif
 #       ifdef __INTPTR_TYPE__
-            typedef __INTPTR_TYPE__             ZyanIPointer;
+typedef __INTPTR_TYPE__             ZyanIPointer;
 #       else
 #           if defined(__x86_64__) && !defined( __ILP32__)
-                typedef long int                ZyanIPointer;
+typedef long int                ZyanIPointer;
 #           else
-                typedef int                     ZyanIPointer;
+typedef int                     ZyanIPointer;
 #           endif
 #       endif
 #   else
@@ -210,21 +210,21 @@
 #       endif
 #   endif
 #else
-    // If is LibC present, we use stdint types.
+	// If is LibC present, we use stdint types.
 #   include <stdint.h>
 #   include <stddef.h>
-    typedef uint8_t   ZyanU8;
-    typedef uint16_t  ZyanU16;
-    typedef uint32_t  ZyanU32;
-    typedef uint64_t  ZyanU64;
-    typedef int8_t    ZyanI8;
-    typedef int16_t   ZyanI16;
-    typedef int32_t   ZyanI32;
-    typedef int64_t   ZyanI64;
-    typedef size_t    ZyanUSize;
-    typedef ptrdiff_t ZyanISize;
-    typedef uintptr_t ZyanUPointer;
-    typedef intptr_t  ZyanIPointer;
+typedef uint8_t   ZyanU8;
+typedef uint16_t  ZyanU16;
+typedef uint32_t  ZyanU32;
+typedef uint64_t  ZyanU64;
+typedef int8_t    ZyanI8;
+typedef int16_t   ZyanI16;
+typedef int32_t   ZyanI32;
+typedef int64_t   ZyanI64;
+typedef size_t    ZyanUSize;
+typedef ptrdiff_t ZyanISize;
+typedef uintptr_t ZyanUPointer;
+typedef intptr_t  ZyanIPointer;
 
 #   define ZYAN_INT8_MIN         INT8_MIN
 #   define ZYAN_INT16_MIN        INT16_MIN
@@ -241,21 +241,21 @@
 #endif
 
 // Verify size assumptions.
-ZYAN_STATIC_ASSERT(sizeof(ZyanU8      ) == 1            );
-ZYAN_STATIC_ASSERT(sizeof(ZyanU16     ) == 2            );
-ZYAN_STATIC_ASSERT(sizeof(ZyanU32     ) == 4            );
-ZYAN_STATIC_ASSERT(sizeof(ZyanU64     ) == 8            );
-ZYAN_STATIC_ASSERT(sizeof(ZyanI8      ) == 1            );
-ZYAN_STATIC_ASSERT(sizeof(ZyanI16     ) == 2            );
-ZYAN_STATIC_ASSERT(sizeof(ZyanI32     ) == 4            );
-ZYAN_STATIC_ASSERT(sizeof(ZyanI64     ) == 8            );
-ZYAN_STATIC_ASSERT(sizeof(ZyanUSize   ) == sizeof(void*)); // TODO: This one is incorrect!
-ZYAN_STATIC_ASSERT(sizeof(ZyanISize   ) == sizeof(void*)); // TODO: This one is incorrect!
+ZYAN_STATIC_ASSERT(sizeof(ZyanU8) == 1);
+ZYAN_STATIC_ASSERT(sizeof(ZyanU16) == 2);
+ZYAN_STATIC_ASSERT(sizeof(ZyanU32) == 4);
+ZYAN_STATIC_ASSERT(sizeof(ZyanU64) == 8);
+ZYAN_STATIC_ASSERT(sizeof(ZyanI8) == 1);
+ZYAN_STATIC_ASSERT(sizeof(ZyanI16) == 2);
+ZYAN_STATIC_ASSERT(sizeof(ZyanI32) == 4);
+ZYAN_STATIC_ASSERT(sizeof(ZyanI64) == 8);
+ZYAN_STATIC_ASSERT(sizeof(ZyanUSize) == sizeof(void*)); // TODO: This one is incorrect!
+ZYAN_STATIC_ASSERT(sizeof(ZyanISize) == sizeof(void*)); // TODO: This one is incorrect!
 ZYAN_STATIC_ASSERT(sizeof(ZyanUPointer) == sizeof(void*));
 ZYAN_STATIC_ASSERT(sizeof(ZyanIPointer) == sizeof(void*));
 
 // Verify signedness assumptions (relies on size checks above).
-ZYAN_STATIC_ASSERT((ZyanI8 )-1 >> 1 < (ZyanI8 )((ZyanU8 )-1 >> 1));
+ZYAN_STATIC_ASSERT((ZyanI8)-1 >> 1 < (ZyanI8)((ZyanU8)-1 >> 1));
 ZYAN_STATIC_ASSERT((ZyanI16)-1 >> 1 < (ZyanI16)((ZyanU16)-1 >> 1));
 ZYAN_STATIC_ASSERT((ZyanI32)-1 >> 1 < (ZyanI32)((ZyanU32)-1 >> 1));
 ZYAN_STATIC_ASSERT((ZyanI64)-1 >> 1 < (ZyanI64)((ZyanU64)-1 >> 1));
@@ -347,13 +347,13 @@ typedef const char* ZyanConstCharPointer;
 #if defined(ZYAN_MSVC)
 #   if defined(ZYAN_NO_LIBC)
 #       if defined(__cplusplus)
-        extern "C" {
+extern "C" {
 #       endif
-            unsigned short __cdecl _byteswap_ushort(unsigned short);
-            unsigned long  __cdecl _byteswap_ulong(unsigned long);
-            unsigned __int64 __cdecl _byteswap_uint64(unsigned __int64);
+	unsigned short __cdecl _byteswap_ushort(unsigned short);
+	unsigned long  __cdecl _byteswap_ulong(unsigned long);
+	unsigned __int64 __cdecl _byteswap_uint64(unsigned __int64);
 #       if defined(__cplusplus)
-        }
+}
 #       endif
 #   elif defined(ZYAN_KERNEL)
 #       include <wdm.h>
@@ -373,27 +373,27 @@ typedef const char* ZyanConstCharPointer;
 #else
 ZYAN_INLINE ZyanU16 ZYAN_BYTESWAP16(ZyanU16 x)
 {
-    return (((x >> 8) & 0xFFU) | ((x & 0xFFU) << 8));
+	return (((x >> 8) & 0xFFU) | ((x & 0xFFU) << 8));
 }
 
 ZYAN_INLINE ZyanU32 ZYAN_BYTESWAP32(ZyanU32 x)
 {
-    return (((x & 0xFF000000U) >> 24) |
-            ((x & 0x00FF0000U) >> 8 ) |
-            ((x & 0x0000FF00U) << 8 ) |
-            ((x & 0x000000FFU) << 24));
+	return (((x & 0xFF000000U) >> 24) |
+			((x & 0x00FF0000U) >> 8) |
+			((x & 0x0000FF00U) << 8) |
+			((x & 0x000000FFU) << 24));
 }
 
 ZYAN_INLINE ZyanU64 ZYAN_BYTESWAP64(ZyanU64 x)
 {
-    return (((x & 0xFF00000000000000ULL) >> 56) |
-            ((x & 0x00FF000000000000ULL) >> 40) |
-            ((x & 0x0000FF0000000000ULL) >> 24) |
-            ((x & 0x000000FF00000000ULL) >> 8 ) |
-            ((x & 0x00000000FF000000ULL) << 8 ) |
-            ((x & 0x0000000000FF0000ULL) << 24) |
-            ((x & 0x000000000000FF00ULL) << 40) |
-            ((x & 0x00000000000000FFULL) << 56));
+	return (((x & 0xFF00000000000000ULL) >> 56) |
+			((x & 0x00FF000000000000ULL) >> 40) |
+			((x & 0x0000FF0000000000ULL) >> 24) |
+			((x & 0x000000FF00000000ULL) >> 8) |
+			((x & 0x00000000FF000000ULL) << 8) |
+			((x & 0x0000000000FF0000ULL) << 24) |
+			((x & 0x000000000000FF00ULL) << 40) |
+			((x & 0x00000000000000FFULL) << 56));
 }
 #endif
 
@@ -413,8 +413,8 @@ ZYAN_INLINE ZyanU64 ZYAN_BYTESWAP64(ZyanU64 x)
 #   define ZYAN_LE64_TO_NATIVE(x) (x) = ZYAN_BYTESWAP64((x))
 #endif
 
-/* ---------------------------------------------------------------------------------------------- */
+ /* ---------------------------------------------------------------------------------------------- */
 
-/* ============================================================================================== */
+ /* ============================================================================================== */
 
 #endif /* ZYCORE_TYPES_H */

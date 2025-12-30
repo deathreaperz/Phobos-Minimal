@@ -40,42 +40,50 @@ concept CanThisPtrSaveToStream =
 template<typename T>
 struct ContainerExtHandler
 {
-	static COMPILETIMEEVAL FORCEDINLINE void ClearExtAttribute(T::base_type* key) {
+	static COMPILETIMEEVAL FORCEDINLINE void ClearExtAttribute(T::base_type* key)
+	{
 		(*(uintptr_t*)((char*)key + AbstractExtOffset)) = 0;
 	}
 
-	static COMPILETIMEEVAL FORCEDINLINE void SetExtAttribute(T::base_type* key, T* val) {
+	static COMPILETIMEEVAL FORCEDINLINE void SetExtAttribute(T::base_type* key, T* val)
+	{
 		(*(uintptr_t*)((char*)key + AbstractExtOffset)) = (uintptr_t)val;
 	}
 
-	static COMPILETIMEEVAL FORCEDINLINE T* GetExtAttribute(T::base_type* key) {
+	static COMPILETIMEEVAL FORCEDINLINE T* GetExtAttribute(T::base_type* key)
+	{
 		return (T*)(*(uintptr_t*)((char*)key + AbstractExtOffset));
 	}
 
-	static COMPILETIMEEVAL FORCEDINLINE T* Find(T::base_type* key) {
+	static COMPILETIMEEVAL FORCEDINLINE T* Find(T::base_type* key)
+	{
 		return ContainerExtHandler<T>::GetExtAttribute(key);
 	}
 
-	static COMPILETIMEEVAL FORCEDINLINE T* TryFind(T::base_type* key) {
+	static COMPILETIMEEVAL FORCEDINLINE T* TryFind(T::base_type* key)
+	{
 		if (!key)
 			return nullptr;
 
 		return ContainerExtHandler<T>::GetExtAttribute(key);
 	}
 
-	static void RemoveExtOf(T::base_type* key, T* Item) {
+	static void RemoveExtOf(T::base_type* key, T* Item)
+	{
 		delete Item;
 		ContainerExtHandler<T>::ClearExtAttribute(key);
 	}
 };
 
 template<typename T>
-struct UuidFirstPart {
+struct UuidFirstPart
+{
 	static constexpr unsigned int value = __uuidof(T).Data1;
 };
 
 template <unsigned int V>
-static COMPILETIMEEVAL auto to_hex_string() {
+static COMPILETIMEEVAL auto to_hex_string()
+{
 	COMPILETIMEEVAL char lut[] = "0123456789ABCDEF";
 	std::array<char, 11> out {}; // "0x" + 8 hex + '\0'
 
@@ -90,7 +98,8 @@ static COMPILETIMEEVAL auto to_hex_string() {
 	return out;
 }
 
-struct AbstractExtended {
+struct AbstractExtended
+{
 public:
 
 	AbstractClass* AttachedToObject;
@@ -127,11 +136,11 @@ private:
 };
 
 template <typename T>
-class Container : public ContainerExtHandler<T> , public ContainerInterfaces
+class Container : public ContainerExtHandler<T>, public ContainerInterfaces
 {
 public:
 
-	//the container is not handling the memory 
+	//the container is not handling the memory
 	//the object has the extension handling the memory
 	std::vector<T*> Array;
 
@@ -140,14 +149,16 @@ public:
 	Container() = default;
 	virtual ~Container() = default;
 
-	T* Allocate(T::base_type* key) {
+	T* Allocate(T::base_type* key)
+	{
 		auto pExt = new T(key);
-		ContainerExtHandler<T>::SetExtAttribute(key ,pExt);
+		ContainerExtHandler<T>::SetExtAttribute(key, pExt);
 		Array.emplace_back(pExt);
 		return pExt;
 	}
 
-	T* AllocateNoInit(T::base_type* key) {
+	T* AllocateNoInit(T::base_type* key)
+	{
 		ContainerExtHandler<T>::ClearExtAttribute(key);
 		auto pExt = new T(key, noinit_t());
 		ContainerExtHandler<T>::SetExtAttribute(key, pExt);
@@ -155,25 +166,28 @@ public:
 		return pExt;
 	}
 
-	T* AllocateNoInit() {
+	T* AllocateNoInit()
+	{
 		auto pExt = new T(nullptr, noinit_t());
 		Array.emplace_back(pExt);
 		return pExt;
 	}
 
-	T* FindOrAllocate(T::base_type* key) {
+	T* FindOrAllocate(T::base_type* key)
+	{
 		if (T* const ptr = ContainerExtHandler<T>::TryFind(key))
 			return ptr;
 
 		return this->Allocate(key);
 	}
 
-	void Remove(T::base_type* key) {
-		if (T* Item = ContainerExtHandler<T>::TryFind(key)) {
-
+	void Remove(T::base_type* key)
+	{
+		if (T* Item = ContainerExtHandler<T>::TryFind(key))
+		{
 			auto iter = std::ranges::find(Array, Item);
 
-			if(iter != Array.end())
+			if (iter != Array.end())
 				Array.erase(iter, Array.end());
 
 			ContainerExtHandler<T>::RemoveExtOf(key, Item);
@@ -186,16 +200,18 @@ public:
 	//	}
 	//}
 
-public : 
+public:
 
-	virtual void Clear() {
-		for (auto& _item : Array) {
-			if (_item) {
+	virtual void Clear()
+	{
+		for (auto& _item : Array)
+		{
+			if (_item)
+			{
 				delete _item;
 			}
 		}
 
 		Array.clear();
-	}	
+	}
 };
-

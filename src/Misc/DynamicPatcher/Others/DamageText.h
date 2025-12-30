@@ -40,8 +40,8 @@ struct DamageTextData : public PrintTextData
 
 	bool Load(PhobosStreamReader& Stm, bool RegisterForChange)
 	{
-		//Debug::LogInfo("Loading Element From DamageTextData ! "); 
-		return Serialize(Stm); 
+		//Debug::LogInfo("Loading Element From DamageTextData ! ");
+		return Serialize(Stm);
 	}
 
 	bool Save(PhobosStreamWriter& Stm)
@@ -87,8 +87,8 @@ struct DamageTextTypeData
 	void Read(INI_EX& reader, const char* section, const char* title);
 
 	bool Load(PhobosStreamReader& Stm, bool RegisterForChange)
-	{ 
-		//Debug::LogInfo("Loading Element From DamageTextTypeData ! "); 
+	{
+		//Debug::LogInfo("Loading Element From DamageTextTypeData ! ");
 		return Serialize(Stm);
 	}
 
@@ -108,7 +108,7 @@ private:
 	}
 };
 
-OPTIONALINLINE void TechnoClass_ReceiveDamage2_DamageText(TechnoClass* pTechno, int* pRealDamage,DamageTextTypeData& nData)
+OPTIONALINLINE void TechnoClass_ReceiveDamage2_DamageText(TechnoClass* pTechno, int* pRealDamage, DamageTextTypeData& nData)
 {
 	if (!Phobos::Otamaa::ShowHealthPercentEnabled || !pTechno)
 		return;
@@ -123,7 +123,7 @@ OPTIONALINLINE void TechnoClass_ReceiveDamage2_DamageText(TechnoClass* pTechno, 
 		data = nData.Damage;
 		if (!data.Hidden)
 		{
-			swprintf_s(Buffer,L"-%d", damage);
+			swprintf_s(Buffer, L"-%d", damage);
 		}
 	}
 	else if (damage < 0)
@@ -131,15 +131,15 @@ OPTIONALINLINE void TechnoClass_ReceiveDamage2_DamageText(TechnoClass* pTechno, 
 		data = nData.Repair;
 		if (!data.Hidden)
 		{
-			swprintf_s(Buffer,L"+%d", -damage);
+			swprintf_s(Buffer, L"+%d", -damage);
 		}
 	}
 
-
-	if (data.Hidden) {
+	if (data.Hidden)
+	{
 		return;
 	}
-		text = Buffer;
+	text = Buffer;
 	if (!text.empty())
 	{
 		int x = ScenarioGlobal->Random(data.XOffset.X, data.XOffset.Y);

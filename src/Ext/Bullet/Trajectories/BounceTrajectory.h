@@ -27,10 +27,10 @@ public:
 	bool IsBouncing { false };
 	int BounceLeft { 0 };
 
-	BounceTrajectory() : PhobosTrajectory { TrajectoryFlag::Bounce } {}
-	BounceTrajectory(BulletClass* pBullet , PhobosTrajectoryType* pType) :
+	BounceTrajectory() : PhobosTrajectory { TrajectoryFlag::Bounce } { }
+	BounceTrajectory(BulletClass* pBullet, PhobosTrajectoryType* pType) :
 		PhobosTrajectory { TrajectoryFlag::Bounce , pBullet , pType }
-	{}
+	{ }
 	virtual ~BounceTrajectory() override = default;
 
 	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override { }

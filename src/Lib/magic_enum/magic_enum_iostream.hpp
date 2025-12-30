@@ -39,79 +39,98 @@
 #include <iosfwd>
 #endif
 
-namespace magic_enum {
+namespace magic_enum
+{
+	namespace ostream_operators
+	{
+		template <typename Char, typename Traits, typename E, detail::enable_if_t<E, int> = 0>
+		std::basic_ostream<Char, Traits>& operator<<(std::basic_ostream<Char, Traits>& os, E value)
+		{
+			using D = std::decay_t<E>;
+			using U = underlying_type_t<D>;
 
-namespace ostream_operators {
+			if constexpr (detail::supported<D>::value)
+			{
+				if constexpr (detail::subtype_v<D> == detail::enum_subtype::flags)
+				{
+					if (const auto name = enum_flags_name<D>(value); !name.empty())
+					{
+						for (const auto c : name)
+						{
+							os.put(c);
+						}
+						return os;
+					}
+				}
+				else
+				{
+					if (const auto name = enum_name<D>(value); !name.empty())
+					{
+						for (const auto c : name)
+						{
+							os.put(c);
+						}
+						return os;
+					}
+				}
+			}
+			return (os << static_cast<U>(value));
+		}
 
-template <typename Char, typename Traits, typename E, detail::enable_if_t<E, int> = 0>
-std::basic_ostream<Char, Traits>& operator<<(std::basic_ostream<Char, Traits>& os, E value) {
-  using D = std::decay_t<E>;
-  using U = underlying_type_t<D>;
+		template <typename Char, typename Traits, typename E, detail::enable_if_t<E, int> = 0>
+		std::basic_ostream<Char, Traits>& operator<<(std::basic_ostream<Char, Traits>& os, optional<E> value)
+		{
+			return value ? (os << *value) : os;
+		}
+	} // namespace magic_enum::ostream_operators
 
-  if constexpr (detail::supported<D>::value) {
-    if constexpr (detail::subtype_v<D> == detail::enum_subtype::flags) {
-      if (const auto name = enum_flags_name<D>(value); !name.empty()) {
-        for (const auto c : name) {
-          os.put(c);
-        }
-        return os;
-      }
-    } else {
-      if (const auto name = enum_name<D>(value); !name.empty()) {
-        for (const auto c : name) {
-          os.put(c);
-        }
-        return os;
-      }
-    }
-  }
-  return (os << static_cast<U>(value));
-}
+	namespace istream_operators
+	{
+		template <typename Char, typename Traits, typename E, detail::enable_if_t<E, int> = 0>
+		std::basic_istream<Char, Traits>& operator>>(std::basic_istream<Char, Traits>& is, E& value)
+		{
+			using D = std::decay_t<E>;
 
-template <typename Char, typename Traits, typename E, detail::enable_if_t<E, int> = 0>
-std::basic_ostream<Char, Traits>& operator<<(std::basic_ostream<Char, Traits>& os, optional<E> value) {
-  return value ? (os << *value) : os;
-}
+			std::basic_string<Char, Traits> s;
+			is >> s;
+			if constexpr (detail::supported<D>::value)
+			{
+				if constexpr (detail::subtype_v<D> == detail::enum_subtype::flags)
+				{
+					if (const auto v = enum_flags_cast<D>(s))
+					{
+						value = *v;
+					}
+					else
+					{
+						is.setstate(std::basic_ios<Char>::failbit);
+					}
+				}
+				else
+				{
+					if (const auto v = enum_cast<D>(s))
+					{
+						value = *v;
+					}
+					else
+					{
+						is.setstate(std::basic_ios<Char>::failbit);
+					}
+				}
+			}
+			else
+			{
+				is.setstate(std::basic_ios<Char>::failbit);
+			}
+			return is;
+		}
+	} // namespace magic_enum::istream_operators
 
-} // namespace magic_enum::ostream_operators
-
-namespace istream_operators {
-
-template <typename Char, typename Traits, typename E, detail::enable_if_t<E, int> = 0>
-std::basic_istream<Char, Traits>& operator>>(std::basic_istream<Char, Traits>& is, E& value) {
-  using D = std::decay_t<E>;
-
-  std::basic_string<Char, Traits> s;
-  is >> s;
-  if constexpr (detail::supported<D>::value) {
-    if constexpr (detail::subtype_v<D> == detail::enum_subtype::flags) {
-      if (const auto v = enum_flags_cast<D>(s)) {
-        value = *v;
-      } else {
-        is.setstate(std::basic_ios<Char>::failbit);
-      }
-    } else {
-      if (const auto v = enum_cast<D>(s)) {
-        value = *v;
-      } else {
-        is.setstate(std::basic_ios<Char>::failbit);
-      }
-    }
-  } else {
-    is.setstate(std::basic_ios<Char>::failbit);
-  }
-  return is;
-}
-
-} // namespace magic_enum::istream_operators
-
-namespace iostream_operators {
-
-using magic_enum::ostream_operators::operator<<;
-using magic_enum::istream_operators::operator>>;
-
-} // namespace magic_enum::iostream_operators
-
+	namespace iostream_operators
+	{
+		using magic_enum::ostream_operators::operator<<;
+		using magic_enum::istream_operators::operator>>;
+	} // namespace magic_enum::iostream_operators
 } // namespace magic_enum
 
 #endif // NEARGYE_MAGIC_ENUM_IOSTREAM_HPP

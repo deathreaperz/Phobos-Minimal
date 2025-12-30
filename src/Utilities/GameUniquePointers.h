@@ -4,12 +4,13 @@
 
 //call gamedelete functuion without the DTOR
 template<typename T>
-struct UniqueGamePtr : public std::unique_ptr<T, GameDeleterWithDTOR> {
-
+struct UniqueGamePtr : public std::unique_ptr<T, GameDeleterWithDTOR>
+{
 	COMPILETIMEEVAL UniqueGamePtr<T>() noexcept : std::unique_ptr<T, GameDeleterWithDTOR>()
 	{ }
 
-	COMPILETIMEEVAL UniqueGamePtr<T>(T* _ptr) noexcept : std::unique_ptr<T, GameDeleterWithDTOR>(){
+	COMPILETIMEEVAL UniqueGamePtr<T>(T* _ptr) noexcept : std::unique_ptr<T, GameDeleterWithDTOR>()
+	{
 		this->reset(_ptr);
 	}
 
@@ -57,4 +58,3 @@ struct UniqueGamePtr : public std::unique_ptr<T, GameDeleterWithDTOR> {
 // 		return std::unique_ptr<U, D>(ptr);
 // 	}
 // };
-

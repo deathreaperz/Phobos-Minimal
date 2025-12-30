@@ -2,7 +2,7 @@
 
 Enumerable<ImmunityTypeClass>::container_t Enumerable<ImmunityTypeClass>::Array;
 
-void ImmunityTypeClass::LoadFromINIList(CCINIClass * pINI, bool bDebug)
+void ImmunityTypeClass::LoadFromINIList(CCINIClass* pINI, bool bDebug)
 {
 	const char* section = ImmunityTypeClass::MainSection;
 

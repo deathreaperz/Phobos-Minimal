@@ -53,7 +53,8 @@
 //#pragma optimize("", on )
 //};
 
-void Phobos::Config::Read_RA2MD(){
+void Phobos::Config::Read_RA2MD()
+{
 	auto const& pRA2MD = CCINIClass::INI_RA2MD;
 
 	Phobos::Config::ToolTipDescriptions = pRA2MD->ReadBool(PHOBOS_STR, "ToolTipDescriptions", Phobos::Config::ToolTipDescriptions);
@@ -66,8 +67,8 @@ void Phobos::Config::Read_RA2MD(){
 	//Phobos::Config::RealTimeTimers_Adaptive = pRA2MD->ReadBool(PHOBOS_STR, "RealTimeTimers.Adaptive", Phobos::Config::RealTimeTimers_Adaptive);
 	Phobos::Config::DigitalDisplay_Enable = pRA2MD->ReadBool(PHOBOS_STR, "DigitalDisplay.Enable", Phobos::Config::DigitalDisplay_Enable);
 	Phobos::Config::MessageDisplayInCenter = pRA2MD->ReadBool(PHOBOS_STR, "MessageDisplayInCenter", Phobos::Config::MessageDisplayInCenter);
-	Phobos::Config::MessageApplyHoverState =  pRA2MD->ReadBool(PHOBOS_STR, "MessageApplyHoverState", Phobos::Config::MessageApplyHoverState );
-	Phobos::Config::MessageDisplayInCenter_BoardOpacity =  pRA2MD->ReadInteger(PHOBOS_STR, "MessageDisplayInCenter.BoardOpacity", 	Phobos::Config::MessageDisplayInCenter_BoardOpacity );
+	Phobos::Config::MessageApplyHoverState = pRA2MD->ReadBool(PHOBOS_STR, "MessageApplyHoverState", Phobos::Config::MessageApplyHoverState);
+	Phobos::Config::MessageDisplayInCenter_BoardOpacity = pRA2MD->ReadInteger(PHOBOS_STR, "MessageDisplayInCenter.BoardOpacity", Phobos::Config::MessageDisplayInCenter_BoardOpacity);
 	Phobos::Config::MessageDisplayInCenter_LabelsCount = pRA2MD->ReadInteger(PHOBOS_STR, "MessageDisplayInCenter.LabelsCount", Phobos::Config::MessageDisplayInCenter_LabelsCount);
 	Phobos::Config::MessageDisplayInCenter_RecordsCount = pRA2MD->ReadInteger(PHOBOS_STR, "MessageDisplayInCenter.RecordsCount", Phobos::Config::MessageDisplayInCenter_RecordsCount);
 
@@ -79,8 +80,8 @@ void Phobos::Config::Read_RA2MD(){
 	Phobos::Config::HideShakeEffects = pRA2MD->ReadBool(PHOBOS_STR, "HideShakeEffects", Phobos::Config::HideShakeEffects);
 	Phobos::Config::SaveGameOnScenarioStart = pRA2MD->ReadBool(PHOBOS_STR, "SaveGameOnScenarioStart", Phobos::Config::SaveGameOnScenarioStart);
 
-	Phobos::Config::ApplyNoMoveCommand =  pRA2MD->ReadBool(PHOBOS_STR, "DefaultApplyNoMoveCommand", true);
-	Phobos::Config::DistributionSpreadMode =  pRA2MD->ReadInteger(PHOBOS_STR, "DefaultDistributionSpreadMode", 2);
+	Phobos::Config::ApplyNoMoveCommand = pRA2MD->ReadBool(PHOBOS_STR, "DefaultApplyNoMoveCommand", true);
+	Phobos::Config::DistributionSpreadMode = pRA2MD->ReadInteger(PHOBOS_STR, "DefaultDistributionSpreadMode", 2);
 	Phobos::Config::DistributionSpreadMode = std::clamp(Phobos::Config::DistributionSpreadMode, 0, 3);
 	Phobos::Config::DistributionFilterMode = pRA2MD->ReadInteger(PHOBOS_STR, "DefaultDistributionFilterMode", 2);
 	Phobos::Config::DistributionFilterMode = std::clamp(Phobos::Config::DistributionFilterMode, 0, 3);
@@ -96,16 +97,16 @@ void Phobos::Config::Read_RA2MD(){
 		{
 			BYTE defaultspeed = (BYTE)Phobos::Config::CampaignDefaultGameSpeed;
 			// We overwrite the instructions that force GameSpeed to 2 (GS4)
-			Patch::Apply_RAW(0x55D77A, sizeof(defaultspeed), PatchType::PATCH_ , &defaultspeed);
+			Patch::Apply_RAW(0x55D77A, sizeof(defaultspeed), PatchType::PATCH_, &defaultspeed);
 
 			// when speed control is off. Doesn't need a hook.
 			Patch::Apply_RAW(0x55D78D, sizeof(defaultspeed), PatchType::PATCH_, &defaultspeed);
 		}
 	}
-
 }
 
-void Phobos::Config::Read_UIMD(){
+void Phobos::Config::Read_UIMD()
+{
 	GameConfig UIMD { GameStrings::UIMD_INI() };
 
 	UIMD.OpenINIAction([](CCINIClass* pINI)
@@ -130,7 +131,6 @@ void Phobos::Config::Read_UIMD(){
 		 Phobos::Config::ShowPowerDelta = CCINIClass::INI_RA2MD->ReadBool("Phobos", "ShowPowerDelta", Phobos::Config::ShowPowerDelta);
 		 Phobos::Config::ShowHarvesterCounter = CCINIClass::INI_RA2MD->ReadBool("Phobos", "ShowHarvesterCounter", Phobos::Config::ShowHarvesterCounter);
 		 Phobos::Config::ShowWeedsCounter = CCINIClass::INI_RA2MD->ReadBool("Phobos", "ShowWeedsCounter", Phobos::Config::ShowWeedsCounter);
-
 
 		 Phobos::UI::Power_Label = GeneralUtils::LoadStringUnlessMissingNoChecks("TXT_POWER_FORMAT_B", L"Power = %d");
 		 Phobos::UI::Drain_Label = GeneralUtils::LoadStringUnlessMissingNoChecks("TXT_DRAIN_FORMAT_B", L"Drain = %d");
@@ -170,7 +170,6 @@ void Phobos::Config::Read_UIMD(){
 
 		 pINI->ReadString(GameStrings::ToolTips, "BattlePoints.Label", GameStrings::NoneStr(), Phobos::readBuffer);
 		 Phobos::UI::BattlePoints_Label = GeneralUtils::LoadStringUnlessMissing(Phobos::readBuffer, L"\u2605: "); // ★:
-
 	 }
 
 	 // Sidebar
@@ -218,7 +217,7 @@ void Phobos::Config::Read_UIMD(){
 			 pINI->ReadBool(SIDEBAR_SECTION_T, "BattlePointsSidebar.AlwaysVisible", Phobos::UI::BattlePointsSidebar_AlwaysShow);
 
 		 Phobos::UI::SuperWeaponSidebar =
-			 pINI->ReadBool(GameStrings::SideBar(), "SuperWeaponSidebar", Phobos::UI::SuperWeaponSidebar );
+			 pINI->ReadBool(GameStrings::SideBar(), "SuperWeaponSidebar", Phobos::UI::SuperWeaponSidebar);
 
 		 Phobos::UI::SuperWeaponSidebar_Interval =
 			 pINI->ReadInteger(GameStrings::SideBar(), "SuperWeaponSidebar.Interval", Phobos::UI::SuperWeaponSidebar_Interval);
@@ -271,9 +270,7 @@ void Phobos::Config::Read_UIMD(){
 			 Phobos::UI::SuperWeaponSidebar_Max = MinImpl(Phobos::UI::SuperWeaponSidebar_Max, screenHeight / Phobos::UI::SuperWeaponSidebar_CameoHeight);
 		 else
 			 Phobos::UI::SuperWeaponSidebar_Max = screenHeight / Phobos::UI::SuperWeaponSidebar_CameoHeight;
-
-		}
-
+	 }
 	});
 }
 
@@ -286,51 +283,51 @@ void Phobos::Config::Read_RULESMD()
 	 // uncomment this to enable dll usage warning
 	 //Phobos::ThrowUsageWarning(&INI_RulesMD);
 
-	 if (!Phobos::Otamaa::IsAdmin)
-		 Phobos::Config::DevelopmentCommands = pINI->ReadBool(GLOBALCONTROLS_SECTION, "DebugKeysEnabled", Phobos::Config::DevelopmentCommands);
+	if (!Phobos::Otamaa::IsAdmin)
+		Phobos::Config::DevelopmentCommands = pINI->ReadBool(GLOBALCONTROLS_SECTION, "DebugKeysEnabled", Phobos::Config::DevelopmentCommands);
 
-	 Phobos::Config::ArtImageSwap = pINI->ReadBool(GameStrings::General(), "ArtImageSwap", Phobos::Config::ArtImageSwap);
-	 Phobos::Config::UnitPowerDrain = pINI->ReadBool(GameStrings::General(), "UnitPowerDrain", Phobos::Config::UnitPowerDrain);
-	 Phobos::UI::UnlimitedColor = pINI->ReadBool(GameStrings::General(), "SkirmishUnlimitedColors", Phobos::UI::UnlimitedColor);
+	Phobos::Config::ArtImageSwap = pINI->ReadBool(GameStrings::General(), "ArtImageSwap", Phobos::Config::ArtImageSwap);
+	Phobos::Config::UnitPowerDrain = pINI->ReadBool(GameStrings::General(), "UnitPowerDrain", Phobos::Config::UnitPowerDrain);
+	Phobos::UI::UnlimitedColor = pINI->ReadBool(GameStrings::General(), "SkirmishUnlimitedColors", Phobos::UI::UnlimitedColor);
 
-	 if (pINI->ReadBool(GameStrings::General(), "CustomGS", Phobos::Misc::CustomGS))
-	 {
-		 Phobos::Misc::CustomGS = true;
+	if (pINI->ReadBool(GameStrings::General(), "CustomGS", Phobos::Misc::CustomGS))
+	{
+		Phobos::Misc::CustomGS = true;
 
-		 //char tempBuffer[0x20];
-		 for (size_t i = 0; i <= 6; ++i)
-		 {
-			 std::string _buffer = "CustomGS";
-			 _buffer += std::to_string(6 - i);
+		//char tempBuffer[0x20];
+		for (size_t i = 0; i <= 6; ++i)
+		{
+			std::string _buffer = "CustomGS";
+			_buffer += std::to_string(6 - i);
 
-			 int temp = pINI->ReadInteger(GameStrings::General(), (_buffer + ".ChangeDelay").c_str(), -1);
-			 if (temp >= 0 && temp <= 6)
-				 Phobos::Misc::CustomGS_ChangeDelay[i] = 6 - temp;
+			int temp = pINI->ReadInteger(GameStrings::General(), (_buffer + ".ChangeDelay").c_str(), -1);
+			if (temp >= 0 && temp <= 6)
+				Phobos::Misc::CustomGS_ChangeDelay[i] = 6 - temp;
 
-			 temp = pINI->ReadInteger(GameStrings::General(), (_buffer + ".DefaultDelay").c_str(), -1);
-			 if (temp >= 1)
-				 Phobos::Misc::CustomGS_DefaultDelay[i] = 6 - temp;
+			temp = pINI->ReadInteger(GameStrings::General(), (_buffer + ".DefaultDelay").c_str(), -1);
+			if (temp >= 1)
+				Phobos::Misc::CustomGS_DefaultDelay[i] = 6 - temp;
 
-			 temp = pINI->ReadInteger(GameStrings::General(), (_buffer + ".ChangeInterval").c_str(), -1);
-			 if (temp >= 1)
-				 Phobos::Misc::CustomGS_ChangeInterval[i] = temp;
-		 }
-	 }
+			temp = pINI->ReadInteger(GameStrings::General(), (_buffer + ".ChangeInterval").c_str(), -1);
+			if (temp >= 1)
+				Phobos::Misc::CustomGS_ChangeInterval[i] = temp;
+		}
+	}
 
-	 if (pINI->ReadBool(GameStrings::General(), "FixTransparencyBlitters", false))
-	 {
-		 BlittersFix::Apply();
-	 }
+	if (pINI->ReadBool(GameStrings::General(), "FixTransparencyBlitters", false))
+	{
+		BlittersFix::Apply();
+	}
 
-	 Phobos::Config::MultiThreadSinglePlayer = pINI->ReadBool(GameStrings::General(), "MultiThreadSinglePlayer", Phobos::Config::MultiThreadSinglePlayer);
-	 Phobos::Config::SaveVariablesOnScenarioEnd = pINI->ReadBool(GameStrings::General(), "SaveVariablesOnScenarioEnd", Phobos::Config::SaveVariablesOnScenarioEnd);
-	 Phobos::Config::ApplyShadeCountFix = pINI->ReadBool(GameStrings::AudioVisual(), "ApplyShadeCountFix", Phobos::Config::ApplyShadeCountFix);
-	 Phobos::Config::SuperWeaponSidebarCommands = pINI->ReadBool("GlobalControls", "SuperWeaponSidebarKeysEnabled", Phobos::Config::SuperWeaponSidebarCommands);
-	 Phobos::Config::AllowSwitchNoMoveCommand = pINI->ReadBool("GlobalControls", "AllowSwitchNoMoveCommand", Phobos::Config::AllowDistributionCommand);
-	 Phobos::Config::AllowDistributionCommand = pINI->ReadBool("GlobalControls", "AllowDistributionCommand", Phobos::Config::AllowDistributionCommand);
-	 Phobos::Config::AllowDistributionCommand_SpreadMode = pINI->ReadBool("GlobalControls", "AllowDistributionCommand.SpreadMode", Phobos::Config::AllowDistributionCommand_SpreadMode);
-	 Phobos::Config::AllowDistributionCommand_SpreadModeScroll = pINI->ReadBool("GlobalControls", "AllowDistributionCommand.SpreadModeScroll", Phobos::Config::AllowDistributionCommand_SpreadModeScroll);
-	 Phobos::Config::AllowDistributionCommand_FilterMode = pINI->ReadBool("GlobalControls", "AllowDistributionCommand.FilterMode", Phobos::Config::AllowDistributionCommand_FilterMode);
-	 Phobos::Config::AllowDistributionCommand_AffectsAllies = pINI->ReadBool("GlobalControls", "AllowDistributionCommand.AffectsAllies", Phobos::Config::AllowDistributionCommand_AffectsAllies);
-	 Phobos::Config::AllowDistributionCommand_AffectsEnemies = pINI->ReadBool("GlobalControls", "AllowDistributionCommand.AffectsEnemies", Phobos::Config::AllowDistributionCommand_AffectsEnemies);
+	Phobos::Config::MultiThreadSinglePlayer = pINI->ReadBool(GameStrings::General(), "MultiThreadSinglePlayer", Phobos::Config::MultiThreadSinglePlayer);
+	Phobos::Config::SaveVariablesOnScenarioEnd = pINI->ReadBool(GameStrings::General(), "SaveVariablesOnScenarioEnd", Phobos::Config::SaveVariablesOnScenarioEnd);
+	Phobos::Config::ApplyShadeCountFix = pINI->ReadBool(GameStrings::AudioVisual(), "ApplyShadeCountFix", Phobos::Config::ApplyShadeCountFix);
+	Phobos::Config::SuperWeaponSidebarCommands = pINI->ReadBool("GlobalControls", "SuperWeaponSidebarKeysEnabled", Phobos::Config::SuperWeaponSidebarCommands);
+	Phobos::Config::AllowSwitchNoMoveCommand = pINI->ReadBool("GlobalControls", "AllowSwitchNoMoveCommand", Phobos::Config::AllowDistributionCommand);
+	Phobos::Config::AllowDistributionCommand = pINI->ReadBool("GlobalControls", "AllowDistributionCommand", Phobos::Config::AllowDistributionCommand);
+	Phobos::Config::AllowDistributionCommand_SpreadMode = pINI->ReadBool("GlobalControls", "AllowDistributionCommand.SpreadMode", Phobos::Config::AllowDistributionCommand_SpreadMode);
+	Phobos::Config::AllowDistributionCommand_SpreadModeScroll = pINI->ReadBool("GlobalControls", "AllowDistributionCommand.SpreadModeScroll", Phobos::Config::AllowDistributionCommand_SpreadModeScroll);
+	Phobos::Config::AllowDistributionCommand_FilterMode = pINI->ReadBool("GlobalControls", "AllowDistributionCommand.FilterMode", Phobos::Config::AllowDistributionCommand_FilterMode);
+	Phobos::Config::AllowDistributionCommand_AffectsAllies = pINI->ReadBool("GlobalControls", "AllowDistributionCommand.AffectsAllies", Phobos::Config::AllowDistributionCommand_AffectsAllies);
+	Phobos::Config::AllowDistributionCommand_AffectsEnemies = pINI->ReadBool("GlobalControls", "AllowDistributionCommand.AffectsEnemies", Phobos::Config::AllowDistributionCommand_AffectsEnemies);
 }

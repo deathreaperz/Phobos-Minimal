@@ -30,15 +30,15 @@
 #include <Generated/GetRelInfo.inc>
 #include <Generated/GetCcInfo.inc>
 
-ZyanU8 ZydisGetEncodableInstructions(ZydisMnemonic mnemonic, 
-    const ZydisEncodableInstruction **instruction)
+ZyanU8 ZydisGetEncodableInstructions(ZydisMnemonic mnemonic,
+	const ZydisEncodableInstruction** instruction)
 {
-    if (mnemonic <= ZYDIS_MNEMONIC_INVALID || mnemonic > ZYDIS_MNEMONIC_MAX_VALUE)
-    {
-        *instruction = ZYAN_NULL;
-        return 0;
-    }
-    ZydisEncoderLookupEntry lookup_entry = encoder_instruction_lookup[mnemonic];
-    *instruction = &encoder_instructions[lookup_entry.encoder_reference];
-    return lookup_entry.instruction_count;
+	if (mnemonic <= ZYDIS_MNEMONIC_INVALID || mnemonic > ZYDIS_MNEMONIC_MAX_VALUE)
+	{
+		*instruction = ZYAN_NULL;
+		return 0;
+	}
+	ZydisEncoderLookupEntry lookup_entry = encoder_instruction_lookup[mnemonic];
+	*instruction = &encoder_instructions[lookup_entry.encoder_reference];
+	return lookup_entry.instruction_count;
 }

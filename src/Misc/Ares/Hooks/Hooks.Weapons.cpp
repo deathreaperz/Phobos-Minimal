@@ -18,15 +18,16 @@ ASMJIT_PATCH(0x7128B2, TechnoTypeClass_ReadINI_MultiWeapon, 0x6)
 	pTypeExt->MultiWeapon.Read(exINI, pSection, "MultiWeapon");
 	bool multiWeapon = pThis->HasMultipleTurrets() || pTypeExt->MultiWeapon.Get();
 
-	if (pTypeExt->ReadMultiWeapon != multiWeapon) {
+	if (pTypeExt->ReadMultiWeapon != multiWeapon)
+	{
+		auto clearWeapon = [pThis](int index)
+			{
+				auto& pWeapon = pThis->Weapon[index];
+				auto& pEliteWeapon = pThis->EliteWeapon[index];
 
-		auto clearWeapon = [pThis](int index) {
-			auto& pWeapon = pThis->Weapon[index];
-			auto& pEliteWeapon = pThis->EliteWeapon[index];
-
-			pWeapon = WeaponStruct();
-			pEliteWeapon = WeaponStruct();
-		};
+				pWeapon = WeaponStruct();
+				pEliteWeapon = WeaponStruct();
+			};
 
 		clearWeapon(0);
 		clearWeapon(1);
@@ -94,7 +95,8 @@ ASMJIT_PATCH(0x7128C0, TechnoTypeClass_LoadFromINI_Weapons1, 6)
 	return 0x712A8F;
 }
 
-WeaponStruct* __fastcall FakeTechnoTypeClass::__GetWeapon(TechnoTypeClass* pThis , discard_t ,int which) {
+WeaponStruct* __fastcall FakeTechnoTypeClass::__GetWeapon(TechnoTypeClass* pThis, discard_t, int which)
+{
 	if (which < TechnoTypeClass::MaxWeapons)
 		return pThis->Weapon + which;
 
@@ -109,7 +111,8 @@ WeaponStruct* __fastcall FakeTechnoTypeClass::__GetWeapon(TechnoTypeClass* pThis
 	return nullptr;
 }
 
-WeaponStruct* __fastcall FakeTechnoTypeClass::__GetEliteWeapon(TechnoTypeClass* pThis , discard_t ,int which) {
+WeaponStruct* __fastcall FakeTechnoTypeClass::__GetEliteWeapon(TechnoTypeClass* pThis, discard_t, int which)
+{
 	if (which < TechnoTypeClass::MaxWeapons)
 		return pThis->EliteWeapon + which;
 
@@ -124,8 +127,10 @@ WeaponStruct* __fastcall FakeTechnoTypeClass::__GetEliteWeapon(TechnoTypeClass* 
 	return nullptr;
 }
 
-int __fastcall FakeTechnoTypeClass::__GetWeaponTurretIndex(TechnoTypeClass* pThis , discard_t ,int which) {
-	if (which < TechnoTypeClass::MaxWeapons) {
+int __fastcall FakeTechnoTypeClass::__GetWeaponTurretIndex(TechnoTypeClass* pThis, discard_t, int which)
+{
+	if (which < TechnoTypeClass::MaxWeapons)
+	{
 		return *(pThis->TurretWeapon + which);
 	}
 

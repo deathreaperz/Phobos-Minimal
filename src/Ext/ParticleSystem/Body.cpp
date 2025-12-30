@@ -117,7 +117,6 @@ void ParticleSystemExtData::UpdateLocations()
 			const auto nZOffsWithBridge = nZOffs + Unsorted::BridgeHeight;
 			if (nCoord.Z >= nZOffsWithBridge)
 			{
-
 				if (nCoordBeforeZ.Z < nZOffsWithBridge)
 					Data.Empty = true;
 
@@ -140,7 +139,6 @@ void ParticleSystemExtData::UpdateLocations()
 				{
 					Data.Empty = true;
 				}
-
 			}
 			else
 				if (!pBuilding->Type->LaserFence || pBuilding->LaserFenceFrame < 8u)
@@ -163,7 +161,6 @@ void ParticleSystemExtData::UpdateState()
  {
 	 return data.DeleteOnStateLimit;
 	});
-
 }
 
 void ParticleSystemExtData::UpdateColor()
@@ -401,7 +398,6 @@ void  ParticleSystemExtData::UpdateRailgun()
 
 			if (sparkVelLength != 0.0)
 			{
-
 				const auto float_sparkVelLength = (float)sparkVelLength;
 				mtx_mult.X = mtx_mult.X / float_sparkVelLength;
 				mtx_mult.Y = mtx_mult.Y / float_sparkVelLength;
@@ -615,7 +611,6 @@ void ParticleSystemExtData::UpdateSmoke()
 
 	this->UpdateState();
 
-
 	//updating the current particle ?
 	if (!pOwnerObj->TimeToDie && pOwnerObj->IsAlive)
 	{
@@ -710,7 +705,6 @@ void ParticleSystemExtData::UpdateInAir_Main(bool allowDraw)
 				{
 					continue;
 				}
-
 
 				{
 					int ZBuff = *reinterpret_cast<uint16_t*>((ZBuffer::Instance->GetBuffer(outClient.X, outClient.Y - ZBuffer::Instance->Area.Y)));
@@ -829,7 +823,8 @@ void ParticleSystemExtData::UpdateInAir()
 		if (Unsorted::ArmageddonMode() || !Game::hInstance() || ((ScenarioClass::Instance->SpecialFlags.RawFlags + 1) & 16) == 0)
 			StopDrawing = true;
 
-		for (auto pSys : *ParticleSystemClass::Array) {
+		for (auto pSys : *ParticleSystemClass::Array)
+		{
 			auto pExt = ParticleSystemExtContainer::Instance.TryFind(pSys);
 
 			if (!pExt)
@@ -892,7 +887,6 @@ bool ParticleSystemExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool ParticleSystemExtContainer::SaveAll(json& root)
@@ -954,7 +948,6 @@ ASMJIT_PATCH(0x62E26B, ParticleSystemClass_DTOR, 0x6)
 
 ASMJIT_PATCH(0x62FFBB, ParticleSystemClass_Load_OwnerHouse, 0x8)
 {
-
 	GET(ParticleSystemClass*, pThis, EDI);
 
 	SWIZZLE(pThis->OwnerHouse);
@@ -1006,7 +999,8 @@ class NOVTABLE FakeParticleSystemClass2 : public ParticleSystemClass
 {
 public:
 
-	void UpdateSmoke() {
+	void UpdateSmoke()
+	{
 		JMP_THIS(0x62ED40);
 	}
 };
@@ -1073,8 +1067,9 @@ void FakeParticleSystemClass::__AI()
 			this->IsAlive = false;
 			AbstractClass::Array2->push_back(this);
 		}
-	} else {
-
+	}
+	else
+	{
 		if (this->Lifetime-- == 1)
 			this->TimeToDie = true;
 
@@ -1089,7 +1084,6 @@ void FakeParticleSystemClass::__AI()
 			AbstractClass::Array2->push_back(this);
 		}
 	}
-
 }
 
 ParticleClass* FakeParticleSystemClass::CreateHoldsWhatParticle(const CoordStruct& position, const CoordStruct& target)
@@ -1170,7 +1164,6 @@ void FakeParticleSystemClass::RemoveDeadParticles()
 {
 	for (int i = this->Particles.Count - 1; i >= 0; --i)
 	{
-
 		ParticleClass* particle = this->Particles[i];
 
 		if (particle->TimeToDelete)
@@ -1456,7 +1449,6 @@ void FakeParticleSystemClass::SpawnSmokeParticles()
 
 	if (ParticleClass* particle = this->CreateHoldsWhatParticle(spawnPos, this->TargetCoords))
 	{
-
 		// Adjust properties based on spawn rate
 		if (this->SpawnFrames > this->Type->SpawnTranslucencyCutoff)
 		{
@@ -1493,7 +1485,7 @@ void FakeParticleSystemClass::UpdateSmokeAttachedPosition()
 	CoordStruct ownerCenter = owner->GetCoords();
 
 	// Apply spawn offset
-	CoordStruct newPos = ownerCenter  + this->SpawnDistanceToOwner;
+	CoordStruct newPos = ownerCenter + this->SpawnDistanceToOwner;
 
 	this->SetLocation(newPos);
 }
@@ -1837,7 +1829,6 @@ void FakeParticleSystemClass::CreateLaserBeam()
 }
 
 #pragma endregion
-
 
 DEFINE_FUNCTION_JUMP(VTABLE, 0x7EFBF8, FakeParticleSystemClass::__AI)
 DEFINE_FUNCTION_JUMP(LJMP, 0x62FD60, FakeParticleSystemClass::__AI)

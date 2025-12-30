@@ -256,7 +256,7 @@ public:
 	const InfantryTypeClass* This_Const() const { return reinterpret_cast<const InfantryTypeClass*>(this->AttachedToObject); }
 
 	virtual bool LoadFromINI(CCINIClass* pINI, bool parseFailAddr);
-	virtual bool WriteToINI(CCINIClass* pINI) const { return true;  }
+	virtual bool WriteToINI(CCINIClass* pINI) const { return true; }
 
 private:
 	template <typename T>
@@ -285,7 +285,8 @@ public:
 
 	bool _ReadFromINI(CCINIClass* pINI);
 
-	InfantryTypeExtData* _GetExtData() {
+	InfantryTypeExtData* _GetExtData()
+	{
 		return *reinterpret_cast<InfantryTypeExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 };

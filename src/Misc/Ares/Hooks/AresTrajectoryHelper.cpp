@@ -9,12 +9,16 @@ bool AresBulletObstacleHelper::IsWallHit(
 	CellClass const* pSource,
 	CellClass const* pCheck,
 	CellClass const* pTarget,
-	 HouseClass* pOwner) {
-	if (pCheck != pTarget && pCheck->OverlayTypeIndex != -1) {
-		if (OverlayTypeClass::Array->Items[pCheck->OverlayTypeIndex]->Wall) {
-			if (pSource->Level <= pTarget->Level) {
+	 HouseClass* pOwner)
+{
+	if (pCheck != pTarget && pCheck->OverlayTypeIndex != -1)
+	{
+		if (OverlayTypeClass::Array->Items[pCheck->OverlayTypeIndex]->Wall)
+		{
+			if (pSource->Level <= pTarget->Level)
+			{
 				return !RulesClass::Instance->AlliedWallTransparency
-				|| (pCheck->WallOwnerIndex != -1 && !HouseClass::Array->Items[pCheck->WallOwnerIndex]->IsAlliedWith(pOwner));
+					|| (pCheck->WallOwnerIndex != -1 && !HouseClass::Array->Items[pCheck->WallOwnerIndex]->IsAlliedWith(pOwner));
 			}
 		}
 	}
@@ -85,20 +89,23 @@ CellClass* AresBulletObstacleHelper::GetObstacle(
 	auto const cellCur = CellClass::Coord2Cell(crdCur);
 	auto const pCellCur = MapClass::Instance->GetCellAt(cellCur);
 
-	auto const IsCliffHit = [=]() {
-		return pType->SubjectToCliffs
-			&& BulletObstacleHelper::IsCliffHit(pCellSource, pCellBullet, pCellCur);
-	};
+	auto const IsCliffHit = [=]()
+		{
+			return pType->SubjectToCliffs
+				&& BulletObstacleHelper::IsCliffHit(pCellSource, pCellBullet, pCellCur);
+		};
 
-	auto const IsWallHit = [=]() {
-		return pType->SubjectToWalls
-			&& AresBulletObstacleHelper::IsWallHit(pCellSource, pCellCur, pCellTarget, pOwner);
-	};
+	auto const IsWallHit = [=]()
+		{
+			return pType->SubjectToWalls
+				&& AresBulletObstacleHelper::IsWallHit(pCellSource, pCellCur, pCellTarget, pOwner);
+		};
 
-	auto const IsBuildingHit = [=]() {
-		return BulletTypeExtContainer::Instance.Find(pType)->SubjectToSolid
-			&& AresBulletObstacleHelper::IsBuildingHit(pSource, pTarget, crdCur, pOwner);
-	};
+	auto const IsBuildingHit = [=]()
+		{
+			return BulletTypeExtContainer::Instance.Find(pType)->SubjectToSolid
+				&& AresBulletObstacleHelper::IsBuildingHit(pSource, pTarget, crdCur, pOwner);
+		};
 
 	auto const isHit = IsCliffHit() || IsWallHit() || IsBuildingHit();
 
@@ -122,7 +129,8 @@ CellClass* AresBulletObstacleHelper::FindFirstObstacle(
 	BulletTypeClass* pType,
 	HouseClass* pOwner)
 {
-	if(AresBulletObstacleHelper::SubjectToAnything(pType)) {
+	if (AresBulletObstacleHelper::SubjectToAnything(pType))
+	{
 		auto const cellTarget = CellClass::Coord2Cell(crdTarget);
 		auto const pCellTarget = MapClass::Instance->GetCellAt(cellTarget);
 
@@ -137,8 +145,9 @@ CellClass* AresBulletObstacleHelper::FindFirstObstacle(
 
 		auto crdCur = crdSrc;
 		auto pCellCur = pCellSrc;
-		for(size_t i = 0; i < maxDelta; ++i) {
-			if(auto const pCell = AresBulletObstacleHelper::GetObstacle(pCellSrc, pCellTarget, pSource,
+		for (size_t i = 0; i < maxDelta; ++i)
+		{
+			if (auto const pCell = AresBulletObstacleHelper::GetObstacle(pCellSrc, pCellTarget, pSource,
 				pTarget, pCellCur, crdCur, pType, pOwner))
 			{
 				return pCell;
@@ -163,20 +172,26 @@ CellClass* AresBulletObstacleHelper::FindFirstImpenetrableObstacle(
 	auto const pProjectile = pWeapon->Projectile;
 	auto const pProjectileExt = BulletTypeExtContainer::Instance.Find(pProjectile);
 
-	if(auto const pCell = AresBulletObstacleHelper::FindFirstObstacle(
+	if (auto const pCell = AresBulletObstacleHelper::FindFirstObstacle(
 		crdSrc, crdTarget, pSource, pTarget, pProjectile, pOwner))
 	{
-		if(pCell->ConnectsToOverlay(-1, -1)) {
-			if(pWeapon->Warhead->Wall) {
+		if (pCell->ConnectsToOverlay(-1, -1))
+		{
+			if (pWeapon->Warhead->Wall)
+			{
 				return nullptr;
 			}
-		} else if(auto const pBld = pCell->GetBuilding()) {
+		}
+		else if (auto const pBld = pCell->GetBuilding())
+		{
 			// only willingfully fire through enemy buildings
-			if(!pOwner->IsAlliedWith(pBld)) {
+			if (!pOwner->IsAlliedWith(pBld))
+			{
 				auto const pBldTypeExt = BuildingTypeExtContainer::Instance.Find(pBld->Type);
 
 				// penetrable if warhead level is at least equal to building level
-				if(pProjectileExt->Solid_Level >= pBldTypeExt->Solid_Level) {
+				if (pProjectileExt->Solid_Level >= pBldTypeExt->Solid_Level)
+				{
 					return nullptr;
 				}
 			}
@@ -220,7 +235,8 @@ CellClass* PhobosBulletObstacleHelper::FindFirstObstacle(
 	bool isTargetingCheck,
 	bool subjectToGround)
 {
-	if (PhobosBulletObstacleHelper::SubjectToObstacles(pBulletType) || subjectToGround) {
+	if (PhobosBulletObstacleHelper::SubjectToObstacles(pBulletType) || subjectToGround)
+	{
 		auto sourceCell = CellClass::Coord2Cell(pSourceCoords);
 		auto const pSourceCell = MapClass::Instance->GetCellAt(sourceCell);
 		auto targetCell = CellClass::Coord2Cell(pTargetCoords);
@@ -241,10 +257,10 @@ CellClass* PhobosBulletObstacleHelper::FindFirstObstacle(
 			if (subjectToGround && crdCur.Z < MapClass::Instance->GetCellFloorHeight(crdCur))
 				return pCellCur;
 
-				pCellCur = MapClass::Instance->GetCellAt(crdCur);
-				crdCur += step;
-			}
+			pCellCur = MapClass::Instance->GetCellAt(crdCur);
+			crdCur += step;
 		}
+	}
 
 	return nullptr;
 }
@@ -263,7 +279,8 @@ CellClass* PhobosBulletObstacleHelper::FindFirstImpenetrableObstacle(CoordStruct
 }
 
 bool PhobosBulletObstacleHelper::SubjectToObstacles(
-	BulletTypeClass* pBulletType){
+	BulletTypeClass* pBulletType)
+{
 	const bool subjectToTerrain = BulletTypeExtContainer::Instance.Find(pBulletType)->SubjectToLand.isset() || BulletTypeExtContainer::Instance.Find(pBulletType)->SubjectToWater.isset();
 	return subjectToTerrain || pBulletType->Level;
 }
@@ -271,7 +288,8 @@ bool PhobosBulletObstacleHelper::SubjectToObstacles(
 bool PhobosBulletObstacleHelper::SubjectToTerrain(
 	CellClass* pCurrentCell,
 	BulletTypeClass* pBulletType,
-	bool isTargetingCheck) {
+	bool isTargetingCheck)
+{
 	bool isCellWater = pCurrentCell->LandType == LandType::Water || pCurrentCell->LandType == LandType::Beach;
 	bool isLevel = pBulletType->Level ? pCurrentCell->IsOnFloor() : false;
 

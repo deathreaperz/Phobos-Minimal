@@ -34,14 +34,16 @@ int Patch::GetSection(HANDLE hInstance, const char* sectionName, void** pVirtual
 void Patch::ApplyStatic()
 {
 	void* buffer {};
-	const int len = GetSection(Phobos::hInstance , PATCH_SECTION_NAME, &buffer);
+	const int len = GetSection(Phobos::hInstance, PATCH_SECTION_NAME, &buffer);
 
-	struct _patch : public Patch {
+	struct _patch : public Patch
+	{
 		BYTE _paddings[3];
 	};
 	_patch* end = (_patch*)((DWORD)buffer + len);
 
-	for (_patch* begin = (_patch*)buffer; begin != end; begin++) {
+	for (_patch* begin = (_patch*)buffer; begin != end; begin++)
+	{
 		const auto pPatch = begin;
 		pPatch->Apply();
 	}
@@ -54,16 +56,19 @@ void Patch::Apply()
 	DWORD protect_flag {};
 	DWORD protect_flagb {};
 	VirtualProtect(pAddress, this->size, PAGE_EXECUTE_READWRITE, &protect_flag);
-	if(this->type == PatchType::VTABLE_) {
+	if (this->type == PatchType::VTABLE_)
+	{
 		*reinterpret_cast<LPVOID*>(this->offset) = LPVOID(reinterpret_cast<const _VTABLE*>(this->pData)->pointer);
-	} else {
+	}
+	else
+	{
 		std::memcpy(pAddress, this->pData, this->size);
 	}
 	VirtualProtect(pAddress, this->size, protect_flag, &protect_flagb);
 	FlushInstructionCache(CurrentProcess, (LPVOID)pAddress, size);
 }
 
-void Patch::Apply_RAW(uintptr_t offset, size_t sz , PatchType type, const BYTE* data)
+void Patch::Apply_RAW(uintptr_t offset, size_t sz, PatchType type, const BYTE* data)
 {
 	Patch dummy {
 		.type = type,
@@ -78,7 +83,7 @@ void Patch::Apply_RAW(uintptr_t offset, size_t sz , PatchType type, const BYTE* 
 void Patch::Apply_LJMP(uintptr_t offset, uintptr_t pointer)
 {
 	const _LJMP data(offset, pointer);
-	Patch::Apply_RAW(offset, data.size(), PatchType::LJMP_ , (BYTE*)&data);
+	Patch::Apply_RAW(offset, data.size(), PatchType::LJMP_, (BYTE*)&data);
 }
 
 void Patch::Apply_CALL(uintptr_t offset, uintptr_t pointer)
@@ -90,7 +95,7 @@ void Patch::Apply_CALL(uintptr_t offset, uintptr_t pointer)
 void Patch::Apply_CALL6(uintptr_t offset, uintptr_t pointer)
 {
 	const _CALL6 data(offset, pointer);
-	Patch::Apply_RAW(offset, data.size(), PatchType::CALL6_ , (BYTE*)&data);
+	Patch::Apply_RAW(offset, data.size(), PatchType::CALL6_, (BYTE*)&data);
 }
 
 void Patch::Apply_VTABLE(uintptr_t offset, uintptr_t pointer)
@@ -348,10 +353,14 @@ void Patch::PrintAllModuleAndBaseAddr()
 
 uintptr_t Patch::GetEATAddress(const char* moduleName, const char* funcName)
 {
-	for (auto const& modules : ModuleDatas) {
-		if (strcmp(moduleName, modules.ModuleName.c_str()) == 0 && !modules.Exports.empty()) {
-			for (auto const& exportData : modules.Exports) {
-				if (strcmp(exportData.name, funcName) == 0) {
+	for (auto const& modules : ModuleDatas)
+	{
+		if (strcmp(moduleName, modules.ModuleName.c_str()) == 0 && !modules.Exports.empty())
+		{
+			for (auto const& exportData : modules.Exports)
+			{
+				if (strcmp(exportData.name, funcName) == 0)
+				{
 					return (uintptr_t)exportData.address;
 				}
 			}
@@ -363,10 +372,14 @@ uintptr_t Patch::GetEATAddress(const char* moduleName, const char* funcName)
 
 uintptr_t Patch::GetIATAddress(const char* moduleName, const char* funcName)
 {
-	for (auto const& modules : ModuleDatas) {
-		if (strcmp(moduleName, modules.ModuleName.c_str()) == 0 && !modules.Impors.empty()) {
-			for (auto const& importData : modules.Impors) {
-				if (strcmp(importData.name, funcName) == 0) {
+	for (auto const& modules : ModuleDatas)
+	{
+		if (strcmp(moduleName, modules.ModuleName.c_str()) == 0 && !modules.Impors.empty())
+		{
+			for (auto const& importData : modules.Impors)
+			{
+				if (strcmp(importData.name, funcName) == 0)
+				{
 					return (uintptr_t)importData.address;
 				}
 			}

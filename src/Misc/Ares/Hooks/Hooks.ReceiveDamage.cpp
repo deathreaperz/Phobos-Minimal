@@ -51,7 +51,6 @@
 
 static DWORD Crashable(FootClass* pThis, TechnoTypeClass* pType, ObjectClass* pKiller)
 {
-
 	if (pType->Crashable)
 	{
 		if (pThis->Crash(pKiller))
@@ -66,7 +65,6 @@ static DWORD Crashable(FootClass* pThis, TechnoTypeClass* pType, ObjectClass* pK
 
 static COMPILETIMEEVAL TypeList<AnimTypeClass*>* GetDebrisAnim(TechnoTypeClass* pType)
 {
-
 	if (pType->DebrisAnims.Count <= 0)
 	{
 		if (!pType->DebrisTypes.Count && !RulesClass::Instance->MetallicDebris.Count)
@@ -160,136 +158,136 @@ DamageState FakeTerrainClass::__TakeDamage(int* Damage,
 	TechnoClass* Attacker,
 	bool IgnoreDefenses,
 	bool PreventsPassengerEscape,
-	HouseClass* SourceHouse) {
+	HouseClass* SourceHouse)
+{
+	DamageState _res = DamageState::Unaffected;
+	auto pThis = this;
+	auto pWH = WH;
 
-		DamageState _res = DamageState::Unaffected;
-		auto pThis= this;
-		auto pWH = WH;
+	if (pWH->Wood && !pThis->Type->Immune)
+	{
+		auto const pTypeExt = TerrainTypeExtContainer::Instance.Find(pThis->Type);
+		auto pExt = TerrainExtContainer::Instance.Find(pThis);
+		double PriorHealthRatio = pThis->GetHealthPercentage();
 
-		if (pWH->Wood && !pThis->Type->Immune)
+		_res = FakeObjectClass::__Take_Damage(pThis, discard_t(), Damage, DistanceToEpicenter, pWH, Attacker, IgnoreDefenses, PreventsPassengerEscape, SourceHouse);
+
+		if (!pThis->IsBurning && *Damage > 0 && WH->Sparky)
 		{
-			auto const pTypeExt = TerrainTypeExtContainer::Instance.Find(pThis->Type);
-			auto pExt = TerrainExtContainer::Instance.Find(pThis);
-			double PriorHealthRatio = pThis->GetHealthPercentage();
+			const auto pWarheadExt = WarheadTypeExtContainer::Instance.Find(WH);
 
-			_res = FakeObjectClass::__Take_Damage(pThis, discard_t(), Damage, DistanceToEpicenter, pWH, Attacker, IgnoreDefenses, PreventsPassengerEscape, SourceHouse);
+			if (!pWarheadExt->Flammability.isset() || ScenarioClass::Instance->Random.PercentChance(Math::abs(pWarheadExt->Flammability.Get())))
+				pThis->Ignite();
+		}
 
-			if (!pThis->IsBurning && *Damage > 0 && WH->Sparky)
+		double condYellow = RulesExtData::Instance()->ConditionYellow_Terrain;
+
+		if (!pThis->Type->IsAnimated && pTypeExt->HasDamagedFrames && PriorHealthRatio > condYellow && pThis->GetHealthPercentage() <= condYellow)
+		{
+			pThis->TimeToDie = true; // Dirty hack to get game to redraw the art reliably.
+			MapClass::Logics->AddObject(pThis, false);
+		}
+
+		if (_res == DamageState::PostMortem)
+		{
+			return _res;
+		}
+
+		if (_res == DamageState::NowDead)
+		{
+			if (auto& pAttached = pExt->AttachedAnim)
 			{
-				const auto pWarheadExt = WarheadTypeExtContainer::Instance.Find(WH);
-
-				if (!pWarheadExt->Flammability.isset() || ScenarioClass::Instance->Random.PercentChance(Math::abs(pWarheadExt->Flammability.Get())))
-					pThis->Ignite();
+				pAttached->RemainingIterations = 0;
+				pAttached.reset(nullptr);
 			}
 
-			double condYellow = RulesExtData::Instance()->ConditionYellow_Terrain;
-
-			if (!pThis->Type->IsAnimated && pTypeExt->HasDamagedFrames && PriorHealthRatio > condYellow && pThis->GetHealthPercentage() <= condYellow)
+			if (pThis->Type->SpawnsTiberium)
 			{
-				pThis->TimeToDie = true; // Dirty hack to get game to redraw the art reliably.
-				MapClass::Logics->AddObject(pThis, false);
-			}
+				const auto _damagingDamage = pTypeExt->Damage.Get(100);
+				const auto _adamagingWarhead = pTypeExt->Warhead.Get(RulesClass::Instance->C4Warhead);
+				const auto _thisCell = pThis->GetCell();
 
-			if (_res == DamageState::PostMortem)
-			{
-				return _res;
-			}
-
-			if (_res == DamageState::NowDead)
-			{
-				if (auto& pAttached = pExt->AttachedAnim)
+				if (auto const pAnim = MapClass::SelectDamageAnimation(_damagingDamage, _adamagingWarhead, _thisCell->LandType, pThis->Location))
 				{
-					pAttached->RemainingIterations = 0;
-					pAttached.reset(nullptr);
-				}
-
-				if (pThis->Type->SpawnsTiberium)
-				{
-					const auto _damagingDamage = pTypeExt->Damage.Get(100);
-					const auto _adamagingWarhead = pTypeExt->Warhead.Get(RulesClass::Instance->C4Warhead);
-					const auto _thisCell = pThis->GetCell();
-
-					if (auto const pAnim = MapClass::SelectDamageAnimation(_damagingDamage, _adamagingWarhead, _thisCell->LandType, pThis->Location))
-					{
-						AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pAnim, pThis->Location, 0, 1, AnimFlag::AnimFlag_2600, -15, 0),
-							nullptr,
-							nullptr,
-							false
-						);
-					}
-
-					if (pTypeExt->AreaDamage)
-					{
-						auto pCoord = &pThis->Location;
-						DamageArea::Apply(pCoord, _damagingDamage, nullptr, _adamagingWarhead, true, nullptr);
-						MapClass::FlashbangWarheadAt(_damagingDamage, _adamagingWarhead, pThis->Location);
-					}
-
-					_thisCell->ChainReaction();
-				}
-				else if (pThis->IsBurning)
-				{
-					if (auto& pFire = pExt->AttachedFireAnim)
-					{
-						pFire->RemainingIterations = 0;
-						pFire.release();
-					}
-				}
-				else if (!pThis->TimeToDie)
-				{
-					pThis->TimeToDie = 1;
-					pThis->Animation.Start(2);
-				}
-
-				const auto pTerrainExt = TerrainTypeExtContainer::Instance.Find(pThis->Type);
-				// Skip over the removal of the tree as well as destroy sound/anim (for now) if the tree has crumble animation.
-				if (pThis->TimeToDie && pTerrainExt->HasCrumblingFrames)
-				{
-					// Needs to be added to the logic layer for the anim to work.
-					MapClass::Logics->AddObject(pThis, false);
-					auto coordsound_ = pThis->GetCoords();
-					VocClass::SafeImmedietelyPlayAt(pTerrainExt->CrumblingSound, &coordsound_);
-					pThis->Mark(MarkType::Redraw);
-					pThis->Disappear(true);
-					return _res;
-				}
-
-				auto const nCoords = pThis->GetCenterCoords();
-				VocClass::SafeImmedietelyPlayAt(pTerrainExt->DestroySound, &nCoords);
-				const auto pAttackerHoue = Attacker ? Attacker->Owner : SourceHouse;
-
-				if (auto const pAnimType = pTerrainExt->DestroyAnim)
-				{
-					AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pAnimType, nCoords),
-						SourceHouse,
-						pThis->GetOwningHouse(),
-						Attacker,
-						false, false
+					AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pAnim, pThis->Location, 0, 1, AnimFlag::AnimFlag_2600, -15, 0),
+						nullptr,
+						nullptr,
+						false
 					);
 				}
 
-				if (const auto nBounty = pTerrainExt->Bounty.Get())
+				if (pTypeExt->AreaDamage)
 				{
-					if (pAttackerHoue && pAttackerHoue->CanTransactMoney(nBounty))
-					{
-						pAttackerHoue->TransactMoney(nBounty);
-						FlyingStrings::Instance.AddMoneyString(true, nBounty, pAttackerHoue, AffectedHouse::All, nCoords, Point2D::Empty, ColorStruct::Empty);
-					}
+					auto pCoord = &pThis->Location;
+					DamageArea::Apply(pCoord, _damagingDamage, nullptr, _adamagingWarhead, true, nullptr);
+					MapClass::FlashbangWarheadAt(_damagingDamage, _adamagingWarhead, pThis->Location);
 				}
 
-				RectangleStruct _drawDim {};
-				pThis->GetRenderDimensions(&_drawDim);
-				TacticalClass::Instance->RegisterDirtyArea(_drawDim, false);
-				pThis->Disappear(true);
-				pThis->UnInit();
+				_thisCell->ChainReaction();
 			}
-		}
+			else if (pThis->IsBurning)
+			{
+				if (auto& pFire = pExt->AttachedFireAnim)
+				{
+					pFire->RemainingIterations = 0;
+					pFire.release();
+				}
+			}
+			else if (!pThis->TimeToDie)
+			{
+				pThis->TimeToDie = 1;
+				pThis->Animation.Start(2);
+			}
 
-		return _res;
+			const auto pTerrainExt = TerrainTypeExtContainer::Instance.Find(pThis->Type);
+			// Skip over the removal of the tree as well as destroy sound/anim (for now) if the tree has crumble animation.
+			if (pThis->TimeToDie && pTerrainExt->HasCrumblingFrames)
+			{
+				// Needs to be added to the logic layer for the anim to work.
+				MapClass::Logics->AddObject(pThis, false);
+				auto coordsound_ = pThis->GetCoords();
+				VocClass::SafeImmedietelyPlayAt(pTerrainExt->CrumblingSound, &coordsound_);
+				pThis->Mark(MarkType::Redraw);
+				pThis->Disappear(true);
+				return _res;
+			}
+
+			auto const nCoords = pThis->GetCenterCoords();
+			VocClass::SafeImmedietelyPlayAt(pTerrainExt->DestroySound, &nCoords);
+			const auto pAttackerHoue = Attacker ? Attacker->Owner : SourceHouse;
+
+			if (auto const pAnimType = pTerrainExt->DestroyAnim)
+			{
+				AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pAnimType, nCoords),
+					SourceHouse,
+					pThis->GetOwningHouse(),
+					Attacker,
+					false, false
+				);
+			}
+
+			if (const auto nBounty = pTerrainExt->Bounty.Get())
+			{
+				if (pAttackerHoue && pAttackerHoue->CanTransactMoney(nBounty))
+				{
+					pAttackerHoue->TransactMoney(nBounty);
+					FlyingStrings::Instance.AddMoneyString(true, nBounty, pAttackerHoue, AffectedHouse::All, nCoords, Point2D::Empty, ColorStruct::Empty);
+				}
+			}
+
+			RectangleStruct _drawDim {};
+			pThis->GetRenderDimensions(&_drawDim);
+			TacticalClass::Instance->RegisterDirtyArea(_drawDim, false);
+			pThis->Disappear(true);
+			pThis->UnInit();
+		}
+	}
+
+	return _res;
 }
 
-DEFINE_FUNCTION_JUMP(LJMP, 0x71B920 , FakeTerrainClass::__TakeDamage)
-DEFINE_FUNCTION_JUMP(VTABLE , 0x7F5398,FakeTerrainClass::__TakeDamage)
+DEFINE_FUNCTION_JUMP(LJMP, 0x71B920, FakeTerrainClass::__TakeDamage)
+DEFINE_FUNCTION_JUMP(VTABLE, 0x7F5398, FakeTerrainClass::__TakeDamage)
 
 #pragma endregion
 
@@ -365,7 +363,6 @@ DamageState __fastcall FakeObjectClass::__Take_Damage(ObjectClass* pThis, discar
 		if (oldstrength <= *args.Damage)
 		{
 			*args.Damage = oldstrength;
-
 		}
 		else if (oldstrength >= curstr && (oldstrength - *args.Damage) < curstr)
 		{
@@ -388,7 +385,6 @@ DamageState __fastcall FakeObjectClass::__Take_Damage(ObjectClass* pThis, discar
 		}
 		else
 		{
-
 			auto pAnim = GameCreate<AnimClass>(RulesClass::Instance->InfantryExplode, pThis->Location, 0, 1, AnimFlag::AnimFlag_400 | AnimFlag::AnimFlag_200, 0, 0);
 			auto pInvoker = args.Attacker
 				? args.Attacker->Owner
@@ -555,7 +551,6 @@ DamageState __fastcall FakeObjectClass::__Take_Damage(ObjectClass* pThis, discar
 	{
 		if (auto pTechno = flag_cast_to<TechnoClass*>(pThis))
 		{
-
 			if ((_oldStr != pThis->Health || pWHExt->Flash_Duration.isset())
 				&& flash > pTechno->Flashing.DurationRemaining)
 			{
@@ -566,7 +561,6 @@ DamageState __fastcall FakeObjectClass::__Take_Damage(ObjectClass* pThis, discar
 
 	return _res;
 }
-
 
 DEFINE_FUNCTION_JUMP(CALL, 0x74D5D0, FakeObjectClass::__Take_Damage);
 DEFINE_FUNCTION_JUMP(LJMP, 0x5F5390, FakeObjectClass::__Take_Damage);
@@ -618,18 +612,17 @@ static bool IsTechnoImmuneToAffects(TechnoClass* pTechno, Rank rank, WarheadType
 #include <Utilities/DebrisSpawners.h>
 #ifndef _enable
 
-DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis, 
+DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 	discard_t,
-	int* damage, 
-	int distance, 
+	int* damage,
+	int distance,
 	WarheadTypeClass* warhead,
 	TechnoClass* source,
 	bool ignoreDefenses,
 	bool PreventsPassengerEscape,
 	HouseClass* sourceHouse)
 {
-
-    DamageState _res = DamageState::Unaffected;
+	DamageState _res = DamageState::Unaffected;
 	bool _isNegativeDamage = *damage < 0;
 	auto pType = pThis->GetTechnoType();
 	auto pWHExt = WarheadTypeExtContainer::Instance.Find(warhead);
@@ -637,33 +630,35 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 	auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pType);
 	const auto pSourceHouse = source ? source->Owner : sourceHouse;
 
-	 //Repair/Destroy bridges at Bridge Repair Huts buildings
-	 if (pWHExt->FakeEngineer_CanRepairBridges || pWHExt->FakeEngineer_CanDestroyBridges) {
+	//Repair/Destroy bridges at Bridge Repair Huts buildings
+	if (pWHExt->FakeEngineer_CanRepairBridges || pWHExt->FakeEngineer_CanDestroyBridges)
+	{
 		const bool isBridgeDestroyed = MapClass::Instance->IsLinkedBridgeDestroyed(CellClass::Coord2Cell(pThis->GetCenterCoords()));
 		const bool destroyBridge = !isBridgeDestroyed && pWHExt->FakeEngineer_CanRepairBridges ? false : pWHExt->FakeEngineer_CanDestroyBridges;
 		WarheadTypeExtData::DetonateAtBridgeRepairHut(pThis, nullptr, pSourceHouse, destroyBridge);
-	 }
+	}
 
-	 // Capture enemy buildings
-	 auto const pBuilding = cast_to<BuildingClass*, false>(pThis);
+	// Capture enemy buildings
+	auto const pBuilding = cast_to<BuildingClass*, false>(pThis);
 
-	 if (pBuilding && pWHExt->FakeEngineer_CanCaptureBuildings
-	 	&& !pSourceHouse->IsAlliedWith(pThis->Owner)
-	 	&& (pBuilding->Type->Capturable || pBuilding->Type->NeedsEngineer)) {
+	if (pBuilding && pWHExt->FakeEngineer_CanCaptureBuildings
+	   && !pSourceHouse->IsAlliedWith(pThis->Owner)
+	   && (pBuilding->Type->Capturable || pBuilding->Type->NeedsEngineer))
+	{
+		// Send engineer's "enter" event
+		auto const pTag = pBuilding->AttachedTag;
+		if (source && pTag)
+			pTag->RaiseEvent(TriggerEvent::EnteredBy, source, CellStruct::Empty);
 
-			// Send engineer's "enter" event
-			auto const pTag = pBuilding->AttachedTag;
-			if (source && pTag)
-				pTag->RaiseEvent(TriggerEvent::EnteredBy, source, CellStruct::Empty);
+		pBuilding->SetOwningHouse(pSourceHouse);
+	}
 
-	 		pBuilding->SetOwningHouse(pSourceHouse);
-	 }
+	// Disarm bomb
+	if (pThis->AttachedBomb && pWHExt->FakeEngineer_BombDisarm)
+		pThis->AttachedBomb->Disarm();
 
-	 // Disarm bomb
-	 if (pThis->AttachedBomb && pWHExt->FakeEngineer_BombDisarm)
-	 	pThis->AttachedBomb->Disarm();
-
-	 args_ReceiveDamage args {}; {
+	args_ReceiveDamage args {};
+	{
 		args.Damage = damage;
 		args.DistanceToEpicenter = distance;
 		args.WH = warhead;
@@ -671,7 +666,7 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 		args.IgnoreDefenses = ignoreDefenses;
 		args.PreventsPassengerEscape = PreventsPassengerEscape;
 		args.SourceHouse = sourceHouse;
-	 };
+	};
 
 	pWHExt->ApplyDamageMult(pThis, source, sourceHouse, damage);
 	applyCombatAlert(pThis, &args);
@@ -681,48 +676,61 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 
 	const bool canTergetHouse = pWHExt->CanTargetHouse(pSourceHouse, pThis);
 
-	if (!canTergetHouse) {
+	if (!canTergetHouse)
+	{
 		*damage = 0;
 		return DamageState::Unaffected;
-	} else
+	}
+	else
 		pExt->LastHurtFrame = Unsorted::CurrentFrame;
 
-	if (!pThis || !pThis->IsAlive || pThis->Health <= 0) {
+	if (!pThis || !pThis->IsAlive || pThis->Health <= 0)
+	{
 		return DamageState::NowDead;
 	}
 
 	const bool unkillable =
 		!pWHExt->CanKill || pExt->AE.flags.Unkillable;
 
-	if (!ignoreDefenses) {
+	if (!ignoreDefenses)
+	{
 		*damage = TechnoExtData::CalculateBlockDamage(pThis, source, damage, warhead);
 
-		if (auto pShieldData = pExt->GetShield()) {
+		if (auto pShieldData = pExt->GetShield())
+		{
 			pShieldData->OnReceiveDamage(&args);
 		}
 	}
 
-	if (!ignoreDefenses && *damage >= 0) {
+	if (!ignoreDefenses && *damage >= 0)
+	{
 		*damage = (int)TechnoExtData::GetArmorMult(pThis, (double)(*damage), warhead);
 
-		if (pExt->SkipLowDamageCheck) {
+		if (pExt->SkipLowDamageCheck)
+		{
 			pExt->SkipLowDamageCheck = false;
-		} else {
+		}
+		else
+		{
 			// Restore overridden instructions
 			if (*damage < 1)
 				*damage = 1;
 		}
 
-		if (source && pType->TypeImmune) {
+		if (source && pType->TypeImmune)
+		{
 			auto pAttackerType = source->GetTechnoType();
-			if (pType == pAttackerType && pThis->Owner == source->Owner) {
+			if (pType == pAttackerType && pThis->Owner == source->Owner)
+			{
 				return DamageState::Unaffected;
 			}
 		}
 	}
 
-	if (pThis->IsIronCurtained() && !ignoreDefenses && !_isNegativeDamage) {
-		if (!(pThis->ProtectType == ProtectTypes::ForceShield ? pWHExt->PenetratesForceShield.Get(pWHExt->PenetratesIronCurtain) : pWHExt->PenetratesIronCurtain)) {
+	if (pThis->IsIronCurtained() && !ignoreDefenses && !_isNegativeDamage)
+	{
+		if (!(pThis->ProtectType == ProtectTypes::ForceShield ? pWHExt->PenetratesForceShield.Get(pWHExt->PenetratesIronCurtain) : pWHExt->PenetratesIronCurtain))
+		{
 			if (pThis->ProtectType == ProtectTypes::ForceShield)
 				MapClass::FlashbangWarheadAt(2 * (*damage), warhead, pThis->Location, true, SpotlightFlags::NoRed | SpotlightFlags::NoGreen);
 			else if (pWHExt->IC_Flash.Get(RulesExtData::Instance()->IC_Flash.Get()))
@@ -739,7 +747,8 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 		return DamageState::Unaffected;
 	}
 
-	if (pType->DamageReducesReadiness) {
+	if (pType->DamageReducesReadiness)
+	{
 		const double v111 = pType->ReadinessReductionMultiplier * ((double)*damage / (double)pType->Strength);
 		const int _ammo = (int)((double)pThis->Ammo - (double)pType->Ammo * v111);
 		pThis->Ammo = MaxImpl(_ammo, 0);
@@ -748,40 +757,51 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 
 	const auto nRank = pThis->Veterancy.GetRemainingLevel();
 
-	if (pThis->BunkerLinkedItem && !ignoreDefenses) {
-		if (auto pBld = cast_to<BuildingClass*, false>(pThis)) {
-			if (warhead->PenetratesBunker) {
+	if (pThis->BunkerLinkedItem && !ignoreDefenses)
+	{
+		if (auto pBld = cast_to<BuildingClass*, false>(pThis))
+		{
+			if (warhead->PenetratesBunker)
+			{
 				*damage = 0;
 				return DamageState::Unaffected;
 			}
-		} else {
-			if (!warhead->PenetratesBunker && pThis->GetCell()->GetBuilding() == pThis->BunkerLinkedItem) {
+		}
+		else
+		{
+			if (!warhead->PenetratesBunker && pThis->GetCell()->GetBuilding() == pThis->BunkerLinkedItem)
+			{
 				*damage = 0;
 				return DamageState::Unaffected;
 			}
 		}
 	}
 
-	if (IsTechnoImmuneToAffects(pThis, nRank, warhead)) {
+	if (IsTechnoImmuneToAffects(pThis, nRank, warhead))
+	{
 		*damage = 0;
 		return DamageState::Unaffected;
 	}
 
 	if (warhead->Psychedelic)
 	{
-		if (TechnoExtData::IsPsionicsImmune(nRank, pThis) || TechnoExtData::IsBerserkImmune(nRank, pThis)) {
+		if (TechnoExtData::IsPsionicsImmune(nRank, pThis) || TechnoExtData::IsBerserkImmune(nRank, pThis))
+		{
 			return DamageState::Unchanged;
 		}
 
-		if (pThis->Owner->IsAlliedWith(sourceHouse)) {
+		if (pThis->Owner->IsAlliedWith(sourceHouse))
+		{
 			return DamageState::Unchanged;
 		}
 
-		if (pThis->WhatAmI() == AbstractType::Building) {
+		if (pThis->WhatAmI() == AbstractType::Building)
+		{
 			return DamageState::Unchanged;
 		}
 
-		if (!pWHExt->GoBerzerkFor((FootClass*)pThis, damage)) {
+		if (!pWHExt->GoBerzerkFor((FootClass*)pThis, damage))
+		{
 			return DamageState::Unchanged;
 		}
 	}
@@ -817,7 +837,7 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 		pThis->EstimatedHealth = 1;
 		isActuallyAffected = true;
 	}
-	_res = FakeObjectClass::__Take_Damage(pThis, discard_t(), damage, distance, warhead, source,ignoreDefenses, PreventsPassengerEscape, pSourceHouse);
+	_res = FakeObjectClass::__Take_Damage(pThis, discard_t(), damage, distance, warhead, source, ignoreDefenses, PreventsPassengerEscape, pSourceHouse);
 
 	const bool Show = Phobos::Otamaa::IsAdmin || *damage;
 
@@ -837,22 +857,26 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 			nSelectedPowerup = pTypeExt->DropCrate.Get();
 		}
 
-		if (nSelectedPowerup >= 0) {
+		if (nSelectedPowerup >= 0)
+		{
 			TechnoExtData::TryToCreateCrate(pThis->Location, static_cast<PowerupEffects>(nSelectedPowerup));
 		}
 	}
 
 	GiftBoxFunctional::TakeDamage(pExt, pTypeExt, warhead, _res);
 
-	if (source && !pWHExt->Nonprovocative) {
-		pThis->Owner->UpdateAngerNodes((int)(pType->GetCost() * ((double)*damage / pType->Strength)),sourceHouse);
+	if (source && !pWHExt->Nonprovocative)
+	{
+		pThis->Owner->UpdateAngerNodes((int)(pType->GetCost() * ((double)*damage / pType->Strength)), sourceHouse);
 	}
 
-	if (_res != DamageState::PostMortem && !pThis->IsAlive) {
+	if (_res != DamageState::PostMortem && !pThis->IsAlive)
+	{
 		return DamageState::NowDead;
 	}
 
-	if (_res == DamageState::PostMortem) {
+	if (_res == DamageState::PostMortem)
+	{
 		return DamageState::PostMortem;
 	}
 
@@ -875,12 +899,10 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 
 				if (Started != -1)
 				{
-
 					if (Unsorted::CurrentFrame - Started >= DelayTime)
 						DelayTime = 0;
 					else
 						DelayTime -= Unsorted::CurrentFrame - Started;
-
 				}
 
 				if ((int)v22 < DelayTime)
@@ -898,10 +920,10 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 			_res = DamageState::PostMortem;
 		}
 
-		if (pType->CanDisguise && !pType->PermaDisguise )
+		if (pType->CanDisguise && !pType->PermaDisguise)
 		{
-
-			if (pThis->IsDisguised()) {
+			if (pThis->IsDisguised())
+			{
 				pThis->ClearDisguise();
 			}
 
@@ -909,7 +931,8 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 		}
 	}
 
-	if (!pThis->Health) {
+	if (!pThis->Health)
+	{
 		_res = DamageState::NowDead;
 	}
 
@@ -922,8 +945,10 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 	{
 		VocClass::SafeImmedietelyPlayAt(pType->DamageSound, &pThis->Location, 0);
 
-		if (!pWHExt->Malicious && source && source->IsAlive && !pWHExt->Nonprovocative) {
-			if ((pType->ToProtect || pThis->__ProtectMe_3CF) && !pThis->Owner->IsControlledByHuman()) {
+		if (!pWHExt->Malicious && source && source->IsAlive && !pWHExt->Nonprovocative)
+		{
+			if ((pType->ToProtect || pThis->__ProtectMe_3CF) && !pThis->Owner->IsControlledByHuman())
+			{
 				pThis->BaseIsAttacked(source);
 			}
 		}
@@ -949,23 +974,29 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 
 		GiftBoxFunctional::Destroy(pExt, pTypeExt);
 
-		if(!pExt->PhobosAE.empty()){
+		if (!pExt->PhobosAE.empty())
+		{
 			std::vector<std::pair<WeaponTypeClass*, TechnoClass*>> expireWeapons {};
 			std::set<PhobosAttachEffectTypeClass*> cumulativeTypes {};
 
-			for (auto const& attachEffect : pExt->PhobosAE) {
-
+			for (auto const& attachEffect : pExt->PhobosAE)
+			{
 				auto const pAEType = attachEffect->GetType();
 
-				if (pAEType->ExpireWeapon && (pAEType->ExpireWeapon_TriggerOn & ExpireWeaponCondition::Death) != ExpireWeaponCondition::None) {
-					if (!pAEType->Cumulative || !pAEType->ExpireWeapon_CumulativeOnlyOnce || !cumulativeTypes.contains(pAEType)) {
+				if (pAEType->ExpireWeapon && (pAEType->ExpireWeapon_TriggerOn & ExpireWeaponCondition::Death) != ExpireWeaponCondition::None)
+				{
+					if (!pAEType->Cumulative || !pAEType->ExpireWeapon_CumulativeOnlyOnce || !cumulativeTypes.contains(pAEType))
+					{
 						if (pAEType->Cumulative && pAEType->ExpireWeapon_CumulativeOnlyOnce)
 							cumulativeTypes.insert(pAEType);
 
-						if (pAEType->ExpireWeapon_UseInvokerAsOwner) {
+						if (pAEType->ExpireWeapon_UseInvokerAsOwner)
+						{
 							if (auto const pInvoker = attachEffect->GetInvoker())
 								expireWeapons.emplace_back(pAEType->ExpireWeapon, pInvoker);
-						} else {
+						}
+						else
+						{
 							expireWeapons.emplace_back(pAEType->ExpireWeapon, pThis);
 						}
 					}
@@ -978,7 +1009,8 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 		if (!pThis->IsAlive)
 			return DamageState::NowDead;
 
-		if (auto pManager = pThis->SlaveManager) {
+		if (auto pManager = pThis->SlaveManager)
+		{
 			pManager->Killed(source);
 		}
 
@@ -1104,21 +1136,23 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 			}
 		}
 
-		if (auto& pParticleZero = pThis->Sys.Fire) {
+		if (auto& pParticleZero = pThis->Sys.Fire)
+		{
 			pParticleZero->UnInit();
 		}
 
 		if (pThis->GetHeight() > 0 || !pThis->IsABomb || pThis->GetCell()->LandType != LandType::Water)
 		{
 			std::optional<bool> limited {};
-			if (pTypeExt->DebrisTypes_Limit.isset()) {
+			if (pTypeExt->DebrisTypes_Limit.isset())
+			{
 				limited = pTypeExt->DebrisTypes_Limit.Get();
 			}
 
 			auto spawn_coords = pThis->GetCoords();
-			DebrisSpawners::Spawn(pType->MinDebris,pType->MaxDebris,
+			DebrisSpawners::Spawn(pType->MinDebris, pType->MaxDebris,
 			spawn_coords, pType->DebrisTypes,
-			pType->DebrisAnims ,pType->DebrisMaximums, pTypeExt->DebrisMinimums, limited, source, source ? source->Owner : sourceHouse, pThis->Owner);
+			pType->DebrisAnims, pType->DebrisMaximums, pTypeExt->DebrisMinimums, limited, source, source ? source->Owner : sourceHouse, pThis->Owner);
 
 			auto pWeapon = pThis->GetWeapon(pThis->CurrentWeaponNumber)->WeaponType;
 			if (pType->Explodes || pThis->HasAbility(AbilityType::Explodes) || (pWeapon && pWeapon->Suicide))
@@ -1129,7 +1163,6 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 
 				if (TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType())->Explodes_KillPassengers)
 				{
-
 					while (pThis->Passengers.FirstPassenger)
 					{
 						auto pPassenger = pThis->Passengers.GetFirstPassenger();
@@ -1150,7 +1183,8 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 					pThis->FireDeathWeapon(0);
 			}
 
-			if (source && source->IsAlive) {
+			if (source && source->IsAlive)
+			{
 				auto SourCoords = source->Location;
 
 				if (!pWHExt->SuppressRevengeWeapons)
@@ -1162,8 +1196,10 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 						WeaponTypeExtData::DetonateAt1(pTypeExt->RevengeWeapon.Get(), source, pThis, true, nullptr);
 					}
 
-					if (source->IsAlive) {
-						for (const auto& weapon : pExt->RevengeWeapons) {
+					if (source->IsAlive)
+					{
+						for (const auto& weapon : pExt->RevengeWeapons)
+						{
 							if (EnumFunctions::CanTargetHouse(weapon.ApplyToHouses, pThis->Owner, source->Owner) && (pWHExt->SuppressRevengeWeapons_Types.empty() || !pWHExt->SuppressRevengeWeapons_Types.Contains(weapon.Value)))
 								WeaponTypeExtData::DetonateAt1(weapon.Value, source, pThis, true, nullptr);
 						}
@@ -1183,16 +1219,18 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 			}
 
 			return _res;
-		} else {
-
+		}
+		else
+		{
 			VocClass::SafeImmedietelyPlayAt(pType->DamageSound, &pThis->Location, 0);
 
-			if (source && source->IsAlive && (pType->ToProtect || pThis->__ProtectMe_3CF) && !pThis->Owner->IsControlledByHuman()) {
+			if (source && source->IsAlive && (pType->ToProtect || pThis->__ProtectMe_3CF) && !pThis->Owner->IsControlledByHuman())
+			{
 				pThis->BaseIsAttacked(source);
 			}
 		}
 	}
-		break;
+	break;
 	case DamageState::PostMortem:
 	{
 		pThis->IsAlive = true;
@@ -1203,14 +1241,17 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 		break;
 	}
 
-	if (source && !pThis->Owner->IsAlliedWith(source)) {
+	if (source && !pThis->Owner->IsAlliedWith(source))
+	{
 		pThis->IsTickedOff = 1;
 	}
 
 	bool IsAffected = _res != DamageState::Unaffected || isActuallyAffected;
 	bool bAffected = false;
-	if (IsAffected || ignoreDefenses || _isNegativeDamage || *damage) {
-		if (IsAffected && !_isNegativeDamage) {
+	if (IsAffected || ignoreDefenses || _isNegativeDamage || *damage)
+	{
+		if (IsAffected && !_isNegativeDamage)
+		{
 			const auto rank = pThis->Veterancy.GetRemainingLevel();
 			const auto fromTechno = pTypeExt->SelfHealing_CombatDelay.GetFromSpecificRank(rank);
 			const int amount = pWHExt->SelfHealing_CombatDelay.GetFromSpecificRank(rank)
@@ -1218,7 +1259,8 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 
 			//the timer will always restart
 			//not accumulated
-			if (amount > 0) {
+			if (amount > 0)
+			{
 				pExt->SelfHealing_CombatDelay.Start(amount);
 			}
 		}
@@ -1291,7 +1333,8 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 	}
 	else
 	{
-		if (auto& pPart = pThis->Sys.Damage) {
+		if (auto& pPart = pThis->Sys.Damage)
+		{
 			pPart->UnInit();
 		}
 	}
@@ -1303,12 +1346,14 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 
 	const auto pFoot = flag_cast_to<FootClass*, false>(pThis);
 	auto Toretalitate = source;
-	if (source && source->InOpenToppedTransport && source->Transporter && source->Transporter->IsAlive) {
+	if (source && source->InOpenToppedTransport && source->Transporter && source->Transporter->IsAlive)
+	{
 		Toretalitate = source->Transporter;
 	}
 
 	bool retaliate = false;
-	if (FakeTechnoClass::__Is_Allowed_To_Retaliate(pThis, discard_t() , Toretalitate, warhead)) {
+	if (FakeTechnoClass::__Is_Allowed_To_Retaliate(pThis, discard_t(), Toretalitate, warhead))
+	{
 		int weaponIdx = pThis->SelectWeapon(Toretalitate);
 		bool isCloseEnough = pThis->IsCloseEnough(source, weaponIdx);
 		bool isNotHumanControlled = !pThis->Owner->IsControlledByHuman();
@@ -1316,22 +1361,30 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 
 		if (isCloseEnough
 			|| !isNotHumanControlled
-			|| isSightEligible) {
+			|| isSightEligible)
+		{
 			pThis->Override_Mission(Mission::Attack, Toretalitate);
 		}
 
 		retaliate = true;
 	}
 
-	if (!pWHExt->PreventScatter) {
-		if (pFoot) {
-			if (!pFoot->Target && !pFoot->Destination) {
-				if (retaliate && (RulesClass::Instance->PlayerScatter || pFoot->HasAbility(AbilityType::Scatter))) {
+	if (!pWHExt->PreventScatter)
+	{
+		if (pFoot)
+		{
+			if (!pFoot->Target && !pFoot->Destination)
+			{
+				if (retaliate && (RulesClass::Instance->PlayerScatter || pFoot->HasAbility(AbilityType::Scatter)))
+				{
 					pFoot->Scatter(CoordStruct::Empty, true, false);
-				} else if (!pFoot->IsTethered && pFoot->WhatAmI() != AircraftClass::AbsID && pThis->GetCurrentMissionControl()->Scatter) {
+				}
+				else if (!pFoot->IsTethered && pFoot->WhatAmI() != AircraftClass::AbsID && pThis->GetCurrentMissionControl()->Scatter)
+				{
 					const bool IsMoving = pFoot->Locomotor.GetInterfacePtr()->Is_Moving();
 
-					if (!IsMoving) {
+					if (!IsMoving)
+					{
 						const bool IsHuman = pFoot->Owner->IsControlledByHuman();
 						const bool IsScatter = RulesClass::Instance->PlayerScatter;
 						const bool IscatterAbility = pFoot->HasAbility(AbilityType::Scatter);
@@ -1350,16 +1403,16 @@ DamageState __fastcall FakeTechnoClass::__Take_Damage(TechnoClass* pThis,
 
 DEFINE_FUNCTION_JUMP(LJMP, 0x7087C0, FakeTechnoClass::__Is_Allowed_To_Retaliate)
 
-DEFINE_FUNCTION_JUMP(LJMP, 0x701900 , FakeTechnoClass::__Take_Damage)
+DEFINE_FUNCTION_JUMP(LJMP, 0x701900, FakeTechnoClass::__Take_Damage)
 DEFINE_FUNCTION_JUMP(CALL, 0x4D742C, FakeTechnoClass::__Take_Damage)
-DEFINE_FUNCTION_JUMP(CALL, 0x442425 , FakeTechnoClass::__Take_Damage)
+DEFINE_FUNCTION_JUMP(CALL, 0x442425, FakeTechnoClass::__Take_Damage)
 DEFINE_FUNCTION_JUMP(VTABLE, 0x7F4ACC, FakeTechnoClass::__Take_Damage)
 #else
 
 ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 {
 	GET(TechnoClass*, pThis, ECX);
-	GET_STACK(DWORD , caller , 0x0);
+	GET_STACK(DWORD, caller, 0x0);
 	REF_STACK(args_ReceiveDamage, args, 0x4);
 
 	Debug::LogInfo("Last Techno {} : {} received damage is {} caller {} frame {}",
@@ -1379,31 +1432,32 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 	auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pType);
 	const auto pSourceHouse = args.Attacker ? args.Attacker->Owner : args.SourceHouse;
 
-	 //Repair/Destroy bridges at Bridge Repair Huts buildings
-	 if (pWHExt->FakeEngineer_CanRepairBridges || pWHExt->FakeEngineer_CanDestroyBridges) {
+	//Repair/Destroy bridges at Bridge Repair Huts buildings
+	if (pWHExt->FakeEngineer_CanRepairBridges || pWHExt->FakeEngineer_CanDestroyBridges)
+	{
 		const bool isBridgeDestroyed = MapClass::Instance->IsLinkedBridgeDestroyed(CellClass::Coord2Cell(pThis->GetCenterCoords()));
 		const bool destroyBridge = !isBridgeDestroyed && pWHExt->FakeEngineer_CanRepairBridges ? false : pWHExt->FakeEngineer_CanDestroyBridges;
 		WarheadTypeExtData::DetonateAtBridgeRepairHut(pThis, nullptr, pSourceHouse, destroyBridge);
-	 }
+	}
 
-	 // Capture enemy buildings
-	 auto const pBuilding = cast_to<BuildingClass*, false>(pThis);
+	// Capture enemy buildings
+	auto const pBuilding = cast_to<BuildingClass*, false>(pThis);
 
-	 if (pBuilding && pWHExt->FakeEngineer_CanCaptureBuildings
-	 	&& !pSourceHouse->IsAlliedWith(pThis->Owner)
-	 	&& (pBuilding->Type->Capturable || pBuilding->Type->NeedsEngineer)) {
+	if (pBuilding && pWHExt->FakeEngineer_CanCaptureBuildings
+	   && !pSourceHouse->IsAlliedWith(pThis->Owner)
+	   && (pBuilding->Type->Capturable || pBuilding->Type->NeedsEngineer))
+	{
+		// Send engineer's "enter" event
+		auto const pTag = pBuilding->AttachedTag;
+		if (args.Attacker && pTag)
+			pTag->RaiseEvent(TriggerEvent::EnteredBy, args.Attacker, CellStruct::Empty);
 
-			// Send engineer's "enter" event
-			auto const pTag = pBuilding->AttachedTag;
-			if (args.Attacker && pTag)
-				pTag->RaiseEvent(TriggerEvent::EnteredBy, args.Attacker, CellStruct::Empty);
+		pBuilding->SetOwningHouse(pSourceHouse);
+	}
 
-	 		pBuilding->SetOwningHouse(pSourceHouse);
-	 }
-
-	 // Disarm bomb
-	 if (pThis->AttachedBomb && pWHExt->FakeEngineer_BombDisarm)
-	 	pThis->AttachedBomb->Disarm();
+	// Disarm bomb
+	if (pThis->AttachedBomb && pWHExt->FakeEngineer_BombDisarm)
+		pThis->AttachedBomb->Disarm();
 
 	pWHExt->ApplyDamageMult(pThis, &args);
 	applyCombatAlert(pThis, &args);
@@ -1413,11 +1467,13 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 
 	const bool canTergetHouse = pWHExt->CanTargetHouse(pSourceHouse, pThis);
 
-	if (!canTergetHouse) {
+	if (!canTergetHouse)
+	{
 		*args.Damage = 0;
 		R->EAX(DamageState::Unaffected);
 		return 0x702D1F;
-	} else
+	}
+	else
 		pExt->LastHurtFrame = Unsorted::CurrentFrame;
 
 	if (!pThis || !pThis->IsAlive || pThis->Health <= 0)
@@ -1429,10 +1485,12 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 	const bool unkillable =
 		!pWHExt->CanKill || pExt->AE.flags.Unkillable;
 
-	if (!args.IgnoreDefenses) {
+	if (!args.IgnoreDefenses)
+	{
 		*args.Damage = TechnoExtData::CalculateBlockDamage(pThis, &args);
 
-		if (auto pShieldData = pExt->GetShield()) {
+		if (auto pShieldData = pExt->GetShield())
+		{
 			pShieldData->OnReceiveDamage(&args);
 		}
 	}
@@ -1599,7 +1657,8 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 			nSelectedPowerup = pTypeExt->DropCrate.Get();
 		}
 
-		if (nSelectedPowerup >= 0) {
+		if (nSelectedPowerup >= 0)
+		{
 			TechnoExtData::TryToCreateCrate(pThis->Location, static_cast<PowerupEffects>(nSelectedPowerup));
 		}
 	}
@@ -1642,12 +1701,10 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 
 				if (Started != -1)
 				{
-
 					if (Unsorted::CurrentFrame - Started >= DelayTime)
 						DelayTime = 0;
 					else
 						DelayTime -= Unsorted::CurrentFrame - Started;
-
 				}
 
 				if ((int)v22 < DelayTime)
@@ -1665,10 +1722,10 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 			_res = DamageState::PostMortem;
 		}
 
-		if (pType->CanDisguise && !pType->PermaDisguise )
+		if (pType->CanDisguise && !pType->PermaDisguise)
 		{
-
-			if (pThis->IsDisguised()) {
+			if (pThis->IsDisguised())
+			{
 				pThis->ClearDisguise();
 			}
 
@@ -1676,7 +1733,8 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 		}
 	}
 
-	if (!pThis->Health) {
+	if (!pThis->Health)
+	{
 		_res = DamageState::NowDead;
 	}
 
@@ -1689,8 +1747,10 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 	{
 		VocClass::SafeImmedietelyPlayAt(pType->DamageSound, &pThis->Location, 0);
 
-		if (!pWHExt->Malicious && args.Attacker && args.Attacker->IsAlive && !pWHExt->Nonprovocative) {
-			if ((pType->ToProtect || pThis->__ProtectMe_3CF) && !pThis->Owner->IsControlledByHuman()) {
+		if (!pWHExt->Malicious && args.Attacker && args.Attacker->IsAlive && !pWHExt->Nonprovocative)
+		{
+			if ((pType->ToProtect || pThis->__ProtectMe_3CF) && !pThis->Owner->IsControlledByHuman())
+			{
 				pThis->BaseIsAttacked(args.Attacker);
 			}
 		}
@@ -1716,12 +1776,13 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 
 		GiftBoxFunctional::Destroy(pExt, pTypeExt);
 
-		if(!pExt->PhobosAE.empty()){
+		if (!pExt->PhobosAE.empty())
+		{
 			std::vector<std::pair<WeaponTypeClass*, TechnoClass*>> expireWeapons {};
 			std::set<PhobosAttachEffectTypeClass*> cumulativeTypes {};
 
-			for (auto const& attachEffect : pExt->PhobosAE) {
-
+			for (auto const& attachEffect : pExt->PhobosAE)
+			{
 				auto const pAEType = attachEffect->GetType();
 
 				if (pAEType->ExpireWeapon && (pAEType->ExpireWeapon_TriggerOn & ExpireWeaponCondition::Death) != ExpireWeaponCondition::None)
@@ -1746,7 +1807,6 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 
 			PhobosAttachEffectClass::DetonateExpireWeapon(expireWeapons);
 		}
-
 
 		if (!pThis->IsAlive)
 			break;
@@ -1834,7 +1894,6 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 
 			if (pBld && !pBld->Type->Weeder)
 			{
-
 				auto storage = &TechnoExtContainer::Instance.Find(pThis)->TiberiumStorage;
 				double stored = storage->GetAmounts();
 
@@ -1879,21 +1938,23 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 			}
 		}
 
-		if (auto& pParticleZero = pThis->Sys.Fire) {
+		if (auto& pParticleZero = pThis->Sys.Fire)
+		{
 			pParticleZero->UnInit();
 		}
 
 		if (pThis->GetHeight() > 0 || !pThis->IsABomb || pThis->GetCell()->LandType != LandType::Water)
 		{
 			std::optional<bool> limited {};
-			if (pTypeExt->DebrisTypes_Limit.isset()) {
+			if (pTypeExt->DebrisTypes_Limit.isset())
+			{
 				limited = pTypeExt->DebrisTypes_Limit.Get();
 			}
 
 			auto spawn_coords = pThis->GetCoords();
-			DebrisSpawners::Spawn(pType->MinDebris,pType->MaxDebris,
+			DebrisSpawners::Spawn(pType->MinDebris, pType->MaxDebris,
 			spawn_coords, pType->DebrisTypes,
-			pType->DebrisAnims ,pType->DebrisMaximums, pTypeExt->DebrisMinimums, limited, args.Attacker , args.Attacker ? args.Attacker->GetOwningHouse() : args.SourceHouse, pThis->Owner);
+			pType->DebrisAnims, pType->DebrisMaximums, pTypeExt->DebrisMinimums, limited, args.Attacker, args.Attacker ? args.Attacker->GetOwningHouse() : args.SourceHouse, pThis->Owner);
 
 			auto pWeapon = pThis->GetWeapon(pThis->CurrentWeaponNumber)->WeaponType;
 			if (pType->Explodes || pThis->HasAbility(AbilityType::Explodes) || (pWeapon && pWeapon->Suicide))
@@ -1904,7 +1965,6 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 
 				if (TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType())->Explodes_KillPassengers)
 				{
-
 					while (pThis->Passengers.FirstPassenger)
 					{
 						auto pPassenger = pThis->Passengers.GetFirstPassenger();
@@ -1938,8 +1998,10 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 						WeaponTypeExtData::DetonateAt1(pTypeExt->RevengeWeapon.Get(), args.Attacker, pThis, true, nullptr);
 					}
 
-					if (args.Attacker->IsAlive) {
-						for (const auto& weapon : pExt->RevengeWeapons) {
+					if (args.Attacker->IsAlive)
+					{
+						for (const auto& weapon : pExt->RevengeWeapons)
+						{
 							if (EnumFunctions::CanTargetHouse(weapon.ApplyToHouses, pThis->Owner, args.Attacker->Owner) && (pWHExt->SuppressRevengeWeapons_Types.empty() || !pWHExt->SuppressRevengeWeapons_Types.Contains(weapon.Value)))
 								WeaponTypeExtData::DetonateAt1(weapon.Value, args.Attacker, pThis, true, nullptr);
 						}
@@ -1960,8 +2022,9 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 
 			R->EAX(_res);
 			return 0x702D1F;
-		} else {
-
+		}
+		else
+		{
 			VocClass::SafeImmedietelyPlayAt(pType->DamageSound, &pThis->Location, 0);
 
 			if (args.Attacker && args.Attacker->IsAlive && (pType->ToProtect || pThis->__ProtectMe_3CF) && !pThis->Owner->IsControlledByHuman())
@@ -1970,7 +2033,7 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 			}
 		}
 	}
-		break;
+	break;
 	case DamageState::PostMortem:
 	{
 		pThis->IsAlive = true;
@@ -1982,14 +2045,17 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 		break;
 	}
 
-	if (args.Attacker && !pThis->Owner->IsAlliedWith(args.Attacker)) {
+	if (args.Attacker && !pThis->Owner->IsAlliedWith(args.Attacker))
+	{
 		pThis->IsTickedOff = 1;
 	}
 
 	bool IsAffected = _res != DamageState::Unaffected || isActuallyAffected;
 	bool bAffected = false;
-	if (IsAffected || args.IgnoreDefenses || _isNegativeDamage || *args.Damage) {
-		if (IsAffected && !_isNegativeDamage) {
+	if (IsAffected || args.IgnoreDefenses || _isNegativeDamage || *args.Damage)
+	{
+		if (IsAffected && !_isNegativeDamage)
+		{
 			const auto rank = pThis->Veterancy.GetRemainingLevel();
 			const auto fromTechno = pTypeExt->SelfHealing_CombatDelay.GetFromSpecificRank(rank);
 			const int amount = pWHExt->SelfHealing_CombatDelay.GetFromSpecificRank(rank)
@@ -1997,7 +2063,8 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 
 			//the timer will always restart
 			//not accumulated
-			if (amount > 0) {
+			if (amount > 0)
+			{
 				pExt->SelfHealing_CombatDelay.Start(amount);
 			}
 		}
@@ -2100,7 +2167,6 @@ ASMJIT_PATCH(0x701900, TechnoClass_ReceiveDamage_Handle, 0x6)
 			{
 				pThis->Override_Mission(Mission::Attack, retalitate);
 			}
-
 		}
 
 		retaliate = true;
@@ -2176,7 +2242,8 @@ DamageState FakeBuildingClass::_ReceiveDamage(int* Damage, int DistanceToEpicent
 
 	if (pThis->Type->BridgeRepairHut && pThis->Type->Immune)
 	{
-		if (pWHExt->FakeEngineer_CanRepairBridges || pWHExt->FakeEngineer_CanDestroyBridges) {
+		if (pWHExt->FakeEngineer_CanRepairBridges || pWHExt->FakeEngineer_CanDestroyBridges)
+		{
 			const bool isBridgeDestroyed = MapClass::Instance->IsLinkedBridgeDestroyed(CellClass::Coord2Cell(pThis->GetCenterCoords()));
 			bool destroyBridge = isBridgeDestroyed && pWHExt->FakeEngineer_CanRepairBridges ? false : pWHExt->FakeEngineer_CanDestroyBridges;			WarheadTypeExtData::DetonateAtBridgeRepairHut(pThis, Attacker, SourceHouse, destroyBridge);
 
@@ -2208,7 +2275,7 @@ DamageState FakeBuildingClass::_ReceiveDamage(int* Damage, int DistanceToEpicent
 	}
 	else
 	{
-		_res = FakeTechnoClass::__Take_Damage(pThis, discard_t() , Damage, DistanceToEpicenter, WH, Attacker, IgnoreDefenses, PreventsPassengerEscape, SourceHouse);
+		_res = FakeTechnoClass::__Take_Damage(pThis, discard_t(), Damage, DistanceToEpicenter, WH, Attacker, IgnoreDefenses, PreventsPassengerEscape, SourceHouse);
 
 		if (!pThis->IsAlive)
 		{
@@ -2234,7 +2301,6 @@ DamageState FakeBuildingClass::_ReceiveDamage(int* Damage, int DistanceToEpicent
 
 			if (WH->Sparky)
 			{
-
 				const bool Onfire = pTypeExt->HealthOnfire.Get(pThis->GetHealthStatus());
 				auto const pFireType = pTypeExt->OnFireTypes.GetElements(RulesClass::Instance->OnFire);
 
@@ -2290,7 +2356,6 @@ DamageState FakeBuildingClass::_ReceiveDamage(int* Damage, int DistanceToEpicent
 		}
 		case DamageState::NowDead:
 		{
-
 			if (auto pLinked = pThis->BunkerLinkedItem)
 			{
 				for (int i = 0; i < (int)CachedRadio->size(); ++i)
@@ -2388,8 +2453,9 @@ DamageState FakeBuildingClass::_ReceiveDamage(int* Damage, int DistanceToEpicent
 					pThis->BaseIsAttacked(Attacker);
 				}
 
-				if (!pThis->Type->Insignificant && !pThis->IsStrange()) {
-				  ((FakeHouseClass*)pThis->Owner )->_Attacked(pThis, WH);
+				if (!pThis->Type->Insignificant && !pThis->IsStrange())
+				{
+					((FakeHouseClass*)pThis->Owner)->_Attacked(pThis, WH);
 				}
 
 				pThis->OwnerCountryIndex = Attacker->Owner->ArrayIndex;
@@ -2445,7 +2511,6 @@ DamageState FakeBuildingClass::_ReceiveDamage(int* Damage, int DistanceToEpicent
 	return _res;
 }
 
-
 DEFINE_FUNCTION_JUMP(LJMP, 0x442230, FakeBuildingClass::_ReceiveDamage)
 DEFINE_FUNCTION_JUMP(VTABLE, 0x7E4028, FakeBuildingClass::_ReceiveDamage)
 #pragma endregion
@@ -2456,13 +2521,13 @@ DEFINE_FUNCTION_JUMP(VTABLE, 0x7E4028, FakeBuildingClass::_ReceiveDamage)
 DamageState __fastcall FakeFootClass::__Take_Damage(FootClass* pThis, discard_t, int* damage, int distance, WarheadTypeClass* warhead, TechnoClass* source, bool ignoreDefenses, bool PreventsPassengerEscape, HouseClass* sourceHouse)
 {
 	args_ReceiveDamage args {
-		.Damage = damage, 
-		.DistanceToEpicenter = distance , 
+		.Damage = damage,
+		.DistanceToEpicenter = distance ,
 		.WH = warhead,
 		.Attacker = source,
 		.IgnoreDefenses = ignoreDefenses,
 		.PreventsPassengerEscape = PreventsPassengerEscape,
-		.SourceHouse  =sourceHouse
+		.SourceHouse = sourceHouse
 	};
 
 	DamageState _res = DamageState::Unaffected;
@@ -2493,7 +2558,7 @@ DamageState __fastcall FakeFootClass::__Take_Damage(FootClass* pThis, discard_t,
 		pThis->ParasiteEatingMe->ParasiteImUsing->ExitUnit();
 	}
 
-	_res = FakeTechnoClass::__Take_Damage(pThis , discard_t(), args.Damage, args.DistanceToEpicenter, args.WH, args.Attacker, args.IgnoreDefenses, args.PreventsPassengerEscape, args.SourceHouse);
+	_res = FakeTechnoClass::__Take_Damage(pThis, discard_t(), args.Damage, args.DistanceToEpicenter, args.WH, args.Attacker, args.IgnoreDefenses, args.PreventsPassengerEscape, args.SourceHouse);
 
 	if (_res == DamageState::NowDead || _res == DamageState::Unaffected)
 	{
@@ -2501,7 +2566,6 @@ DamageState __fastcall FakeFootClass::__Take_Damage(FootClass* pThis, discard_t,
 	}
 	else if (_res != DamageState::PostMortem)
 	{
-
 		if ((pThis->IsSinking || (!pThis->IsAttackedByLocomotor && pThis->IsCrashing)))
 		{
 			_res = DamageState::PostMortem;
@@ -2595,7 +2659,6 @@ DamageState FakeAircraftClass::__Take_Damage(int* damage, int distance, WarheadT
 		const auto& crashable = TechnoTypeExtContainer::Instance.Find(this->Type)->Crashable;
 		if ((crashable.isset() && !crashable.Get()) || !this->Crash(args.Attacker))
 			this->UnInit();
-
 	}
 
 	return _res;
@@ -2933,7 +2996,6 @@ ASMJIT_PATCH(0x718B29, LocomotionClass_SomethingWrong_ReceiveDamage_UseCurrentHP
 // 	return Delete;
 // }
 
-
 /*
 ASMJIT_PATCH(0x442243, BuildingClass_ReceiveDamage_AddEarly, 0xA)
 {
@@ -3208,7 +3270,6 @@ ASMJIT_PATCH(0x71B98B, TerrainClass_ReceiveDamage_Add, 0x7)
 //	return 0x0;
 //}
 
-
 // ASMJIT_PATCH(0x4425C0, BuildingClass_ReceiveDamage_MaybeKillRadioLinks, 0x6)
 // {
 // 	GET(TechnoClass* const, pRadio, EDI);
@@ -3269,7 +3330,6 @@ ASMJIT_PATCH(0x71B98B, TerrainClass_ReceiveDamage_Add, 0x7)
 // 	R->EDX(El);
 // 	return 0x51874D;
 // }
-
 
 // ASMJIT_PATCH(0x518434, InfantryClass_ReceiveDamage_SkipDeathAnim, 7)
 // {

@@ -36,14 +36,13 @@
 
 #include <MapClass.h>
 
-
 FORCEDINLINE COMPILETIMEEVAL int cell_Distance_Squared(CoordStruct& our_coord, CoordStruct& their_coord)
 {
 	const int64_t dx = int64_t(our_coord.X) - int64_t(their_coord.X);
-    const int64_t dy = int64_t(our_coord.Y) - int64_t(their_coord.Y);
-    const int64_t d2 = dx * dx + dy * dy;
+	const int64_t dy = int64_t(our_coord.Y) - int64_t(their_coord.Y);
+	const int64_t d2 = dx * dx + dy * dy;
 
-    return d2 > INT_MAX ? INT_MAX : int(d2);
+	return d2 > INT_MAX ? INT_MAX : int(d2);
 }
 
 //limited usability
@@ -82,7 +81,6 @@ public:
 	}
 
 	static DamageState __fastcall __Take_Damage(ObjectClass* pThis, discard_t, int* damage, int distance, WarheadTypeClass* warhead, TechnoClass* source, bool ignoreDefenses, bool PreventsPassengerEscape, HouseClass* sourceHouse);
-
 };
 //static_assert(sizeof(FakeObjectClass) == sizeof(ObjectClass), "Invalid Size !");
 
@@ -95,7 +93,6 @@ class NOVTABLE FakeFootClass //: public FootClass
 public:
 
 	static DamageState __fastcall __Take_Damage(FootClass* pThis, discard_t, int* damage, int distance, WarheadTypeClass* warhead, TechnoClass* source, bool ignoreDefenses, bool PreventsPassengerEscape, HouseClass* sourceHouse);
-
 };
 //static_assert(sizeof(FakeFootClass) == sizeof(FootClass), "Invalid Size !");
 //===================================================================================

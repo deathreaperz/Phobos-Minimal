@@ -1,4 +1,3 @@
-
 #pragma once
 
 #ifdef _Enable

@@ -53,21 +53,21 @@ ZyanStatus ZyanProcessFlushInstructionCache(void* address, ZyanUSize size)
 {
 #if   defined(ZYAN_WINDOWS)
 
-    if (!FlushInstructionCache(GetCurrentProcess(), address, size))
-    {
-        return ZYAN_STATUS_BAD_SYSTEMCALL;
-    }
+	if (!FlushInstructionCache(GetCurrentProcess(), address, size))
+	{
+		return ZYAN_STATUS_BAD_SYSTEMCALL;
+	}
 
 #elif defined(ZYAN_POSIX)
 
-    if (msync(address, size, MS_SYNC | MS_INVALIDATE))
-    {
-        return ZYAN_STATUS_BAD_SYSTEMCALL;
-    }
+	if (msync(address, size, MS_SYNC | MS_INVALIDATE))
+	{
+		return ZYAN_STATUS_BAD_SYSTEMCALL;
+	}
 
 #endif
 
-    return ZYAN_STATUS_SUCCESS;
+	return ZYAN_STATUS_SUCCESS;
 }
 
 /* ---------------------------------------------------------------------------------------------- */

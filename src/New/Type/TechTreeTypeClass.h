@@ -71,14 +71,18 @@ public:
 	template <typename Func>
 	bool IsCompleted(HouseClass* pHouse, Func&& filter) const
 	{
-		for (BuildType i = BuildType::BuildPower; i < BuildType::BuildOther; i = BuildType((int)i + 1)) {
-			if (!GetBuildable(i, std::forward<Func>(filter)).empty() && CountSideOwnedBuildings(pHouse, i) < 1) {
+		for (BuildType i = BuildType::BuildPower; i < BuildType::BuildOther; i = BuildType((int)i + 1))
+		{
+			if (!GetBuildable(i, std::forward<Func>(filter)).empty() && CountSideOwnedBuildings(pHouse, i) < 1)
+			{
 				return false;
 			}
 		}
 
-		for (const auto& [type, count] : BuildOtherCountMap) {
-			if (filter(type) && CountSideOwnedBuildings(pHouse, BuildType::BuildOther) < count) {
+		for (const auto& [type, count] : BuildOtherCountMap)
+		{
+			if (filter(type) && CountSideOwnedBuildings(pHouse, BuildType::BuildOther) < count)
+			{
 				return false;
 			}
 		}
@@ -89,8 +93,10 @@ public:
 	size_t CountSideOwnedBuildings(HouseClass* pHouse, BuildType buildType) const
 	{
 		size_t count = 0;
-		if (auto pBuild = this->GetBuildList(buildType)) {
-			for (const auto pBuilding : *pBuild) {
+		if (auto pBuild = this->GetBuildList(buildType))
+		{
+			for (const auto pBuilding : *pBuild)
+			{
 				count += pHouse->ActiveBuildingTypes.get_count(pBuilding->ArrayIndex);
 			}
 		}
@@ -98,7 +104,8 @@ public:
 		return count;
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE const std::vector<BuildingTypeClass*>* GetBuildList(BuildType buildType) const {
+	COMPILETIMEEVAL FORCEDINLINE const std::vector<BuildingTypeClass*>* GetBuildList(BuildType buildType) const
+	{
 		switch (buildType)
 		{
 		case BuildType::BuildPower:
@@ -132,7 +139,8 @@ public:
 	COMPILETIMEEVAL FORCEDINLINE std::vector<BuildingTypeClass*> GetBuildable(BuildType buildType, Func&& filter) const
 	{
 		std::vector<BuildingTypeClass*> filtered;
-		if(auto pBuild = this->GetBuildList(buildType)){
+		if (auto pBuild = this->GetBuildList(buildType))
+		{
 			std::ranges::copy_if(*pBuild, std::back_inserter(filtered), std::forward<Func>(filter));
 		}
 
@@ -143,9 +151,9 @@ public:
 	COMPILETIMEEVAL BuildingTypeClass* GetRandomBuildable(BuildType buildType, Func&& filter) const
 	{
 		const std::vector<BuildingTypeClass*> buildable = GetBuildable(buildType, std::forward<Func>(filter));
-		if (!buildable.empty()) {
+		if (!buildable.empty())
+		{
 			return buildable[ScenarioClass::Instance->Random.RandomRanged(0, buildable.size() - 1)];
-
 		}
 
 		return nullptr;

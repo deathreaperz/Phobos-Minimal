@@ -62,10 +62,11 @@ ASMJIT_PATCH(0x658473, RadarClass_658330_SetObserverFlag, 0x5)
 		return 0;
 
 	GET(HouseClass*, pHouse, EBX);
-	if (pHouse->IsHumanPlayer 
-			&& pHouse->Defeated 
+	if (pHouse->IsHumanPlayer
+			&& pHouse->Defeated
 			&& pHouse->IsInitiallyObserver()
-		) {
+		)
+	{
 		R->ECX(-3);
 	}
 
@@ -146,7 +147,6 @@ ASMJIT_PATCH(0x6A557A, SidebarClass_InitIO, 0x5)
 #pragma region Show house on Observer sidebar
 bool OPTIONALINLINE ShowHouseOnObserverSidebar(HouseClass* pHouse)
 {
-
 	if (pHouse->Type->MultiplayPassive)
 		return false;
 

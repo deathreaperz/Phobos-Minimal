@@ -26,7 +26,7 @@ ASMJIT_PATCH(0x71532B, TechnoTypeClass_LoadFromINI_BarrelAnimData_Fix, 0x8)
 	auto& barrelData = pThis->BarrelAnimData;
 
 	barrelData.Travel = pINI->ReadInteger(pSection, "BarrelTravel", barrelData.Travel);
-	barrelData.CompressFrames =MaxImpl(pINI->ReadInteger(pSection, "BarrelCompressFrames", barrelData.CompressFrames), 1);
+	barrelData.CompressFrames = MaxImpl(pINI->ReadInteger(pSection, "BarrelCompressFrames", barrelData.CompressFrames), 1);
 	barrelData.HoldFrames = MaxImpl(pINI->ReadInteger(pSection, "BarrelHoldFrames", barrelData.HoldFrames), 1);
 	barrelData.RecoverFrames = MaxImpl(pINI->ReadInteger(pSection, "BarrelRecoverFrames", barrelData.RecoverFrames), 1);
 
@@ -80,7 +80,6 @@ ASMJIT_PATCH(0x707319, TechnoClass_CalcVoxelShadow_ShadowScale, 0x6)
 
 ASMJIT_PATCH(0x6F3E6E, FootClass_firecoord_6F3D60_TurretMultiOffset, 0x6) //0
 {
-
 	GET(TechnoTypeClass*, pType, EBP);
 	LEA_STACK(Matrix3D*, mtx, STACK_OFFS(0xCC, 0x90));
 
@@ -107,21 +106,21 @@ ASMJIT_PATCH(0x73B780, UnitClass_DrawVXL_TurretMultiOffset, 0x6) //0
 
 #ifdef _old
 
- ASMJIT_PATCH(0x73BA4C, UnitClass_DrawVXL_TurretMultiOffset1, 0x6) //0
- {
- 	GET(TechnoTypeClass*, pType, EBX);
- 	LEA_STACK(Matrix3D*, mtx, STACK_OFFS(0x1D0, 0x13C));
+ASMJIT_PATCH(0x73BA4C, UnitClass_DrawVXL_TurretMultiOffset1, 0x6) //0
+{
+	GET(TechnoTypeClass*, pType, EBX);
+	LEA_STACK(Matrix3D*, mtx, STACK_OFFS(0x1D0, 0x13C));
 
- 	const auto& nOffs = TechnoTypeExtContainer::Instance.Find(pType)->TurretOffset;
+	const auto& nOffs = TechnoTypeExtContainer::Instance.Find(pType)->TurretOffset;
 
- 	float x = static_cast<float>(nOffs->X * Game::Pixel_Per_Lepton());
- 	float y = static_cast<float>(nOffs->Y * Game::Pixel_Per_Lepton());
- 	float z = static_cast<float>(nOffs->Z * Game::Pixel_Per_Lepton());
+	float x = static_cast<float>(nOffs->X * Game::Pixel_Per_Lepton());
+	float y = static_cast<float>(nOffs->Y * Game::Pixel_Per_Lepton());
+	float z = static_cast<float>(nOffs->Z * Game::Pixel_Per_Lepton());
 
- 	mtx->Translate(x, y, z);
+	mtx->Translate(x, y, z);
 
- 	return 0x73BA68;
- }
+	return 0x73BA68;
+}
 #else
 ASMJIT_PATCH(0x73BA12, UnitClass_DrawAsVXL_RewriteTurretDrawing, 0x6)
 {
@@ -147,12 +146,12 @@ ASMJIT_PATCH(0x73BA12, UnitClass_DrawAsVXL_RewriteTurretDrawing, 0x6)
 	const bool notChargeTurret = pThis->Type->TurretCount <= 0 || pThis->Type->IsGattling;
 
 	auto getTurretVoxel = [pDrawType, notChargeTurret, currentTurretNumber]() -> VoxelStruct*
-	{
-		if (notChargeTurret)
-			return &pDrawType->TurretVoxel;
+		{
+			if (notChargeTurret)
+				return &pDrawType->TurretVoxel;
 
-		return TechnoTypeExtData::GetTurretsVoxel(pDrawType , currentTurretNumber);
-	};
+			return TechnoTypeExtData::GetTurretsVoxel(pDrawType, currentTurretNumber);
+		};
 	const auto pTurretVoxel = getTurretVoxel();
 
 	// When in recoiling or have no cache, need to recalculate drawing matrix
@@ -164,16 +163,16 @@ ASMJIT_PATCH(0x73BA12, UnitClass_DrawAsVXL_RewriteTurretDrawing, 0x6)
 	const auto turCache = inRecoil ? nullptr : &pDrawType->VoxelCaches.TurretWeapon;
 
 	auto getTurretMatrix = [=, &mtx]() -> Matrix3D
-	{
-		auto mtxTurret = mtx;
-		pDrawTypeExt->ApplyTurretOffset(&mtxTurret, Game::Pixel_Per_Lepton());
-		mtxTurret.RotateZ(static_cast<float>(pThis->SecondaryFacing.Current().GetRadian<32>() - pThis->PrimaryFacing.Current().GetRadian<32>()));
+		{
+			auto mtxTurret = mtx;
+			pDrawTypeExt->ApplyTurretOffset(&mtxTurret, Game::Pixel_Per_Lepton());
+			mtxTurret.RotateZ(static_cast<float>(pThis->SecondaryFacing.Current().GetRadian<32>() - pThis->PrimaryFacing.Current().GetRadian<32>()));
 
-		if (pThis->TurretRecoil.State != RecoilData::RecoilState::Inactive)
-			mtxTurret.TranslateX(-pThis->TurretRecoil.TravelSoFar);
+			if (pThis->TurretRecoil.State != RecoilData::RecoilState::Inactive)
+				mtxTurret.TranslateX(-pThis->TurretRecoil.TravelSoFar);
 
-		return mtxTurret;
-	};
+			return mtxTurret;
+		};
 	auto mtxTurret = shouldRedraw ? getTurretMatrix() : mtx;
 	constexpr BlitterFlags blit = BlitterFlags::Alpha | BlitterFlags::Flat;
 
@@ -181,37 +180,37 @@ ASMJIT_PATCH(0x73BA12, UnitClass_DrawAsVXL_RewriteTurretDrawing, 0x6)
 	if (haveBar)
 	{
 		auto drawBarrel = [=, &mtxTurret, &mtx]()
-		{
-			// When in recoiling, need to bypass cache and draw without saving
-			const auto brlKey = inRecoil ? -1 : flags;
-			const auto brlCache = inRecoil ? nullptr : &pDrawType->VoxelCaches.TurretBarrel;
-
-			auto getBarrelMatrix = [=, &mtxTurret, &mtx]() -> Matrix3D
 			{
-				auto mtxBarrel = mtxTurret;
-				mtxBarrel.Translate(-mtx.Row[0].W, -mtx.Row[1].W, -mtx.Row[2].W);
-				mtxBarrel.RotateY(static_cast<float>(-pThis->BarrelFacing.Current().GetRadian<32>()));
+				// When in recoiling, need to bypass cache and draw without saving
+				const auto brlKey = inRecoil ? -1 : flags;
+				const auto brlCache = inRecoil ? nullptr : &pDrawType->VoxelCaches.TurretBarrel;
 
-				if (pThis->BarrelRecoil.State != RecoilData::RecoilState::Inactive)
-					mtxBarrel.TranslateX(-pThis->BarrelRecoil.TravelSoFar);
+				auto getBarrelMatrix = [=, &mtxTurret, &mtx]() -> Matrix3D
+					{
+						auto mtxBarrel = mtxTurret;
+						mtxBarrel.Translate(-mtx.Row[0].W, -mtx.Row[1].W, -mtx.Row[2].W);
+						mtxBarrel.RotateY(static_cast<float>(-pThis->BarrelFacing.Current().GetRadian<32>()));
 
-				mtxBarrel.Translate(mtx.Row[0].W, mtx.Row[1].W, mtx.Row[2].W);
-				return mtxBarrel;
+						if (pThis->BarrelRecoil.State != RecoilData::RecoilState::Inactive)
+							mtxBarrel.TranslateX(-pThis->BarrelRecoil.TravelSoFar);
+
+						mtxBarrel.Translate(mtx.Row[0].W, mtx.Row[1].W, mtx.Row[2].W);
+						return mtxBarrel;
+					};
+				auto mtxBarrel = shouldRedraw ? getBarrelMatrix() : mtx;
+
+				auto getBarrelVoxel = [pDrawType, notChargeTurret, currentTurretNumber]() -> VoxelStruct*
+					{
+						if (notChargeTurret)
+							return &pDrawType->BarrelVoxel;
+
+						return TechnoTypeExtData::GetBarrelsVoxel(pDrawType, currentTurretNumber);
+					};
+				const auto pBarrelVoxel = TechnoTypeExtData::GetBarrelsVoxelFixedUp(pDrawType, currentTurretNumber);
+
+				// draw barrel
+				pThis->Draw_A_VXL(pBarrelVoxel, hvaFrameIdx, brlKey, (IndexClass<int, int>*)brlCache, rect, center, &mtxBarrel, brightness, (DWORD)blit, 0);
 			};
-			auto mtxBarrel = shouldRedraw ? getBarrelMatrix() : mtx;
-
-			auto getBarrelVoxel = [pDrawType, notChargeTurret, currentTurretNumber]() -> VoxelStruct*
-			{
-				if (notChargeTurret)
-					return &pDrawType->BarrelVoxel;
-
-				return TechnoTypeExtData::GetBarrelsVoxel(pDrawType , currentTurretNumber);
-			};
-			const auto pBarrelVoxel = TechnoTypeExtData::GetBarrelsVoxelFixedUp(pDrawType, currentTurretNumber);
-
-			// draw barrel
-			pThis->Draw_A_VXL(pBarrelVoxel, hvaFrameIdx, brlKey, (IndexClass<int, int>*)brlCache, rect, center, &mtxBarrel, brightness, (DWORD)blit, 0);
-		};
 
 		const auto turretDir = pThis->SecondaryFacing.Current().GetFacing<4>();
 
@@ -240,8 +239,8 @@ ASMJIT_PATCH(0x73BA12, UnitClass_DrawAsVXL_RewriteTurretDrawing, 0x6)
 }
 #endif
 
-Matrix3D NOINLINE getTurretMatrix(const Matrix3D& mtx , UnitClass* pThis , TechnoTypeExtData* pDrawTypeExt) {
-
+Matrix3D NOINLINE getTurretMatrix(const Matrix3D& mtx, UnitClass* pThis, TechnoTypeExtData* pDrawTypeExt)
+{
 	Matrix3D mtx_turret = mtx;
 
 	pDrawTypeExt->ApplyTurretOffset(&mtx_turret, Game::Pixel_Per_Lepton());
@@ -403,7 +402,7 @@ ASMJIT_PATCH(0x6B7230, SpawnManagerClass_AI_Dead, 0x5)
 {
 	GET(SpawnManagerClass*, pThis, ECX);
 
-	if(!pThis->Owner || !pThis->Owner->IsAlive)
+	if (!pThis->Owner || !pThis->Owner->IsAlive)
 		return 0x6B7B6A;
 
 	return 0x0;
@@ -413,9 +412,12 @@ ASMJIT_PATCH(0x6B7282, SpawnManagerClass_AI_PromoteSpawns, 0x5)
 {
 	GET(SpawnManagerClass*, pThis, ESI);
 
-	if(auto pOwner = pThis->Owner) {
-		if (TechnoTypeExtContainer::Instance.Find(pOwner->GetTechnoType())->Promote_IncludeSpawns) {
-			for (const auto& i : pThis->SpawnedNodes) {
+	if (auto pOwner = pThis->Owner)
+	{
+		if (TechnoTypeExtContainer::Instance.Find(pOwner->GetTechnoType())->Promote_IncludeSpawns)
+		{
+			for (const auto& i : pThis->SpawnedNodes)
+			{
 				if (i->Unit && i->Unit->Veterancy.Veterancy < pOwner->Veterancy.Veterancy)
 					i->Unit->Veterancy.Add(pOwner->Veterancy.Veterancy - i->Unit->Veterancy.Veterancy);
 			}
@@ -823,11 +825,14 @@ ASMJIT_PATCH(0x6FDFA8, TechnoClass_FireAt_SprayOffsets, 0x5)
 	auto pType = pThis->GetTechnoType();
 	auto pExt = TechnoTypeExtContainer::Instance.Find(pType);
 
-	if (pType->SprayAttack) {
-		if(pThis->CurrentBurstIndex) {
+	if (pType->SprayAttack)
+	{
+		if (pThis->CurrentBurstIndex)
+		{
 			pThis->SprayOffsetIndex = (pExt->SprayOffsets.size() / pWeapon->Burst + pThis->SprayOffsetIndex) % pExt->SprayOffsets.size();
 		}
-		else {
+		else
+		{
 			pThis->SprayOffsetIndex = ScenarioClass::Instance->Random.RandomRanged(0, pExt->SprayOffsets.size() - 1);
 		}
 
@@ -893,9 +898,9 @@ int GetVoiceAttack(TechnoTypeClass* pType, int WeaponIndex, bool isElite, Weapon
 	if (VoiceAttack < 0)
 	{
 		if (pTypeExt->IsSecondary(WeaponIndex))
-			VoiceAttack = isElite && pType->VoiceSecondaryEliteWeaponAttack != -1? pType->VoiceSecondaryEliteWeaponAttack : pType->VoiceSecondaryWeaponAttack;
+			VoiceAttack = isElite && pType->VoiceSecondaryEliteWeaponAttack != -1 ? pType->VoiceSecondaryEliteWeaponAttack : pType->VoiceSecondaryWeaponAttack;
 		else
-			VoiceAttack = isElite && pType->VoicePrimaryEliteWeaponAttack!= -1 ? pType->VoicePrimaryEliteWeaponAttack : pType->VoicePrimaryWeaponAttack;
+			VoiceAttack = isElite && pType->VoicePrimaryEliteWeaponAttack != -1 ? pType->VoicePrimaryEliteWeaponAttack : pType->VoicePrimaryWeaponAttack;
 	}
 
 	return VoiceAttack;
@@ -910,14 +915,16 @@ ASMJIT_PATCH(0x7090A0, TechnoClass_VoiceAttack, 0x7)
 	const int WeaponIndex = pThis->SelectWeapon(pTarget);
 	int VoiceAttack = GetVoiceAttack(pType, WeaponIndex, pThis->Veterancy.IsElite(), pThis->GetWeapon(WeaponIndex)->WeaponType);
 
-	if (VoiceAttack >= 0) {
+	if (VoiceAttack >= 0)
+	{
 		pThis->QueueVoice(VoiceAttack);
 		return 0x7091C7;
 	}
 
 	const auto& Lists = pType->VoiceAttack;
 
-	if (Lists.Count > 0) {
+	if (Lists.Count > 0)
+	{
 		int idx = Random2Class::Global->RandomRanged(0, Lists.Count - 1);
 		pThis->QueueVoice(Lists[idx]);
 	}
@@ -943,7 +950,8 @@ ASMJIT_PATCH(0x7431C9, FootClass_SelectAutoTarget_MultiWeapon, 0x7)				// UnitCl
 
 	if (isUnit
 		&& !pType->IsGattling && pType->TurretCount > 0
-		&& (pType->Gunner || !pTypeExt->MultiWeapon)) {
+		&& (pType->Gunner || !pTypeExt->MultiWeapon))
+	{
 		return UnitGunner;
 	}
 
@@ -957,7 +965,8 @@ ASMJIT_PATCH(0x445F04, BuildingClass_SelectAutoTarget_MultiWeapon, 0xA)
 	GET_STACK(ThreatType, result, STACK_OFFSET(0x8, 0x4));
 	enum { ReturnThreatType = 0x445F58, Continue = 0x445F0E };
 
-	if (pThis->UpgradeLevel > 0 || pThis->CanOccupyFire()) {
+	if (pThis->UpgradeLevel > 0 || pThis->CanOccupyFire())
+	{
 		R->EAX(pThis->GetWeapon(0));
 		return Continue;
 	}

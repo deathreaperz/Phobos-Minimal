@@ -19,15 +19,17 @@ bool BannerManagerClass::LoadGlobal(const json& root)
 {
 	this->Clear();
 
-	if (root.contains("BannerManagerClass")) {
+	if (root.contains("BannerManagerClass"))
+	{
 		size_t dataSize = root["collectionsize"].get<size_t>();
 		Debug::Log("[ExtSave] Loading BannerManagerClass %d\n", dataSize);
 
-		if (dataSize > 0) {
+		if (dataSize > 0)
+		{
 			Array.reserve(dataSize);
 
-			for (auto& _item : root["collection"]) {
-
+			for (auto& _item : root["collection"])
+			{
 				auto& newPtr = Array.emplace_back();
 				size_t itemdatasize = _item["itemdatasize"].get<size_t>();
 				std::string encoded = _item["itemdata"].get<std::string>();
@@ -55,12 +57,13 @@ bool BannerManagerClass::SaveGlobal(json& root)
 
 	entry_first["collectionsize"] = Array.size();
 
-	if (!Array.empty()) {
-
+	if (!Array.empty())
+	{
 		entry_first["collection"] = json::array();
 		auto& _arrayOfData = entry_first["collection"];
 
-		for (auto& _item : Array) {
+		for (auto& _item : Array)
+		{
 			json entry_sec;
 			PhobosByteStream _saver(0);
 			PhobosStreamWriter writer(_saver);
@@ -180,8 +183,8 @@ void BannerClass::RenderCSF(Point2D position)
 
 	buffer.clear();
 
-	if (this->Type->CSF_VariableFormat != BannerNumberType::None) {
-
+	if (this->Type->CSF_VariableFormat != BannerNumberType::None)
+	{
 		const auto& variables = ScenarioExtData::Instance()->GetVariables(this->IsGlobalVariable != 0);
 		const auto& it = variables->get_key_iterator(this->Variable);
 
@@ -200,7 +203,9 @@ void BannerClass::RenderCSF(Point2D position)
 				break;
 			}
 		}
-	} else {
+	}
+	else
+	{
 		fmt::format_to(std::back_inserter(buffer), L"{}", this->Type->CSF.Get().Text);
 	}
 
@@ -253,4 +258,3 @@ bool BannerClass::Save(PhobosStreamWriter& stm) const
 {
 	return const_cast<BannerClass*>(this)->Serialize(stm);
 }
-

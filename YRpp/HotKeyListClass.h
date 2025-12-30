@@ -52,5 +52,4 @@ struct HotKeyListClass
 	{
 		return HotKeys + HotKeyCount;
 	}
-
 };

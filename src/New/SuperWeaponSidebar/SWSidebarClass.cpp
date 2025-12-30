@@ -71,7 +71,8 @@ void SWSidebarClass::InitClear()
 		GameDelete<true, false>(toggleButton);
 	}
 
-	for (auto& column : this->Columns) {
+	for (auto& column : this->Columns)
+	{
 		column->ClearButtons();
 		GScreenClass::Instance->RemoveButton(column);
 		GameDelete<true, false>(column);
@@ -87,7 +88,8 @@ void SWSidebarClass::InitIO()
 
 	const auto pSide = SideClass::Array->get_or_default(ScenarioClass::Instance->PlayerSideIndex);
 
-	if (pSide) {
+	if (pSide)
+	{
 		const auto pSideExt = SideExtContainer::Instance.Find(pSide);
 		const auto pOnPCX = pSideExt->SuperWeaponSidebar_OnPCX.GetSurface();
 		const auto pOffPCX = pSideExt->SuperWeaponSidebar_OffPCX.GetSurface();
@@ -124,7 +126,7 @@ void SWSidebarClass::InitIO()
 		}
 	}
 
-	for (const auto &superIdx : ScenarioExtData::Instance()->SWSidebar_Indices)
+	for (const auto& superIdx : ScenarioExtData::Instance()->SWSidebar_Indices)
 		SWSidebarClass::Instance.AddButton(superIdx);
 }
 
@@ -152,7 +154,8 @@ bool SWSidebarClass::AddButton(int superIdx)
 
 	auto& columns = this->Columns;
 
-	for (auto& col : columns) {
+	for (auto& col : columns)
+	{
 		if (std::ranges::any_of(col->Buttons,
 			[superIdx](SWButtonClass* const button) { return button->SuperIndex == superIdx; }))
 			return true; //already exist
@@ -341,7 +344,8 @@ ASMJIT_PATCH(0x6A6316, SidebarClass_AddCameo_SuperWeapon_SWSidebar, 0x6)
 			&& whatAmI != AbstractType::Super)
 		return 0;
 
-	if (SWSidebarClass::Global()->AddButton(index)) {
+	if (SWSidebarClass::Global()->AddButton(index))
+	{
 		ScenarioExtData::Instance()->SWSidebar_Indices.emplace(index);
 		return ReturnFalse;
 	}

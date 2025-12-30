@@ -22,7 +22,6 @@ public:
 	int Duration { -1 };
 	int Delay { -1 };
 
-
 	BannerClass() = default;
 
 	BannerClass
@@ -64,4 +63,3 @@ public:
 
 	static BannerManagerClass Instance;
 };
-

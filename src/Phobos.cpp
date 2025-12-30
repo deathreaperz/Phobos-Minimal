@@ -328,7 +328,6 @@ void OptimizeProcessForSecurity()
 		// Set process mitigations only if available (Windows 8+)
 		typedef BOOL(WINAPI* SetProcessMitigationPolicyFunc)(PROCESS_MITIGATION_POLICY, PVOID, SIZE_T);
 
-
 #ifdef _Enable_these
 		static bool s_checked = false;
 		static bool s_isAppContainer = false;
@@ -558,8 +557,10 @@ bool SetupTrampoline(unsigned int target_address, size_t hook_size)
 // Cleanup function - call when shutting down
 void CleanupTrampolines()
 {
-	for (auto& pair : g_trampolines) {
-		if (pair.second.trampoline_address) {
+	for (auto& pair : g_trampolines)
+	{
+		if (pair.second.trampoline_address)
+		{
 			VirtualFree(pair.second.trampoline_address, 0, MEM_RELEASE);
 		}
 	}
@@ -794,7 +795,6 @@ void Phobos::PassiveSaveGame()
 		GeneralUtils::PrintMessage(StringTable::FetchString(GameStrings::TXT_ERROR_SAVING_GAME));
 }
 
-
 void Phobos::CmdLineParse(char** ppArgs, int nNumArgs)
 {
 	DWORD_PTR processAffinityMask = 1; // limit to first processor
@@ -825,7 +825,6 @@ void Phobos::CmdLineParse(char** ppArgs, int nNumArgs)
 			const std::string cur = pArg;
 			if (cur.starts_with("-ExceptionHandler="))
 			{
-
 				const size_t delim = cur.find("=");
 				const std::string value = cur.substr(delim + 1, cur.size() - delim - 1);
 
@@ -839,9 +838,12 @@ void Phobos::CmdLineParse(char** ppArgs, int nNumArgs)
 		SpawnerMain::CmdLineParse(pArg);
 	}
 
-	if (Debug::LogEnabled) {
+	if (Debug::LogEnabled)
+	{
 		SpawnerMain::PrintInitializeLog();
-	} else {
+	}
+	else
+	{
 		Debug::DeactivateLogger();
 		Debug::LogFileRemove();
 		Debug::made = false;// reset
@@ -971,7 +973,6 @@ void Phobos::InitAdminDebugMode()
 		L"Press OK to continue YR execution.",
 		L"Debugger Notice");
 	}
-
 }
 
 #include <New/Type/TheaterTypeClass.h>
@@ -1040,7 +1041,6 @@ static std::string GetOsVersionQuick()
 			{
 				if (vi2.dwBuildNumber < 21996)
 				{
-
 					if (!bHaveVerFromKernel32) // we failed above; let's hope this would be useful
 						aVer += std::to_string(vi2.dwMajorVersion) + "." + std::to_string(vi2.dwMinorVersion);
 
@@ -1048,7 +1048,6 @@ static std::string GetOsVersionQuick()
 
 					if (vi2.szCSDVersion[0])
 						aVer += (PhobosCRT::WideStringToString(vi2.szCSDVersion) + " ");
-
 				}
 				else
 				{
@@ -1124,7 +1123,8 @@ void Phobos::ExeTerminate()
 	{
 		Phobos::Otamaa::ExeTerminated = true;
 
-		for (auto& handle : Handles::Array) {
+		for (auto& handle : Handles::Array)
+		{
 			handle->detachptr();
 		}
 		Handles::Array.clear();
@@ -1151,7 +1151,6 @@ bool Phobos::DetachFromDebugger()
 
 	if (ntdll != NULL)
 	{
-
 		auto const NtRemoveProcessDebug =
 			(NTSTATUS(WINAPI*)(HANDLE, HANDLE))GetProcAddress(ntdll, "NtRemoveProcessDebug");
 		auto const NtSetInformationDebugObject =
@@ -1192,9 +1191,7 @@ bool Phobos::DetachFromDebugger()
 }
 #pragma warning( pop )
 
-
 #pragma endregion
-
 
 #include <Misc/Multithread.h>
 
@@ -1221,14 +1218,12 @@ NOINLINE void EnableLargeAddressAwareFlag(HANDLE curProc)
 
 NOINLINE bool IsGamemdExe(HMODULE curProc)
 {
-
 	constexpr static const wchar_t* gameExecutables[] = {
 		L"gamemd.exe",      // Yuri's Revenge
 		L"gamepp.exe",      // Possible variant
 	};
 
 	constexpr static size_t executableCount = sizeof(gameExecutables) / sizeof(gameExecutables[0]);
-
 
 	wchar_t filename[MAX_PATH];
 	GetModuleFileNameW(curProc, filename, MAX_PATH);
@@ -1247,8 +1242,10 @@ NOINLINE bool IsGamemdExe(HMODULE curProc)
 	std::wstring path(filename);
 	std::ranges::transform(path, path.begin(), ::towlower);
 
-	for (size_t i = 0; i < executableCount; ++i) {
-		if (path.find(gameExecutables[i]) != std::wstring::npos) {
+	for (size_t i = 0; i < executableCount; ++i)
+	{
+		if (path.find(gameExecutables[i]) != std::wstring::npos)
+		{
 			return true;
 		}
 	}
@@ -1266,7 +1263,6 @@ NOINLINE void ApplyEarlyFuncs()
 			exit(ERROR);
 
 		const auto time = Debug::GetCurTimeA();
-
 
 		const char* loadMode = saved_lpReserved ? "statically" : "dynamicly";
 
@@ -1312,38 +1308,45 @@ static bool startPatching = false;
 static DWORD OriginalCodeProtect = 0;
 static DWORD OriginalDataProtect = 0;
 
-struct ImageSectionInfo {
-    LPVOID BaseOfCode;
-    LPVOID BaseOfData;
-    SIZE_T SizeOfCode;
-    SIZE_T SizeOfData;
+struct ImageSectionInfo
+{
+	LPVOID BaseOfCode;
+	LPVOID BaseOfData;
+	SIZE_T SizeOfCode;
+	SIZE_T SizeOfData;
 };
 
-class MapViewOfFileClass {
- public:
-    explicit MapViewOfFileClass(const wchar_t *fileName):
-    File(INVALID_HANDLE_VALUE),
-    FileMapping(NULL),
-    FileBase(NULL),
-    DosHeader(NULL),
-    NTHeader(NULL),
-    OptionalHeader(NULL),
-    SectionHeaders(NULL)
+class MapViewOfFileClass
 {
-    File = CreateFileW(fileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-		if (File != INVALID_HANDLE_VALUE) {
+public:
+	explicit MapViewOfFileClass(const wchar_t* fileName) :
+		File(INVALID_HANDLE_VALUE),
+		FileMapping(NULL),
+		FileBase(NULL),
+		DosHeader(NULL),
+		NTHeader(NULL),
+		OptionalHeader(NULL),
+		SectionHeaders(NULL)
+	{
+		File = CreateFileW(fileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+		if (File != INVALID_HANDLE_VALUE)
+		{
 			FileMapping = CreateFileMapping(File, NULL, PAGE_READONLY, 0, 0, NULL);
 
-			if (FileMapping != NULL) {
+			if (FileMapping != NULL)
+			{
 				FileBase = MapViewOfFile(FileMapping, FILE_MAP_READ, 0, 0, 0);
 
-				if (FileBase != NULL) {
+				if (FileBase != NULL)
+				{
 					DosHeader = (PIMAGE_DOS_HEADER)FileBase;
 
-					if (DosHeader->e_magic == IMAGE_DOS_SIGNATURE) {
-						NTHeader = (PIMAGE_NT_HEADERS)((uint8_t *)DosHeader + DosHeader->e_lfanew);
+					if (DosHeader->e_magic == IMAGE_DOS_SIGNATURE)
+					{
+						NTHeader = (PIMAGE_NT_HEADERS)((uint8_t*)DosHeader + DosHeader->e_lfanew);
 
-						if (NTHeader->Signature == IMAGE_NT_SIGNATURE) {
+						if (NTHeader->Signature == IMAGE_NT_SIGNATURE)
+						{
 							OptionalHeader = (PIMAGE_OPTIONAL_HEADER)&NTHeader->OptionalHeader;
 							SectionHeaders = IMAGE_FIRST_SECTION(NTHeader);
 						}
@@ -1353,7 +1356,8 @@ class MapViewOfFileClass {
 		}
 	}
 
-    ~MapViewOfFileClass(){
+	~MapViewOfFileClass()
+	{
 		if (FileBase != NULL)
 			UnmapViewOfFile(FileBase);
 		if (FileMapping != NULL)
@@ -1362,87 +1366,97 @@ class MapViewOfFileClass {
 			CloseHandle(File);
 	}
 
-    LPVOID GetMapViewOfFile() const { return FileBase; }
-    PIMAGE_DOS_HEADER GetDosHeader() const { return DosHeader; }
-    PIMAGE_NT_HEADERS GetNtHeader() const { return NTHeader; }
-    PIMAGE_OPTIONAL_HEADER GetOptionalHeader() const { return OptionalHeader; }
-    PIMAGE_SECTION_HEADER GetSectionHeaders() const { return SectionHeaders; }
-    WORD GetSectionHeaderCount() const { return NTHeader ? NTHeader->FileHeader.NumberOfSections : 0; }
+	LPVOID GetMapViewOfFile() const { return FileBase; }
+	PIMAGE_DOS_HEADER GetDosHeader() const { return DosHeader; }
+	PIMAGE_NT_HEADERS GetNtHeader() const { return NTHeader; }
+	PIMAGE_OPTIONAL_HEADER GetOptionalHeader() const { return OptionalHeader; }
+	PIMAGE_SECTION_HEADER GetSectionHeaders() const { return SectionHeaders; }
+	WORD GetSectionHeaderCount() const { return NTHeader ? NTHeader->FileHeader.NumberOfSections : 0; }
 
 private:
-    HANDLE File;
-    HANDLE FileMapping;
+	HANDLE File;
+	HANDLE FileMapping;
 	LPVOID FileBase;
-    PIMAGE_DOS_HEADER DosHeader;
-    PIMAGE_NT_HEADERS NTHeader;
-    PIMAGE_OPTIONAL_HEADER OptionalHeader;
-    PIMAGE_SECTION_HEADER SectionHeaders;
+	PIMAGE_DOS_HEADER DosHeader;
+	PIMAGE_NT_HEADERS NTHeader;
+	PIMAGE_OPTIONAL_HEADER OptionalHeader;
+	PIMAGE_SECTION_HEADER SectionHeaders;
 };
 
-bool GetModuleSectionInfo(ImageSectionInfo &info)
+bool GetModuleSectionInfo(ImageSectionInfo& info)
 {
-    wchar_t fileName[MAX_PATH] = { 0 };
+	wchar_t fileName[MAX_PATH] = { 0 };
 
-    if (GetModuleFileNameW(NULL, fileName, std::size(fileName)) != 0) {
-        MapViewOfFileClass mapView(fileName);
-        PIMAGE_OPTIONAL_HEADER OptionalHeader = mapView.GetOptionalHeader();
+	if (GetModuleFileNameW(NULL, fileName, std::size(fileName)) != 0)
+	{
+		MapViewOfFileClass mapView(fileName);
+		PIMAGE_OPTIONAL_HEADER OptionalHeader = mapView.GetOptionalHeader();
 
-        if (OptionalHeader != NULL) {
-            info.BaseOfCode = LPVOID(OptionalHeader->ImageBase + OptionalHeader->BaseOfCode);
-            info.BaseOfData = LPVOID(OptionalHeader->ImageBase + OptionalHeader->BaseOfData);
-            info.SizeOfCode = SIZE_T(OptionalHeader->SizeOfCode);
-            info.SizeOfData = SIZE_T(OptionalHeader->SizeOfInitializedData + OptionalHeader->SizeOfUninitializedData);
+		if (OptionalHeader != NULL)
+		{
+			info.BaseOfCode = LPVOID(OptionalHeader->ImageBase + OptionalHeader->BaseOfCode);
+			info.BaseOfData = LPVOID(OptionalHeader->ImageBase + OptionalHeader->BaseOfData);
+			info.SizeOfCode = SIZE_T(OptionalHeader->SizeOfCode);
+			info.SizeOfData = SIZE_T(OptionalHeader->SizeOfInitializedData + OptionalHeader->SizeOfUninitializedData);
 
-            return true;
-        }
-    }
-    return false;
+			return true;
+		}
+	}
+	return false;
 }
 
-bool StartPatching() {
-	if(startPatching){
+bool StartPatching()
+{
+	if (startPatching)
+	{
 		return true;
 	}
 
 	bool success = false;
-    ImageSectionInfo info;
+	ImageSectionInfo info;
 
-	if (GetModuleSectionInfo(info)) {
-        success = true;
-        HANDLE process = Patch::CurrentProcess;
-        if (VirtualProtectEx(process, info.BaseOfCode, info.SizeOfCode, PAGE_EXECUTE_READWRITE, &OriginalCodeProtect) == FALSE) {
-            success = false;
-        }
-        if (VirtualProtectEx(process, info.BaseOfData, info.SizeOfData, PAGE_EXECUTE_READWRITE, &OriginalDataProtect) == FALSE) {
-            success = false;
-        }
-    }
+	if (GetModuleSectionInfo(info))
+	{
+		success = true;
+		HANDLE process = Patch::CurrentProcess;
+		if (VirtualProtectEx(process, info.BaseOfCode, info.SizeOfCode, PAGE_EXECUTE_READWRITE, &OriginalCodeProtect) == FALSE)
+		{
+			success = false;
+		}
+		if (VirtualProtectEx(process, info.BaseOfData, info.SizeOfData, PAGE_EXECUTE_READWRITE, &OriginalDataProtect) == FALSE)
+		{
+			success = false;
+		}
+	}
 
 	startPatching = success;
 
-    return success;
+	return success;
 }
 
 bool StopPatching()
 {
-    bool success = false;
-    DWORD old_protect;
-    ImageSectionInfo info;
+	bool success = false;
+	DWORD old_protect;
+	ImageSectionInfo info;
 
-    if (GetModuleSectionInfo(info)) {
-        success = true;
-        HANDLE process = Patch::CurrentProcess;
-        if (VirtualProtectEx(process, info.BaseOfCode, info.SizeOfCode, OriginalCodeProtect, &old_protect) == FALSE) {
-            success = false;
-        }
-        if (VirtualProtectEx(process, info.BaseOfData, info.SizeOfData, OriginalDataProtect, &old_protect) == FALSE) {
-            success = false;
-        }
-    }
+	if (GetModuleSectionInfo(info))
+	{
+		success = true;
+		HANDLE process = Patch::CurrentProcess;
+		if (VirtualProtectEx(process, info.BaseOfCode, info.SizeOfCode, OriginalCodeProtect, &old_protect) == FALSE)
+		{
+			success = false;
+		}
+		if (VirtualProtectEx(process, info.BaseOfData, info.SizeOfData, OriginalDataProtect, &old_protect) == FALSE)
+		{
+			success = false;
+		}
+	}
 
-    startPatching = false;
+	startPatching = false;
 
-    return success;
+	return success;
 }
 
 #include <LaserDrawClass.h>
@@ -1458,16 +1472,17 @@ float WWMath_Sin(double radians)
 	int idx = static_cast<int>((idx64 / 2) & 0x80001FFF); // v3
 
 	// Sign-extend the 13-bit index (because &0x80001FFF keeps only certain bits)
-	if (idx < 0) {
+	if (idx < 0)
+	{
 		int t = (idx - 1) | 0xFFFFE000;
 		idx = t + 1 + ((t + 1) < 0 ? 0x2000 : 0);
 	}
 
 	// Odd-bit correction (round up if necessary)
-	if (isOdd && idx < 8191) {
+	if (isOdd && idx < 8191)
+	{
 		idx++;
 	}
-
 
 	return Math::FastMath_sin_Table[idx];
 }
@@ -1481,10 +1496,13 @@ float WWMath_Cos(double radians)
 	int bit = t & 1;
 	int idx = (t >> 1) & 0x80001FFF;
 
-	if (idx < 0) {
+	if (idx < 0)
+	{
 		idx = ((idx - 1) | 0xFFFFE000) + 1;
 		idx += (idx < 0) ? 0x2800 : 0x0800; // 10240 or 2048
-	} else {
+	}
+	else
+	{
 		idx += 2048;
 	}
 
@@ -1496,7 +1514,8 @@ float WWMath_Cos(double radians)
 
 float WWMath_sqrt(double n)
 {
-	union FastMathUnion {
+	union FastMathUnion
+	{
 		float f;
 		unsigned int i;
 	};
@@ -1538,32 +1557,36 @@ float WWMath_sqrt(double n)
 
 bool InspectMathDetailed()
 {
-	struct MathTest {
+	struct MathTest
+	{
 		const char* name;
 	};
 
-	struct DoubleMathTest : public MathTest {
+	struct DoubleMathTest : public MathTest
+	{
 		std::pair<const char*, double> first;
 		std::pair<const char*, double> second;
 
-		DoubleMathTest(const char* testName, const char* firstname , double firstRes, const char* secondname,double secondRes)
+		DoubleMathTest(const char* testName, const char* firstname, double firstRes, const char* secondname, double secondRes)
 			: MathTest { testName }, first { firstname, firstRes }, second { secondname , secondRes } { }
 	};
 
-	struct FloatMathTest : public MathTest {
+	struct FloatMathTest : public MathTest
+	{
 		std::pair<const char*, float>  first;
 		std::pair<const char*, float>  second;
 
 		FloatMathTest(const char* testName, const char* firstname, float firstRes, const char* secondname, float secondRes)
-			: MathTest{ testName }, first { firstname ,firstRes }, second { secondname , secondRes } {}
+			: MathTest { testName }, first { firstname ,firstRes }, second { secondname , secondRes } { }
 	};
 
-	struct IntMathTest : public MathTest {
+	struct IntMathTest : public MathTest
+	{
 		std::pair<const char*, int> first;
 		std::pair<const char*, int>  second;
 
 		IntMathTest(const char* testName, const char* firstname, int firstRes, const char* secondname, int secondRes)
-			: MathTest{ testName }, first { firstname ,firstRes }, second { secondname , secondRes } {}
+			: MathTest { testName }, first { firstname ,firstRes }, second { secondname , secondRes } { }
 	};
 
 	// Collect all test cases
@@ -1644,7 +1667,7 @@ bool InspectMathDetailed()
 		1.0 / WWMath_sqrt(5.0),
 		1.0 / (float)std::sqrt(5.0)
 	);
-	
+
 	testsdouble.emplace_back(
 		"2 / sqrt(5)",
 		2.0 / WWMath_sqrt(5.0),
@@ -1673,7 +1696,6 @@ bool InspectMathDetailed()
 	//	"std"  , std::sqrt(base_ + base_)
 	//);
 
-
 	//// = 1.047197551196598 (π/3, 60 degrees)
 	//constexpr double PI_BY_THREE = std::bit_cast<double>(0x3FF0C15238732D65ull);
 	//constexpr double tan_ = gcem::tan(Math::PI_BY_TWO_APPROX - PI_BY_THREE);
@@ -1700,10 +1722,13 @@ bool InspectMathDetailed()
 
 	for (const auto& test : testsdouble)
 	{
-		if (*(uint32_t*)&test.first.second == *(uint32_t*)&test.second.second) {
+		if (*(uint32_t*)&test.first.second == *(uint32_t*)&test.second.second)
+		{
 			Debug::Log("[PASS] %s\n", test.name);
 			passed++;
-		} else {
+		}
+		else
+		{
 			Debug::Log("[FAIL] %s\n", test.name);
 			Debug::Log("       %s:    %.20f (0x%08X)\n",
 					  test.first.first, test.first.second, *(uint32_t*)&test.first.second);
@@ -1735,12 +1760,15 @@ bool InspectMathDetailed()
 		}
 	}
 
-	for (const auto& test : testsint) {
-		if (*(uint32_t*)&test.first.second == *(uint32_t*)&test.second.second) {
+	for (const auto& test : testsint)
+	{
+		if (*(uint32_t*)&test.first.second == *(uint32_t*)&test.second.second)
+		{
 			Debug::Log("[PASS] %s\n", test.name);
 			passed++;
 		}
-		else {
+		else
+		{
 			Debug::Log("[FAIL] %s\n", test.name);
 			Debug::Log("       %s:    %d (0x%08X)\n",
 					  test.first.first, test.first.second, *(uint32_t*)&test.first.second);
@@ -1768,8 +1796,8 @@ bool InspectMathDetailed()
 		return false;
 	}
 
-	
-	struct Generate {
+	struct Generate
+	{
 		double value;
 		const char* name;
 	};
@@ -1778,9 +1806,10 @@ bool InspectMathDetailed()
 
 	//gens.emplace_back(std::sqrt(3),"sqrt(3)");
 
-	for (const auto& gen : gens) {
+	for (const auto& gen : gens)
+	{
 		uint64_t bits = std::bit_cast<uint64_t>(gen.value);
-		Debug::Log("Generating %s :  0x%016llX\n", gen.name ,(unsigned long long)bits);
+		Debug::Log("Generating %s :  0x%016llX\n", gen.name, (unsigned long long)bits);
 	}
 	return true;
 }
@@ -1789,7 +1818,8 @@ bool InspectMathDetailed()
 typedef DWORD(__stdcall* FP_GetVersion)();
 static COMPILETIMEEVAL referencefunc<FP_GetVersion, 0x7E1288> const Game_GetVersion {};
 
-DWORD __stdcall GetVersion_Wrapper() {
+DWORD __stdcall GetVersion_Wrapper()
+{
 	auto ver = Game_GetVersion.invoke()();
 	CRTHooks::_set_fp_mode();
 	ApplyEarlyFuncs();
@@ -1798,11 +1828,13 @@ DWORD __stdcall GetVersion_Wrapper() {
 	return ver;
 }
 
-bool __fastcall Parse_Command_Line(int argc, char* argv[]) {
+bool __fastcall Parse_Command_Line(int argc, char* argv[])
+{
 	JMP_STD(0x52F620);
 }
 
-bool __fastcall Phobos_Parse_Command_Line(int argc, char* argv[]) {
+bool __fastcall Phobos_Parse_Command_Line(int argc, char* argv[])
+{
 	if (argc > 1)
 	{
 		Debug::Log("Parsing command line arguments...\n");
@@ -1820,7 +1852,6 @@ bool __fastcall Phobos_Parse_Command_Line(int argc, char* argv[]) {
 #ifdef MATHTEST
 	InspectMathDetailed();
 #endif
-
 
 	return true;
 }
@@ -1841,13 +1872,14 @@ BOOL APIENTRY DllMain(HANDLE hInstance, DWORD  ul_reason_for_call, LPVOID lpRese
 
 			CRTHooks::_set_fp_mode();
 
-            if (!StartPatching()) {
-                return FALSE;
-            }
+			if (!StartPatching())
+			{
+				return FALSE;
+			}
 
 			DisableThreadLibraryCalls((HMODULE)hInstance);
 			IsInitialized = true;
-			
+
 			MH_Initialize();
 
 			CRTHooks::Apply();
@@ -1863,13 +1895,15 @@ BOOL APIENTRY DllMain(HANDLE hInstance, DWORD  ul_reason_for_call, LPVOID lpRese
 			Debug::PrepareLogFile(); //prepare directory
 			Debug::LogFileRemove(); //remove previous debug log file if presents
 
-			if (argv) {
-				for (int i = 1; i < argc; i++) {
-
+			if (argv)
+			{
+				for (int i = 1; i < argc; i++)
+				{
 					args += L" ";
 					args += argv[i];
 
-					if (IS_SAME_WSTR(argv[i], L"-Icon") && i + 1 < argc) {
+					if (IS_SAME_WSTR(argv[i], L"-Icon") && i + 1 < argc)
+					{
 						// Convert wide string to narrow string
 						char buffer[MAX_PATH];
 						WideCharToMultiByte(CP_ACP, 0, argv[i + 1], -1, buffer, MAX_PATH, NULL, NULL);
@@ -1879,7 +1913,8 @@ BOOL APIENTRY DllMain(HANDLE hInstance, DWORD  ul_reason_for_call, LPVOID lpRese
 					{
 						Phobos::Config::HideWarning = true;
 					}
-					else if (IS_SAME_WSTR(argv[i], L"-LOG")) {
+					else if (IS_SAME_WSTR(argv[i], L"-LOG"))
+					{
 						Debug::LogEnabled = true;
 						Debug::InitLogger();
 					}
@@ -1919,11 +1954,11 @@ BOOL APIENTRY DllMain(HANDLE hInstance, DWORD  ul_reason_for_call, LPVOID lpRese
 				LocalFree(argv);
 			}
 
-			if (Debug::LogEnabled) {
+			if (Debug::LogEnabled)
+			{
 				Debug::Log("DLL injection successful, logging enabled via command line.\n");
 				Debug::Log("Initialized Phobos " PRODUCT_VERSION ".\n");
 				Debug::Log("args %ls\n", args.c_str());
-
 
 				CRTHooks::Print_FPUMode();
 			}
@@ -1932,8 +1967,8 @@ BOOL APIENTRY DllMain(HANDLE hInstance, DWORD  ul_reason_for_call, LPVOID lpRese
 	break;
 	case DLL_PROCESS_DETACH:
 	{
-
-		if (!StopPatching()) {
+		if (!StopPatching())
+		{
 			return FALSE;
 		}
 
@@ -1985,7 +2020,8 @@ ASMJIT_PATCH(0x55DBCD, MainLoop_SaveGame, 0x6)
 	return SkipSave;
 }
 
-ASMJIT_PATCH(0x6BBE6A, WinMain_AllowMultipleInstances, 0x6) {
+ASMJIT_PATCH(0x6BBE6A, WinMain_AllowMultipleInstances, 0x6)
+{
 	return Phobos::Otamaa::AllowMultipleInstance ? 0x6BBED6 : 0x0;
 }
 

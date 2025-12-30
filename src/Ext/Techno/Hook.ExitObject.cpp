@@ -501,8 +501,8 @@ static KickOutResult HandleAircraftExit(
 		pAircraft->MarkDownSetZ(0);
 		++Unsorted::ScenarioInit;
 
-		const KickOutResult result = ionStormActive ? 
-			  HandleAircraftIonStormExit(pBuilding, pAircraft, facing) 
+		const KickOutResult result = ionStormActive ?
+			HandleAircraftIonStormExit(pBuilding, pAircraft, facing)
 			: HandleAircraftDockedExit(pBuilding, pAircraft, facing);
 
 		--Unsorted::ScenarioInit;
@@ -1750,5 +1750,5 @@ KickOutResult FakeBuildingClass::__ExitObject(TechnoClass* pObject, CellStruct e
 	}
 }
 
-DEFINE_FUNCTION_JUMP(LJMP , 0x443C60 ,FakeBuildingClass::__ExitObject)
-DEFINE_FUNCTION_JUMP(VTABLE, 0x7E3FBC,FakeBuildingClass::__ExitObject)
+DEFINE_FUNCTION_JUMP(LJMP, 0x443C60, FakeBuildingClass::__ExitObject)
+DEFINE_FUNCTION_JUMP(VTABLE, 0x7E3FBC, FakeBuildingClass::__ExitObject)

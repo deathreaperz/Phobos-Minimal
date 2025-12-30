@@ -57,28 +57,28 @@ void DumpTypeDataArrayToFile::Dump()
 {
 	GameConfig file { "DumpRulesTypes.ini" };
 
-	file.OpenOrCreateAction([](CCINIClass* pINI , CCFileClass* pFile){
-		LogType<HouseTypeClass>("[Countries]", pFile);
+	file.OpenOrCreateAction([](CCINIClass* pINI, CCFileClass* pFile)
+{
+	LogType<HouseTypeClass>("[Countries]", pFile);
 
-		LogType<InfantryTypeClass>("[InfantryTypes]", pFile);
-		LogType<UnitTypeClass>("[VehicleTypes]", pFile);
-		LogType<AircraftTypeClass>("[AircraftTypes]", pFile);
-		LogType<BuildingTypeClass>("[BuildingTypes]", pFile);
+	LogType<InfantryTypeClass>("[InfantryTypes]", pFile);
+	LogType<UnitTypeClass>("[VehicleTypes]", pFile);
+	LogType<AircraftTypeClass>("[AircraftTypes]", pFile);
+	LogType<BuildingTypeClass>("[BuildingTypes]", pFile);
 
-		LogType<TerrainTypeClass>("[TerrainTypes]", pFile);
-		LogType<SmudgeTypeClass>("[SmudgeTypes]", pFile);
-		LogType<OverlayTypeClass>("[OverlayTypes]", pFile);
+	LogType<TerrainTypeClass>("[TerrainTypes]", pFile);
+	LogType<SmudgeTypeClass>("[SmudgeTypes]", pFile);
+	LogType<OverlayTypeClass>("[OverlayTypes]", pFile);
 
-		LogType<AnimTypeClass>("[Animations]", pFile);
-		LogType<VoxelAnimTypeClass>("[VoxelAnims]", pFile);
-		LogType<ParticleTypeClass>("[Particles]", pFile);
-		LogType<ParticleSystemTypeClass>("[ParticleSystems]", pFile);
+	LogType<AnimTypeClass>("[Animations]", pFile);
+	LogType<VoxelAnimTypeClass>("[VoxelAnims]", pFile);
+	LogType<ParticleTypeClass>("[Particles]", pFile);
+	LogType<ParticleSystemTypeClass>("[ParticleSystems]", pFile);
 
-		LogType<WeaponTypeClass>("[WeaponTypes]", pFile);
-		LogType<SuperWeaponTypeClass>("[SuperWeaponTypes]", pFile);
-		LogType<WarheadTypeClass>("[Warheads]", pFile);
+	LogType<WeaponTypeClass>("[WeaponTypes]", pFile);
+	LogType<SuperWeaponTypeClass>("[SuperWeaponTypes]", pFile);
+	LogType<WarheadTypeClass>("[Warheads]", pFile);
 
-		LogType<BulletTypeClass>("[Projectiles]", pFile);
+	LogType<BulletTypeClass>("[Projectiles]", pFile);
 	});
-
 }

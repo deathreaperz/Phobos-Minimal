@@ -133,7 +133,6 @@ ASMJIT_PATCH(0x442D1B, BuildingClass_Init_Academy, 6)
 	if (pThis->Type->Trainable && HouseExtContainer::Instance.Find(pThis->Owner)->Is_ConstructionYardSpied)
 		pThis->Veterancy.Veterancy = 1.0f;
 
-
 	HouseExtData::ApplyAcademy(pThis->Owner, pThis, AbstractType::Building);
 
 	return 0;
@@ -369,7 +368,7 @@ ASMJIT_PATCH(0x441F12, BuildingClass_Destroy_RubbleYell, 6)
 	return 0;
 }
 
-DEFINE_FUNCTION_JUMP(VTABLE , 0x7E42C8 , FakeBuildingClass::_OnFinishRepair)
+DEFINE_FUNCTION_JUMP(VTABLE, 0x7E42C8, FakeBuildingClass::_OnFinishRepair)
 
 // #664: Advanced Rubble - reconstruction part: Reconstruction
 ASMJIT_PATCH(0x519FAF, InfantryClass_UpdatePosition_EngineerRepairsFriendly, 6)
@@ -415,7 +414,7 @@ ASMJIT_PATCH(0x519FAF, InfantryClass_UpdatePosition_EngineerRepairsFriendly, 6)
 		return TargetTypeExtData->EngineerRepairable ? 0x0 : 0x519FB9;
 	}
 
-	if(!Target->Type->Repairable)
+	if (!Target->Type->Repairable)
 		return 0x519FB9;
 
 	Target->_OnFinishRepairB(pThis);
@@ -509,9 +508,12 @@ ASMJIT_PATCH(0x4483FB, BuildingClass_SetOwningHouse_Tech, 6)
 	GET(BuildingClass*, pThis, ESI);
 	GET(HouseClass*, pNewOwner, EBX);
 
-	if (Bld_ChangeOwnerAnnounce && !pNewOwner->Type->MultiplayPassive) {
-		if(pThis->Type->NeedsEngineer) {
-			if(pThis->Owner != pNewOwner) {
+	if (Bld_ChangeOwnerAnnounce && !pNewOwner->Type->MultiplayPassive)
+	{
+		if (pThis->Type->NeedsEngineer)
+		{
+			if (pThis->Owner != pNewOwner)
+			{
 				const auto pExt = BuildingTypeExtContainer::Instance.Find(pThis->Type);
 				const auto color = HouseClass::CurrentPlayer->ColorSchemeIndex;
 
@@ -527,10 +529,13 @@ ASMJIT_PATCH(0x4483FB, BuildingClass_SetOwningHouse_Tech, 6)
 					pExt->MessageCapture->PrintAsMessage(color);
 				}
 			}
-		} else {
+		}
+		else
+		{
 			auto coord = pThis->GetMapCoords();
-			if(RadarEventClass::Create(RadarEventType::BuildingCaptured,coord)){
-				if(pNewOwner->ControlledByCurrentPlayer())
+			if (RadarEventClass::Create(RadarEventType::BuildingCaptured, coord))
+			{
+				if (pNewOwner->ControlledByCurrentPlayer())
 					VoxClass::Play(GameStrings::EVA_BuildingCaptured);
 			}
 		}
@@ -575,9 +580,7 @@ ASMJIT_PATCH(0x4483FB, BuildingClass_SetOwningHouse_Tech, 6)
 					.Process(IsResetBudgetOnCapture)
 					.Success();
 			}
-
 		} AdditionalProduceCashData {};
-
 
 //these based on vinifera source
 // additional data , including the upgrades
@@ -598,7 +601,6 @@ struct ProduceCashData
 
 		for (size_t i = 0; i < count; ++i)
 		{
-
 			if (auto pType = FromType[i])
 			{
 				CurrentProduceCashBudget[i] = BuildingTypeExtContainer::Instance.Find(pType)->AdditionalProduceCashData.ProduceCashBudget;
@@ -643,7 +645,6 @@ struct ProduceCashData
 
 							if (additionaldata->CurrentProduceCashBudget[i] > 0)
 							{
-
 								if (additionaldata->CurrentProduceCashBudget[i] != -1)
 								{
 									additionaldata->CurrentProduceCashBudget[i] -= MaxImpl(0, amount);
@@ -721,7 +722,6 @@ struct ProduceCashData
 	//handle the Upgrades
 	static void Unlimbo(BuildingClass* pBld)
 	{
-
 	}
 
 	//handle the main building case
@@ -757,7 +757,6 @@ struct ProduceCashData
 			}
 		}
 	}
-
 };
 */
 
@@ -812,21 +811,22 @@ ASMJIT_PATCH(0x4482BD, BuildingClass_SetOwningHouse_ProduceCash, 6)
 	auto pExt = BuildingExtContainer::Instance.Find(pThis);
 
 	std::array<std::pair<BuildingTypeClass*, CDTimerClass*>, 4u> Timers
-	= { {
-	 { pThis->Type , &pThis->CashProductionTimer },
-	 { pThis->Upgrades[0] ,&pExt->CashUpgradeTimers[0] },
-	 { pThis->Upgrades[1] ,&pExt->CashUpgradeTimers[1] },
-	 { pThis->Upgrades[2] ,&pExt->CashUpgradeTimers[2] },
-	 } };
+		= { {
+		 { pThis->Type , &pThis->CashProductionTimer },
+		 { pThis->Upgrades[0] ,&pExt->CashUpgradeTimers[0] },
+		 { pThis->Upgrades[1] ,&pExt->CashUpgradeTimers[1] },
+		 { pThis->Upgrades[2] ,&pExt->CashUpgradeTimers[2] },
+		 } };
 
-	for (auto& [bld, timer] : Timers) {
-		if (bld) {
-
-			if (bld->ProduceCashStartup || bld->ProduceCashAmount) {
-
+	for (auto& [bld, timer] : Timers)
+	{
+		if (bld)
+		{
+			if (bld->ProduceCashStartup || bld->ProduceCashAmount)
+			{
 				//if (!pExt->BeignMCEd) {
 				//	pExt->BeignMCEd = false;
-					startup += bld->ProduceCashStartup;
+				startup += bld->ProduceCashStartup;
 				//}
 
 				if (bld->ProduceCashDelay)
@@ -837,10 +837,13 @@ ASMJIT_PATCH(0x4482BD, BuildingClass_SetOwningHouse_ProduceCash, 6)
 		}
 	}
 
-	if (startup) {
-		if (!pNewOwner->Type->MultiplayPassive) {
+	if (startup)
+	{
+		if (!pNewOwner->Type->MultiplayPassive)
+		{
 			pNewOwner->TransactMoney(startup);
-			if (BuildingTypeExtContainer::Instance.Find(pThis->Type)->ProduceCashDisplay) {
+			if (BuildingTypeExtContainer::Instance.Find(pThis->Type)->ProduceCashDisplay)
+			{
 				TechnoExtContainer::Instance.Find(pThis)->TechnoValueAmount += startup;
 			}
 		}
@@ -865,8 +868,10 @@ ASMJIT_PATCH(0x43FD2C, BuildingClass_Update_ProduceCash, 6)
 	 { pThis->Upgrades[2] ,&pExt->CashUpgradeTimers[2] },
 	} };
 
-	for (auto& [pbld, timer] : Timers) {
-		if (pbld && pbld->ProduceCashDelay > 0 && timer->GetTimeLeft() == 1) {
+	for (auto& [pbld, timer] : Timers)
+	{
+		if (pbld && pbld->ProduceCashDelay > 0 && timer->GetTimeLeft() == 1)
+		{
 			timer->Start(pbld->ProduceCashDelay + 1);
 			produceAmount += pbld->ProduceCashAmount;
 		}
@@ -874,7 +879,6 @@ ASMJIT_PATCH(0x43FD2C, BuildingClass_Update_ProduceCash, 6)
 
 	if (produceAmount && !pThis->Owner->Type->MultiplayPassive && pThis->IsPowerOnline())
 	{
-
 		if (BuildingTypeExtContainer::Instance.Find(pThis->Type)->ProduceCashDisplay)
 		{
 			pTExt->TechnoValueAmount += produceAmount;
@@ -930,7 +934,6 @@ ASMJIT_PATCH(0x448D95, BuildingClass_SetOwningHouse_OldSpy2, 0x8)
 
 	return 0x448DB9;
 }
-
 
 ASMJIT_PATCH(0x455923, BuildingClass_SensorArray_BuildingRedraw, 0x6)
 {
@@ -1218,7 +1221,6 @@ void SetFreeUnitMission(UnitClass* pUnit)
 	}
 	else
 	{
-
 		if (pUnit->Type->Harvester ||
 			pUnit->Type->Weeder ||
 			pUnit->Type->ResourceGatherer)
@@ -1238,7 +1240,6 @@ void SetFreeUnitMission(UnitClass* pUnit)
 
 void SpawnFreeUnits(BuildingClass* pBuilding, int count)
 {
-
 	if (count <= 0)
 		return;
 
@@ -1433,7 +1434,6 @@ ASMJIT_PATCH(0x4456E5, BuildingClass_UpdateConstructionOptions_ExcludeDisabled, 
 //	return true;
 //}
 
-
 // ASMJIT_PATCH(0x73A1BC, UnitClass_UpdatePosition_EnteredGrinder, 0x7)
 // {
 // 	GET(UnitClass* const, Vehicle, EBP);
@@ -1506,7 +1506,7 @@ ASMJIT_PATCH(0x51E462, InfantryClass_WhatAction_ObjectClass_SkipBomb, 0x6)
 
 		if (!vsData->Flags.ForceFire
 			|| Math::abs(vsData->Verses) == 0.0
-			|| (!ignoreForce && WhatActionObjectTemp::Move )
+			|| (!ignoreForce && WhatActionObjectTemp::Move)
 			|| !BombExtContainer::Instance.Find(pTarget->AttachedBomb)->Weapon->Ivan_Detachable)
 			return SkipBomb;
 
@@ -1523,7 +1523,7 @@ ASMJIT_PATCH(0x51E4ED, InfantryClass_GetActionOnObject_EngineerRepairable, 6)
 	GET(BuildingClass*, pBuilding, ESI);
 	const auto pTypeExt = BuildingTypeExtContainer::Instance.Find(pBuilding->Type);
 
-	if(!pTypeExt->EngineerRepairable.Get(pBuilding->Type->Repairable))
+	if (!pTypeExt->EngineerRepairable.Get(pBuilding->Type->Repairable))
 		return Skip;
 
 	GET(InfantryClass*, pThis, EDI);
@@ -1560,7 +1560,7 @@ ASMJIT_PATCH(0x51EE6B, InfantryClass_GetActionOnObject_Saboteur, 6)
 
 	GET(InfantryClass*, pThis, EDI);
 
-	if(!WhatActionObjectTemp::ignoreForce && WhatActionObjectTemp::Fire)
+	if (!WhatActionObjectTemp::ignoreForce && WhatActionObjectTemp::Fire)
 		return 0x51F05E;
 
 	GET(ObjectClass*, pObject, ESI);
@@ -1605,7 +1605,8 @@ ASMJIT_PATCH(0x51E635, InfantryClass_GetActionOnObject_EngineerOverFriendlyBuild
 
 	auto pBuilding = cast_to<BuildingClass*>(pTarget);
 
-	if(pBuilding){
+	if (pBuilding)
+	{
 		const auto pData = BuildingTypeExtContainer::Instance.Find(pBuilding->Type);
 
 		if ((pData->RubbleIntact || pData->RubbleIntactRemove) && pTarget->Owner->IsAlliedWith(pThis))
@@ -1616,19 +1617,20 @@ ASMJIT_PATCH(0x51E635, InfantryClass_GetActionOnObject_EngineerOverFriendlyBuild
 		}
 	}
 
-	if(((R->EAX<DWORD>() & 0x4000) != 0))
+	if (((R->EAX<DWORD>() & 0x4000) != 0))
 	{
 		if (pBuilding)
 		{
 			const bool canBeGrinded = pBuilding->Type->Grinding && BuildingExtData::CanGrindTechno(pBuilding, pThis);
 			Action ret = canBeGrinded ? Action::Repair : Action::NoGRepair;
 
-			if(ret == Action::NoGRepair &&
+			if (ret == Action::NoGRepair &&
 				(pBuilding->Type->InfantryAbsorb
-				|| BuildingTypeExtContainer::Instance.Find(pBuilding->Type)->TunnelType != -1
-				|| pBuilding->Type->Hospital && pThis->GetHealthPercentage() < RulesClass::Instance->ConditionGreen
-				|| pBuilding->Type->Armory && pThis->Type->Trainable
-			  )){
+					|| BuildingTypeExtContainer::Instance.Find(pBuilding->Type)->TunnelType != -1
+					|| pBuilding->Type->Hospital && pThis->GetHealthPercentage() < RulesClass::Instance->ConditionGreen
+					|| pBuilding->Type->Armory && pThis->Type->Trainable
+					))
+			{
 				ret = pThis->SendCommand(RadioCommand::QueryCanEnter, pTarget) == RadioCommand::AnswerPositive ?
 					Action::Enter : Action::NoEnter;
 			}
@@ -1708,12 +1710,10 @@ void WhenInfiltratesInto(FakeInfantryClass* pSpy, BuildingClass* pBuilding)
 	}
 	else
 	{
-
 		const int damage = pSpy->_GetTypeExtData()->WhenInfiltrate_Damage.GetFromSpecificRank(rank);
 
 		if (damage != 0)
 		{
-
 			auto pWarhead = pSpy->_GetTypeExtData()->WhenInfiltrate_Warhead.GetFromSpecificRank(rank);
 
 			if (!pWarhead)
@@ -1783,7 +1783,6 @@ ASMJIT_PATCH(0x519FF8, InfantryClass_UpdatePosition_Saboteur, 6)
 		}
 
 	return SkipInfiltrate;
-
 }
 
 ASMJIT_PATCH(0x7376D9, UnitClass_ReceivedRadioCommand_DockUnload_Facing, 5)
@@ -1917,18 +1916,20 @@ ASMJIT_PATCH(0x446366, BuildingClass_Place_Academy, 6)
 {
 	GET(FakeBuildingClass*, pThis, EBP);
 
-	auto pTypeExt= pThis->_GetTypeExtData();
+	auto pTypeExt = pThis->_GetTypeExtData();
 	auto pExt = pThis->_GetExtData();
 	HouseExtData* pHouseExt = HouseExtContainer::Instance.Find(pThis->Owner);
 
-	if (pTypeExt->IsAcademy()) {
+	if (pTypeExt->IsAcademy())
+	{
 		HouseExtData::UpdateAcademy(pThis->Owner, pThis, true);
 	}
 
 	if (!pTypeExt->DamageFire_Offs.empty())
 		pExt->DamageFireAnims.resize(pTypeExt->DamageFire_Offs.size());
 
-	if (pTypeExt->TunnelType >= 0) {
+	if (pTypeExt->TunnelType >= 0)
+	{
 		pHouseExt->TunnelsBuildings.emplace(pThis);
 	}
 

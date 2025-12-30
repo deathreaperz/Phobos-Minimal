@@ -124,7 +124,8 @@ public:
 		return *reinterpret_cast<InfantryExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 
-	InfantryTypeExtData* _GetTypeExtData() {
+	InfantryTypeExtData* _GetTypeExtData()
+	{
 		return *reinterpret_cast<InfantryTypeExtData**>(((DWORD)this->Type) + AbstractExtOffset);
 	}
 };

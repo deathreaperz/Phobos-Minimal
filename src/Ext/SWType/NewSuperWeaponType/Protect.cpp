@@ -35,11 +35,12 @@ void ProtectStateMachine::Update()
 		pData->PrintMessage(pData->Message_Activate, this->Super->Owner);
 
 		const auto sound = pData->SW_ActivationSound.Get(-1);
-		if (sound != -1) {
+		if (sound != -1)
+		{
 			VocClass::PlayGlobal(sound, Panning::Center, 1.0);
 		}
 
-		SW_Protect::ApplyProtect(this->Super, this->Coords , pData->GetNewSWType()->GetRange(pData));
+		SW_Protect::ApplyProtect(this->Super, this->Coords, pData->GetNewSWType()->GetRange(pData));
 	}
 }
 
@@ -80,22 +81,22 @@ void SW_Protect::ApplyProtect(SuperClass* pThis, const CellStruct& Coords, SWRan
 	// protect everything in range
 	Helpers::Alex::DistinctCollector<TechnoClass*> items;
 	Helpers::Alex::for_each_in_rect_or_range<TechnoClass>(Coords, range.WidthOrRange, range.Height, items);
-	items.apply_function_for_each([=](TechnoClass* pTechno) {
+	items.apply_function_for_each([=](TechnoClass* pTechno)
+ {
+	 // we shouldn't do anything
+	 if (pTechno->IsImmobilized || pTechno->IsBeingWarpedOut())
+		 return true;
 
-		// we shouldn't do anything
-		if (pTechno->IsImmobilized || pTechno->IsBeingWarpedOut())
-			return true;
+	 // is this thing affected at all?
+	 if (!pData->IsHouseAffected(pThis->Owner, pTechno->Owner))
+		 return true;
 
-		// is this thing affected at all?
-		if (!pData->IsHouseAffected(pThis->Owner, pTechno->Owner))
-			return true;
+	 if (!pData->IsTechnoAffected(pTechno))
+		 return true;
 
-		if (!pData->IsTechnoAffected(pTechno))
-			return true;
-
-		// protect this techno
-		pTechno->IronCurtain(duration, pThis->Owner, pData->Protect_IsForceShield);
-		return true;
+	 // protect this techno
+	 pTechno->IronCurtain(duration, pThis->Owner, pData->Protect_IsForceShield);
+	 return true;
 	});
 }
 
@@ -103,12 +104,16 @@ bool SW_Protect::Activate(SuperClass* pThis, const CellStruct& Coords, bool IsPl
 {
 	SWTypeExtData* pData = SWTypeExtContainer::Instance.Find(pThis->Type);
 
-	if (pThis->IsCharged) {
+	if (pThis->IsCharged)
+	{
 		const auto nDeferement = pData->SW_Deferment.Get(-1);
 
-		if (nDeferement <= 0) {
-			SW_Protect::ApplyProtect(pThis, Coords , this->GetRange(pData));
-		} else {
+		if (nDeferement <= 0)
+		{
+			SW_Protect::ApplyProtect(pThis, Coords, this->GetRange(pData));
+		}
+		else
+		{
 			this->newStateMachine(nDeferement, Coords, pThis);
 		}
 
@@ -142,7 +147,6 @@ void SW_Protect::Initialize(SWTypeExtData* pData)
 
 		pData->CursorType = int(MouseCursorType::ForceShield);
 		pData->NoCursorType = int(MouseCursorType::NoForceShield);
-
 	}
 	else
 	{
@@ -185,10 +189,12 @@ AnimTypeClass* SW_Protect::GetAnim(const SWTypeExtData* pData) const
 
 SWRange SW_Protect::GetRange(const SWTypeExtData* pData) const
 {
-	if (!pData->SW_Range->empty()) {
+	if (!pData->SW_Range->empty())
+	{
 		return pData->SW_Range;
 	}
-	else if (pData->This()->Type == SuperWeaponType::ForceShield) {
+	else if (pData->This()->Type == SuperWeaponType::ForceShield)
+	{
 		return { RulesClass::Instance->ForceShieldRadius };
 	}
 

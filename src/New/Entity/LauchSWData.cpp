@@ -2,11 +2,14 @@
 
 #include <SuperWeaponTypeClass.h>
 
-bool LauchSWData::ReadVector(std::vector<LauchSWData>& res , INI_EX& exINI, const char* pSection , bool CompatibilityMode){
+bool LauchSWData::ReadVector(std::vector<LauchSWData>& res, INI_EX& exINI, const char* pSection, bool CompatibilityMode)
+{
 	res.clear();
 
-	if(!CompatibilityMode) {
-		for (size_t i = 0; ; ++i) {
+	if (!CompatibilityMode)
+	{
+		for (size_t i = 0; ; ++i)
+		{
 			SuperWeaponTypeClass* LaunchWhat_Dummy;
 			std::string _base_key("LaunchSW");
 			_base_key += std::to_string(i);
@@ -16,14 +19,18 @@ bool LauchSWData::ReadVector(std::vector<LauchSWData>& res , INI_EX& exINI, cons
 
 			res.emplace_back().Read(exINI, pSection, i, LaunchWhat_Dummy);
 		}
-	} else {
+	}
+	else
+	{
 		ValueableVector<SuperWeaponTypeClass*> Lch_dummies {};
 
-		Lch_dummies.Read(exINI, pSection , "LaunchSW" , true);
+		Lch_dummies.Read(exINI, pSection, "LaunchSW", true);
 
-		for(auto pSW : Lch_dummies){
-			if(pSW){
-				res.emplace_back().Read(exINI, pSection,-1 , pSW);
+		for (auto pSW : Lch_dummies)
+		{
+			if (pSW)
+			{
+				res.emplace_back().Read(exINI, pSection, -1, pSW);
 			}
 		}
 	}
@@ -31,10 +38,12 @@ bool LauchSWData::ReadVector(std::vector<LauchSWData>& res , INI_EX& exINI, cons
 	return true;
 }
 
-bool LauchSWData::ReadSingle(INI_EX& exINI, const char* pID, int Prefix){
+bool LauchSWData::ReadSingle(INI_EX& exINI, const char* pID, int Prefix)
+{
 	std::string _buff = "LaunchSW";
 
-	if(Prefix != -1){
+	if (Prefix != -1)
+	{
 		_buff += std::to_string(Prefix);
 	}
 
@@ -57,7 +66,8 @@ bool LauchSWData::ReadSingle(INI_EX& exINI, const char* pID, int Prefix){
 	std::string _buff_DisplayMoney = (_buff + ".DisplayMoney");
 	LaunchSW_DisplayMoney.Read(exINI, pID, _buff_DisplayMoney.c_str());
 
-	if(LaunchSW_DisplayMoney) {
+	if (LaunchSW_DisplayMoney)
+	{
 		LaunchSW_DisplayMoney_Houses.Read(exINI, pID, (_buff_DisplayMoney + ".Houses").c_str());
 		LaunchSW_DisplayMoney_Offset.Read(exINI, pID, (_buff_DisplayMoney + ".Offset").c_str());
 	}
@@ -70,7 +80,7 @@ bool LauchSWData::ReadSingle(INI_EX& exINI, const char* pID, int Prefix){
 bool LauchSWData::Read(INI_EX& exINI, const char* pID, int Prefix, SuperWeaponTypeClass* pReaded)
 {
 	LaunchWhat = pReaded->ArrayIndex;
-	return this->ReadSingle(exINI,pID , Prefix);
+	return this->ReadSingle(exINI, pID, Prefix);
 }
 
 bool LauchSWData::Load(PhobosStreamReader& Stm, bool RegisterForChange)

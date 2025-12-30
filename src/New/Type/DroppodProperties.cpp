@@ -8,11 +8,13 @@ void DroppodProperties::Read(INI_EX& exINI, const char* pSection)
 	this->Droppod_Puff.Read(exINI, pSection, "DropPod.Puff");
 	this->Droppod_Angle.Read(exINI, pSection, "DropPod.Angle");
 
-	if (this->Droppod_Angle >= Math::PI_SQRT_TWO_BY_FOUR) {
+	if (this->Droppod_Angle >= Math::PI_SQRT_TWO_BY_FOUR)
+	{
 		this->Droppod_Angle = Math::PI_SQRT_TWO_BY_FOUR;
 	}
 
-	if (this->Droppod_Angle <= Math::PI_BY_EIGHT) {
+	if (this->Droppod_Angle <= Math::PI_BY_EIGHT)
+	{
 		this->Droppod_Angle = Math::PI_BY_EIGHT;
 	}
 
@@ -46,16 +48,17 @@ void DroppodProperties::Initialize()
 
 void NullableDroppodProperties::Read(INI_EX& exINI, const char* pSection)
 {
-
 	this->Droppod_PodImage_Infantry.Read(exINI, pSection, "DropPod.PodImageInfantry");
 	this->Droppod_Puff.Read(exINI, pSection, "DropPod.Puff");
 	this->Droppod_Angle.Read(exINI, pSection, "DropPod.Angle");
 
-	if (this->Droppod_Angle.isset() && this->Droppod_Angle >= Math::PI_SQRT_TWO_BY_FOUR) {
+	if (this->Droppod_Angle.isset() && this->Droppod_Angle >= Math::PI_SQRT_TWO_BY_FOUR)
+	{
 		this->Droppod_Angle = Math::PI_SQRT_TWO_BY_FOUR;
 	}
 
-	if (this->Droppod_Angle.isset() && this->Droppod_Angle <= Math::PI_BY_EIGHT) {
+	if (this->Droppod_Angle.isset() && this->Droppod_Angle <= Math::PI_BY_EIGHT)
+	{
 		this->Droppod_Angle = Math::PI_BY_EIGHT;
 	}
 

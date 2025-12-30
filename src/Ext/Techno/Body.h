@@ -58,7 +58,6 @@ private:
 	int IntensityAllies;
 	int IntensityEnemies;
 
-
 public:
 
 	void SetOwner(TechnoClass* abs) { this->Owner = abs; };
@@ -73,7 +72,8 @@ public:
 		return const_cast<TintColors*>(this)->Serialize(Stm);
 	}
 
-	void Reset() {
+	void Reset()
+	{
 		this->ColorOwner = 0;
 		this->ColorAllies = 0;
 		this->ColorEnemies = 0;
@@ -209,7 +209,6 @@ struct AEProperties
 			int add = 0;
 			for (auto& ex_range : ranges)
 			{
-
 				if (!ex_range.Eligible(who))
 					continue;
 
@@ -276,7 +275,6 @@ struct AEProperties
 
 			bool Eligible(WarheadTypeClass* who)
 			{
-
 				bool allowed = false;
 
 				if (allow.begin() != allow.end())
@@ -357,7 +355,6 @@ struct AEProperties
 			double add = 0.0;
 			for (auto& ex_range : ranges)
 			{
-
 				if (!ex_range.Eligible(who))
 					continue;
 
@@ -495,7 +492,6 @@ struct AEProperties
 		{
 			for (auto& ex_range : mults)
 			{
-
 				if (!ex_range.Eligible(who))
 					continue;
 
@@ -507,8 +503,10 @@ struct AEProperties
 
 		COMPILETIMEEVAL void FillEligible(WarheadTypeClass* who, std::vector<double>& eligible)
 		{
-			for (auto& ex_range : this->mults) {
-				if (ex_range.Eligible(who)) {
+			for (auto& ex_range : this->mults)
+			{
+				if (ex_range.Eligible(who))
+				{
 					eligible.emplace_back(ex_range.Mult);
 				}
 			}
@@ -516,13 +514,14 @@ struct AEProperties
 
 		static COMPILETIMEEVAL double Apply(double initial, std::vector<double>& eligible)
 		{
-			for (auto& ex_range : eligible) {
+			for (auto& ex_range : eligible)
+			{
 				initial *= ex_range;
 			}
 
 			return initial;
 		}
-		private:
+	private:
 
 		template <typename T>
 		bool FORCEDINLINE Serialize(T& Stm)
@@ -550,9 +549,12 @@ struct AEProperties
 	MinMaxValue<int> ReceivedDamage { INT32_MIN , INT32_MAX };
 	MinMaxValue<double> Speed { 0.0 ,  INT32_MAX };
 
-	struct AEFlags {
-		union {
-			struct {
+	struct AEFlags
+	{
+		union
+		{
+			struct
+			{
 				unsigned Cloakable : 1;
 				unsigned ForceDecloak : 1;
 
@@ -581,11 +583,14 @@ struct AEProperties
 	public:
 
 		//load bit from int and flip the bits from it saved state
-		bool Load(PhobosStreamReader& Stm, bool RegisterForChange) {
-			for (int i = 0; i < BitCount; ++i) {
+		bool Load(PhobosStreamReader& Stm, bool RegisterForChange)
+		{
+			for (int i = 0; i < BitCount; ++i)
+			{
 				bool bit = (bits >> i) & 1;
 
-				if (!Stm.Process(bit).Success()) {
+				if (!Stm.Process(bit).Success())
+				{
 					return false;
 				}
 
@@ -596,11 +601,14 @@ struct AEProperties
 		}
 
 		//write each bit as integer on .Process to ensure compatibility
-		bool Save(PhobosStreamWriter& Stm) const {
-			for (int i = 0; i < BitCount; ++i) {
+		bool Save(PhobosStreamWriter& Stm) const
+		{
+			for (int i = 0; i < BitCount; ++i)
+			{
 				bool bit = (bits >> i) & 1;
 
-				if (!Stm.Process(bit).Success()) {
+				if (!Stm.Process(bit).Success())
+				{
 					return false;
 				}
 			}
@@ -610,15 +618,14 @@ struct AEProperties
 
 	private:
 		static constexpr size_t BitCount = sizeof(bits) * CHAR_BIT;
-
 	} flags;
 
-public :
+public:
 
 	static void Recalculate(TechnoClass* pTechno);
 	static void UpdateAEAnimLogic(TechnoClass* pTechno);
 
-public :
+public:
 
 	bool Load(PhobosStreamReader& Stm, bool RegisterForChange)
 	{
@@ -632,7 +639,8 @@ public :
 
 protected:
 	template <typename T>
-	bool Serialize(T& Stm) {
+	bool Serialize(T& Stm)
+	{
 		return Stm
 			.Process(this->ExtraRange)
 			.Process(this->ExtraCrit)
@@ -688,35 +696,35 @@ private:
 	void Serialize(T& Stm)
 	{
 		auto debugProcess = [&Stm](auto& field, const char* fieldName)-> auto&
-		{
-			if constexpr (std::is_same_v<T, PhobosStreamWriter>)
 			{
-			//	size_t beforeSize = Stm.Getstream()->Size();
-				auto& result = Stm.Process(field);
-			//	size_t afterSize = Stm.Getstream()->Size();
-			//	GameDebugLog::Log("[TechnoExtData] SAVE %s: size %zu -> %zu (+%zu)\n",
-			//		fieldName, beforeSize, afterSize, afterSize - beforeSize);
-				return result;
-			}
-			else
-			{
-			//	size_t beforeOffset = Stm.Getstream()->Offset();
-			//	bool beforeSuccess = Stm.Success();
-				auto& result = Stm.Process(field);
-			//	size_t afterOffset = Stm.Getstream()->Offset();
-			//	bool afterSuccess = Stm.Success();
+				if constexpr (std::is_same_v<T, PhobosStreamWriter>)
+				{
+					//	size_t beforeSize = Stm.Getstream()->Size();
+					auto& result = Stm.Process(field);
+					//	size_t afterSize = Stm.Getstream()->Size();
+					//	GameDebugLog::Log("[TechnoExtData] SAVE %s: size %zu -> %zu (+%zu)\n",
+					//		fieldName, beforeSize, afterSize, afterSize - beforeSize);
+					return result;
+				}
+				else
+				{
+					//	size_t beforeOffset = Stm.Getstream()->Offset();
+					//	bool beforeSuccess = Stm.Success();
+					auto& result = Stm.Process(field);
+					//	size_t afterOffset = Stm.Getstream()->Offset();
+					//	bool afterSuccess = Stm.Success();
 
-			//	GameDebugLog::Log("[TechnoExtData] LOAD %s: offset %zu -> %zu (+%zu), success: %s -> %s\n",
-			//		fieldName, beforeOffset, afterOffset, afterOffset - beforeOffset,
-			//		beforeSuccess ? "true" : "false", afterSuccess ? "true" : "false");
+					//	GameDebugLog::Log("[TechnoExtData] LOAD %s: offset %zu -> %zu (+%zu), success: %s -> %s\n",
+					//		fieldName, beforeOffset, afterOffset, afterOffset - beforeOffset,
+					//		beforeSuccess ? "true" : "false", afterSuccess ? "true" : "false");
 
-			//	if (!afterSuccess && beforeSuccess)
-			//	{
-			//		GameDebugLog::Log("[TechnoExtData] ERROR: %s caused stream failure!\n", fieldName);
-				//}
-				return result;
-			}
-		};
+					//	if (!afterSuccess && beforeSuccess)
+					//	{
+					//		GameDebugLog::Log("[TechnoExtData] ERROR: %s caused stream failure!\n", fieldName);
+						//}
+					return result;
+				}
+			};
 
 		debugProcess(this->Type, "Type");
 		debugProcess(this->AE, "AE");
@@ -848,8 +856,6 @@ private:
 		debugProcess(this->ExtraTurretRecoil, "ExtraTurretRecoil");
 		debugProcess(this->ExtraBarrelRecoil, "ExtraBarrelRecoil");
 	}
-
-
 
 public:
 	using base_type = TechnoClass;
@@ -1203,7 +1209,7 @@ public:
 		UnitIdleActionGapTimer(),
 		Tints(),
 		FallingDownTracked { false },
-		ResetLocomotor { false } ,
+		ResetLocomotor { false },
 		JumpjetStraightAscend { },
 		CanFireWeaponType { },
 		ExtraTurretRecoil { },
@@ -1241,20 +1247,23 @@ public:
 	TechnoClass* This() const { return reinterpret_cast<TechnoClass*>(AttachedToObject); }
 	const TechnoClass* This_Const() const { return reinterpret_cast<const TechnoClass*>(AttachedToObject); }
 
-	virtual void CalculateCRC(CRCEngine& crc) const override {
+	virtual void CalculateCRC(CRCEngine& crc) const override
+	{
 		this->RadioExtData::CalculateCRC(crc);
 	}
 
 public:
 
-	FORCEDINLINE ShieldClass* GetShield() const {
+	FORCEDINLINE ShieldClass* GetShield() const
+	{
 		return this->Shield.get();
 	}
 
 	void ClearElectricBolts()
 	{
-		for (auto const pBolt : this->ElectricBolts) {
-			if(pBolt)
+		for (auto const pBolt : this->ElectricBolts)
+		{
+			if (pBolt)
 				pBolt->Owner = nullptr;
 		}
 
@@ -1320,7 +1329,7 @@ public:
 	static void GetLevelIntensity(TechnoClass* pThis, int level, int& levelIntensity, int& cellIntensity, double levelMult, double cellMult, bool applyBridgeBonus = false);
 	static int GetDeployingAnimIntensity(FootClass* pThis);
 
-	static int CalculateBlockDamage(TechnoClass* pThis, TechnoClass* pSource,  int* pDamage, WarheadTypeClass* WH);
+	static int CalculateBlockDamage(TechnoClass* pThis, TechnoClass* pSource, int* pDamage, WarheadTypeClass* WH);
 	static std::vector<double> GetBlockChance(TechnoClass* pThis, std::vector<double>& blockChance);
 
 protected:
@@ -1380,13 +1389,13 @@ public:
 
 	static void UpdateSharedAmmo(TechnoClass* pThis);
 
-	static void DrawSelfHealPips(TechnoClass* pThis, Point2D* pLocation, RectangleStruct* pBounds , SHPStruct* shape , ConvertClass* convert);
+	static void DrawSelfHealPips(TechnoClass* pThis, Point2D* pLocation, RectangleStruct* pBounds, SHPStruct* shape, ConvertClass* convert);
 	static void DrawParasitedPips(TechnoClass* pThis, Point2D* pLocation, RectangleStruct* pBounds);
 	static void ApplyGainedSelfHeal(TechnoClass* pThis, bool wasDamaged);
 	static void ApplyDrainMoney(TechnoClass* pThis);
 
 	static void DrawInsignia(TechnoClass* pThis, Point2D* pLocation, RectangleStruct* pBounds);
-	static void DrawSelectBox(TechnoClass* pThis, Point2D* pLocation, RectangleStruct* pBounds , bool drawBefore = false);
+	static void DrawSelectBox(TechnoClass* pThis, Point2D* pLocation, RectangleStruct* pBounds, bool drawBefore = false);
 	//static void DrawSelectBrd(const TechnoClass* pThis, TechnoTypeClass* pType, int iLength, Point2D* pLocation, RectangleStruct* pBound, bool isInfantry, bool IsDisguised);
 	static void SyncInvulnerability(TechnoClass* pFrom, TechnoClass* pTo);
 	static void PlayAnim(AnimTypeClass* const pAnim, TechnoClass* pInvoker);
@@ -1505,7 +1514,7 @@ public:
 
 	static Point2D GetScreenLocation(TechnoClass* pThis);
 	static Point2D GetFootSelectBracketPosition(TechnoClass* pThis, Anchor anchor);
-	static Point2D GetBuildingSelectBracketPosition(TechnoClass* pThis, BuildingSelectBracketPosition bracketPosition , Point2D offset = Point2D::Empty);
+	static Point2D GetBuildingSelectBracketPosition(TechnoClass* pThis, BuildingSelectBracketPosition bracketPosition, Point2D offset = Point2D::Empty);
 	static void ProcessDigitalDisplays(TechnoClass* pThis);
 	static void GetValuesForDisplay(TechnoClass* pThis, DisplayInfoType infoType, int& value, int& maxValue, int infoIndex);
 	static std::vector<DigitalDisplayTypeClass*>* GetDisplayType(TechnoClass* pThis, TechnoTypeClass* pType, int& length);
@@ -1525,7 +1534,7 @@ public:
 	static bool MultiWeaponCanFire(TechnoClass* const pThis, AbstractClass* const pTarget, WeaponTypeClass* const pWeaponType);
 
 	static bool IsHealthInThreshold(ObjectClass* pObject, double min, double max);
-	static std::tuple<bool, bool , bool> CanBeAffectedByFakeEngineer(TechnoClass* pThis, TechnoClass* pTarget, bool checkBridge = false, bool checkCapturableBuilding = false, bool checkAttachedBombs = false);
+	static std::tuple<bool, bool, bool> CanBeAffectedByFakeEngineer(TechnoClass* pThis, TechnoClass* pTarget, bool checkBridge = false, bool checkCapturableBuilding = false, bool checkAttachedBombs = false);
 
 	static bool CannotMove(UnitClass* pThis);
 
@@ -1541,10 +1550,10 @@ public:
 
 public:
 	static UnitClass* Deployer;
-
 };
 
-class TechnoExtContainer {
+class TechnoExtContainer
+{
 public:
 	static TechnoExtContainer Instance;
 
@@ -1565,7 +1574,6 @@ public:
 
 		return this->GetExtAttribute(key);
 	}
-
 };
 
 //we cannot inherit this
@@ -1575,7 +1583,7 @@ public:
 
 	//virtual TechnoTypeClass* GetTechnoType() { JMP_THIS(0x6F3270); }
 
-	static int __fastcall _EvaluateJustCell(TechnoClass* pThis , discard_t, CellStruct* where);
+	static int __fastcall _EvaluateJustCell(TechnoClass* pThis, discard_t, CellStruct* where);
 	static bool __fastcall __TargetSomethingNearby(TechnoClass* pThis, discard_t, CoordStruct* coord, ThreatType threat);
 	static int __fastcall __AdjustDamage(TechnoClass* pThis, discard_t, TechnoClass* pTarget, WeaponTypeClass* pWeapon);
 	static void __fastcall __DrawAirstrikeFlare(TechnoClass* pThis, discard_t, const CoordStruct& startCoord, int startHeight, int endHeight, const CoordStruct& endCoord);
@@ -1583,7 +1591,7 @@ public:
 	static void __fastcall __Draw_Pips(TechnoClass* techno, discard_t, Point2D* position, Point2D* unused, RectangleStruct* clipRect);
 	static void __fastcall  __Draw_Stuff_When_Selected(TechnoClass* pThis, discard_t, Point2D* pPoint, Point2D* pOriginalPoint, RectangleStruct* pRect);
 	static void __fastcall __DrawHealthBar_Selection(TechnoClass* techno, discard_t, Point2D* position, RectangleStruct* clipRect, bool unused);
-	static void __fastcall __Draw_Airstrike_Flare(TechnoClass* techno, discard_t, CoordStruct startCoord , CoordStruct endCoord);
+	static void __fastcall __Draw_Airstrike_Flare(TechnoClass* techno, discard_t, CoordStruct startCoord, CoordStruct endCoord);
 
 	static DamageState __fastcall __Take_Damage(TechnoClass* pThis, discard_t, int* damage, int distance, WarheadTypeClass* warhead, TechnoClass* source, bool ignoreDefenses, bool PreventsPassengerEscape, HouseClass* sourceHouse);
 	static bool __fastcall __Is_Allowed_To_Retaliate(TechnoClass* pThis, discard_t, TechnoClass* pSource, WarheadTypeClass* pWarhead);

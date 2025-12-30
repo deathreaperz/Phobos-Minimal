@@ -45,7 +45,8 @@ ASMJIT_PATCH(0x41E893, AITriggerTypeClass_ConditionMet_SideIndex, 0xA)
 
 	enum { Eligible = 0x41E8D7, NotEligible = 0x41E8A1 };
 
-	if (!triggerSide) {
+	if (!triggerSide)
+	{
 		return Eligible;
 	}
 
@@ -63,12 +64,13 @@ ASMJIT_PATCH(0x6E3EE0, TActionClass_GetFlags, 5)
 
 	std::pair<TriggerAttachType, bool> _result = AresTActionExt::GetTriggetAttach(nAction);
 
-	if (_result.second) {
+	if (_result.second)
+	{
 		R->EAX(_result.first);
 		return 0x6E3EFE;
 	}
 
-	 return 0;
+	return 0;
 }
 
 ASMJIT_PATCH(0x6E3B60, TActionClass_GetMode, 8)
@@ -85,12 +87,12 @@ ASMJIT_PATCH(0x6E3B60, TActionClass_GetMode, 8)
 
 	_result = TEventExtData::GetLogicNeed((PhobosTriggerEvent)nAction);
 
-	if(_result.second) {
+	if (_result.second)
+	{
 		R->EAX(_result.first);
 		return 0x6E3C4B;
 	}
 
 	R->EAX(((int)nAction) - 1);
 	return ((int)nAction) > 0x8F ? 0x6E3C49 : 0x6E3B6E;
-
 }

@@ -31,7 +31,9 @@ struct PrintTextData
 		, SHPFileName {  }
 		, ZeroFrameIndex { 0 }
 		, ImageSize { 5,8 }
-	{ SHPFileName = "pipsnum.shp"; }
+	{
+		SHPFileName = "pipsnum.shp";
+	}
 
 	~PrintTextData() = default;
 
@@ -78,7 +80,9 @@ struct PrintText
 		, Duration { duration }
 		, LifeTimer { duration }
 		, Data { data }
-	{ PhobosCRT::wstrCopy(Text, text); }
+	{
+		PhobosCRT::wstrCopy(Text, text);
+	}
 
 	virtual bool CanPrint(Point2D& offset, Point2D& pos, RectangleStruct& bound)
 	{
@@ -140,7 +144,7 @@ struct RollingText : public PrintText
 	{
 		if (PrintText::CanPrint(offset, pos, bound))
 		{
-			Offset -= { 0 , RollSpeed};
+			Offset -= { 0, RollSpeed};
 			return true;
 		}
 		return false;

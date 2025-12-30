@@ -14,26 +14,28 @@
 class PhobosAttachEffectTypeClass;
 struct GroupData
 {
-    VectorSet<PhobosAttachEffectTypeClass*> types;
+	VectorSet<PhobosAttachEffectTypeClass*> types;
 
-	bool load(PhobosStreamReader& Stm, bool RegisterForChange) {
+	bool load(PhobosStreamReader& Stm, bool RegisterForChange)
+	{
 		return
-				Stm
-					.Process(types ,RegisterForChange)
-					.Success();
+			Stm
+			.Process(types, RegisterForChange)
+			.Success();
 	}
 
-	bool save(PhobosStreamWriter& Stm) const {
+	bool save(PhobosStreamWriter& Stm) const
+	{
 		return
-				Stm
-					.Process(types)
-					.Success();
+			Stm
+			.Process(types)
+			.Success();
 	}
 
-    size_t size() const { return types.size(); }
-    auto begin() const { return types.begin(); }
-    auto end() const { return types.end(); }
-    void insert(PhobosAttachEffectTypeClass* item) { types.insert(item); }
+	size_t size() const { return types.size(); }
+	auto begin() const { return types.begin(); }
+	auto end() const { return types.end(); }
+	void insert(PhobosAttachEffectTypeClass* item) { types.insert(item); }
 };
 
 class PhobosAttachEffectTypeClass final : public Enumerable<PhobosAttachEffectTypeClass>
@@ -230,20 +232,25 @@ public:
 		, Animation_DrawOffsets {}
 	{};
 
-	COMPILETIMEEVAL FORCEDINLINE bool HasAnim() {
+	COMPILETIMEEVAL FORCEDINLINE bool HasAnim()
+	{
 		if (this->Cumulative)
 			return this->CumulativeAnimations.size() > 0 || this->Animation != nullptr;
 		else
 			return this->Animation != nullptr;
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE bool HasTint() {
+	COMPILETIMEEVAL FORCEDINLINE bool HasTint()
+	{
 		return this->Tint_Color.isset() || this->Tint_Intensity != 0.0;
 	}
 
-	COMPILETIMEEVAL bool HasGroup(const char* pGroupID) {
-		for (const auto& group : this->Groups) {
-			if (group == pGroupID) {
+	COMPILETIMEEVAL bool HasGroup(const char* pGroupID)
+	{
+		for (const auto& group : this->Groups)
+		{
+			if (group == pGroupID)
+			{
 				return true;
 			}
 		}
@@ -251,13 +258,16 @@ public:
 		return false;
 	}
 
-	COMPILETIMEEVAL bool HasGroups(std::vector<std::string> const& groupIDs, bool requireAll) {
+	COMPILETIMEEVAL bool HasGroups(std::vector<std::string> const& groupIDs, bool requireAll)
+	{
 		size_t foundCount = 0;
 
-		for (const auto& group : this->Groups) {
-			for (const auto& requiredGroup : groupIDs) {
-				if (group == requiredGroup) {
-
+		for (const auto& group : this->Groups)
+		{
+			for (const auto& requiredGroup : groupIDs)
+			{
+				if (group == requiredGroup)
+				{
 					if (!requireAll)
 						return true;
 
@@ -289,7 +299,8 @@ public:
 
 	static bool LoadGlobals(PhobosStreamReader& Stm);
 	static bool SaveGlobals(PhobosStreamWriter& Stm);
-	static OPTIONALINLINE COMPILETIMEEVAL void Clear() {
+	static OPTIONALINLINE COMPILETIMEEVAL void Clear()
+	{
 		Array.clear();
 		GroupsMap.clear();
 	}
@@ -298,4 +309,3 @@ private:
 	template <typename T>
 	void Serialize(T& Stm);
 };
-

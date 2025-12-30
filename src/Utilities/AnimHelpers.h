@@ -12,20 +12,22 @@ namespace Helper
 	{
 		OPTIONALINLINE AnimTypeClass* PickSplashAnim(NullableVector<AnimTypeClass*> const& nSplash, Nullable<AnimTypeClass*> const& nWake, bool Random, bool IsMeteor)
 		{
-			if (nSplash.HasValue()) {
-				if (nSplash.size() > 0) {
+			if (nSplash.HasValue())
+			{
+				if (nSplash.size() > 0)
+				{
 					return nSplash[Random ? ScenarioClass::Instance->Random.RandomFromMax((nSplash.size() - 1)) : IsMeteor ? nSplash.size() - 1 : 0];
 				}
 			}
 
-			return !IsMeteor && nWake.isset()  ? nWake.Get() : RulesClass::Instance->Wake;
+			return !IsMeteor && nWake.isset() ? nWake.Get() : RulesClass::Instance->Wake;
 		}
 
 		OPTIONALINLINE std::pair<bool, int> DetonateWarhead(int nDamage, WarheadTypeClass* pWarhead, bool bWarheadDetonate, CoordStruct Where, TechnoClass* pInvoker, HouseClass* pOwner, bool DamageConsiderVet)
 		{
 			if (pWarhead)
 			{
-				auto nResultDamage = static_cast<int>(TechnoExtData::GetDamageMult(pInvoker, nDamage , !DamageConsiderVet));
+				auto nResultDamage = static_cast<int>(TechnoExtData::GetDamageMult(pInvoker, nDamage, !DamageConsiderVet));
 
 				if (bWarheadDetonate)
 				{
@@ -42,36 +44,37 @@ namespace Helper
 			return { false , 0 };
 		}
 
-		OPTIONALINLINE std::pair<bool ,int> Detonate(Nullable<WeaponTypeClass*> const& pWeapon, int nDamage, WarheadTypeClass* pWarhead, bool bWarheadDetonate, CoordStruct Where, TechnoClass* pInvoker, HouseClass* pOwner, bool DamageConsiderVet)
+		OPTIONALINLINE std::pair<bool, int> Detonate(Nullable<WeaponTypeClass*> const& pWeapon, int nDamage, WarheadTypeClass* pWarhead, bool bWarheadDetonate, CoordStruct Where, TechnoClass* pInvoker, HouseClass* pOwner, bool DamageConsiderVet)
 		{
-			if (!pWeapon.isset()) {
+			if (!pWeapon.isset())
+			{
 				return DetonateWarhead(nDamage, pWarhead, bWarheadDetonate, Where, pInvoker, pOwner, DamageConsiderVet);
 			}
 
-			auto nResultDamage = static_cast<int>(TechnoExtData::GetDamageMult(pInvoker, nDamage , !DamageConsiderVet));
+			auto nResultDamage = static_cast<int>(TechnoExtData::GetDamageMult(pInvoker, nDamage, !DamageConsiderVet));
 			WeaponTypeExtData::DetonateAt4(pWeapon, Where, pInvoker, nResultDamage, false, pInvoker ? pInvoker->Owner : nullptr);
 			return { false , 0 };
 		}
 
-		OPTIONALINLINE void SpawnMultiple(const std::vector<AnimTypeClass*>& nAnims, std::vector<int>& nAmount,CoordStruct Where, TechnoClass* pInvoker, HouseClass* pOwner, bool bRandom)
+		OPTIONALINLINE void SpawnMultiple(const std::vector<AnimTypeClass*>& nAnims, std::vector<int>& nAmount, CoordStruct Where, TechnoClass* pInvoker, HouseClass* pOwner, bool bRandom)
 		{
 			if (!nAnims.empty())
 			{
 				auto nCreateAnim = [&](int nIndex)
-				{
-					if (auto const pMultipleSelected = nAnims[nIndex])
 					{
-						for (int k = nAmount[nIndex]; k > 0; --k)
+						if (auto const pMultipleSelected = nAnims[nIndex])
 						{
-							AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pMultipleSelected, Where),
-								pOwner,
-								nullptr,
-								pInvoker,
-								false, false
-							) ;
+							for (int k = nAmount[nIndex]; k > 0; --k)
+							{
+								AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pMultipleSelected, Where),
+									pOwner,
+									nullptr,
+									pInvoker,
+									false, false
+								);
+							}
 						}
-					}
-				};
+					};
 
 				if (!bRandom)
 				{
@@ -87,7 +90,7 @@ namespace Helper
 			}
 		}
 
-		OPTIONALINLINE std::expected<Point2D ,bool> CheckMinMax(double nMin, double nMax)
+		OPTIONALINLINE std::expected<Point2D, bool> CheckMinMax(double nMin, double nMax)
 		{
 			int nMinL = (int)(Math::abs(nMin) * 256.0);
 			int nMaxL = (int)(Math::abs(nMax) * 256.0);
@@ -103,12 +106,11 @@ namespace Helper
 
 		OPTIONALINLINE CoordStruct GetRandomCoordsInsideLoops(double nMin, double nMax, CoordStruct nPos, int Increment)
 		{
-
 			if (auto nMinMax = CheckMinMax(nMin, nMax))
 			{
 				auto nRandomCoords = MapClass::GetRandomCoordsNear(nPos,
 					(Math::abs(ScenarioClass::Instance->Random.RandomRanged(nMinMax->Y, nMinMax->X)) *
-					MaxImpl(Increment, 1)),
+						MaxImpl(Increment, 1)),
 					ScenarioClass::Instance->Random.RandomBool());
 
 				nRandomCoords.Z = nPos.Z + MapClass::Instance->GetCellFloorHeight(nRandomCoords);

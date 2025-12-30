@@ -38,9 +38,9 @@
 extern "C" {
 #endif
 
-/* ============================================================================================== */
-/* Enums and types                                                                                */
-/* ============================================================================================== */
+	/* ============================================================================================== */
+	/* Enums and types                                                                                */
+	/* ============================================================================================== */
 
 #include <Zydis/Generated/EnumInstructionCategory.h>
 #include <Zydis/Generated/EnumISASet.h>
@@ -57,27 +57,27 @@ extern "C" {
  *
  * @return  The instruction category string or `ZYAN_NULL`, if an invalid category was passed.
  */
-ZYDIS_EXPORT const char* ZydisCategoryGetString(ZydisInstructionCategory category);
+	ZYDIS_EXPORT const char* ZydisCategoryGetString(ZydisInstructionCategory category);
 
-/**
- * Returns the specified isa-set string.
- *
- * @param   isa_set The isa-set.
- *
- * @return  The isa-set string or `ZYAN_NULL`, if an invalid isa-set was passed.
- */
-ZYDIS_EXPORT const char* ZydisISASetGetString(ZydisISASet isa_set);
+	/**
+	 * Returns the specified isa-set string.
+	 *
+	 * @param   isa_set The isa-set.
+	 *
+	 * @return  The isa-set string or `ZYAN_NULL`, if an invalid isa-set was passed.
+	 */
+	ZYDIS_EXPORT const char* ZydisISASetGetString(ZydisISASet isa_set);
 
-/**
- * Returns the specified isa-extension string.
- *
- * @param   isa_ext The isa-extension.
- *
- * @return  The isa-extension string or `ZYAN_NULL`, if an invalid isa-extension was passed.
- */
-ZYDIS_EXPORT const char* ZydisISAExtGetString(ZydisISAExt isa_ext);
+	/**
+	 * Returns the specified isa-extension string.
+	 *
+	 * @param   isa_ext The isa-extension.
+	 *
+	 * @return  The isa-extension string or `ZYAN_NULL`, if an invalid isa-extension was passed.
+	 */
+	ZYDIS_EXPORT const char* ZydisISAExtGetString(ZydisISAExt isa_ext);
 
-/* ============================================================================================== */
+	/* ============================================================================================== */
 
 #ifdef __cplusplus
 }

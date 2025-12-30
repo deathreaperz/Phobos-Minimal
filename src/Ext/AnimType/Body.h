@@ -21,7 +21,6 @@ public:
 	static COMPILETIMEEVAL unsigned Marker = UuidFirstPart<base_type>::value;
 	static COMPILETIMEEVAL auto Marker_str = to_hex_string<Marker>();
 
-
 public:
 #pragma region ClassMembers
 	CustomPalette Palette;
@@ -210,33 +209,38 @@ public:
 	const AnimTypeClass* This_Const() const { return reinterpret_cast<const AnimTypeClass*>(this->AttachedToObject); }
 
 	virtual bool LoadFromINI(CCINIClass* pINI, bool parseFailAddr);
-	virtual bool WriteToINI(CCINIClass* pINI) const {  return true; }
+	virtual bool WriteToINI(CCINIClass* pINI) const { return true; }
 public:
 
 	void ValidateSpalshAnims();
 
 	OwnerHouseKind GetAnimOwnerHouseKind()
 	{
-		if(this->CreateUnitType){
+		if (this->CreateUnitType)
+		{
 			return this->CreateUnitType->Owner.Get(OwnerHouseKind::Victim);
 		}
 
-		if (This()->MakeInfantry > -1) {
+		if (This()->MakeInfantry > -1)
+		{
 			return this->MakeInfantryOwner.Get(OwnerHouseKind::Invoker);
 		}
 
 		return OwnerHouseKind::Invoker;
 	}
 
-	bool ScatterCreateUnit(bool IsAi) {
+	bool ScatterCreateUnit(bool IsAi)
+	{
 		return IsAi ? this->CreateUnitType->AI_Scatter : this->CreateUnitType->Scatter;
 	}
 
-	bool ScatterAnimToInfantry(bool IsAi) {
+	bool ScatterAnimToInfantry(bool IsAi)
+	{
 		return !IsAi ? this->MakeInfantry_Scatter : this->MakeInfantry_AI_Scatter;
 	}
 
-	Mission GetCreateUnitMission(bool IsAi) {
+	Mission GetCreateUnitMission(bool IsAi)
+	{
 		auto result = this->CreateUnitType->UnitMission;
 		if (IsAi && this->CreateUnitType->AIUnitMission.isset())
 			result = this->CreateUnitType->AIUnitMission.Get();
@@ -244,7 +248,8 @@ public:
 		return result;
 	}
 
-	Mission GetAnimToInfantryMission(bool IsAi) {
+	Mission GetAnimToInfantryMission(bool IsAi)
+	{
 		auto result = this->MakeInfantry_Mission.Get(Mission::Hunt);
 
 		if (IsAi && this->MakeInfantry_AI_Mission.isset())
@@ -289,9 +294,9 @@ public:
 
 	bool _ReadFromINI(CCINIClass* pINI);
 
-	AnimTypeExtData* _GetExtData() {
+	AnimTypeExtData* _GetExtData()
+	{
 		return *reinterpret_cast<AnimTypeExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
-
 };
 static_assert(sizeof(FakeAnimTypeClass) == sizeof(AnimTypeClass), "Invalid Size !");

@@ -332,18 +332,24 @@ ASMJIT_PATCH(0x53A6CF, LightningStorm_Update, 7)
 					auto const pCellBld = pCell->GetBuilding();
 					const auto& nRodTypes = pExt->Weather_LightningRodTypes;
 
-					if (pCellBld && pCellBld->IsAlive && pCellBld->Type->LightningRod) {
+					if (pCellBld && pCellBld->IsAlive && pCellBld->Type->LightningRod)
+					{
 						if (nRodTypes.empty() || nRodTypes.Contains(pCellBld->Type))
 							return ret;
 					}
 
 					// if a lightning rod is next to this, hit that instead. naive.
 					if (auto const pObj = pCell->FindTechnoNearestTo(
-						Point2D::Empty, false, pCellBld)) {
-						if (pObj->IsAlive) {
-							if (auto const pBld = cast_to<BuildingClass*, false>(pObj)) {
-								if (pBld->Type->LightningRod) {
-									if (nRodTypes.empty() || nRodTypes.Contains(pBld->Type)) {
+						Point2D::Empty, false, pCellBld))
+					{
+						if (pObj->IsAlive)
+						{
+							if (auto const pBld = cast_to<BuildingClass*, false>(pObj))
+							{
+								if (pBld->Type->LightningRod)
+								{
+									if (nRodTypes.empty() || nRodTypes.Contains(pBld->Type))
+									{
 										return pBld->GetMapCoords();
 									}
 								}

@@ -121,7 +121,8 @@ void key_from_string(const std::string& key, uint32_t k[4])
 
 #pragma endregion
 
-std::string crc_to_mask(uint32_t crc) {
+std::string crc_to_mask(uint32_t crc)
+{
 	return fmt::format("{:08x}", crc);
 }
 
@@ -272,9 +273,9 @@ std::unordered_map<HANDLE, HandleData> HandleDataKeeper;
 
 HANDLE __stdcall _CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile)
 {
-
 	auto it = LuaData::SafeFiles.find(lpFileName);
-	if(it != LuaData::SafeFiles.end()) {
+	if (it != LuaData::SafeFiles.end())
+	{
 		auto it_cache = &keeper[lpFileName];
 
 		if (!it_cache->memory)
@@ -282,18 +283,21 @@ HANDLE __stdcall _CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dw
 			auto fileHandle = CreateFileA(lpFileName, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 			LARGE_INTEGER fileSize;
-			if (!GetFileSizeEx(fileHandle, &fileSize) || fileSize.QuadPart == 0) {
+			if (!GetFileSizeEx(fileHandle, &fileSize) || fileSize.QuadPart == 0)
+			{
 				return fileHandle;
 			}
 
 			HANDLE hMap = CreateFileMapping(fileHandle, nullptr, PAGE_READWRITE, 0, 0, nullptr);
-			if (!hMap) {
+			if (!hMap)
+			{
 				return fileHandle;
 			}
 
 			LPVOID fileData = MapViewOfFile(hMap, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 0);
 
-			if (!fileData) {
+			if (!fileData)
+			{
 				CloseHandle(hMap);
 				return fileHandle;
 			}
@@ -321,7 +325,7 @@ HANDLE __stdcall _CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dw
 
 		// Store size info
 		auto mapped = &HandleDataKeeper[duplicatedHandle];
-		mapped->fileActualSize  = it_cache->size;
+		mapped->fileActualSize = it_cache->size;
 		mapped->basePointer = it_cache->memory;
 		mapped->currentoffset = 0;
 		return duplicatedHandle;
@@ -340,7 +344,8 @@ DWORD __stdcall _GetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh)
 {
 	const auto it = HandleDataKeeper.find(hFile);
 
-	if (it != HandleDataKeeper.end()) {
+	if (it != HandleDataKeeper.end())
+	{
 		if (lpFileSizeHigh) *lpFileSizeHigh = 0;
 		return it->second.fileActualSize;
 	}
@@ -360,7 +365,8 @@ BOOL WINAPI _ReadFile(
 
 	if (it != HandleDataKeeper.end())
 	{
-		if (it->second.currentoffset >= it->second.fileActualSize) {
+		if (it->second.currentoffset >= it->second.fileActualSize)
+		{
 			if (lpNumberOfBytesRead) *lpNumberOfBytesRead = 0;
 			return TRUE;
 		}
@@ -416,13 +422,13 @@ BOOL WINAPI _SetFileTime(
 	const FILETIME* lpLastWriteTime
 )
 {
-	if (HandleDataKeeper.find(hFile) != HandleDataKeeper.end()) {
+	if (HandleDataKeeper.find(hFile) != HandleDataKeeper.end())
+	{
 		return TRUE;
 	}
 
 	return SetFileTime(hFile, lpCreationTime, lpLastAccessTime, lpLastWriteTime);
 }
-
 
 //ASMJIT_PATCH(0x473B36, CCFIleClass_ReadBuffer, 0x6)
 //{
@@ -685,7 +691,6 @@ struct LuaWrapper
 			fallback = lua_toboolean(L, -1);
 		}
 		lua_pop(L, 1);
-
 	}
 
 	auto get()
@@ -835,9 +840,12 @@ HANDLE WINAPI _CreateFileMappingA(
 	LPCSTR lpName
 )
 {
-	if (HandleDataKeeper.contains(hFile)) {
-		for (auto& [_, mapped] : keeper) {
-			if (mapped.mapping == hFile) {
+	if (HandleDataKeeper.contains(hFile))
+	{
+		for (auto& [_, mapped] : keeper)
+		{
+			if (mapped.mapping == hFile)
+			{
 				return mapped.mapping;
 			}
 		}
@@ -857,7 +865,8 @@ LPVOID WINAPI _MapViewOfFile(
 {
 	const auto it = HandleDataKeeper.find(hFileMappingObject);
 
-	if (it != HandleDataKeeper.end()) {
+	if (it != HandleDataKeeper.end())
+	{
 		return it->second.basePointer;
 	}
 
@@ -875,7 +884,8 @@ LPVOID WINAPI _MapViewOfFileEx(
 {
 	const auto it = HandleDataKeeper.find(hFileMappingObject);
 
-	if (it != HandleDataKeeper.end()) {
+	if (it != HandleDataKeeper.end())
+	{
 		return it->second.basePointer;
 	}
 
@@ -884,8 +894,10 @@ LPVOID WINAPI _MapViewOfFileEx(
 
 BOOL WINAPI _UnmapViewOfFile(LPCVOID lpBaseAddress)
 {
-	for (auto& [path, mapped] : keeper) {
-		if (mapped.mapping == lpBaseAddress) {
+	for (auto& [path, mapped] : keeper)
+	{
+		if (mapped.mapping == lpBaseAddress)
+		{
 			return TRUE;
 		}
 	}
@@ -956,8 +968,10 @@ DWORD WINAPI _GetFinalPathNameByHandleA(
 	DWORD dwFlags
 )
 {
-	for (const auto& [name, mapped] : keeper) {
-		if (mapped.mapping == hFile) {
+	for (const auto& [name, mapped] : keeper)
+	{
+		if (mapped.mapping == hFile)
+		{
 			const auto path = PhobosCRT::WideStringToString(Debug::ApplicationFilePath + L"\\" + PhobosCRT::StringToWideString(name));
 			if (cchFilePath < path.size() + 1) return path.size() + 1;
 			std::strncpy(lpszFilePath, path.c_str(), cchFilePath);
@@ -967,7 +981,6 @@ DWORD WINAPI _GetFinalPathNameByHandleA(
 
 	return GetFinalPathNameByHandleA(hFile, lpszFilePath, cchFilePath, dwFlags);
 }
-
 
 void LuaData::ApplyCoreHooks()
 {
@@ -987,5 +1000,3 @@ void LuaData::ApplyCoreHooks()
 	//7C8410 , MapViewOfFileEx
 	//7DCEFE , GetFileType
 }
-
-

@@ -25,10 +25,11 @@ public:
 	virtual int GetSound(const SWTypeExtData* pData) const override;
 	virtual SWRange GetRange(const SWTypeExtData* pData) const override;
 
-	static void RevealMap(const CellStruct& Coords , float range , int height , HouseClass* Owner);
+	static void RevealMap(const CellStruct& Coords, float range, int height, HouseClass* Owner);
 
 protected:
-	void newStateMachine(int Deferment, CellStruct XY, SuperClass* pSuper) {
+	void newStateMachine(int Deferment, CellStruct XY, SuperClass* pSuper)
+	{
 		SWStateMachine::Array.push_back(std::move(std::make_unique <RevealStateMachine>(Deferment, XY, pSuper, this)));
 	}
 };

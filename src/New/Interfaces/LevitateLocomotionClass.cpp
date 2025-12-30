@@ -25,7 +25,6 @@ WORD GetFacingVal(CoordStruct a2, CoordStruct a3)
 
 void JumpTo4(LevitateLocomotionClass* pThis, float a2)
 {
-
 	const auto v6 = (float)((__int16)(a2 - Math::BINARY_ANGLE_MASK) * Math::DIRECTION_FIXED_MAGIC);
 	const auto v5 = std::sinf(v6);
 	const auto v3 = std::cosf(v6);
@@ -113,16 +112,17 @@ void LevitateLocomotionClass::DoPhase1()
 				this->Delta.Y = 0;
 				this->Delta.X = 0;
 				this->State = 5;
-			} else{
-
+			}
+			else
+			{
 				if (LevitateLocomotionClass::IsCloseEnough(nTargetCoord))
 					this->CalculateDir_Close(nTargetCoord);
 				else
 					this->CalculateDir_Far(nTargetCoord);
 			}
 
-			if (this->State) {
-
+			if (this->State)
+			{
 				if (LinkedTo->IsWaitingBlockagePath)
 					LinkedTo->IsWaitingBlockagePath = false;
 
@@ -135,7 +135,8 @@ void LevitateLocomotionClass::DoPhase1()
 		LinkedTo->SetTarget(nullptr);
 	}
 
-	if(LinkedTo->Destination) {
+	if (LinkedTo->Destination)
+	{
 		const auto pTargetNav = flag_cast_to<TechnoClass*>(LinkedTo->Destination);
 
 		if (!pTargetNav || !pTargetNav->IsAlive || !pTargetNav->IsOnMap)
@@ -144,12 +145,14 @@ void LevitateLocomotionClass::DoPhase1()
 			auto Mission = LinkedTo->GetCurrentMission();
 			if (Mission != Mission::Sticky && Mission != Mission::Sleep)
 			{
-				if (ScenarioClass::Instance->Random.RandomDouble() < 0.01) {
+				if (ScenarioClass::Instance->Random.RandomDouble() < 0.01)
+				{
 					DirtoSomething(ScenarioClass::Instance->Random.RandomDouble() * Math::GAME_TWOPI);
 				}
 			}
 
-			if (this->State) {
+			if (this->State)
+			{
 				if (LinkedTo->IsWaitingBlockagePath)
 					LinkedTo->IsWaitingBlockagePath = false;
 
@@ -169,7 +172,6 @@ void LevitateLocomotionClass::DoPhase1()
 		}
 		else
 		{
-
 			if (LevitateLocomotionClass::IsCloseEnough(nTargetCoord))
 				this->CalculateDir_Close(nTargetCoord);
 			else
@@ -178,7 +180,6 @@ void LevitateLocomotionClass::DoPhase1()
 
 		if (this->State)
 		{
-
 			if (LinkedTo->IsWaitingBlockagePath)
 				LinkedTo->IsWaitingBlockagePath = false;
 
@@ -189,8 +190,10 @@ void LevitateLocomotionClass::DoPhase1()
 	}
 
 	auto Mission = LinkedTo->GetCurrentMission();
-	if (Mission != Mission::Sticky && Mission != Mission::Sleep) {
-		if (ScenarioClass::Instance->Random.RandomDouble() < 0.01) {
+	if (Mission != Mission::Sticky && Mission != Mission::Sleep)
+	{
+		if (ScenarioClass::Instance->Random.RandomDouble() < 0.01)
+		{
 			DirtoSomething(ScenarioClass::Instance->Random.RandomDouble() * Math::GAME_TWOPI);
 		}
 	}
@@ -307,14 +310,16 @@ void LevitateLocomotionClass::CalculateDir_Far(CoordStruct nTarget)
 
 void LevitateLocomotionClass::DoPhase3()
 {
-
-	if(LinkedTo->Target) {
+	if (LinkedTo->Target)
+	{
 		const auto pTargetT = flag_cast_to<TechnoClass*>(LinkedTo->Target);
 
 		if (pTargetT && pTargetT->IsAlive && pTargetT->IsOnMap)
 		{
-			if (CurrentVelocity >= Characteristic.Vel_Max_WhenPissedOff) {
-				if (this->IsLessSameThanProximityDistance(pTargetT->GetCoords())) {
+			if (CurrentVelocity >= Characteristic.Vel_Max_WhenPissedOff)
+			{
+				if (this->IsLessSameThanProximityDistance(pTargetT->GetCoords()))
+				{
 					return;
 				}
 			}
@@ -328,7 +333,8 @@ void LevitateLocomotionClass::DoPhase3()
 		LinkedTo->SetTarget(nullptr);
 	}
 
-	if(LinkedTo->Destination) {
+	if (LinkedTo->Destination)
+	{
 		const auto pNavT = flag_cast_to<TechnoClass*>(LinkedTo->Destination);
 
 		if (pNavT && pNavT->IsAlive && pNavT->IsOnMap)
@@ -358,7 +364,6 @@ void LevitateLocomotionClass::DoPhase3()
 			this->DirtoSomething(ScenarioClass::Instance->Random.RandomDouble()
 				* Math::GAME_TWOPI);
 		}
-
 	}
 	else
 	{
@@ -367,7 +372,8 @@ void LevitateLocomotionClass::DoPhase3()
 		Delta.Y = 0.0;
 		State = 0;
 
-		if (!LinkedTo->IsWaitingBlockagePath){
+		if (!LinkedTo->IsWaitingBlockagePath)
+		{
 			LinkedTo->IsWaitingBlockagePath = true;
 
 			LinkedTo->UnmarkAllOccupationBits(LinkedTo->GetCoords());
@@ -397,7 +403,6 @@ void LevitateLocomotionClass::DoPhase4()
 				}
 				else
 				{
-
 					auto nTargetCoord = pTargetT->GetCoords();
 
 					if (LevitateLocomotionClass::IsCloseEnough(nTargetCoord))
@@ -518,7 +523,6 @@ void LevitateLocomotionClass::DoPhase6()
 			}
 			else
 			{
-
 				auto nTargetCoord = pTargetT->GetCoords();
 
 				if (LevitateLocomotionClass::IsCloseEnough(nTargetCoord))
@@ -567,8 +571,8 @@ void LevitateLocomotionClass::DoPhase7()
 {
 	//GameDebugLog::Log(__FUNCTION__" Called !  ");
 	const auto nCoord = LinkedTo->GetCenterCoords();
-	const auto nCoordCell = CoordStruct{ (nCoord.X * 256) + 128  , (nCoord.Y * 256) + 128 ,nCoord.Z };
-	const auto nDistance = (nCoordCell  - LinkedTo->GetCoords()).LengthXY();
+	const auto nCoordCell = CoordStruct { (nCoord.X * 256) + 128  , (nCoord.Y * 256) + 128 ,nCoord.Z };
+	const auto nDistance = (nCoordCell - LinkedTo->GetCoords()).LengthXY();
 
 	if (nDistance < 5)
 	{
@@ -579,7 +583,7 @@ void LevitateLocomotionClass::DoPhase7()
 				const auto nTargetCoord = pTargetT->GetCoords();
 				const auto nTargetCoordCell = CellClass::Coord2Cell(nTargetCoord);
 
-				LinkedTo->UpdatePathfinding(nTargetCoordCell, 0  , 0);
+				LinkedTo->UpdatePathfinding(nTargetCoordCell, 0, 0);
 				const auto nSelected = LinkedTo->IsSelected;
 				LinkedTo->IsSelected = false;
 				LinkedTo->SetLocation(nCoordCell);
@@ -620,7 +624,7 @@ void LevitateLocomotionClass::DoPhase7()
 			const auto nTargetCoord = pDestT->GetCenterCoords();
 			const auto nTargetCoordCell = CellClass::Coord2Cell(nTargetCoord);
 
-			LinkedTo->UpdatePathfinding(nTargetCoordCell, 0 , 0);
+			LinkedTo->UpdatePathfinding(nTargetCoordCell, 0, 0);
 			const auto nSelected = LinkedTo->IsSelected;
 			LinkedTo->IsSelected = false;
 			LinkedTo->SetLocation(nCoordCell);

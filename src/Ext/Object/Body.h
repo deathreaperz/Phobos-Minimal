@@ -12,20 +12,22 @@ public:
 
 public:
 
-	ObjectExtData(ObjectClass* abs) : AbstractExtended(abs), Name() {};
+	ObjectExtData(ObjectClass* abs) : AbstractExtended(abs), Name() { };
 
 	ObjectExtData(ObjectClass* abs, noinit_t& noint) : AbstractExtended(abs, noint) { };
 
 	virtual ~ObjectExtData() = default;
 
-	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override {}
+	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override { }
 
-	virtual void LoadFromStream(PhobosStreamReader& Stm) override {
+	virtual void LoadFromStream(PhobosStreamReader& Stm) override
+	{
 		this->Internal_LoadFromStream(Stm);
 		Stm.Process(Name);
 	}
 
-	virtual void SaveToStream(PhobosStreamWriter& Stm) override {
+	virtual void SaveToStream(PhobosStreamWriter& Stm) override
+	{
 		this->Internal_SaveToStream(Stm);
 		Stm.Process(Name);
 	}
@@ -38,5 +40,4 @@ public:
 	virtual void CalculateCRC(CRCEngine& crc) const override { }
 
 public:
-
 };

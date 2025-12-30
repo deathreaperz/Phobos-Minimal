@@ -66,10 +66,11 @@ public:
 	// check were stripped off , make sure to check both strings for validity !
 	static const wchar_t* LoadStringUnlessMissingNoChecks(const char* key, const wchar_t* defaultValue);
 
-	static void AdjacentCellsInRange(std::vector<CellStruct>& nCells, short range , bool clearFirst = true);
-	static std::vector<CellStruct> AdjacentCellsInRange(short range) {
+	static void AdjacentCellsInRange(std::vector<CellStruct>& nCells, short range, bool clearFirst = true);
+	static std::vector<CellStruct> AdjacentCellsInRange(short range)
+	{
 		std::vector<CellStruct> dummyvec {};
-		AdjacentCellsInRange(dummyvec,range, true);
+		AdjacentCellsInRange(dummyvec, range, true);
 		return dummyvec;
 	}
 
@@ -100,9 +101,11 @@ public:
 	{
 		if (bRandom)
 			Idx = ScenarioClass::Instance->Random.RandomFromMax(count - 1);
-		else {
+		else
+		{
 			Idx = count - 1;
-			if (count >= 8 && count % 2 == 0) {
+			if (count >= 8 && count % 2 == 0)
+			{
 				Idx *= static_cast<int>(facing / 256.0);
 				Idx %= count;
 			}
@@ -167,9 +170,10 @@ public:
 		return result;
 	}
 
-	static COMPILETIMEEVAL void CalculateShakeVal(int& pShakeVal, int nInput , bool Alternate = true)
+	static COMPILETIMEEVAL void CalculateShakeVal(int& pShakeVal, int nInput, bool Alternate = true)
 	{
-		if (!Alternate) {
+		if (!Alternate)
+		{
 			pShakeVal = nInput;
 			return;
 		}
@@ -546,7 +550,6 @@ public:
 		return static_cast<int>(value * scale);
 	}
 
-
 	//Point2Dir
 	static const DirStruct Desired_Facing(int x1, int y1, int x2, int y2)
 	{
@@ -609,7 +612,7 @@ public:
 
 		if (max > 0)
 		{
-			if COMPILETIMEEVAL (UseCriticalRandomNumber)
+			if COMPILETIMEEVAL(UseCriticalRandomNumber)
 				return ScenarioClass::Instance->Random.RandomRanged(min, max);
 			else
 				return Random2Class::NonCriticalRandomNumber->RandomRanged(min, max);
@@ -619,8 +622,8 @@ public:
 	}
 
 	template<typename T>
-	static OPTIONALINLINE COMPILETIMEEVAL T GetItemByHealthRatio(double ratio, T green , T yellow , T red) {
-
+	static OPTIONALINLINE COMPILETIMEEVAL T GetItemByHealthRatio(double ratio, T green, T yellow, T red)
+	{
 		if (ratio <= RulesClass::Instance->ConditionRed)
 			return red;
 		else if (ratio <= RulesClass::Instance->ConditionYellow)
@@ -635,7 +638,7 @@ public:
 	template<typename T>
 	static COMPILETIMEEVAL T GetItemForDirection(std::vector<T> const& items, DirStruct const& direction)
 	{
-		if(items.empty())
+		if (items.empty())
 			return T {};
 
 		// Log base 2
@@ -665,16 +668,19 @@ public:
 		return items[0];
 	}
 
-	static COMPILETIMEEVAL CoordStruct CoordinatesFromCell(const CellStruct& cell, bool snap = false, int zValue = 0) {
+	static COMPILETIMEEVAL CoordStruct CoordinatesFromCell(const CellStruct& cell, bool snap = false, int zValue = 0)
+	{
 		CoordStruct tmp { cell.X * 256, cell.Y * 256, zValue };
-		if (snap) {
+		if (snap)
+		{
 			tmp.X += 256 / 2;
 			tmp.Y += 256 / 2;
 		}
 		return tmp;
 	}
 
-	static COMPILETIMEEVAL CellStruct CellFromCoordinates(const CoordStruct& coord) {
+	static COMPILETIMEEVAL CellStruct CellFromCoordinates(const CoordStruct& coord)
+	{
 		return { short(coord.X / 256) , short(coord.Y / 256) };
 	}
 
@@ -687,27 +693,33 @@ public:
 	}
 
 	template <typename T>
-	struct cast_to_pointer {
-		static OPTIONALINLINE COMPILETIMEEVAL void* cast(const T& t) {
+	struct cast_to_pointer
+	{
+		static OPTIONALINLINE COMPILETIMEEVAL void* cast(const T& t)
+		{
 			return reinterpret_cast<void*>((uintptr_t)t);
 		}
 	};
 
 	template <typename T>
-	struct cast_to_pointer<T*> {
-		static OPTIONALINLINE COMPILETIMEEVAL const void* cast(const T* ptr) {
+	struct cast_to_pointer<T*>
+	{
+		static OPTIONALINLINE COMPILETIMEEVAL const void* cast(const T* ptr)
+		{
 			return ptr;
 		}
 
-		static OPTIONALINLINE COMPILETIMEEVAL void* cast(T* ptr) {
+		static OPTIONALINLINE COMPILETIMEEVAL void* cast(T* ptr)
+		{
 			return ptr;
 		}
 	};
 
-	static int GetLSAnimHeightFactor(AnimTypeClass* pType, CellClass* pCell , bool checklevel = false);
+	static int GetLSAnimHeightFactor(AnimTypeClass* pType, CellClass* pCell, bool checklevel = false);
 #pragma endregion
 
-	static void PrintMessage(const wchar_t* pMessage) {
+	static void PrintMessage(const wchar_t* pMessage)
+	{
 		MessageListClass::Instance->PrintMessage(
 			pMessage,
 			RulesClass::Instance->MessageDelay,
@@ -717,7 +729,8 @@ public:
 	}
 
 	template <typename T> requires std::is_enum_v<T>
-	static COMPILETIMEEVAL bool Contains(T thisEnum, T thatEnum) {
+	static COMPILETIMEEVAL bool Contains(T thisEnum, T thatEnum)
+	{
 		return (thisEnum & thatEnum) != T::None;
 	}
 };

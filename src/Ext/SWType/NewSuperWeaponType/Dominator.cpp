@@ -57,7 +57,6 @@ void SW_PsychicDominator::Initialize(SWTypeExtData* pData)
 	pData->SW_AITargetingMode = SuperWeaponAITargetingMode::PsychicDominator;
 	pData->SW_AffectsTarget = SuperWeaponTarget::Infantry | SuperWeaponTarget::Unit;
 	pData->CursorType = (int)MouseCursorType::PsychicDominator;
-
 }
 
 void SW_PsychicDominator::LoadFromINI(SWTypeExtData* pData, CCINIClass* pINI)
@@ -128,7 +127,8 @@ void PsychicDominatorStateMachine::Update()
 		coords.Z += pData->Dominator_FirstAnimHeight;
 
 		AnimClass* pAnim = nullptr;
-		if (AnimTypeClass* pAnimType = pData->Dominator_FirstAnim.Get(RulesClass::Instance->DominatorFirstAnim)) {
+		if (AnimTypeClass* pAnimType = pData->Dominator_FirstAnim.Get(RulesClass::Instance->DominatorFirstAnim))
+		{
 			auto pCreated = GameCreate<AnimClass>(pAnimType, coords);
 			pCreated->SetHouse(this->Super->Owner);
 			pAnim = pCreated;
@@ -152,9 +152,10 @@ void PsychicDominatorStateMachine::Update()
 		// wait for some percentage of the first anim to be
 		// played until we strike.
 
-		if (PsyDom::Anim) {
-			if(auto pImage = PsyDom::Anim->Type->GetImage()) {
-
+		if (PsyDom::Anim)
+		{
+			if (auto pImage = PsyDom::Anim->Type->GetImage())
+			{
 				const int percentage = pData->Dominator_FireAtPercentage.Get(RulesClass::Instance->DominatorFireAtPercentage);
 
 				if (pImage->Frames * percentage / 100 > PsyDom::Anim->Animation.Stage)
@@ -174,9 +175,12 @@ void PsychicDominatorStateMachine::Update()
 		// wait for the second animation to finish. (there may be up to
 		// 10 frames still to be played.)
 
-		if (PsyDom::Anim) {
-			if(auto pImage = PsyDom::Anim->Type->GetImage()) {
-				if (pImage->Frames - PsyDom::Anim->Animation.Stage > 10) {
+		if (PsyDom::Anim)
+		{
+			if (auto pImage = PsyDom::Anim->Type->GetImage())
+			{
+				if (pImage->Frames - PsyDom::Anim->Animation.Stage > 10)
+				{
 					return;
 				}
 			}
@@ -189,9 +193,12 @@ void PsychicDominatorStateMachine::Update()
 	{
 		// wait for the last frame... WTF?
 
-		if (PsyDom::Anim && PsyDom::Anim->Type) {
-			if(auto pImage = PsyDom::Anim->Type->GetImage()) {
-				if (pImage->Frames - PsyDom::Anim->Animation.Stage > 1) {
+		if (PsyDom::Anim && PsyDom::Anim->Type)
+		{
+			if (auto pImage = PsyDom::Anim->Type->GetImage())
+			{
+				if (pImage->Frames - PsyDom::Anim->Animation.Stage > 1)
+				{
 					return;
 				}
 			}

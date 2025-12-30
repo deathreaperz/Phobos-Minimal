@@ -41,7 +41,8 @@ ASMJIT_PATCH(0x420E70, AlphaLightClass_Detach_ClearPointer, 0x7)
 	GET_STACK(AbstractClass*, pObject, 0x4);
 	//GET_STACK(bool, removed, 0x8);
 
-	if(pThis->AttachedTo == pObject){
+	if (pThis->AttachedTo == pObject)
+	{
 		pThis->IsObjectGone = true;
 	}
 
@@ -55,7 +56,8 @@ ASMJIT_PATCH(0x421730, AlphaShapeClass_SDDTOR, 8)
 {
 	GET(AlphaShapeClass* const, pAlpha, ECX);
 
-	if (auto pOldAlpha = StaticVars::ObjectLinkedAlphas.erase(pAlpha->AttachedTo)) {
+	if (auto pOldAlpha = StaticVars::ObjectLinkedAlphas.erase(pAlpha->AttachedTo))
+	{
 		pAlpha->IsObjectGone = true;
 		pAlpha->AttachedTo = nullptr;
 	}
@@ -70,16 +72,19 @@ ASMJIT_PATCH(0x420960, AlphaShapeClass_CTOR, 5)
 
 	const auto it = StaticVars::ObjectLinkedAlphas.get_key_iterator(pSource);
 
-	if (it != StaticVars::ObjectLinkedAlphas.end()) {
-		if (it->second) {
+	if (it != StaticVars::ObjectLinkedAlphas.end())
+	{
+		if (it->second)
+		{
 			//sddtor delete the pKey
-			GameDelete<true, false>(std::exchange(it->second , nullptr));
-		} else {
+			GameDelete<true, false>(std::exchange(it->second, nullptr));
+		}
+		else
+		{
 			it->second = pThis;
 			return 0;
 		}
 	}
-
 
 	//insert new key ,..
 	StaticVars::ObjectLinkedAlphas.emplace_unchecked(pSource, pThis);
@@ -90,18 +95,19 @@ ASMJIT_PATCH(0x5F3D65, ObjectClass_DTOR, 6)
 {
 	GET(ObjectClass*, pThis, ESI);
 
-	if (auto pOldAlpha = StaticVars::ObjectLinkedAlphas.get_or_default(pThis)) {
-		GameDelete<true, false>(std::exchange(pOldAlpha , nullptr));
+	if (auto pOldAlpha = StaticVars::ObjectLinkedAlphas.get_or_default(pThis))
+	{
+		GameDelete<true, false>(std::exchange(pOldAlpha, nullptr));
 	}
 
 	return 0;
 }
 
- ASMJIT_PATCH(0x5F3E78, ObjectClass_Update_AlphaLight, 6)
- {
- 	GET(ObjectClass*, pThis, ESI);
- 	TechnoExt_ExtData::UpdateAlphaShape(pThis);
- 	return pThis->InLimbo ? 0x5F3F11 : 0x5F3E86;
- }
+ASMJIT_PATCH(0x5F3E78, ObjectClass_Update_AlphaLight, 6)
+{
+	GET(ObjectClass*, pThis, ESI);
+	TechnoExt_ExtData::UpdateAlphaShape(pThis);
+	return pThis->InLimbo ? 0x5F3F11 : 0x5F3E86;
+}
 
 #endif

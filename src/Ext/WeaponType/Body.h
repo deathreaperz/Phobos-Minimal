@@ -16,7 +16,6 @@
 #include <Misc/DynamicPatcher/Others/DamageText.h>
 #include <Misc/DynamicPatcher/Weapon/AttachFireData.h>
 
-
 class WeaponTypeExtData final : public AbstractTypeExtData
 {
 public:
@@ -100,7 +99,7 @@ public:
 	Valueable<bool> Wave_IsBigLaser;
 	Nullable<ColorStruct> Wave_Color;
 	Nullable<Point3D> Wave_Intent;
-	std::array<bool , 5> Wave_Reverse;
+	std::array<bool, 5> Wave_Reverse;
 
 	// custom Ivan Bombs
 	Valueable<bool> Ivan_KillsBridges;
@@ -455,25 +454,29 @@ public:
 
 	bool _ReadFromINI(CCINIClass* pINI);
 
-	FORCEDINLINE WeaponTypeExtData* _GetExtData() {
+	FORCEDINLINE WeaponTypeExtData* _GetExtData()
+	{
 		return *reinterpret_cast<WeaponTypeExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 
-	FORCEDINLINE BulletTypeExtData* _GetBulletTypeExtData() {
+	FORCEDINLINE BulletTypeExtData* _GetBulletTypeExtData()
+	{
 		return *reinterpret_cast<BulletTypeExtData**>(((DWORD)this->Projectile) + AbstractExtOffset);
 	}
 
-	FORCEDINLINE FakeBulletTypeClass* _GetBulletType() {
+	FORCEDINLINE FakeBulletTypeClass* _GetBulletType()
+	{
 		return (FakeBulletTypeClass*)this->Projectile;
 	}
 
-	FORCEDINLINE FakeWarheadTypeClass* _GetWarheadType() {
+	FORCEDINLINE FakeWarheadTypeClass* _GetWarheadType()
+	{
 		return (FakeWarheadTypeClass*)this->Warhead;
 	}
 
-	FORCEDINLINE WarheadTypeExtData* _GetWarheadTypeExtData() {
+	FORCEDINLINE WarheadTypeExtData* _GetWarheadTypeExtData()
+	{
 		return *reinterpret_cast<WarheadTypeExtData**>(((DWORD)this->Warhead) + AbstractExtOffset);
 	}
-
 };
 static_assert(sizeof(FakeWeaponTypeClass) == sizeof(WeaponTypeClass), "Invalid Size !");

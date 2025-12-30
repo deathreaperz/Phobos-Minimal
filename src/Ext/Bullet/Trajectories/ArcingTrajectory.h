@@ -49,5 +49,4 @@ public:
 	virtual const char* Name() { return "ArcingTrajectory"; };
 
 	static void CalculateVelocity(BulletClass* pBullet, double elevation, bool lobber, ArcingTrajectory* pTraj);
-
 };

@@ -9,7 +9,8 @@ public:
 	SWColumnClass() = default;
 	SWColumnClass(int maxButtons, int x, int y, int width, int height);
 
-	virtual ~SWColumnClass(){
+	virtual ~SWColumnClass()
+	{
 		// The vanilla game did not consider adding/deleting buttons midway through the game,
 		// so this behavior needs to be made known to the global variable and then remove it
 		if (SWButtonClass::LastFocused == this)

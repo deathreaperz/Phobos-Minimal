@@ -352,7 +352,6 @@ ASMJIT_PATCH(0x738703, UnitClass_Explode_ExplodeAnim, 0x5)
 
 	if (pExplType)
 	{
-
 		AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pExplType, pThis->Location, 0, 1, AnimFlag::AnimFlag_600, 0, false),
 			pThis->GetOwningHouse(),
 			nullptr,
@@ -456,7 +455,6 @@ ASMJIT_PATCH(0x7091FC, TechnoClass_CanPassiveAquire_AI, 0x6)
 			&& !owner->IsControlledByHuman()
 			)
 		{
-
 			R->CL(pTypeExt->PassiveAcquire_AI.Get());
 			return 0x709202;
 		}
@@ -860,8 +858,9 @@ CoordStruct* FakeUnitClass::_GetFLH(CoordStruct* outBuffer, int weaponIdx, Coord
 
 		if (pThis->InOpenToppedTransport && pTransporter && TechnoTypeExtContainer::Instance.Find(pTransporter->GetTechnoType())->AlternateFLH_ApplyVehicle)
 		{
-			if (const int idx = pTransporter->Passengers.IndexOf(pThis)) {
-				pTransporter->GetFLH(outBuffer , -idx, CoordStruct::Empty);
+			if (const int idx = pTransporter->Passengers.IndexOf(pThis))
+			{
+				pTransporter->GetFLH(outBuffer, -idx, CoordStruct::Empty);
 				break;
 			}
 		}
@@ -934,7 +933,6 @@ void FakeUnitClass::_ClearOccupyBit(CoordStruct* pCrd)
 		//if(pCellExt && !TechnoExtData::DoesntOccupyCellAsChild(this))
 		//	pCellExt->IncomingUnit = this;
 	}
-
 }
 
 DEFINE_FUNCTION_JUMP(LJMP, 0x744210, FakeUnitClass::_ClearOccupyBit);
@@ -990,7 +988,6 @@ ASMJIT_PATCH(0x4FB7CA, HouseClass_RegisterJustBuild_CreateSound_PlayerOnly, 0x6)
 
 		if (pTechnoTypeExt->VoiceCreate >= 0)
 		{
-
 			if (!pTechnoTypeExt->VoiceCreate_Instant)
 				pTechno->QueueVoice(pTechnoTypeExt->VoiceCreate);
 			else
@@ -1087,7 +1084,6 @@ ASMJIT_PATCH(0x70FB50, TechnoClass_Bunkerable, 0x5)
 
 	if (const auto pFoot = flag_cast_to<FootClass*, false>(pThis))
 	{
-
 		const auto pType = pFoot->GetTechnoType();
 		if (pType->Bunkerable)
 		{
@@ -1116,7 +1112,6 @@ ASMJIT_PATCH(0x70FB50, TechnoClass_Bunkerable, 0x5)
 				|| loco == RocketLocomotionClass::vtable
 				|| loco == ShipLocomotionClass::vtable)
 			{
-
 				R->EAX(false);
 				return 0x70FBCA;
 			}
@@ -1475,7 +1470,6 @@ ASMJIT_PATCH(0x71C84D, TerrainClass_AI_Animated, 0x6)
 
 // 			for (auto begin = pTypes.begin(); begin != pTypes.end() && *begin; ++begin)
 // 			{
-
 // 				const auto pTypeExt = BuildingTypeExtContainer::Instance.Find(*begin);
 // 				//const auto Powered_ = pBld->IsOverpowered || (!PowerDown && !((*begin)->PowerDrain && LowpOwerHouse));
 
@@ -1856,7 +1850,8 @@ ASMJIT_PATCH(0x73B0C5, UnitClass_Render_nullptrradio, 0x6)
 	return !pContact ? 0x73B124 : 0x0;
 }
 
-void __fastcall Draw_Radial_Indicator(bool draw_line, bool adjust_color, CoordStruct coord, ColorStruct rgb, float line_mult, bool a8, bool a9) {
+void __fastcall Draw_Radial_Indicator(bool draw_line, bool adjust_color, CoordStruct coord, ColorStruct rgb, float line_mult, bool a8, bool a9)
+{
 	JMP_STD(0x456980);
 }
 
@@ -1952,7 +1947,6 @@ ASMJIT_PATCH(0x6D47A6, TacticalClass_Render_Techno, 0x6)
 			{
 				if (auto const pTeamLeader = pTeam->FetchLeader())
 				{
-
 					if (pTeamLeader != pFoot)
 						Drawing::DrawLinesTo(pTeamLeader->GetRenderCoords(), pThis->Location, pTeamLeader->Owner->Color);
 				}
@@ -2080,7 +2074,6 @@ ASMJIT_PATCH(0x6DBE35, TacticalClass_DrawLinesOrCircles, 0x9)
 
 DEFINE_JUMP(LJMP, 0x50BF60, 0x50C04A)// Disable CalcCost mult
 
-
 ASMJIT_PATCH(0x55B4E1, LogicClass_Update_Veinhole, 0x5)
 {
 	UpdateAllVeinholes();
@@ -2124,7 +2117,6 @@ ASMJIT_PATCH(0x73730E, UnitClass_Visceroid_HealthCheckRestore, 0x6)
 	{
 		if (pThis->IsRedHP() && (pThis->Type->TiberiumHeal || pThis->HasAbility(AbilityType::TiberiumHeal)))
 		{
-
 			if (pThis->GetCell()->LandType != LandType::Tiberium)
 			{
 				// search tiberium and abort current mission
@@ -2139,7 +2131,6 @@ ASMJIT_PATCH(0x73730E, UnitClass_Visceroid_HealthCheckRestore, 0x6)
 					pThis->QueueMission(Mission::Move, false);
 					pThis->NextMission();
 				}
-
 			}
 			else
 			{
@@ -2165,7 +2156,6 @@ ASMJIT_PATCH(0x73666A, UnitClass_AI_Viscerid_ZeroStrength, 0x6)
 ASMJIT_PATCH(0x6D4764, TechnoClass_PsyhicSensor_DisableWhenTechnoDies, 0x7)
 {
 	GET(TechnoClass*, pThis, ESI);
-
 
 	if (pThis->InLimbo || pThis->IsCrashing || pThis->IsSinking
 		|| (pThis->WhatAmI() == UnitClass::AbsID && ((UnitClass*)pThis)->DeathFrameCounter > 0))
@@ -2605,7 +2595,6 @@ static MoveResult CollecCrate(CellClass* pCell, FootClass* pCollector)
 					}
 					case Powerup::Cloak:
 					{
-
 						if (!TechnoTypeExtContainer::Instance.Find(pCollector->GetTechnoType())->CloakAllowed || pCollector->CanICloakByDefault() || TechnoExtContainer::Instance.Find(pCollector)->AE.flags.Cloakable)
 							data = Powerup::Money;
 
@@ -2673,7 +2662,6 @@ static MoveResult CollecCrate(CellClass* pCell, FootClass* pCollector)
 #pragma endregion
 
 					HouseExtData::IncremetCrateTracking(pCollectorOwner, data);
-
 				}
 				else if (!pCell->OverlayData)
 				{
@@ -2732,7 +2720,6 @@ static MoveResult CollecCrate(CellClass* pCell, FootClass* pCollector)
 
 				auto GeiveMoney = [&]()
 					{
-
 						Debug::LogInfo("Crate at {},{} contains money", pCell->MapCoords.X, pCell->MapCoords.Y);
 
 						if (!soloCrateMoney)
@@ -3127,7 +3114,6 @@ static MoveResult CollecCrate(CellClass* pCell, FootClass* pCollector)
 
 					if (auto WH = WarheadTypeClass::Array->get_or_default(WarheadTypeClass::FindIndexById("GAS")))
 					{
-
 						bool randomizeCoord = true;
 						auto collector_loc = pCell->GetCoords();
 
@@ -3373,7 +3359,6 @@ ASMJIT_PATCH(0x441B30, BuildingClass_Destroy_Refinery, 0x6)
 
 			if (amount > 0.0)
 			{
-
 				store.DecreaseLevel((float)amount, i);
 				total.DecreaseLevel((float)amount, i);
 
@@ -3563,7 +3548,6 @@ ASMJIT_PATCH(0x73E3BF, UnitClass_Mi_Unload_replace, 0x6)
 
 			BuildingExtContainer::Instance.Find(pBld)->AccumulatedIncome +=
 				pBld->Owner->Available_Money() - HouseExtContainer::Instance.LastHarvesterBalance;
-
 		}
 
 	return 0x73E539;
@@ -3616,7 +3600,6 @@ ASMJIT_PATCH(0x738749, UnitClass_Destroy_TiberiumExplosive, 0x6)
 
 		if (morePower > 0)
 		{
-
 			CoordStruct crd = pThis->GetCoords();
 			if (auto pWH = RulesExtData::Instance()->Tiberium_ExplosiveWarhead)
 			{
@@ -4259,11 +4242,9 @@ ASMJIT_PATCH(0x461225, BuildingTypeClass_ReadFromINI_Foundation, 0x6)
 
 		pBldext->CustomData[pAdd->CellCount] = BuildingTypeExtData::FoundationEndMarker;
 		pBldext->OutlineData[pAdd->OutlineCount] = BuildingTypeExtData::FoundationEndMarker;
-
 	}
 	else if (IS_SAME_STR_(Phobos::readBuffer, "Custom"))
 	{
-
 		char strbuff[0x80];
 
 		if (pThis->Foundation == BuildingTypeExtData::CustomFoundation)
@@ -4354,14 +4335,17 @@ ASMJIT_PATCH(0x461225, BuildingTypeClass_ReadFromINI_Foundation, 0x6)
 			//Set end vector
 			*itOutline = BuildingTypeExtData::FoundationEndMarker;
 			bool hasOrigin = false;
-			for (auto begin = pBldext->CustomData.begin(); begin < pBldext->CustomData.end(); begin++) {
-				if (begin->X == 0 && begin->Y == 0) {
+			for (auto begin = pBldext->CustomData.begin(); begin < pBldext->CustomData.end(); begin++)
+			{
+				if (begin->X == 0 && begin->Y == 0)
+				{
 					hasOrigin = true;
 					break;
 				}
 			}
 
-			if(!hasOrigin){
+			if (!hasOrigin)
+			{
 				Debug::LogInfo("BuildingType {} has a custom foundation which does not include cell 0,0. This breaks AI base building.", pSection);
 			}
 		}
@@ -4384,7 +4368,6 @@ ASMJIT_PATCH(0x46152C, BuildingTypeClass_SetOccupy, 0x6)
 		pThis->Foundation = BuildingTypeExtData::CustomFoundation;
 		pThis->FoundationData = pBldext->CustomData.data();
 		pThis->FoundationOutside = pBldext->OutlineData.data();
-
 	}
 	else
 	{
@@ -4393,7 +4376,6 @@ ASMJIT_PATCH(0x46152C, BuildingTypeClass_SetOccupy, 0x6)
 
 		//pThis->FoundationData = FoundationDataStruct::Cells[(int)pThis->Foundation].Datas;
 		//pThis->FoundationOutside = FoundationDataStruct::Outlines[(int)pThis->Foundation].Datas;
-
 	}
 
 	CCINIClass::INI_Art->ReadString(pThis->ImageFile, "Buildup", "", Phobos::readBuffer);
@@ -4417,14 +4399,12 @@ ASMJIT_PATCH(0x447110, BuildingClass_Sell_Handled, 0x9)
 
 	if (pThis->HasBuildup)
 	{
-
 		switch (control)
 		{
 		case -1:
 		{
 			if (pThis->GetCurrentMission() != Mission::Selling)
 			{
-
 				pThis->QueueMission(Mission::Selling, false);
 				pThis->NextMission();
 			}
@@ -4542,7 +4522,6 @@ ASMJIT_PATCH(0x44E809, BuildingClass_PowerOutput_Absorber, 0x6)
 		pPas;
 		pPas = flag_cast_to<FootClass*>(pPas->NextObject))
 	{
-
 		powertotal += abs(TechnoTypeExtContainer::Instance.Find(pPas->GetTechnoType())
 			->ExtraPower_Amount.Get(pThis->Type->ExtraPowerBonus));
 	}
@@ -4937,7 +4916,6 @@ public:
 	}
 
 	bool __Find_Path_Hierarchical(CellStruct* from, CellStruct* to, MovementZone mzone, FootClass* foot);
-
 };
 
 static bool PriorityQueue_Insert_Safe(
@@ -5549,7 +5527,6 @@ bool __thiscall FakeAStarPathFinderClass::__Find_Path_Hierarchical(
 					Debug::Log("[A*] Null pathNode\n");
 					return false;
 				}
-
 			}
 			while (pathNode->BufferDelta != -1);
 		}
@@ -5713,7 +5690,6 @@ static COMPILETIMEEVAL void ShakeScreen(GScreenClass* pScreen)
 
 ASMJIT_PATCH(0x4F4BB9, GSCreenClass_AI_ShakescreenMode, 0x5)
 {
-
 	GET(GScreenClass*, pThis, ECX);
 
 	if (RulesExtData::Instance()->ShakeScreenUseTSCalculation)
@@ -6053,11 +6029,9 @@ ASMJIT_PATCH(0x5F5A56, ObjectClass_ParachuteAnim, 0x7)
 		auto pParach_type = ((FakeBulletClass*)pBullet)->_GetTypeExtData()->Parachute.Get(RulesClass::Instance->BombParachute);
 
 		pParach = GameCreate<AnimClass>(pParach_type, pCoord, 0, 1, AnimFlag::AnimFlag_600, 0, false);
-
 	}
 	else
 	{
-
 		auto coord = *pCoord;
 		coord.Z += 75;
 		auto pParach_type = RulesClass::Instance->Parachute;
@@ -6295,7 +6269,6 @@ ASMJIT_PATCH(0x466834, BulletClass_AI_TrailerAnim, 0x6)
 
 	if (!(Unsorted::CurrentFrame % delay))
 	{
-
 		auto const pExt = BulletExtContainer::Instance.Find(pThis);
 		AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pThis->Type->Trailer, pThis->Location, 1, 1, AnimFlag::AnimFlag_600, 0, false),
 			pThis->Owner ? pThis->Owner->GetOwningHouse() : (pExt->Owner) ? pExt->Owner : nullptr,
@@ -6520,7 +6493,6 @@ int FakeUnitClass::_Mission_Attack()
 
 		if (err == FireError::CANT || err == FireError::RANGE)
 		{
-
 			this->SetTarget(nullptr);
 			this->EnterIdleMode(false, 1u);
 
@@ -6579,7 +6551,6 @@ static void ProcessColorAdd(CCINIClass* pINI)
 		{
 			RulesClass::Instance->ColorAdd[a] = v_buffer[a];
 		}
-
 	}
 	else
 	{
@@ -6734,7 +6705,6 @@ ASMJIT_PATCH(0x6FBB35, TechnoClass_CloakingAI_detachsensed, 0x6)
 // {
 // public:
 
-
 // };
 // static_assert(sizeof(FakeLayerClass) == sizeof(LayerClass), "Invalid Size !");
 
@@ -6762,7 +6732,6 @@ public:
 
 //DEFINE_FUNCTION_JUMP(VTABLE, 0x7E7F30, FakeDriveLocomotionClass::_Is_Moving_Now);
 
-
 #pragma region ElectricAssultStuffs
 
 void ElectrictAssaultCheck(FootClass* pThis, bool updateIdleAction)
@@ -6774,7 +6743,6 @@ void ElectrictAssaultCheck(FootClass* pThis, bool updateIdleAction)
 
 	if (pWeapon && pWeapon->WeaponType && pWeapon->WeaponType->Warhead->ElectricAssault)
 	{
-
 		auto pWHExt = WarheadTypeExtContainer::Instance.Find(pWeapon->WeaponType->Warhead);
 		auto myLoc = pThis->GetMapCoords();
 
@@ -6784,7 +6752,6 @@ void ElectrictAssaultCheck(FootClass* pThis, bool updateIdleAction)
 			{
 				if (pBld->Type->Overpowerable && pBld->Owner == pThis->Owner)
 				{
-
 					if (pWHExt->ElectricAssault_Requireverses && pWHExt->GetVerses(TechnoExtData::GetTechnoArmor(pBld, pWeapon->WeaponType->Warhead))
 					.Verses <= 0.0)
 						continue;
@@ -6796,7 +6763,6 @@ void ElectrictAssaultCheck(FootClass* pThis, bool updateIdleAction)
 				}
 			}
 		}
-
 	}
 	else if (updateIdleAction)
 	{
@@ -6870,7 +6836,6 @@ ASMJIT_PATCH(0x691C62, ScriptTypeClass_CreateFromName_RemoveInline, 0x5)
 #ifndef disabled_
 // ASMJIT_PATCH(0x6F9C80, TechnoClass_GreatestThread_DeadTechno, 0x9)
 // {
-
 // 	GET(TechnoClass*, pThis, ESI);
 
 // 	auto pTechno = TechnoClass::Array->Items[R->EBX<int>()];
@@ -7164,7 +7129,7 @@ public:
 				{
 					int dx = x;
 					int dy = y;
-(					double dist = Math::sqrt(dx * dx + 4 * dy * dy);
+					(double dist = Math::sqrt(dx * dx + 4 * dy * dy);
 
 					if (dist >= currentMinRadius && dist <= currentMaxRadius)
 					{
@@ -7357,7 +7322,6 @@ public:
 
 	void _AI()
 	{
-
 		const auto pData = WarheadTypeExtData::IonBlastExt.get_or_default(this);
 		const int Ripple_Radius = pData ? MinImpl((int)ionblast_A9FAE8.Size, pData->Ripple_Radius + 1) : ionblast_A9FAE8.Size;
 
@@ -7391,7 +7355,6 @@ public:
 
 			if (const auto pWH = pData ? pData->Ion_WH.Get(Rules->IonCannonWarhead) : Rules->IonCannonWarhead)
 			{
-
 				const int nDamage = pData ? pData->Ion_Damage.Get(Rules->IonCannonDamage) : Rules->IonCannonDamage;
 
 				if (mapCell->ContainsBridge())
@@ -7423,7 +7386,6 @@ public:
 					{
 						if (unit->WhatAmI() == InfantryClass::AbsID || unit->WhatAmI() == UnitClass::AbsID)
 						{
-
 							CoordStruct unitCoord = unit->Location;
 							Point2D unitScreen = TacticalClass::Instance->CoordsToClient(unitCoord);
 
@@ -7433,7 +7395,6 @@ public:
 
 							if (dist < 256)
 							{
-
 								Surface* surf = IonBlastClass_Surfaces[this->Lifetime];
 								char* locked = static_cast<char*>(surf->Lock(dist + 0x100, 128));
 								if (*locked > 0)
@@ -7470,20 +7431,20 @@ public:
 										const float uy = deltaz;
 
 										float proj = Math::sqrtux * ux + uz * uz + uy * uy);
-										const float align = cosA * ux - sinA * proj;
+					const float align = cosA * ux - sinA * proj;
 
-										if (Math::abs(align - deltax) > 0.0002f || Math::abs(cosA * proj + sinA * ux - deltay) > 0.0002f)
-										{
-											proj = -proj;
-										}
+					if (Math::abs(align - deltax) > 0.0002f || Math::abs(cosA * proj + sinA * ux - deltay) > 0.0002f)
+					{
+						proj = -proj;
+					}
 
-										const float blastDist = len + 51.0f;
-										const float blastOffset = (Math::sin(double(len - static_cast<float>(this->Lifetime) * 7.1125f + 38.0f) * 0.11f) * 3.5f + 3.0f) * 51.0f;
-										const float blastFactor = Math::cos(double(len - static_cast<float>(this->Lifetime) * 7.1125f + 38.0f) * 0.11f);
-										const float curve = (blastFactor * 0.11f * 51.0f * 3.5f * blastDist - blastOffset) / (blastDist * blastDist);
+					const float blastDist = len + 51.0f;
+					const float blastOffset = (Math::sin(double(len - static_cast<float>(this->Lifetime) * 7.1125f + 38.0f) * 0.11f) * 3.5f + 3.0f) * 51.0f;
+					const float blastFactor = Math::cos(double(len - static_cast<float>(this->Lifetime) * 7.1125f + 38.0f) * 0.11f);
+					const float curve = (blastFactor * 0.11f * 51.0f * 3.5f * blastDist - blastOffset) / (blastDist * blastDist);
 
-										unit->AngleRotatedSideways = proj * curve * Math::GAME_TWOPIf;
-										unit->AngleRotatedForwards = -ux * curve * Math::GAME_TWOPIf;
+					unit->AngleRotatedSideways = proj * curve * Math::GAME_TWOPIf;
+					unit->AngleRotatedForwards = -ux * curve * Math::GAME_TWOPIf;
 									}
 								}
 							}
@@ -7585,8 +7546,6 @@ public:
 		return 0x0;
 	}
 
-
-
 	//ASMJIT_PATCH(0x7399EE, UnitClass_TryToDeploy_BrokenEBP, 0x5)
 	//{
 	   // GET(UnitClass*, pThis, EBP);
@@ -7652,7 +7611,6 @@ public:
 
 		if (Phobos::Otamaa::DoingLoadGame)
 		{
-
 			if (pAbs != pThis) //avoid missmatching
 				LastKnown = 0;
 		}
@@ -7831,12 +7789,12 @@ public:
 	{
 		int outcode0 = Compute_Out_Code(point1.X, point1.Y, &rect);
 		int outcode1 = Compute_Out_Code(point2.X, point2.Y, &rect);
-	
+
 		double x0 = point1.X;
 		double y0 = point1.Y;
 		double x1 = point2.X;
 		double y1 = point2.Y;
-	
+
 		while (true)
 		{
 			// Trivial accept
@@ -7846,17 +7804,17 @@ public:
 				point2.X = x1; point2.Y = y1;
 				return true;
 			}
-	
+
 			// Trivial reject
 			if (outcode0 & outcode1)
 				return false;
-	
+
 			// Choose endpoint outside rect
 			int outcodeOut = (outcode0 != CODE_INSIDE) ? outcode0 : outcode1;
-	
+
 			double x = 0.0;
 			double y = 0.0;
-	
+
 			// Find intersection
 			if (outcodeOut & CODE_TOP)           // above clip window
 			{
@@ -7895,7 +7853,7 @@ public:
 				// Safety net: outcodeOut has no directional bits? -> break
 				return false;
 			}
-	
+
 			// Move the outside point to intersection and recalc code
 			if (outcodeOut == outcode0)
 			{
@@ -7910,83 +7868,83 @@ public:
 		}
 	}
 
-DEFINE_FUNCTION_JUMP(LJMP, 0x7BC2B0, Clip_Line)
+	DEFINE_FUNCTION_JUMP(LJMP, 0x7BC2B0, Clip_Line)
 
-DEFINE_FUNCTION_JUMP(CALL, 0x436123, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x43617B, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x4BBD72, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x4BC933, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x4BE060, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x4BEBA6, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x4BF7CD, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x4BFDFF, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x4C0EAA, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x4C27D0, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x4C28F4, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x4DC694, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x63D8A3, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x6595F6, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x6598F5, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x659DA0, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x660272, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x6605EB, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x6DAC2B, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x6DACD2, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x6DAD1B, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x6DB0E1, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x6FFB70, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x704BE9, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x704DD4, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x704E14, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x70516F, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x70552E, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x705772, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x7BA689, Clip_Line)
-DEFINE_FUNCTION_JUMP(CALL, 0x7BAC06, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x436123, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x43617B, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x4BBD72, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x4BC933, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x4BE060, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x4BEBA6, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x4BF7CD, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x4BFDFF, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x4C0EAA, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x4C27D0, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x4C28F4, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x4DC694, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x63D8A3, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x6595F6, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x6598F5, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x659DA0, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x660272, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x6605EB, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x6DAC2B, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x6DACD2, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x6DAD1B, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x6DB0E1, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x6FFB70, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x704BE9, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x704DD4, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x704E14, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x70516F, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x70552E, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x705772, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x7BA689, Clip_Line)
+		DEFINE_FUNCTION_JUMP(CALL, 0x7BAC06, Clip_Line)
 
-ASMJIT_PATCH(0x6B0B81, SlaveManagerClass_FreeSlaves_dead, 0x5)
-{
-	GET(TechnoClass*, pTech, ESI);
+		ASMJIT_PATCH(0x6B0B81, SlaveManagerClass_FreeSlaves_dead, 0x5)
+	{
+		GET(TechnoClass*, pTech, ESI);
 
-	return pTech->IsAlive ? 0x0 : 0x6B0C0B;
-}
+		return pTech->IsAlive ? 0x0 : 0x6B0C0B;
+	}
 
 #ifndef CHECK_PTR_VALID
 
+	ASMJIT_PATCH(0x4F9A90, HouseClass_IsAlly_ObjectClass, 0x7)
+	{
+		GET_STACK(ObjectClass*, pTarget, 0x4);
+		GET(HouseClass*, pThis, ECX);
+		GET_STACK(DWORD, caller, 0x0);
 
-ASMJIT_PATCH(0x4F9A90, HouseClass_IsAlly_ObjectClass, 0x7)
-{
-	GET_STACK(ObjectClass*, pTarget, 0x4);
-	GET(HouseClass*, pThis, ECX);
-	GET_STACK(DWORD, caller, 0x0);
+		bool result = false;
 
-	bool result = false;
-
-	if (pTarget) {
-
-		if(flag_cast_to<TechnoClass*>(pTarget)){
-			if ((VTable::Get(pTarget) != AircraftClass::vtable &&
-				VTable::Get(pTarget) != BuildingClass::vtable &&
-				VTable::Get(pTarget) != UnitClass::vtable &&
-				VTable::Get(pTarget) != InfantryClass::vtable))
+		if (pTarget)
+		{
+			if (flag_cast_to<TechnoClass*>(pTarget))
 			{
-				Debug::FatalError("Missing valid vtable %x , caller %x", pTarget, caller);
+				if ((VTable::Get(pTarget) != AircraftClass::vtable &&
+					VTable::Get(pTarget) != BuildingClass::vtable &&
+					VTable::Get(pTarget) != UnitClass::vtable &&
+					VTable::Get(pTarget) != InfantryClass::vtable))
+				{
+					Debug::FatalError("Missing valid vtable %x , caller %x", pTarget, caller);
+				}
 			}
+
+			auto pTargetOwner = pTarget->GetOwningHouse();
+			result = pThis->IsAlliedWith(pTargetOwner);
 		}
 
-		auto pTargetOwner = pTarget->GetOwningHouse();
-		result = pThis->IsAlliedWith(pTargetOwner);
+		R->AL(result);
+		return 0x4F9ADE;
 	}
 
-	R->AL(result);
-	return 0x4F9ADE;
-}
-
-ASMJIT_PATCH(0x6F8A0F, TechnoClass_EvalCell_deadTechno, 0x8)
-{
-	GET(ObjectClass*, pCellObj, EDI);
-	return !pCellObj || !pCellObj->IsAlive ? 0x6F8B4D : 0x6F8A17;
-}
+	ASMJIT_PATCH(0x6F8A0F, TechnoClass_EvalCell_deadTechno, 0x8)
+	{
+		GET(ObjectClass*, pCellObj, EDI);
+		return !pCellObj || !pCellObj->IsAlive ? 0x6F8B4D : 0x6F8A17;
+	}
 	//ASMJIT_PATCH(0x4F9A90, HouseClass_IsAlliedWith, 0x7)
 	//{
 	//	GET(HouseClass*, pThis, ECX);
@@ -8031,27 +7989,28 @@ ASMJIT_PATCH(0x6F8A0F, TechnoClass_EvalCell_deadTechno, 0x8)
 
 //loading save game will crash after this function
 //not sure atm, weird shit
-ASMJIT_PATCH(0x5F7577, ObjectTypeClass_DTOR_Voxel, 0x6) {
-	GET(AbstractTypeClass*, pThis, ESI);
+	ASMJIT_PATCH(0x5F7577, ObjectTypeClass_DTOR_Voxel, 0x6)
+	{
+		GET(AbstractTypeClass*, pThis, ESI);
 
-	Debug::Log("Destroying Voxel for %s ! \n", pThis->ID);
-	return 0x0;
-}
+		Debug::Log("Destroying Voxel for %s ! \n", pThis->ID);
+		return 0x0;
+	}
 
-//ASMJIT_PATCH(0x6f4974, TechnoClass_UpdateDiscovered_ByPlayer_Announce, 0x6) {
-//	//play eva , once ?
-//}
+	//ASMJIT_PATCH(0x6f4974, TechnoClass_UpdateDiscovered_ByPlayer_Announce, 0x6) {
+	//	//play eva , once ?
+	//}
 
-//ASMJIT_PATCH(0x5F6360, ObjectClass_Distance, 0x5)
-//{
-//	GET_STACK(DWORD, caller, 0x0);
-//	GET_STACK(ObjectClass*, pTarget, 0x4);
-//
-//	if (!pTarget || !pTarget->IsAlive && pTarget->AbstractFlags != AbstractFlags::None) {
-//		Debug::Log("Caller %x\n", caller);
-//		R->EAX(0);
-//		return 0x5F6376;
-//	}
-//
-//	return 0x0;
-//}
+	//ASMJIT_PATCH(0x5F6360, ObjectClass_Distance, 0x5)
+	//{
+	//	GET_STACK(DWORD, caller, 0x0);
+	//	GET_STACK(ObjectClass*, pTarget, 0x4);
+	//
+	//	if (!pTarget || !pTarget->IsAlive && pTarget->AbstractFlags != AbstractFlags::None) {
+	//		Debug::Log("Caller %x\n", caller);
+	//		R->EAX(0);
+	//		return 0x5F6376;
+	//	}
+	//
+	//	return 0x0;
+	//}

@@ -16,10 +16,13 @@
 // just un-init it and replace it with nullptr is enough
 namespace DamageFireAnims
 {
-	void FORCEDINLINE HandleRemoveAsExt(BuildingExtData* pExt) {
-		for (auto& nFires : pExt->DamageFireAnims) {
-			if (nFires && nFires->Type) {
- 				//GameDelete<true,false>(nFires);
+	void FORCEDINLINE HandleRemoveAsExt(BuildingExtData* pExt)
+	{
+		for (auto& nFires : pExt->DamageFireAnims)
+		{
+			if (nFires && nFires->Type)
+			{
+				//GameDelete<true,false>(nFires);
 				nFires->TimeToDie = true;
 				nFires->UnInit();
 				nFires = nullptr;
@@ -27,18 +30,21 @@ namespace DamageFireAnims
 		}
 	}
 
-	void FORCEDINLINE HandleRemove(FakeBuildingClass* pThis) {
+	void FORCEDINLINE HandleRemove(FakeBuildingClass* pThis)
+	{
 		HandleRemoveAsExt(pThis->_GetExtData());
 	}
 
-	void FORCEDINLINE HandleInvalidPtr(FakeBuildingClass* pThis, void* ptr) {
-		for (auto& nFires : pThis->_GetExtData()->DamageFireAnims) {
-			if (nFires == ptr) {
+	void FORCEDINLINE HandleInvalidPtr(FakeBuildingClass* pThis, void* ptr)
+	{
+		for (auto& nFires : pThis->_GetExtData()->DamageFireAnims)
+		{
+			if (nFires == ptr)
+			{
 				nFires = nullptr;
 			}
 		}
 	}
-
 };
 
 DEFINE_FUNCTION_JUMP(CALL, 0x43FC92, FakeBuildingClass::_OnFireAI);
@@ -55,11 +61,11 @@ ASMJIT_PATCH(addr , BuildingClass_##name##_DamageFireAnims , size ) { \
 	return ret;\
 }
 
-HANDLEREMOVE_HOOKS(0x43BDD5,ESI, DTOR, 0x6, 0x43BDF6)
-HANDLEREMOVE_HOOKS(0x44AB87,EBP, Fire1, 0x6, 0x44ABAC)
-HANDLEREMOVE_HOOKS(0x440076,ESI, Fire2, 0x6, 0x44009B)
-HANDLEREMOVE_HOOKS(0x43FC99,ESI, Fire3, 0x6, 0x43FCBE)
-HANDLEREMOVE_HOOKS(0x4458E4,ESI, Fire4, 0x6, 0x445905)
+HANDLEREMOVE_HOOKS(0x43BDD5, ESI, DTOR, 0x6, 0x43BDF6)
+HANDLEREMOVE_HOOKS(0x44AB87, EBP, Fire1, 0x6, 0x44ABAC)
+HANDLEREMOVE_HOOKS(0x440076, ESI, Fire2, 0x6, 0x44009B)
+HANDLEREMOVE_HOOKS(0x43FC99, ESI, Fire3, 0x6, 0x43FCBE)
+HANDLEREMOVE_HOOKS(0x4458E4, ESI, Fire4, 0x6, 0x445905)
 
 #undef HANDLEREMOVE_HOOKS
 

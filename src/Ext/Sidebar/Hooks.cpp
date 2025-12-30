@@ -13,8 +13,10 @@
 ASMJIT_PATCH(0x6A593E, SidebarClass_InitForHouse_AdditionalFiles, 0x5)
 {
 	static fmt::basic_memory_buffer<char, 20> buffer {};
-	for (int i = 0; i < (int)SidebarExtData::TabProducingProgress.size(); i++) {
-		if(!SidebarExtData::TabProducingProgressIsLoaded[i]) {
+	for (int i = 0; i < (int)SidebarExtData::TabProducingProgress.size(); i++)
+	{
+		if (!SidebarExtData::TabProducingProgressIsLoaded[i])
+		{
 			buffer.clear();
 			fmt::format_to(std::back_inserter(buffer), "tab{:02}pp.SHP", i);
 			buffer.push_back('\0');
@@ -34,7 +36,8 @@ ASMJIT_PATCH(0x6A5EA1, SidebarClass_UnloadShapes_AdditionalFiles, 0x5)
 	for (int i = 0; i < (int)SidebarExtData::TabProducingProgress.size(); i++)
 	{
 		//the shape is already invalid if the name not event there ,..
-		if(SidebarExtData::TabProducingProgressIsLoaded[i]){
+		if (SidebarExtData::TabProducingProgressIsLoaded[i])
+		{
 			SidebarExtData::TabProducingProgress[i] = nullptr;
 			SidebarExtData::TabProducingProgressIsLoaded[i] = false;
 		}

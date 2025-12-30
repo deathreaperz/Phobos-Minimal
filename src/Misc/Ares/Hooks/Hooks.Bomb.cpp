@@ -136,7 +136,7 @@ ASMJIT_PATCH(0x51E488, InfantryClass_GetCursorOverObject2, 5)
 {
 	GET(TechnoClass* const, Target, ESI);
 	return !BombExtContainer::Instance.Find(Target->AttachedBomb)
-			->Weapon->Ivan_Detachable
+		->Weapon->Ivan_Detachable
 		? 0x51E49E : 0x0;
 }
 
@@ -199,23 +199,29 @@ ASMJIT_PATCH(0x46934D, IvanBombs_Spread, 6)
 	if (const auto pWeapon = pBullet->WeaponType)
 	{
 		// single target or spread switch
-		if (pBullet->WH->CellSpread < 0.5f) {
-			if(!pBullet->Target || !(pBullet->Target->AbstractFlags & AbstractFlags::Object))
+		if (pBullet->WH->CellSpread < 0.5f)
+		{
+			if (!pBullet->Target || !(pBullet->Target->AbstractFlags & AbstractFlags::Object))
 				return 0x469AA4;
 
 			// single target
 			TechnoExt_ExtData::PlantBomb(pBullet->Owner, (ObjectClass*)pBullet->Target, pWeapon);
-		} else {
+		}
+		else
+		{
 			// cell spread
 			CoordStruct tgtCoords = pBullet->GetTargetCoords();
 			auto pWHExt = WarheadTypeExtContainer::Instance.Find(pBullet->WH);
 
 			Helpers::Alex::ApplyFuncToCellSpreadItems(tgtCoords, pBullet->WH->CellSpread,
-				true, pWHExt->CellSpread_Cylinder , false , pWHExt->AffectsInAir, pWHExt->AffectsGround , false, [=](TechnoClass* pTarget) {
-				TechnoExt_ExtData::PlantBomb(pBullet->Owner, pTarget, pWeapon);
+				true, pWHExt->CellSpread_Cylinder, false, pWHExt->AffectsInAir, pWHExt->AffectsGround, false, [=](TechnoClass* pTarget)
+ {
+	 TechnoExt_ExtData::PlantBomb(pBullet->Owner, pTarget, pWeapon);
 			});
 		}
-	} else {
+	}
+	else
+	{
 		Debug::LogInfo("IvanBomb bullet without attached WeaponType.");
 	}
 
@@ -241,7 +247,8 @@ ASMJIT_PATCH(0x447218, BuildingClass_GetActionOnObject_Deactivated, 6)
 	GET(BuildingClass* const, pThis, ESI);
 	GET_STACK(ObjectClass*, pThat, 0x1C);
 
-	if (pThis->Deactivated) {
+	if (pThis->Deactivated)
+	{
 		R->EAX(TechnoExt_ExtData::GetAction(pThis, pThat));
 		return 0x447273;
 	}
@@ -254,7 +261,8 @@ ASMJIT_PATCH(0x73FD5A, UnitClass_GetActionOnObject_Deactivated, 5)
 	GET(UnitClass* const, pThis, ECX);
 	GET_STACK(ObjectClass*, pThat, 0x20);
 
-	if (pThis->Deactivated) {
+	if (pThis->Deactivated)
+	{
 		R->EAX(TechnoExt_ExtData::GetAction(pThis, pThat));
 		return 0x73FD72;
 	}
@@ -267,7 +275,8 @@ ASMJIT_PATCH(0x51E440, InfantryClass_GetActionOnObject_Deactivated, 8)
 	GET(InfantryClass* const, pThis, EDI);
 	GET_STACK(ObjectClass*, pThat, 0x3C);
 
-	if (pThis->Deactivated) {
+	if (pThis->Deactivated)
+	{
 		R->EAX(TechnoExt_ExtData::GetAction(pThis, pThat));
 		return 0x51E458;
 	}
@@ -280,7 +289,8 @@ ASMJIT_PATCH(0x417CCB, AircraftClass_GetActionOnObject_Deactivated, 5)
 	GET(AircraftClass* const, pThis, ECX);
 	GET_STACK(ObjectClass*, pThat, 0x20);
 
-	if (pThis->Deactivated) {
+	if (pThis->Deactivated)
+	{
 		R->EAX(TechnoExt_ExtData::GetAction(pThis, pThat));
 		return 0x417CDF;
 	}
@@ -290,16 +300,18 @@ ASMJIT_PATCH(0x417CCB, AircraftClass_GetActionOnObject_Deactivated, 5)
 
 ASMJIT_PATCH(0x6FFEC0, TechnoClass_GetActionOnObject_Additionals, 5)
 {
-	GET(TechnoClass* , pThis, ECX);
+	GET(TechnoClass*, pThis, ECX);
 	GET_STACK(ObjectClass*, pObject, 0x4);
 	//GET_STACK(DWORD , caller , 0x0);
 
-	if (TechnoExt_ExtData::CanDetonate(pThis, pObject)) {
+	if (TechnoExt_ExtData::CanDetonate(pThis, pObject))
+	{
 		R->EAX(Action::Detonate);
 		return 0x7005EF;
 	}
 
-	if (!pThis->IsAlive) {
+	if (!pThis->IsAlive)
+	{
 		R->EAX(Action::None);
 		return 0x7005EF;
 	}
@@ -314,7 +326,7 @@ ASMJIT_PATCH(0x6FFEC0, TechnoClass_GetActionOnObject_Additionals, 5)
 	// Cursor NoMove
 	MouseCursorFuncs::SetMouseCursorAction(pTypeExt->Cursor_NoMove.Get(), Action::NoMove, false);
 
-	if(!pObject)
+	if (!pObject)
 		return 0x0;
 
 	if (const auto pTargetType = pObject->GetTechnoType())
@@ -336,15 +348,15 @@ ASMJIT_PATCH(0x44A1FF, BuildingClass_Mi_Selling_DetonatePostBuildup, 6)
 {
 	GET(BuildingClass* const, pStructure, EBP);
 
-	if (const auto pBomb = pStructure->AttachedBomb) {
+	if (const auto pBomb = pStructure->AttachedBomb)
+	{
 		if (BombExtContainer::Instance.Find(pBomb)->Weapon->Ivan_DetonateOnSell.Get())
 			pBomb->Detonate();// Otamaa : detonate may kill the techno before this function
-			// so this can possibly causing some weird crashes if that happening
+		// so this can possibly causing some weird crashes if that happening
 	}
 
 	return 0;
 }
-
 
 ASMJIT_PATCH(0x4D9F7B, FootClass_Sell_Detonate, 6)
 {
@@ -354,10 +366,11 @@ ASMJIT_PATCH(0x4D9F7B, FootClass_Sell_Detonate, 6)
 	int money = pThis->GetRefund();
 	pThis->Owner->GiveMoney(money);
 
-	if (const auto pBomb = pThis->AttachedBomb) {
+	if (const auto pBomb = pThis->AttachedBomb)
+	{
 		if (BombExtContainer::Instance.Find(pBomb)->Weapon->Ivan_DetonateOnSell.Get())
 			pBomb->Detonate(); // Otamaa : detonate may kill the techno before this function
-			// so this can possibly causing some weird crashes if that happening
+		// so this can possibly causing some weird crashes if that happening
 	}
 
 	if (pThis->Owner->ControlledByCurrentPlayer())
@@ -369,10 +382,10 @@ ASMJIT_PATCH(0x4D9F7B, FootClass_Sell_Detonate, 6)
 		VocClass::SafeImmedietelyPlayAt(pTypeExt->SellSound, &loc);
 	}
 
-	FlyingStrings::Instance.AddMoneyString(RulesExtData::Instance()->DisplayIncome  , money, pThis->Owner, RulesExtData::Instance()->DisplayIncome_Houses, loc, Point2D::Empty, ColorStruct::Empty);
+	FlyingStrings::Instance.AddMoneyString(RulesExtData::Instance()->DisplayIncome, money, pThis->Owner, RulesExtData::Instance()->DisplayIncome_Houses, loc, Point2D::Empty, ColorStruct::Empty);
 
 	//this thing may already death , just
-	return pThis->IsAlive  ? 0x4D9FCB : 0x4D9FE9;
+	return pThis->IsAlive ? 0x4D9FCB : 0x4D9FE9;
 }
 
 // custom ivan bomb attachment

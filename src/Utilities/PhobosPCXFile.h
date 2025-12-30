@@ -61,7 +61,8 @@ public:
 
 private:
 
-	void Clear() {
+	void Clear()
+	{
 		this->Surface = nullptr;
 		this->filename = nullptr;
 	}

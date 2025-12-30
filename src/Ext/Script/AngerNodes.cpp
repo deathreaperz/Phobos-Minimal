@@ -70,7 +70,6 @@ void ScriptExtData::ModifyHateHouses_List(TeamClass* pTeam, int idxHousesList = 
 					}
 				}
 			}
-
 		}
 	}
 
@@ -166,7 +165,7 @@ void ScriptExtData::SetTheMostHatedHouse(TeamClass* pTeam, int mask = 0, int mod
 		return;
 	}
 
-	StackVector<HouseClass* , 20> objectsList {};
+	StackVector<HouseClass*, 20> objectsList {};
 	int IdxSelectedObject = -1;
 	HouseClass* selectedHouse = nullptr;
 	int highestHateLevel = 0;
@@ -277,7 +276,7 @@ HouseClass* ScriptExtData::GetTheMostHatedHouse(TeamClass* pTeam, int mask = 0, 
 	if (!pLeaderUnit)
 	{
 		pTeamData->TeamLeader = pTeam->FetchLeader();
-		pTeamData->TeamLeader->IsTeamLeader= true;
+		pTeamData->TeamLeader->IsTeamLeader = true;
 	}
 
 	double objectDistance = -1;
@@ -603,7 +602,6 @@ HouseClass* ScriptExtData::GetTheMostHatedHouse(TeamClass* pTeam, int mask = 0, 
 		//	enemyHouse->Type->ID,
 		//	enemyHouse->ArrayIndex
 		//	);
-
 	}
 	break;
 	case -10:
@@ -747,7 +745,6 @@ HouseClass* ScriptExtData::GetTheMostHatedHouse(TeamClass* pTeam, int mask = 0, 
 		//	enemyHouse->Type->ID,
 		//	enemyHouse->ArrayIndex
 		//	);
-
 	}
 	break;
 	}

@@ -44,7 +44,6 @@ public:
 	virtual bool WriteToStream(LPSTREAM stream) = 0;
 	virtual bool ReadFromStream(LPSTREAM stream) = 0;
 
-
 	virtual size_t Size() const = 0;
 	virtual size_t Offset() const = 0;
 };
@@ -53,7 +52,6 @@ class PhobosByteStream : public PhobosByteStreamBase
 {
 public:
 	using data_t = unsigned char;
-
 
 	// Performance and safety constants
 	static COMPILETIMEEVAL size_t MAX_STREAM_SIZE = 500 * 1024 * 1024;     // 500MB total limit
@@ -126,11 +124,13 @@ public:
 
 	virtual bool WriteToStream(LPSTREAM stream);
 	virtual bool ReadFromStream(LPSTREAM stream);
-	virtual size_t Size() const {
+	virtual size_t Size() const
+	{
 		return this->data.size();
 	}
 
-	virtual size_t Offset() const {
+	virtual size_t Offset() const
+	{
 		return this->position;
 	}
 
@@ -204,7 +204,6 @@ public:
 		// Simple verification: only if integrity check is enabled
 		if (integrity_check_enabled)
 		{
-
 			// Reuse verification buffer for performance
 			if (verify_buffer.size() < size)
 			{
@@ -243,7 +242,6 @@ public:
 
 		if (integrity_check_enabled)
 		{
-
 			// Reuse verification buffer for performance
 			if (verify_buffer_integration.size() < size)
 			{

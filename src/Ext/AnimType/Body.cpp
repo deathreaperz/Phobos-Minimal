@@ -32,7 +32,7 @@ bool AnimTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	Valueable<TechnoTypeClass*> createUnit { nullptr };
 	createUnit.Read(exINI, pID, "CreateUnit");
 
-	if(createUnit && !this->CreateUnitType)
+	if (createUnit && !this->CreateUnitType)
 		this->CreateUnitType = std::make_unique<CreateUnitTypeClass>();
 
 	if (this->CreateUnitType)
@@ -56,7 +56,8 @@ bool AnimTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	UseCenterCoordsIfAttached.Read(exINI, pID, "UseCenterCoordsIfAttached");
 
 	auto att = this->AttachedAnimPosition.Get();
-	if (UseCenterCoordsIfAttached.isset() && UseCenterCoordsIfAttached.Get()){
+	if (UseCenterCoordsIfAttached.isset() && UseCenterCoordsIfAttached.Get())
+	{
 		att |= AttachedAnimPosition::Center;
 		this->AttachedAnimPosition = att;
 	}
@@ -66,7 +67,8 @@ bool AnimTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	this->Weapon.Read(exINI, pID, "Weapon", true);
 	this->WeaponToCarry.Read(exINI, pID, "WeaponToCarry", true);
 
-	if (auto& pWeapon = this->Weapon) {
+	if (auto& pWeapon = this->Weapon)
+	{
 		if (!pWeapon->Projectile || !pWeapon->Warhead)
 			pWeapon = nullptr;
 	}
@@ -177,7 +179,7 @@ bool AnimTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	this->AltPalette_ApplyLighting.Read(exINI, pID, "AltPalette.ApplyLighting");
 
 	//Launchs
-	LauchSWData::ReadVector(this->Launchs, exINI , pID, Phobos::Otamaa::CompatibilityMode);
+	LauchSWData::ReadVector(this->Launchs, exINI, pID, Phobos::Otamaa::CompatibilityMode);
 
 	this->RemapAnim.Read(exINI, pID, "RemapAnim");
 	this->ExtraShadow.Read(exINI, pID, "ExtraShadow");
@@ -193,7 +195,8 @@ bool AnimTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	this->DetachOnCloak.Read(exINI, pID, "DetachOnCloak");
 	this->Translucency_Cloaked.Read(exINI, pID, "Translucency.Cloaked");
 
-	if (This()->Translucent) {
+	if (This()->Translucent)
+	{
 		this->Translucent_Keyframes.Read(exINI, pID, "Translucent.%s", This()->End);
 	}
 
@@ -325,14 +328,19 @@ static TechnoClass* CreateFoot(
 
 		pTechno->OnBridge = isBridge;
 
-		if (rtti != AbstractType::AircraftType && parachuteIfInAir && !alwaysOnGround && inAir) {
+		if (rtti != AbstractType::AircraftType && parachuteIfInAir && !alwaysOnGround && inAir)
+		{
 			parachuted = true;
 			success = pTechno->SpawnParachuted(location);
-		} else if (!pCell->GetBuilding() || !checkPathfinding) {
+		}
+		else if (!pCell->GetBuilding() || !checkPathfinding)
+		{
 			++Unsorted::ScenarioInit;
 			success = pTechno->Unlimbo(location, facing);
 			--Unsorted::ScenarioInit;
-		} else {
+		}
+		else
+		{
 			success = pTechno->Unlimbo(location, facing);
 		}
 
@@ -348,27 +356,29 @@ static TechnoClass* CreateFoot(
 					if (auto const pFlyLoco = locomotion_cast<FlyLocomotionClass*>(pTechno->Locomotor))
 					{
 						pTechno->SetLocation(location);
-						if(pType->Speed != 0) {
+						if (pType->Speed != 0)
+						{
 							bool airportBound = rtti == AbstractType::AircraftType && static_cast<AircraftTypeClass*>(pType)->AirportBound;
 							if (pCell->GetContent() || airportBound)
 								pTechno->EnterIdleMode(false, true);
 							else
 								pFlyLoco->Move_To(pCell->GetCoordsWithBridge());
-
-
-						} else if (inAir) {
+						}
+						else if (inAir)
+						{
 							AircraftTrackerClass::Instance->Add(pTechno);
 						}
 					}
 					else if (auto const pJJLoco = locomotion_cast<JumpjetLocomotionClass*>(pTechno->Locomotor))
 					{
 						pJJLoco->Facing.Set_Current(DirStruct(facing));
-						if(pType->Speed != 0) {
+						if (pType->Speed != 0)
+						{
 							if (pType->BalloonHover)
 							{
 								// Order BalloonHover jumpjets to ascend.
 								pJJLoco->IsMoving = true;
-								pJJLoco->HeadToCoord =  pTechno->GetCoords();
+								pJJLoco->HeadToCoord = pTechno->GetCoords();
 								TechnoExtContainer::Instance.Find(pTechno)->JumpjetStraightAscend = true;
 
 								if (!inAir)
@@ -379,7 +389,9 @@ static TechnoClass* CreateFoot(
 								// Order non-BalloonHover jumpjets to land.
 								pJJLoco->Move_To(location);
 							}
-						} else if (inAir) {
+						}
+						else if (inAir)
+						{
 							AircraftTrackerClass::Instance->Add(pTechno);
 						}
 					}
@@ -393,7 +405,6 @@ static TechnoClass* CreateFoot(
 					pTechno->QueueMission(mission, false);
 				else
 					pTechno->Scatter(CoordStruct::Empty, false, false);
-
 			}
 
 			if (!decidedOwner->Type->MultiplayPassive)
@@ -401,7 +412,8 @@ static TechnoClass* CreateFoot(
 
 			return pTechno;
 		}
-		else {
+		else
+		{
 			TechnoExtData::HandleRemove(pTechno);
 		}
 	}
@@ -427,9 +439,9 @@ void AnimTypeExtData::CreateUnit_Spawn(AnimClass* pThis)
 	{
 		const auto Is_AI = !decidedOwner->IsControlledByHuman();
 		DirType primaryFacing = c_type->Facing;
-		if(c_type->InheritDeathFacings && pAnimExt->DeathUnitFacing.has_value())
+		if (c_type->InheritDeathFacings && pAnimExt->DeathUnitFacing.has_value())
 			primaryFacing = pAnimExt->DeathUnitFacing;
-		else if(c_type->RandomFacing)
+		else if (c_type->RandomFacing)
 			primaryFacing = ScenarioClass::Instance->Random.RandomRangedSpecific<DirType>(DirType::Min, DirType::Max);
 
 		std::optional<DirType> secondaryFacing {};
@@ -459,8 +471,10 @@ void AnimTypeExtData::CreateUnit_Spawn(AnimClass* pThis)
 			c_type->SpawnParachutedInAir,
 			c_type->AlwaysSpawnOnGround,
 			missionAI
-		)) {
-			if (auto pSpawnAnim = c_type->SpawnAnim) {
+		))
+		{
+			if (auto pSpawnAnim = c_type->SpawnAnim)
+			{
 				auto pCreateUnitAnim = GameCreate<AnimClass>(pSpawnAnim, pAnimExt->CreateUnitLocation);
 				pCreateUnitAnim->Owner = decidedOwner;
 				((FakeAnimClass*)pCreateUnitAnim)->_GetExtData()->Invoker = AnimExtData::GetTechnoInvoker(pThis);
@@ -471,7 +485,6 @@ void AnimTypeExtData::CreateUnit_Spawn(AnimClass* pThis)
 
 void AnimTypeExtData::ValidateData()
 {
-
 	if (this->CreateUnitType && this->CreateUnitType->Type->Strength == 0)
 	{
 		Debug::LogInfo("AnimType[{}] With[{}] CreateUnit strength 0 !", Name.data(), this->CreateUnitType->Type->ID);
@@ -493,17 +506,19 @@ void AnimTypeExtData::ProcessDestroyAnims(FootClass* pThis, TechnoClass* pKiller
 	const auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pType);
 	Iterator pDestroyAnim = make_iterator(pType->DestroyAnim);
 
-	if (pWH) {
+	if (pWH)
+	{
 		for (auto walk = pTypeExt->DestroyAnimSpecific.begin();
 			 walk != pTypeExt->DestroyAnimSpecific.end();
 			 ++walk
-		) {
-			if (walk->first == pWH) {
+		)
+		{
+			if (walk->first == pWH)
+			{
 				pDestroyAnim = make_iterator(walk->second);
 				break;
 			}
 		}
-
 	}
 
 	if (!pDestroyAnim)
@@ -524,7 +539,8 @@ void AnimTypeExtData::ProcessDestroyAnims(FootClass* pThis, TechnoClass* pKiller
 	HouseClass* const pInvoker = pKiller ? pKiller->Owner : nullptr;
 	AnimExtData::SetAnimOwnerHouseKind(pAnim, pInvoker, pThis->Owner, pThis, true, false);
 
-	if(auto& c_type = pAnimTypeExt->CreateUnitType){
+	if (auto& c_type = pAnimTypeExt->CreateUnitType)
+	{
 		if (c_type->InheritDeathFacings.Get())
 			pAnimExt->DeathUnitFacing = facing;
 
@@ -657,7 +673,6 @@ bool AnimTypeExtContainer::LoadAll(const json& root)
 
 		for (auto& entry : container[AnimTypeExtData::ClassName])
 		{
-
 			uint32_t oldPtr = 0;
 			if (!ExtensionSaveJson::ReadHex(entry, "OldPtr", oldPtr))
 				return false;
@@ -721,12 +736,10 @@ void AnimTypeExtContainer::LoadFromINI(AnimTypeClass* key, CCINIClass* pINI, boo
 		//this function can be called again multiple time but without need to re-init the data
 		ptr->SetInitState(InitState::Ruled);
 	}
-
 }
 
 void AnimTypeExtContainer::WriteToINI(AnimTypeClass* key, CCINIClass* pINI)
 {
-
 	if (auto ptr = this->TryFind(key))
 	{
 		if (!pINI)
@@ -743,7 +756,6 @@ ASMJIT_PATCH(0x42784B, AnimTypeClass_CTOR, 0x5)
 	GET(AnimTypeClass*, pItem, EAX);
 	AnimTypeExtContainer::Instance.Allocate(pItem);
 	return 0;
-
 }
 
 ASMJIT_PATCH(0x428EA8, AnimTypeClass_SDDTOR, 0x5)

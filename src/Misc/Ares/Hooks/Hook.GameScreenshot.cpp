@@ -5,7 +5,7 @@
 #include <Utilities/Macro.h>
 
 //this is still 0.A code , need check the new one ,..
-void __fastcall ScreenCaptureCommandClass_Process(CommandClass* pThis , DWORD)
+void __fastcall ScreenCaptureCommandClass_Process(CommandClass* pThis, DWORD)
 {
 	RECT Viewport = {};
 	if (Imports::GetWindowRect.invoke()(Game::hWnd, &Viewport))
@@ -38,7 +38,7 @@ void __fastcall ScreenCaptureCommandClass_Process(CommandClass* pThis , DWORD)
 			{
 				//char fName[0x80];
 				const std::string fName = "SCRN." + Debug::GetCurTimeA() + ".BMP";
-				CCFileClass ScreenShot { fName.c_str()};
+				CCFileClass ScreenShot { fName.c_str() };
 				ScreenShot.Open(FileAccessMode::Write);
 
 #pragma pack(push, 1)
@@ -110,4 +110,4 @@ void __fastcall ScreenCaptureCommandClass_Process(CommandClass* pThis , DWORD)
 		}
 	}
 }
-DEFINE_FUNCTION_JUMP(VTABLE, 0x7EBF24 , ScreenCaptureCommandClass_Process);
+DEFINE_FUNCTION_JUMP(VTABLE, 0x7EBF24, ScreenCaptureCommandClass_Process);

@@ -14,9 +14,11 @@ LightConvertClass* IsometricTileTypeExtData::GetLightConvert(IsometricTileTypeCl
 	const char* ConverName = "ISO_X.PAL";
 	BytePalette* pISOPal = &FileSystem::ISOx_PAL;
 
-	if(pOvrl) {
+	if (pOvrl)
+	{
 		auto pExt = IsometricTileTypeExtContainer::Instance.Find(pOvrl);
-		if(pExt->Palette.GetConvert()) {
+		if (pExt->Palette.GetConvert())
+		{
 			ConverName = pExt->Palette.Name.c_str();
 			pISOPal = pExt->Palette.Palette.get();
 		}
@@ -85,7 +87,7 @@ bool IsometricTileTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	INI_EX exINI(pINI);
 
 	this->TileSetName.clear();
-	fmt::format_to(std::back_inserter(this->TileSetName) ,"Tileset{:04}" , IsometricTileTypeExtContainer::Instance.CurrentTileset);
+	fmt::format_to(std::back_inserter(this->TileSetName), "Tileset{:04}", IsometricTileTypeExtContainer::Instance.CurrentTileset);
 	//this->Palette.Read(exINI, buffer.data() , "CustomPalette");
 
 	this->AllowedTiberiums.Read(exINI, this->TileSetName.c_str(), "AllowedTiberiums");

@@ -39,9 +39,9 @@
 extern "C" {
 #endif
 
-/* ============================================================================================== */
-/* Enums and types                                                                                */
-/* ============================================================================================== */
+	/* ============================================================================================== */
+	/* Enums and types                                                                                */
+	/* ============================================================================================== */
 
 #include <Zydis/Generated/EnumMnemonic.h>
 
@@ -55,31 +55,31 @@ extern "C" {
  * @{
  */
 
-/**
- * Returns the specified instruction mnemonic string.
- *
- * @param   mnemonic    The mnemonic.
- *
- * @return  The instruction mnemonic string or `ZYAN_NULL`, if an invalid mnemonic was passed.
- */
-ZYDIS_EXPORT const char* ZydisMnemonicGetString(ZydisMnemonic mnemonic);
+ /**
+  * Returns the specified instruction mnemonic string.
+  *
+  * @param   mnemonic    The mnemonic.
+  *
+  * @return  The instruction mnemonic string or `ZYAN_NULL`, if an invalid mnemonic was passed.
+  */
+	ZYDIS_EXPORT const char* ZydisMnemonicGetString(ZydisMnemonic mnemonic);
 
-/**
- * Returns the specified instruction mnemonic as `ZydisShortString`.
- *
- * @param   mnemonic    The mnemonic.
- *
- * @return  The instruction mnemonic string or `ZYAN_NULL`, if an invalid mnemonic was passed.
- *
- * The `buffer` of the returned struct is guaranteed to be zero-terminated in this special case.
- */
-ZYDIS_EXPORT const ZydisShortString* ZydisMnemonicGetStringWrapped(ZydisMnemonic mnemonic);
+	/**
+	 * Returns the specified instruction mnemonic as `ZydisShortString`.
+	 *
+	 * @param   mnemonic    The mnemonic.
+	 *
+	 * @return  The instruction mnemonic string or `ZYAN_NULL`, if an invalid mnemonic was passed.
+	 *
+	 * The `buffer` of the returned struct is guaranteed to be zero-terminated in this special case.
+	 */
+	ZYDIS_EXPORT const ZydisShortString* ZydisMnemonicGetStringWrapped(ZydisMnemonic mnemonic);
 
-/**
- * @}
- */
+	/**
+	 * @}
+	 */
 
-/* ============================================================================================== */
+	 /* ============================================================================================== */
 
 #ifdef __cplusplus
 }

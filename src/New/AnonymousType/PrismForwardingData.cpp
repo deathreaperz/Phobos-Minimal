@@ -1,6 +1,5 @@
 #include "PrismForwardingData.h"
 
-
 void PrismForwardingData::LoadFromINIFile(BuildingTypeClass* pThis, CCINIClass* pINI)
 {
 	const char* pID = pThis->ID;
@@ -67,7 +66,8 @@ void PrismForwardingData::LoadFromINIFile(BuildingTypeClass* pThis, CCINIClass* 
 
 						pSetting = idxWeapon;
 
-						if (!pWeapon->Warhead) {
+						if (!pWeapon->Warhead)
+						{
 							pWeapon->Warhead = RulesClass::Instance->C4Warhead;
 						}
 

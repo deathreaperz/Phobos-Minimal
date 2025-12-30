@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef _aaaaaaa 
+#ifdef _aaaaaaa
 #include <GeneralStructures.h>
 #include <CoordStruct.h>
 #include <Utilities/Helpers.h>

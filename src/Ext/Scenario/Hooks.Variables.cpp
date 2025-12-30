@@ -4,7 +4,6 @@
 
 #include <TagClass.h>
 
-
 ASMJIT_PATCH(0x685EB1, PhobosSaveVariables, 0x5)//Lose
 {
 	//Debug::LogInfo("%s , Executed [%x]!", __FUNCTION__ , R->Origin());

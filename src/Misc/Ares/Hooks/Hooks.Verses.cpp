@@ -33,7 +33,7 @@ ASMJIT_PATCH(0x75DDCC, WarheadTypeClass_GetVerses_Skipvanilla, 0x7)
 	return 0x75DE98;
 }
 
-void Debug(ObjectClass* pTarget, int nArmor, VersesData* pData, WarheadTypeClass* pWH, const char* pAdd , size_t arrSize )
+void Debug(ObjectClass* pTarget, int nArmor, VersesData* pData, WarheadTypeClass* pWH, const char* pAdd, size_t arrSize)
 {
 	auto const pArmor = ArmorTypeClass::FindFromIndex(nArmor);
 
@@ -92,13 +92,16 @@ ASMJIT_PATCH(0x489180, MapClass_GetTotalDamage, 0x6)
 		const float Atmax = float(dDamage * pWH->PercentAtMax);
 		const auto vsData = pWH->GetVersesData(armor);
 
-		if (Atmax != dDamage && cellSpreadRadius) {
+		if (Atmax != dDamage && cellSpreadRadius)
+		{
 			res = int((fDamage - Atmax) * (double)(cellSpreadRadius - distance) / (double)cellSpreadRadius + Atmax);
-		} else {
+		}
+		else
+		{
 			res = damage;
 		}
 
-		if(!pExt->ApplyModifiersOnNegativeDamage)
+		if (!pExt->ApplyModifiersOnNegativeDamage)
 			res = int(double(res <= 0 ? 0 : res) * vsData->Verses);
 		else
 			res = int(res * vsData->Verses);
@@ -112,8 +115,9 @@ ASMJIT_PATCH(0x489180, MapClass_GetTotalDamage, 0x6)
 			damage = MaxImpl(damage, pExt->MinDamage >= 0 ? pExt->MinDamage : RulesClass::Instance->MinDamage);
 
 		damage = MinImpl(damage, RulesClass::Instance->MaxDamage);
-
-	} else {
+	}
+	else
+	{
 		res = distance >= 8 ? 0 : damage;
 	}
 
@@ -142,7 +146,7 @@ ASMJIT_PATCH(0x6F7D3D, TechnoClass_EvaluateObject_Verses, 0x7)
 
 	GET(ObjectClass*, pTarget, ESI);
 	GET(FakeWarheadTypeClass*, pWH, ECX);
-	GET(WeaponTypeClass*, pWeapon , EBP);
+	GET(WeaponTypeClass*, pWeapon, EBP);
 	//GET(int, nArmor, EAX);
 
 	LastWeapon = pWeapon;
@@ -164,24 +168,26 @@ ASMJIT_PATCH(0x6F85AB, TechnoClass_EvaluateObject_AggressiveAttackMove, 0x6)
 	if (!pThis->Owner->IsControlledByHuman())
 		return CanTarget;
 
-	if (pThis->MegaMissionIsAttackMove()) {
+	if (pThis->MegaMissionIsAttackMove())
+	{
 		const auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType());
 
-		if(pTypeExt->AttackMove_Aggressive.Get(RulesExtData::Instance()->AttackMove_UpdateTarget))
+		if (pTypeExt->AttackMove_Aggressive.Get(RulesExtData::Instance()->AttackMove_UpdateTarget))
 			return CanTarget;
 	}
 
-	if(pThis->IsStrange())
+	if (pThis->IsStrange())
 		return CanTarget;
 
 	AffectedTechno aff = AffectedTechno::Aircraft | AffectedTechno::Infantry | AffectedTechno::Unit;
-	if(LastWeapon){
+	if (LastWeapon)
+	{
 		auto pExt = WarheadTypeExtContainer::Instance.Find(LastWeapon->Warhead);
-		if(pExt->IsFakeEngineer)
+		if (pExt->IsFakeEngineer)
 			aff |= AffectedTechno::Building;
 	}
 
-	if(EnumFunctions::CanAffectTechnoResult(pTarget->WhatAmI(), aff))
+	if (EnumFunctions::CanAffectTechnoResult(pTarget->WhatAmI(), aff))
 		return CanTarget;
 
 	return ContinueCheck;
@@ -189,13 +195,14 @@ ASMJIT_PATCH(0x6F85AB, TechnoClass_EvaluateObject_AggressiveAttackMove, 0x6)
 
 ASMJIT_PATCH(0x6FCB6A, TechnoClass_CanFire_Verses, 0x7)
 {
-	enum {
+	enum
+	{
 		FireIllegal = 0x6FCB7E,
 		ContinueCheck = 0x6FCBCD,
 		ForceNewValue = 0x6FCBA6,
 	};
 
-	GET(TechnoClass*, pThis , ESI);
+	GET(TechnoClass*, pThis, ESI);
 	GET(ObjectClass*, pTarget, EBP);
 	GET(FakeWarheadTypeClass*, pWH, EDI);
 	GET(WeaponTypeClass*, pWeapon, EBX);
@@ -206,17 +213,19 @@ ASMJIT_PATCH(0x6FCB6A, TechnoClass_CanFire_Verses, 0x7)
 	const auto vsData = pWH->GetVersesData(armor);
 
 	// i think there is no way for the techno know if it attack using force fire or not
-	if (vsData->Flags.ForceFire || vsData->Verses != 0.0) {
+	if (vsData->Flags.ForceFire || vsData->Verses != 0.0)
+	{
 		const auto pWHExt = WarheadTypeExtContainer::Instance.Find(pWH);
 
-		if(pWHExt->FakeEngineer_CanCaptureBuildings || pWHExt->FakeEngineer_BombDisarm) {
+		if (pWHExt->FakeEngineer_CanCaptureBuildings || pWHExt->FakeEngineer_BombDisarm)
+		{
 			const int weaponRange = WeaponTypeExtData::GetRangeWithModifiers(pWeapon, pThis);
 			const int currentRange = pThis->DistanceFrom(pTarget);
 
 			if (pWHExt->FakeEngineer_BombDisarm
 				&& pTarget->AttachedBomb
-				&& BombExtContainer::Instance.Find(pTarget->AttachedBomb)->Weapon->Ivan_Detachable) {
-
+				&& BombExtContainer::Instance.Find(pTarget->AttachedBomb)->Weapon->Ivan_Detachable)
+			{
 				if (currentRange <= weaponRange)
 					R->EAX(FireError::OK);
 				else
@@ -225,15 +234,17 @@ ASMJIT_PATCH(0x6FCB6A, TechnoClass_CanFire_Verses, 0x7)
 				return ForceNewValue;
 			}
 
-			if (pWHExt->FakeEngineer_CanCaptureBuildings) {
+			if (pWHExt->FakeEngineer_CanCaptureBuildings)
+			{
 				const auto pBuilding = cast_to<BuildingClass*, false>(pTarget);
 				const bool UneableToCapture = !pBuilding
-				|| !pBuilding->IsAlive
-				|| pBuilding->Health <= 0
-				|| pThis->Owner->IsAlliedWith(pTarget)
-				|| (!pBuilding->Type->Capturable && !pBuilding->Type->NeedsEngineer);
+					|| !pBuilding->IsAlive
+					|| pBuilding->Health <= 0
+					|| pThis->Owner->IsAlliedWith(pTarget)
+					|| (!pBuilding->Type->Capturable && !pBuilding->Type->NeedsEngineer);
 
-				if (!UneableToCapture) {
+				if (!UneableToCapture)
+				{
 					if (currentRange <= weaponRange)
 						R->EAX(FireError::OK);
 					else
@@ -247,7 +258,8 @@ ASMJIT_PATCH(0x6FCB6A, TechnoClass_CanFire_Verses, 0x7)
 		if (pWH->BombDisarm &&
 			(!pTarget->AttachedBomb ||
 				!BombExtContainer::Instance.Find(pTarget->AttachedBomb)->Weapon->Ivan_Detachable)
-		) {
+		)
+		{
 			return FireIllegal;
 		}
 
@@ -292,7 +304,7 @@ ASMJIT_PATCH(0x70CF45, TechnoClass_EvalThreatRating_ThisWeaponWarhead_Verses, 0x
 	GET_STACK(double, dmult, 0x10);
 	GET_STACK(double, dCoeff, 0x30);
 
-	Armor armor = TechnoExtData::GetTechnoArmor(pTarget , pWH);
+	Armor armor = TechnoExtData::GetTechnoArmor(pTarget, pWH);
 	R->Stack(0x10, dCoeff * pWH->GetVersesData(armor)->Verses + dmult);
 
 	return 0x70CF58;
@@ -330,8 +342,8 @@ ASMJIT_PATCH(0x4753F0, ArmorType_FindIndex, 0xA)
 {
 	GET(CCINIClass*, pINI, ECX);
 
-	if(ArmorTypeClass::Array.empty())
-	 ArmorTypeClass::AddDefaults();
+	if (ArmorTypeClass::Array.empty())
+		ArmorTypeClass::AddDefaults();
 
 	GET_STACK(const char*, Section, 0x4);
 	GET_STACK(const char*, Key, 0x8);
@@ -340,13 +352,14 @@ ASMJIT_PATCH(0x4753F0, ArmorType_FindIndex, 0xA)
 	int nResult = fallback;
 	char buf[0x64];
 
-	if (pINI->ReadString(Section, Key, Phobos::readDefval, buf) > 0) {
-
+	if (pINI->ReadString(Section, Key, Phobos::readDefval, buf) > 0)
+	{
 		nResult = ArmorTypeClass::FindIndexById(buf);
 
-		if (nResult < 0) {
+		if (nResult < 0)
+		{
 			nResult = 0;
-			Debug::INIParseFailed(Section, Key, buf , "Expect Valid ArmorType !");
+			Debug::INIParseFailed(Section, Key, buf, "Expect Valid ArmorType !");
 		}
 	}
 

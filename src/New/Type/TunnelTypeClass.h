@@ -14,8 +14,8 @@ public:
 	Valueable<int> Passengers;
 	Valueable<double> MaxSize;
 	TunnelTypeClass(const char* const pTitle) : Enumerable<TunnelTypeClass>(pTitle)
-	   , Passengers { 0 }
-	   , MaxSize { 0.0 }
+		, Passengers { 0 }
+		, MaxSize { 0.0 }
 	{ }
 
 	void LoadFromINI(CCINIClass* pINI);

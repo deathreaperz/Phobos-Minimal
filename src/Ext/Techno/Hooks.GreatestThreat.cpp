@@ -143,7 +143,6 @@ AbstractClass* __fastcall FakeTechnoClass::__Greatest_Threat(TechnoClass* pThis,
 		// Scan aircraft if targeting air
 		if ((threatBitfield & 0x4) != 0)
 		{
-
 			for (int i = 0; i < AircraftClass::Array->Count; ++i)
 			{
 				auto aircraft = AircraftClass::Array->Items[i];
@@ -264,7 +263,6 @@ AbstractClass* __fastcall FakeTechnoClass::__Greatest_Threat(TechnoClass* pThis,
 	// If no range, calculate from weapon range
 	if (threatRange == 0)
 	{
-
 		int weaponRange {};
 
 		if (pType->HasTurret() && !pType->IsGattling)
@@ -297,12 +295,10 @@ AbstractClass* __fastcall FakeTechnoClass::__Greatest_Threat(TechnoClass* pThis,
 	// Scan aircraft in range
 	if (!RulesExtData::Instance()->AIAirTargetingFix && method & ThreatType::Air)
 	{
-
 		AircraftTrackerClass::Instance->FillCurrentVector(MapClass::Instance->GetCellAt(centerCell), cellRange);
 
 		for (auto aircraft = AircraftTrackerClass::Instance->Get(); aircraft; aircraft = AircraftTrackerClass::Instance->Get())
 		{
-
 			const bool canTarget3 = !pOwner->IsAlliedWith(aircraft)
 				|| pType->AttackFriendlies
 				|| pThis->Berzerk
@@ -384,7 +380,6 @@ AbstractClass* __fastcall FakeTechnoClass::__Greatest_Threat(TechnoClass* pThis,
 				}
 			}
 		}
-
 	}
 	else if (isAirOnlySearch)
 	{
@@ -399,7 +394,6 @@ AbstractClass* __fastcall FakeTechnoClass::__Greatest_Threat(TechnoClass* pThis,
 
 		for (const auto pCurrent : ScenarioExtData::Instance()->UndergroundTracker)
 		{
-
 			if ((!pOwner->IsAlliedWith(pCurrent) || targetFriendly)
 				&& (!onlyEnemy || pCurrent->Owner->ArrayIndex == pOwner->EnemyHouseIndex)
 				&& pThis->CanAutoTargetObject(method, threatBitfield, threatRange, pCurrent, &threatBuffer, ZoneType::None, &tempCrd))
@@ -439,7 +433,6 @@ AbstractClass* __fastcall FakeTechnoClass::__Greatest_Threat(TechnoClass* pThis,
 
 			if (pThis->TryAutoTargetObject(method, threatBitfield, cellToCheck, threatRange, &cellTarget, &cellThreat, zone))
 			{
-
 				if (cellTarget)
 				{
 					if (onlyEnemy && cellTarget->Owner->ArrayIndex != pOwner->EnemyHouseIndex)
@@ -479,7 +472,6 @@ AbstractClass* __fastcall FakeTechnoClass::__Greatest_Threat(TechnoClass* pThis,
 
 	for (int radius = 0; radius < cellRange; ++radius)
 	{
-
 		// Scan top and bottom edges of current radius
 		for (int x = -radius; x <= radius; ++x)
 		{

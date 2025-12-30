@@ -13,7 +13,8 @@ DEFINE_HOOK(0x4068E0, Debug_Log, 1)
 	LEA_STACK(va_list const, args, 0x8);
 	GET_STACK(const char*, fmt, 0x4);
 
-	if (Debug::LogFileActive()) {
+	if (Debug::LogFileActive())
+	{
 		vfprintf(Debug::LogFile, fmt, args);
 		Debug::Flush();
 	}
@@ -35,7 +36,8 @@ ASMJIT_PATCH(0x534f89, Game_ReloadNeutralMIX_NewLine, 5)
 
 ASMJIT_PATCH(0x52E9AA, Frontend_WndProc_Checksum, 5)
 {
-	if (SessionClass::Instance->GameMode == GameMode::LAN || SessionClass::Instance->GameMode == GameMode::Internet) {
+	if (SessionClass::Instance->GameMode == GameMode::LAN || SessionClass::Instance->GameMode == GameMode::Internet)
+	{
 		auto nHashes = ConfigurationHashData::GetINIChecksums();
 		Debug::LogInfo("Checksums : \n Rules {} \n Art {} \n AI {}",
 			(unsigned)nHashes.Rules,

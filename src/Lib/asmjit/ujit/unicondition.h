@@ -15,39 +15,37 @@ ASMJIT_BEGIN_SUB_NAMESPACE(ujit)
 
 //! \addtogroup asmjit_ujit
 //! \{
-
 //! Condition represents either a condition or an assignment operation that can be checked.
-class UniCondition {
+class UniCondition
+{
 public:
-  //! \name Members
-  //! \{
+	//! \name Members
+	//! \{
+	UniOpCond op;
+	CondCode cond;
+	Operand a;
+	Operand b;
 
-  UniOpCond op;
-  CondCode cond;
-  Operand a;
-  Operand b;
+	//! \}
 
-  //! \}
+	//! \name Construction & Destruction
+	//! \{
+	ASMJIT_INLINE_NODEBUG UniCondition(UniOpCond op, CondCode cond, const Operand& a, const Operand& b) noexcept
+		: op(op),
+		cond(cond),
+		a(a),
+		b(b)
+	{ }
 
-  //! \name Construction & Destruction
-  //! \{
+	ASMJIT_INLINE_NODEBUG UniCondition(const UniCondition& other) noexcept = default;
 
-  ASMJIT_INLINE_NODEBUG UniCondition(UniOpCond op, CondCode cond, const Operand& a, const Operand& b) noexcept
-    : op(op),
-      cond(cond),
-      a(a),
-      b(b) {}
+	//! \}
 
-  ASMJIT_INLINE_NODEBUG UniCondition(const UniCondition& other) noexcept = default;
+	//! \name Overloaded Operators
+	//! \{
+	ASMJIT_INLINE_NODEBUG UniCondition& operator=(const UniCondition& other) noexcept = default;
 
-  //! \}
-
-  //! \name Overloaded Operators
-  //! \{
-
-  ASMJIT_INLINE_NODEBUG UniCondition& operator=(const UniCondition& other) noexcept = default;
-
-  //! \}
+	//! \}
 };
 
 //! Constructs a condition that would be `true` when `a = (a & b)` becomes zero.

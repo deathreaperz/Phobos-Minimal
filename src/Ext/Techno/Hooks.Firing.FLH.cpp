@@ -1,4 +1,4 @@
- #include "Body.h"
+#include "Body.h"
 
 #include <Ext/TechnoType/Body.h>
 
@@ -19,24 +19,27 @@ ASMJIT_PATCH(0x6F3AEB, TechnoClass_GetFLH, 0x6)
 
 	if (weaponIndex >= 0)
 	{
-		auto[found , _flh] =
-		!pExt->CustomFiringOffset.has_value() ?
-	 	TechnoExtData::GetBurstFLH(pThis, weaponIndex) :
-	 	std::make_pair(true , pExt->CustomFiringOffset.value());
+		auto [found, _flh] =
+			!pExt->CustomFiringOffset.has_value() ?
+			TechnoExtData::GetBurstFLH(pThis, weaponIndex) :
+			std::make_pair(true, pExt->CustomFiringOffset.value());
 
-		if (!found) {
-
-			if (pThis->WhatAmI() == InfantryClass::AbsID) {
+		if (!found)
+		{
+			if (pThis->WhatAmI() == InfantryClass::AbsID)
+			{
 				auto res = TechnoExtData::GetInfantryFLH(reinterpret_cast<InfantryClass*>(pThis), weaponIndex);
 				found = res.first;
 				_flh = res.second;
 			}
 
-			if (!found) {
+			if (!found)
+			{
 				_flh = pThis->GetWeapon(weaponIndex)->FLH;
 			}
-
-		} else {
+		}
+		else
+		{
 			useBurstMirroring = false;
 		}
 

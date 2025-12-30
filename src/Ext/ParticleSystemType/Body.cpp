@@ -110,7 +110,6 @@ bool ParticleSystemTypeExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool ParticleSystemTypeExtContainer::SaveAll(json& root)
@@ -151,12 +150,10 @@ void ParticleSystemTypeExtContainer::LoadFromINI(ext_t::base_type* key, CCINICla
 		//this function can be called again multiple time but without need to re-init the data
 		ptr->SetInitState(InitState::Ruled);
 	}
-
 }
 
 void ParticleSystemTypeExtContainer::WriteToINI(ext_t::base_type* key, CCINIClass* pINI)
 {
-
 	if (auto ptr = this->TryFind(key))
 	{
 		if (!pINI)

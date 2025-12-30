@@ -86,7 +86,8 @@ ASMJIT_PATCH(0x7209B0, ThemeClass_GetUIName, 0x7)
 
 	auto const pThemeType = ThemeTypeClass::TryFindFromIndex(index);
 
-	if (!pThemeType) {
+	if (!pThemeType)
+	{
 		R->EAX(L"\0");
 		return 0x7209C6;
 	}
@@ -95,11 +96,13 @@ ASMJIT_PATCH(0x7209B0, ThemeClass_GetUIName, 0x7)
 	return 0x7209C6;
 }
 
-ASMJIT_PATCH(0x720A48 , ThemeClass_AI_Play , 0x5){
-	GET(int , pending , EAX);
-	GET(ThemeClass*, pThis , ESI);
+ASMJIT_PATCH(0x720A48, ThemeClass_AI_Play, 0x5)
+{
+	GET(int, pending, EAX);
+	GET(ThemeClass*, pThis, ESI);
 
-	if(pending == -2){
+	if (pending == -2)
+	{
 		pThis->QueuedTheme = pThis->GetRandomIndex(pThis->LastTheme);
 	}
 
@@ -107,11 +110,13 @@ ASMJIT_PATCH(0x720A48 , ThemeClass_AI_Play , 0x5){
 
 	if (pThis->LastTheme >= 0 &&
 		((pThis->LastTheme == idx && pThis->CurrentTheme == idx) ||
-			pThis->LastTheme != idx)) {
-
-		if (auto const pThemeExt = ThemeTypeClass::Array[pThis->LastTheme].get()) {
+			pThis->LastTheme != idx))
+	{
+		if (auto const pThemeExt = ThemeTypeClass::Array[pThis->LastTheme].get())
+		{
 			if (!pThemeExt->Repeat &&
-				strcmp(pThemeExt->NextText.data(), "")) {
+				strcmp(pThemeExt->NextText.data(), ""))
+			{
 				int next = ThemeClass::Instance->FindIndex(pThemeExt->NextText.data());
 
 				if (next >= 0 && next != pThis->LastTheme)

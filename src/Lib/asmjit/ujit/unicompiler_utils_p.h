@@ -16,12 +16,12 @@ ASMJIT_BEGIN_SUB_NAMESPACE(ujit)
 
 //! \addtogroup asmjit_ujit
 //! \{
-
 template<typename UniOpDst, typename UniOpSrc>
-static ASMJIT_INLINE UniOpDst translate_op(UniOpSrc op, UniOpSrc begin, UniOpDst target) noexcept {
-  ASMJIT_ASSERT(begin <= op);
-  uint32_t offset = uint32_t(op) - uint32_t(begin);
-  return UniOpDst(uint32_t(target) + offset);
+static ASMJIT_INLINE UniOpDst translate_op(UniOpSrc op, UniOpSrc begin, UniOpDst target) noexcept
+{
+	ASMJIT_ASSERT(begin <= op);
+	uint32_t offset = uint32_t(op) - uint32_t(begin);
+	return UniOpDst(uint32_t(target) + offset);
 }
 
 //! \}

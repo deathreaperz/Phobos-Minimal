@@ -400,7 +400,6 @@ LONG STDMETHODCALLTYPE PhobosSwizzleManagerClass::QueryInterface(REFIID riid, LP
 	return E_NOINTERFACE;
 }
 
-
 /**
  *  Increments the reference count for an interface pointer to a COM object.
  *
@@ -411,7 +410,6 @@ ULONG STDMETHODCALLTYPE PhobosSwizzleManagerClass::AddRef()
 	return S_FALSE;
 }
 
-
 /**
  *  Decrements the reference count for an interface on a COM object.
  *
@@ -421,7 +419,6 @@ ULONG STDMETHODCALLTYPE PhobosSwizzleManagerClass::Release()
 {
 	return S_FALSE;
 }
-
 
 /**
  *  Reset swizzler in preparation for load.
@@ -435,8 +432,6 @@ LONG STDMETHODCALLTYPE PhobosSwizzleManagerClass::Reset()
 	DependencyMap.clear();
 	return S_OK;
 }
-
-
 
 /**
  *  Swizzle a pointer after load (requests new pointer).
@@ -463,7 +458,6 @@ LONG STDMETHODCALLTYPE PhobosSwizzleManagerClass::Swizzle(void** pointer)
 	return S_OK;
 }
 
-
 /**
  *  Convert pointer to ID number.
  *
@@ -483,7 +477,6 @@ LONG STDMETHODCALLTYPE PhobosSwizzleManagerClass::Fetch_Swizzle_ID(void* pointer
 	return S_OK;
 }
 
-
 /**
  *  Inform (register) swizzler of new object location.
  *
@@ -496,7 +489,6 @@ LONG STDMETHODCALLTYPE PhobosSwizzleManagerClass::Here_I_Am(LONG id, void* point
 	return S_OK;
 }
 
-
 /**
  *  Save interface pointer to stream.
  *
@@ -507,7 +499,6 @@ LONG STDMETHODCALLTYPE PhobosSwizzleManagerClass::Save_Interface(IStream* stream
 	return E_NOTIMPL;
 }
 
-
 /**
  *  Loads interface pointer from stream.
  *
@@ -517,7 +508,6 @@ LONG STDMETHODCALLTYPE PhobosSwizzleManagerClass::Load_Interface(IStream* stream
 {
 	return E_NOTIMPL;
 }
-
 
 /**
  *  Fetch bytes required to save interface pointer.
@@ -536,7 +526,6 @@ LONG STDMETHODCALLTYPE PhobosSwizzleManagerClass::Get_Save_Size(LONG* psize)
 	return S_OK;
 }
 
-
 /**
  *  The default class constructor.
  *
@@ -550,8 +539,6 @@ PhobosSwizzleManagerClass::PhobosSwizzleManagerClass()
 	UnresolvedBucket.reserve(100);
 	DependencyMap.reserve(500);
 }
-
-
 
 /**
  *  The class destructor.
@@ -650,7 +637,6 @@ LONG STDAPICALLTYPE PhobosSwizzleManagerClass::Swizzle_Dbg(void** pointer, const
 	return S_OK;
 }
 
-
 /**
  *  Convert pointer to ID number. [Debug version]
  *
@@ -685,7 +671,6 @@ LONG STDAPICALLTYPE PhobosSwizzleManagerClass::Fetch_Swizzle_ID_Dbg(void* pointe
 	return S_OK;
 }
 
-
 /**
  *  Inform (register) swizzler of new object location. [Debug version]
  *
@@ -714,7 +699,6 @@ LONG STDMETHODCALLTYPE PhobosSwizzleManagerClass::Register_Dependent_Pointer(
 	const char* func,
 	const char* var)
 {
-
 	if (dependent_pointer == nullptr)
 	{
 		return E_POINTER;

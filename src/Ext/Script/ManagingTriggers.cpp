@@ -9,27 +9,31 @@
 void ScriptExtData::ManageTriggersFromList(TeamClass* pTeam, int idxAITriggerType = -1, bool isEnabled = false)
 {
 	auto pScript = pTeam->CurrentScript;
-	const auto&[curAct , curArgs] = pScript->GetCurrentAction();
+	const auto& [curAct, curArgs] = pScript->GetCurrentAction();
 
 	if (idxAITriggerType < 0)
 		idxAITriggerType = curArgs;
 
-	if (idxAITriggerType < 0) {
+	if (idxAITriggerType < 0)
+	{
 		pTeam->StepCompleted = true;
 		return;
 	}
 
 	auto const& triggetList = RulesExtData::Instance()->AITriggersLists;
 
-	if ((size_t)idxAITriggerType >= triggetList.size() ) {
+	if ((size_t)idxAITriggerType >= triggetList.size())
+	{
 		pTeam->StepCompleted = true;
 		return;
 	}
 
 	const auto Iter_triggerList_inside = Iterator(triggetList[idxAITriggerType]);
 
-	for (auto pTrigger : *AITriggerTypeClass::Array) {
-		if (Iter_triggerList_inside.contains(pTrigger)) {
+	for (auto pTrigger : *AITriggerTypeClass::Array)
+	{
+		if (Iter_triggerList_inside.contains(pTrigger))
+		{
 			pTrigger->IsEnabled = isEnabled;
 		}
 	}
@@ -47,7 +51,8 @@ void ScriptExtData::ManageAllTriggersFromHouse(TeamClass* pTeam, HouseClass* pHo
 		sideIdx = pHouse->SideIndex;
 	}
 
-	if (sideIdx < 0) {
+	if (sideIdx < 0)
+	{
 		pTeam->StepCompleted = true;
 		return;
 	}
@@ -68,7 +73,7 @@ void ScriptExtData::ManageAllTriggersFromHouse(TeamClass* pTeam, HouseClass* pHo
 void ScriptExtData::SetSideIdxForManagingTriggers(TeamClass* pTeam, int sideIdx = -1)
 {
 	auto pScript = pTeam->CurrentScript;
-	const auto&[curAct , curArgs] = pScript->GetCurrentAction();
+	const auto& [curAct, curArgs] = pScript->GetCurrentAction();
 
 	if (sideIdx < 0)
 		sideIdx = curArgs;
@@ -85,7 +90,7 @@ void ScriptExtData::SetSideIdxForManagingTriggers(TeamClass* pTeam, int sideIdx 
 void ScriptExtData::SetHouseIdxForManagingTriggers(TeamClass* pTeam, int houseIdx = 1000000)
 {
 	auto pScript = pTeam->CurrentScript;
-	const auto&[curAct , curArgs] = pScript->GetCurrentAction();
+	const auto& [curAct, curArgs] = pScript->GetCurrentAction();
 
 	if (houseIdx == 1000000)
 		houseIdx = curArgs;
@@ -105,7 +110,7 @@ void ScriptExtData::ManageAITriggers(TeamClass* pTeam, int enabled = -1)
 {
 	auto pTeamData = TeamExtContainer::Instance.Find(pTeam);
 	auto pScript = pTeam->CurrentScript;
-	const auto&[curAct , curArgs] = pScript->GetCurrentAction();
+	const auto& [curAct, curArgs] = pScript->GetCurrentAction();
 
 	{
 		int sideIdx = pTeamData->TriggersSideIdx;
@@ -132,33 +137,36 @@ void ScriptExtData::ManageAITriggers(TeamClass* pTeam, int enabled = -1)
 void ScriptExtData::ManageTriggersWithObjects(TeamClass* pTeam, int idxAITargetType = -1, bool isEnabled = false)
 {
 	auto pScript = pTeam->CurrentScript;
-	const auto&[curAct , curArgs] = pScript->GetCurrentAction();
+	const auto& [curAct, curArgs] = pScript->GetCurrentAction();
 
 	if (idxAITargetType < 0)
 		idxAITargetType = curArgs;
 
-	if (idxAITargetType < 0) {
+	if (idxAITargetType < 0)
+	{
 		pTeam->StepCompleted = true;
 		return;
 	}
 
 	const auto& targetList = RulesExtData::Instance()->AITargetTypesLists;
 
-	if ((size_t)idxAITargetType >= targetList.size()) {
+	if ((size_t)idxAITargetType >= targetList.size())
+	{
 		pTeam->StepCompleted = true;
 		return;
 	}
 
 	const auto targetList_inside = Iterator(targetList[idxAITargetType]);
 
-	if (targetList_inside.empty()) {
+	if (targetList_inside.empty())
+	{
 		pTeam->StepCompleted = true;
 		return;
 	}
 
 	for (auto pTrigger : *AITriggerTypeClass::Array)
 	{
-		StackVector<TechnoTypeClass* , 512> entriesList {};
+		StackVector<TechnoTypeClass*, 512> entriesList {};
 
 		if (pTrigger->Team1)
 		{
@@ -182,9 +190,12 @@ void ScriptExtData::ManageTriggersWithObjects(TeamClass* pTeam, int idxAITargetT
 			}
 		}
 
-		for (auto& entry : entriesList.container()) {
-			for(auto const& target_ : targetList_inside) {
-				if(target_ == entry) {
+		for (auto& entry : entriesList.container())
+		{
+			for (auto const& target_ : targetList_inside)
+			{
+				if (target_ == entry)
+				{
 					pTrigger->IsEnabled = isEnabled;
 					break;
 				}

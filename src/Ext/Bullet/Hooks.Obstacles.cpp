@@ -44,18 +44,21 @@ ASMJIT_PATCH(0x6F7248, TechnoClass_InRange_Additionals, 0x6)
 
 	int range = 0;
 	if (const auto keepRange = WeaponTypeExtData::GetTechnoKeepRange(pWeapon, pThis, false))
-	range = keepRange;
+		range = keepRange;
 	else
-	range = WeaponTypeExtData::GetRangeWithModifiers(pWeapon, pThis);
+		range = WeaponTypeExtData::GetRangeWithModifiers(pWeapon, pThis);
 
 	if (range == -512)
 		return RetTrue;
 
 	const auto pThisTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType());
 
-	if(pThisTypeExt->NavalRangeBonus.isset()){
-		if (auto const pFoot = flag_cast_to<FootClass* const>(pTarget)) {
-			if (pThisTypeExt->This()->Naval) {
+	if (pThisTypeExt->NavalRangeBonus.isset())
+	{
+		if (auto const pFoot = flag_cast_to<FootClass* const>(pTarget))
+		{
+			if (pThisTypeExt->This()->Naval)
+			{
 				const auto pFootCell = pFoot->GetCell();
 				if (pFootCell->LandType == LandType::Water && !pFootCell->ContainsBridge())
 					range += pThisTypeExt->NavalRangeBonus.Get();
@@ -66,7 +69,8 @@ ASMJIT_PATCH(0x6F7248, TechnoClass_InRange_Additionals, 0x6)
 	if (pTarget->IsInAir())
 		range += pThisTypeExt->This()->AirRangeBonus;
 
-	if (pThis->BunkerLinkedItem) {
+	if (pThis->BunkerLinkedItem)
+	{
 		const auto vtable = VTable::Get(pThis->BunkerLinkedItem);
 
 		bool clear = false;
@@ -74,25 +78,29 @@ ASMJIT_PATCH(0x6F7248, TechnoClass_InRange_Additionals, 0x6)
 			&& (vtable != AircraftClass::vtable)
 			&& (vtable != UnitClass::vtable))
 		{
-			Debug::LogInfo("TechnoClass_InRange Techno[{}] bunker linked item is broken pointer[{}] !", pThisTypeExt->This()->ID , (void*)pThis->BunkerLinkedItem);
+			Debug::LogInfo("TechnoClass_InRange Techno[{}] bunker linked item is broken pointer[{}] !", pThisTypeExt->This()->ID, (void*)pThis->BunkerLinkedItem);
 			clear = true;
 			pThis->BunkerLinkedItem = nullptr;
 		}
 
-		if(!clear && vtable != BuildingClass::vtable) {
+		if (!clear && vtable != BuildingClass::vtable)
+		{
 			range += RulesClass::Instance->BunkerWeaponRangeBonus * Unsorted::LeptonsPerCell;
 		}
 	}
 
-
-	if (pThis->InOpenToppedTransport) {
+	if (pThis->InOpenToppedTransport)
+	{
 		int OpetoppedBonus = pThisTypeExt->OpenTransport_RangeBonus;
 
-		if(auto pTrans = pThis->Transporter){
+		if (auto pTrans = pThis->Transporter)
+		{
 			OpetoppedBonus += TechnoTypeExtContainer::Instance.Find(pTrans->GetTechnoType())
 				->OpenTopped_RangeBonus.Get(RulesClass::Instance->OpenToppedRangeBonus);
-		} else{
-		  OpetoppedBonus += RulesClass::Instance->OpenToppedRangeBonus;
+		}
+		else
+		{
+			OpetoppedBonus += RulesClass::Instance->OpenToppedRangeBonus;
 		}
 
 		range += int(OpetoppedBonus * Unsorted::LeptonsPerCell);

@@ -6,9 +6,11 @@
 #include <Straws.h>
 #include <Pipes.h>
 
-typedef union {
+typedef union
+{
 	unsigned long Long;
-	struct {
+	struct
+	{
 		unsigned char C3;
 		unsigned char C2;
 		unsigned char C1;
@@ -102,7 +104,6 @@ public:
 
 		if (IsKeyed)
 		{
-
 			int blocks = length / (int)Defines::BYTES_PER_BLOCK;
 
 			for (int index = 0; index < blocks; index++)
@@ -129,7 +130,8 @@ public:
 		return length;
 	}
 
-	int Encrypt_Wrapper(int length, void const* plaintext, void* cyphertext) {
+	int Encrypt_Wrapper(int length, void const* plaintext, void* cyphertext)
+	{
 		return this->Encrypt(plaintext, length, cyphertext);
 	}
 
@@ -147,7 +149,6 @@ public:
 
 		if (IsKeyed)
 		{
-
 			int blocks = length / (int)Defines::BYTES_PER_BLOCK;
 
 			for (int index = 0; index < blocks; index++)
@@ -174,7 +175,8 @@ public:
 		return length;
 	}
 
-	int Decrypt_Wrapper(int length, void const* plaintext, void* cyphertext) {
+	int Decrypt_Wrapper(int length, void const* plaintext, void* cyphertext)
+	{
 		return this->Decrypt(plaintext, length, cyphertext);
 	}
 
@@ -433,7 +435,6 @@ public:
 
 		while (slen > 0)
 		{
-
 			if (Counter > 0)
 			{
 				int sublen = (slen < Counter) ? slen : Counter;
@@ -476,13 +477,11 @@ public:
 			BF = GameCreate<BlowfishEngine>();
 		}
 
-
 		if (BF != nullptr)
 		{
 			BF->Submit_Key(key, length);
 		}
 	}
-
 
 protected:
 	BlowfishEngine* BF;
@@ -500,7 +499,8 @@ private:
 class BlowPipe : public Pipe
 {
 public:
-	enum class CryptControl {
+	enum class CryptControl
+	{
 		ENCRYPT,
 		DECRYPT
 	};
@@ -595,7 +595,6 @@ public:
 			BF->Submit_Key(key, length);
 		}
 	}
-
 
 protected:
 	BlowfishEngine* BF;

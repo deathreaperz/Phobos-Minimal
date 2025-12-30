@@ -46,5 +46,4 @@ public:
 	HelperedVector<RangedItem> Attractors;
 	//Enemy Designator
 	HelperedVector<RangedItem> Suppressors;
-
 };

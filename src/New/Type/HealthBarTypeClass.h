@@ -28,20 +28,20 @@ public:
 	Valueable<int> XOffset;
 
 	HealthBarTypeClass(const char* pTitle) : Enumerable<HealthBarTypeClass>(pTitle)
-	, Pips {}
-	, Pips_Building {}
-	, PipsEmpty {}
-	, PipsInterval { { 2,0 } }
-	, PipsInterval_Building { { -4,2 } }
-	, PipsLength {}
-	, PipsShape { FileSystem::PIPS_SHP }
-	, PipsPalette {}
+		, Pips {}
+		, Pips_Building {}
+		, PipsEmpty {}
+		, PipsInterval { { 2,0 } }
+		, PipsInterval_Building { { -4,2 } }
+		, PipsLength {}
+		, PipsShape { FileSystem::PIPS_SHP }
+		, PipsPalette {}
 
-	, PipBrd {}
-	, PipBrdShape {}
-	, PipBrdPalette {}
-	, PipBrdXOffset { 0 }
-	, XOffset { 0 }
+		, PipBrd {}
+		, PipBrdShape {}
+		, PipBrdPalette {}
+		, PipBrdXOffset { 0 }
+		, XOffset { 0 }
 
 	{ }
 

@@ -114,9 +114,9 @@ public:
 
 	bool _ReadFromINI(CCINIClass* pINI);
 
-	VoxelAnimTypeExtData* _GetExtData() {
+	VoxelAnimTypeExtData* _GetExtData()
+	{
 		return *reinterpret_cast<VoxelAnimTypeExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
-
 };
 static_assert(sizeof(FakeVoxelAnimTypeClass) == sizeof(VoxelAnimTypeClass), "Invalid Size !");

@@ -144,12 +144,12 @@ ASMJIT_BEGIN_NAMESPACE
   ENTRY(2728170257, 0xC982C4D2, 63), /* [N * 0xC982C4D2 >> 63] (rcp=3380790482) */ \
   ENTRY(3219240923, 0xAAC599B6, 63)  /* [N * 0xAAC599B6 >> 63] (rcp=2865076662) */
 
-
-struct HashPrime {
-  //! Prime number
-  uint32_t prime;
-  //! Reciprocal to turn division into multiplication.
-  uint32_t rcp;
+struct HashPrime
+{
+	//! Prime number
+	uint32_t prime;
+	//! Reciprocal to turn division into multiplication.
+	uint32_t rcp;
 };
 
 static const HashPrime ArenaHash_prime_array[] = {
@@ -167,142 +167,161 @@ static const uint8_t ArenaHash_prime_shift[] = {
 // ArenaHashBase - Rehash
 // =====================
 
-void ArenaHashBase::_rehash(Arena& arena, uint32_t prime_index) noexcept {
-  ASMJIT_ASSERT(prime_index < ASMJIT_ARRAY_SIZE(ArenaHash_prime_array));
-  uint32_t new_count = ArenaHash_prime_array[prime_index].prime;
+void ArenaHashBase::_rehash(Arena& arena, uint32_t prime_index) noexcept
+{
+	ASMJIT_ASSERT(prime_index < ASMJIT_ARRAY_SIZE(ArenaHash_prime_array));
+	uint32_t new_count = ArenaHash_prime_array[prime_index].prime;
 
-  ArenaHashNode** old_data = _data;
-  ArenaHashNode** new_data = reinterpret_cast<ArenaHashNode**>(arena.alloc_reusable_zeroed(size_t(new_count) * sizeof(ArenaHashNode*)));
+	ArenaHashNode** old_data = _data;
+	ArenaHashNode** new_data = reinterpret_cast<ArenaHashNode**>(arena.alloc_reusable_zeroed(size_t(new_count) * sizeof(ArenaHashNode*)));
 
-  // We can still store nodes into the table, but it will degrade.
-  if (ASMJIT_UNLIKELY(new_data == nullptr)) {
-    return;
-  }
+	// We can still store nodes into the table, but it will degrade.
+	if (ASMJIT_UNLIKELY(new_data == nullptr))
+	{
+		return;
+	}
 
-  uint32_t i;
-  uint32_t old_count = _buckets_count;
+	uint32_t i;
+	uint32_t old_count = _buckets_count;
 
-  _data = new_data;
-  _buckets_count = new_count;
-  _buckets_grow = uint32_t(new_count * 0.9);
-  _rcp_value = ArenaHash_prime_array[prime_index].rcp;
-  _rcp_shift = ArenaHash_prime_shift[prime_index];
-  _prime_index = uint8_t(prime_index);
+	_data = new_data;
+	_buckets_count = new_count;
+	_buckets_grow = uint32_t(new_count * 0.9);
+	_rcp_value = ArenaHash_prime_array[prime_index].rcp;
+	_rcp_shift = ArenaHash_prime_shift[prime_index];
+	_prime_index = uint8_t(prime_index);
 
-  for (i = 0; i < old_count; i++) {
-    ArenaHashNode* node = old_data[i];
-    while (node) {
-      ArenaHashNode* next = node->_hash_next;
-      uint32_t hash_mod = _calc_mod(node->_hash_code);
+	for (i = 0; i < old_count; i++)
+	{
+		ArenaHashNode* node = old_data[i];
+		while (node)
+		{
+			ArenaHashNode* next = node->_hash_next;
+			uint32_t hash_mod = _calc_mod(node->_hash_code);
 
-      node->_hash_next = new_data[hash_mod];
-      new_data[hash_mod] = node;
-      node = next;
-    }
-  }
+			node->_hash_next = new_data[hash_mod];
+			new_data[hash_mod] = node;
+			node = next;
+		}
+	}
 
-  if (old_data != _embedded) {
-    arena.free_reusable(old_data, old_count * sizeof(ArenaHashNode*));
-  }
+	if (old_data != _embedded)
+	{
+		arena.free_reusable(old_data, old_count * sizeof(ArenaHashNode*));
+	}
 }
 
 // ArenaHashBase - Operations
 // =========================
 
-ArenaHashNode* ArenaHashBase::_insert(Arena& arena, ArenaHashNode* node) noexcept {
-  uint32_t hash_mod = _calc_mod(node->_hash_code);
-  ArenaHashNode* next = _data[hash_mod];
+ArenaHashNode* ArenaHashBase::_insert(Arena& arena, ArenaHashNode* node) noexcept
+{
+	uint32_t hash_mod = _calc_mod(node->_hash_code);
+	ArenaHashNode* next = _data[hash_mod];
 
-  node->_hash_next = next;
-  _data[hash_mod] = node;
+	node->_hash_next = next;
+	_data[hash_mod] = node;
 
-  if (++_size > _buckets_grow) {
-    uint32_t prime_index = Support::min<uint32_t>(_prime_index + 2, ASMJIT_ARRAY_SIZE(ArenaHash_prime_array) - 1);
-    if (prime_index > _prime_index) {
-      _rehash(arena, prime_index);
-    }
-  }
+	if (++_size > _buckets_grow)
+	{
+		uint32_t prime_index = Support::min<uint32_t>(_prime_index + 2, ASMJIT_ARRAY_SIZE(ArenaHash_prime_array) - 1);
+		if (prime_index > _prime_index)
+		{
+			_rehash(arena, prime_index);
+		}
+	}
 
-  return node;
+	return node;
 }
 
-ArenaHashNode* ArenaHashBase::_remove(Arena& arena, ArenaHashNode* node) noexcept {
-  Support::maybe_unused(arena);
-  uint32_t hash_mod = _calc_mod(node->_hash_code);
+ArenaHashNode* ArenaHashBase::_remove(Arena& arena, ArenaHashNode* node) noexcept
+{
+	Support::maybe_unused(arena);
+	uint32_t hash_mod = _calc_mod(node->_hash_code);
 
-  ArenaHashNode** prev_ptr = &_data[hash_mod];
-  ArenaHashNode* p = *prev_ptr;
+	ArenaHashNode** prev_ptr = &_data[hash_mod];
+	ArenaHashNode* p = *prev_ptr;
 
-  while (p) {
-    if (p == node) {
-      *prev_ptr = p->_hash_next;
-      _size--;
-      return node;
-    }
+	while (p)
+	{
+		if (p == node)
+		{
+			*prev_ptr = p->_hash_next;
+			_size--;
+			return node;
+		}
 
-    prev_ptr = &p->_hash_next;
-    p = *prev_ptr;
-  }
+		prev_ptr = &p->_hash_next;
+		p = *prev_ptr;
+	}
 
-  return nullptr;
+	return nullptr;
 }
 
 // ArenaHashBase - Tests
 // ====================
 
 #if defined(ASMJIT_TEST)
-struct MyHashNode : public ArenaHashNode {
-  inline MyHashNode(uint32_t key) noexcept
-    : ArenaHashNode(key),
-      _key(key) {}
+struct MyHashNode : public ArenaHashNode
+{
+	inline MyHashNode(uint32_t key) noexcept
+		: ArenaHashNode(key),
+		_key(key)
+	{ }
 
-  uint32_t _key;
+	uint32_t _key;
 };
 
-struct MyKeyMatcher {
-  inline MyKeyMatcher(uint32_t key) noexcept
-    : _key(key) {}
+struct MyKeyMatcher
+{
+	inline MyKeyMatcher(uint32_t key) noexcept
+		: _key(key) { }
 
-  inline uint32_t hash_code() const noexcept { return _key; }
-  inline bool matches(const MyHashNode* node) const noexcept { return node->_key == _key; }
+	inline uint32_t hash_code() const noexcept { return _key; }
+	inline bool matches(const MyHashNode* node) const noexcept { return node->_key == _key; }
 
-  uint32_t _key;
+	uint32_t _key;
 };
 
-UNIT(arena_hash) {
-  uint32_t kCount = BrokenAPI::has_arg("--quick") ? 1000 : 10000;
+UNIT(arena_hash)
+{
+	uint32_t kCount = BrokenAPI::has_arg("--quick") ? 1000 : 10000;
 
-  Arena arena(4096);
-  ArenaHash<MyHashNode> hash_table;
+	Arena arena(4096);
+	ArenaHash<MyHashNode> hash_table;
 
-  uint32_t key;
-  INFO("Inserting %u elements to HashTable", unsigned(kCount));
-  for (key = 0; key < kCount; key++) {
-    hash_table.insert(arena, arena.new_oneshot<MyHashNode>(key));
-  }
+	uint32_t key;
+	INFO("Inserting %u elements to HashTable", unsigned(kCount));
+	for (key = 0; key < kCount; key++)
+	{
+		hash_table.insert(arena, arena.new_oneshot<MyHashNode>(key));
+	}
 
-  uint32_t count = kCount;
-  INFO("Removing %u elements from HashTable and validating each operation", unsigned(kCount));
-  do {
-    MyHashNode* node;
+	uint32_t count = kCount;
+	INFO("Removing %u elements from HashTable and validating each operation", unsigned(kCount));
+	do
+	{
+		MyHashNode* node;
 
-    for (key = 0; key < count; key++) {
-      node = hash_table.get(MyKeyMatcher(key));
-      EXPECT_NOT_NULL(node);
-      EXPECT_EQ(node->_key, key);
-    }
+		for (key = 0; key < count; key++)
+		{
+			node = hash_table.get(MyKeyMatcher(key));
+			EXPECT_NOT_NULL(node);
+			EXPECT_EQ(node->_key, key);
+		}
 
-    {
-      count--;
-      node = hash_table.get(MyKeyMatcher(count));
-      hash_table.remove(arena, node);
+		{
+			count--;
+			node = hash_table.get(MyKeyMatcher(count));
+			hash_table.remove(arena, node);
 
-      node = hash_table.get(MyKeyMatcher(count));
-      EXPECT_NULL(node);
-    }
-  } while (count);
+			node = hash_table.get(MyKeyMatcher(count));
+			EXPECT_NULL(node);
+		}
+	}
+	while (count);
 
-  EXPECT_TRUE(hash_table.is_empty());
+	EXPECT_TRUE(hash_table.is_empty());
 }
 #endif
 

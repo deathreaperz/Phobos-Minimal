@@ -59,4 +59,3 @@ void AIBasePlanCommandClass::Execute(WWKey dwUnk) const
 
 	MessageListClass::Instance->PrintMessage(L"Dumped AI Base Plan");
 }
-

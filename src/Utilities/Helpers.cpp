@@ -8,7 +8,7 @@
 #include <New/Entity/FlyingStrings.h>
 
 bool Helpers::Otamaa::LauchSW(const LauchSWData& nData,
-	HouseClass* pOwner, const CoordStruct Where , TechnoClass* pFirer)
+	HouseClass* pOwner, const CoordStruct Where, TechnoClass* pFirer)
 {
 	const auto pOwnerResult = HouseExtData::GetHouseKind(nData.LauchhSW_Owner, true, HouseExtData::FindFirstCivilianHouse(), pOwner, nullptr);
 	auto const HouseOwner = pOwnerResult->Defeated ? HouseExtData::FindFirstCivilianHouse() : pOwnerResult;
@@ -24,10 +24,14 @@ bool Helpers::Otamaa::LauchSW(const LauchSWData& nData,
 			auto const nWhere = CellClass::Coord2Cell(Where);
 			bool const bIsCurrentPlayer = HouseOwner->IsCurrentPlayer();
 
-			if (nData.LaunchGrant || nData.LaunchSW_Manual) {
-				if (pSuper->Grant(nData.LaunchGrant_OneTime, !bIsCurrentPlayer, nData.LaunchGrant_OnHold)) {
-					if (!bIsCurrentPlayer && (nData.LaunchSW_Manual || nData.LaunchGrant_RepaintSidebar)) {
-						if (MouseClass::Instance->AddCameo(AbstractType::Special, nData.LaunchWhat)) {
+			if (nData.LaunchGrant || nData.LaunchSW_Manual)
+			{
+				if (pSuper->Grant(nData.LaunchGrant_OneTime, !bIsCurrentPlayer, nData.LaunchGrant_OnHold))
+				{
+					if (!bIsCurrentPlayer && (nData.LaunchSW_Manual || nData.LaunchGrant_RepaintSidebar))
+					{
+						if (MouseClass::Instance->AddCameo(AbstractType::Special, nData.LaunchWhat))
+						{
 							MouseClass::Instance->RepaintSidebar(1);
 						}
 					}
@@ -42,17 +46,17 @@ bool Helpers::Otamaa::LauchSW(const LauchSWData& nData,
 			bool const InhibitorEligible = nData.LaunchSW_IgnoreInhibitors || !pSWExt->HasInhibitor(HouseOwner, nWhere);
 			bool const DesignatorEligible = nData.LaunchSW_IgnoreDesignators || pSWExt->HasDesignator(HouseOwner, nWhere);
 
-			auto const mostCheckPasses = !nData.LaunchSW_RealLauch || 
+			auto const mostCheckPasses = !nData.LaunchSW_RealLauch ||
 				pSuper->Granted && chargeStae && !pSuper->IsOnHold && MoneyEligible && BattleDataEligible && InhibitorEligible && DesignatorEligible;
 
-			if (mostCheckPasses && !nData.LaunchSW_Manual) {
-
+			if (mostCheckPasses && !nData.LaunchSW_Manual)
+			{
 				if (!nData.LaunchWaitcharge)
 					pSuper->SetReadiness(true);
 
 				const int oldstart = pSuper->RechargeTimer.StartTime;
 				const int oldleft = pSuper->RechargeTimer.TimeLeft;
-				FlyingStrings::Instance.AddMoneyString(nData.LaunchSW_DisplayMoney && pSWExt->Money_Amount != 0 ,
+				FlyingStrings::Instance.AddMoneyString(nData.LaunchSW_DisplayMoney && pSWExt->Money_Amount != 0,
 					pSWExt->Money_Amount, HouseOwner,
 					nData.LaunchSW_DisplayMoney_Houses, Where, nData.LaunchSW_DisplayMoney_Offset, ColorStruct::Empty);
 

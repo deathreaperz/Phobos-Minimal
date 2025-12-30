@@ -55,7 +55,6 @@ public:
 				.Success()
 				;
 		}
-
 	} AnimTrailType;
 
 	//Mode : Beam
@@ -93,7 +92,7 @@ public:
 				.Success()
 				;
 		}
-	}ParticleTrailType ;
+	}ParticleTrailType;
 
 	TrailType(const char* pTitle) : Enumerable<TrailType>(pTitle)
 		, Mode { TrailMode::LASER }
@@ -109,7 +108,6 @@ public:
 
 		//
 		, ParticleTrailType { }
-
 
 	{ }
 
@@ -139,6 +137,5 @@ private:
 			.Process(ParticleTrailType)
 			.Process(HideWhenCloak)
 			;
-
 	}
 };

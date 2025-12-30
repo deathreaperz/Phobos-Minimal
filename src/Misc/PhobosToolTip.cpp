@@ -87,7 +87,7 @@ OPTIONALINLINE int PhobosToolTip::GetBuildTime(TechnoTypeClass* pType) const
 		reinterpret_cast<UnitClass*>(BuildTimeDatas)->Type = (UnitTypeClass*)pType;
 		break;
 	default:
-			return 54;
+		return 54;
 	}
 
 	const auto pTrick = reinterpret_cast<TechnoClass*>(BuildTimeDatas);
@@ -121,14 +121,18 @@ OPTIONALINLINE int PhobosToolTip::GetPower(TechnoTypeClass* pType) const
 
 void PhobosToolTip::HelpText(const BuildType* cameo)
 {
-	if (cameo->ItemType == AbstractType::Special) {
+	if (cameo->ItemType == AbstractType::Special)
+	{
 		this->HelpText(HouseClass::CurrentPlayer->Supers.Items[cameo->ItemIndex]);
-	} else {
+	}
+	else
+	{
 		this->HelpText(ObjectTypeClass::FetchTechnoType(cameo->ItemType, cameo->ItemIndex));
 	}
 }
 
-struct TimerDatas {
+struct TimerDatas
+{
 	int m_buildtimeresult;
 	int m_second;
 	int m_min;
@@ -160,7 +164,7 @@ void PhobosToolTip::HelpText(TechnoTypeClass* pType)
 			Debug::FatalError("[%s] change BuildTime result from [%d] to [%d]!", pType->ID, data->m_buildtimeresult, nBuildTime);
 
 		if (data->m_second != nSec)
-			Debug::FatalError("[%s] change Second result from [%d] to [%d] [BuildTime %s]!", pType->ID, data->m_second, nSec , data->m_buildtimeresult);
+			Debug::FatalError("[%s] change Second result from [%d] to [%d] [BuildTime %s]!", pType->ID, data->m_second, nSec, data->m_buildtimeresult);
 
 		if (data->m_min != nMin)
 			Debug::FatalError("[%s] change Min result from [%d] to [%d]!", pType->ID, data->m_min, nMin);
@@ -182,7 +186,8 @@ void PhobosToolTip::HelpText(TechnoTypeClass* pType)
 		nSec
 	);
 
-	if (auto const nPower = this->GetPower(pType)) {
+	if (auto const nPower = this->GetPower(pType))
+	{
 		fmt::format_to(std::back_inserter(this->TextBuffer),
 			L" {}{}{:01}",
 			Phobos::UI::PowerLabel,
@@ -190,14 +195,17 @@ void PhobosToolTip::HelpText(TechnoTypeClass* pType)
 			nPower);
 	}
 
-	if (auto pDesc = this->GetUIDescription(pData)) {
+	if (auto pDesc = this->GetUIDescription(pData))
+	{
 		fmt::format_to(std::back_inserter(this->TextBuffer), L"\n{}", pDesc);
 	}
 
-	if (pData->Cameo_AlwaysExist.Get(RulesExtData::Instance()->Cameo_AlwaysExist)) {
+	if (pData->Cameo_AlwaysExist.Get(RulesExtData::Instance()->Cameo_AlwaysExist))
+	{
 		auto& vec = ScenarioExtData::Instance()->OwnedExistCameoTechnoTypes;
 
-		if (vec.contains(pType)) {
+		if (vec.contains(pType))
+		{
 			if (auto pExDesc = this->GetUnbuildableUIDescription(pData))
 				fmt::format_to(std::back_inserter(this->TextBuffer), L"\n{}", pExDesc);
 		}
@@ -221,7 +229,6 @@ void PhobosToolTip::HelpText(TechnoTypeClass* pType)
 		oss << std::setw(1) << nPower;
 	}
 
-
 	// the value is not consistent
 	// so showing it here will just cause fuckton of confusion
 	//const int nPoints = pHouseExt->CalculateBattlePoints(pType);
@@ -238,10 +245,12 @@ void PhobosToolTip::HelpText(TechnoTypeClass* pType)
 	if (auto pDesc = this->GetUIDescription(pData))
 		oss << L"\n" << pDesc;
 
-	if (pData->Cameo_AlwaysExist.Get(RulesExtData::Instance()->Cameo_AlwaysExist)) {
+	if (pData->Cameo_AlwaysExist.Get(RulesExtData::Instance()->Cameo_AlwaysExist))
+	{
 		auto& vec = ScenarioExtData::Instance()->OwnedExistCameoTechnoTypes;
 
-		if (vec.contains(pType)) {
+		if (vec.contains(pType))
+		{
 			if (auto pExDesc = this->GetUnbuildableUIDescription(pData))
 				oss << L"\n" << pExDesc;
 		}
@@ -255,7 +264,7 @@ void PhobosToolTip::HelpText(TechnoTypeClass* pType)
 int PhobosToolTip::TickTimeToSeconds(int tickTime)
 {
 	//if(!Phobos::Config::RealTimeTimers)
-		return tickTime / 15;
+	return tickTime / 15;
 
 	//if (Phobos::Config::RealTimeTimers_Adaptive ||
 	//GameOptionsClass::Instance->GameSpeed == 0
@@ -281,7 +290,8 @@ void PhobosToolTip::HelpText(SuperClass* pSuper)
 		L"{}", pSuper->Type->UIName
 	);
 
-	if (const int nCost = Math::abs(pData->Money_Amount.Get())) {
+	if (const int nCost = Math::abs(pData->Money_Amount.Get()))
+	{
 		fmt::format_to(std::back_inserter(this->TextBuffer),
 			L"\n{}{}{}",
 			pData->Money_Amount > 0 ? L"+" : L"",
@@ -292,7 +302,8 @@ void PhobosToolTip::HelpText(SuperClass* pSuper)
 		showSth = true;
 	}
 
-	if (int nPoints = Math::abs(pData->BattlePoints_Amount.Get())) {
+	if (int nPoints = Math::abs(pData->BattlePoints_Amount.Get()))
+	{
 		fmt::format_to(std::back_inserter(this->TextBuffer),
 			L"\n{}{}{}",
 			Phobos::UI::BattlePoints_Label,
@@ -305,12 +316,14 @@ void PhobosToolTip::HelpText(SuperClass* pSuper)
 
 	const int rechargeTime = TickTimeToSeconds(pSuper->GetRechargeTime());
 
-	if (rechargeTime > 0) {
+	if (rechargeTime > 0)
+	{
 		const int nSec = rechargeTime % 60;
 		const int nMin = rechargeTime / 60 /* % 60*/;
 		const int nHour = rechargeTime / 60 / 60;
 
-		if(nHour) {
+		if (nHour)
+		{
 			fmt::format_to(std::back_inserter(this->TextBuffer),
 				L"{}{}{} {:02}{:02}:{:02}",
 				!showSth ? L"\n" : L"",
@@ -334,12 +347,12 @@ void PhobosToolTip::HelpText(SuperClass* pSuper)
 		}
 
 		showSth = true;
-
 	}
 
 	auto const& sw_ext = HouseExtContainer::Instance.Find(pSuper->Owner)->GetShotCount(pSuper->Type);
 
-	if (pData->SW_Shots > 0) {
+	if (pData->SW_Shots > 0)
+	{
 		wchar_t buffer[64];
 		swprintf_s(buffer, Phobos::UI::SWShotsFormat, (pData->SW_Shots - sw_ext.Count), pData->SW_Shots);
 
@@ -351,10 +364,12 @@ void PhobosToolTip::HelpText(SuperClass* pSuper)
 		);
 	}
 
-	if (pData->SW_Power.isset()) {
+	if (pData->SW_Power.isset())
+	{
 		const auto nPower = pData->SW_Power.Get();
 
-		if (nPower != 0) {
+		if (nPower != 0)
+		{
 			fmt::format_to(std::back_inserter(this->TextBuffer),
 				L" {}{}{:01}",
 				Phobos::UI::PowerLabel,
@@ -420,8 +435,8 @@ void PhobosToolTip::HelpText(SuperClass* pSuper)
 	auto const& sw_ext = HouseExtContainer::Instance.Find(pSuper->Owner)->GetShotCount(pSuper->Type);
 	int sw_shots = pData->SW_Shots;
 	int remain_shots = pData->SW_Shots - sw_ext.Count;
-	if (sw_shots > 0) {
-
+	if (sw_shots > 0)
+	{
 		if (!showSth)
 			oss << L"\n";
 
@@ -430,10 +445,12 @@ void PhobosToolTip::HelpText(SuperClass* pSuper)
 		oss << (showSth ? L" " : L"") << buffer;
 	}
 
-	if(pData->SW_Power.isset()) {
+	if (pData->SW_Power.isset())
+	{
 		const auto nPower = pData->SW_Power;
 
-		if (nPower != 0) {
+		if (nPower != 0)
+		{
 			oss << (L" ") << Phobos::UI::PowerLabel;
 			if (nPower > 0)
 				oss << L"+";
@@ -495,8 +512,10 @@ ASMJIT_PATCH(0x72428C, ToolTipManager_ProcessMessage_Redraw, 0x5)
 
 ASMJIT_PATCH(0x724B28, ToolTipManager_SetX_TacticalButtons, 0x6)
 {
-	if (SWSidebarClass::IsEnabled()) {
-		if (const auto button = SWSidebarClass::Global()->CurrentButton) {
+	if (SWSidebarClass::IsEnabled())
+	{
+		if (const auto button = SWSidebarClass::Global()->CurrentButton)
+		{
 			R->EDX(button->Rect.X + button->Rect.Width);
 			R->EAX(button->Rect.Y + 27);
 			return 0x724B2E;
@@ -505,7 +524,6 @@ ASMJIT_PATCH(0x724B28, ToolTipManager_SetX_TacticalButtons, 0x6)
 
 	return 0;
 }
-
 
 // TODO: reimplement CCToolTip::Draw2 completely
 ASMJIT_PATCH(0x478EE1, CCToolTip_Draw2_SetBuffer, 0x6)
@@ -559,7 +577,6 @@ ASMJIT_PATCH(0x478EF8, CCToolTip_Draw2_SetMaxWidth, 0x5)
 			R->EAX(Phobos::UI::MaxToolTipWidth);
 		else
 			R->EAX(DSurface::ViewBounds->Width);
-
 	}
 	return 0;
 }
@@ -658,7 +675,8 @@ ASMJIT_PATCH(0x478F77, CCToolTip_Draw2_SetY, 0x6)
 // there is a padding zone so text isn't drawn into border
 ASMJIT_PATCH(0x479029, CCToolTip_Draw2_SetPadding, 0x5)
 {
-	if (PhobosToolTip::Instance.IsCameo) {
+	if (PhobosToolTip::Instance.IsCameo)
+	{
 		if (Phobos::UI::MaxToolTipWidth > 0)
 			R->EDX(R->EDX() - 5);
 	}
@@ -675,18 +693,17 @@ void NAKED _CCToolTip_Draw2_FillRect_RET()
 ASMJIT_PATCH(0x478FDC, CCToolTip_Draw2_FillRect, 0x5)
 {
 	GET(SurfaceExt*, pThis, ESI);
-		//GET(int, color, EDI);
+	//GET(int, color, EDI);
 	LEA_STACK(RectangleStruct*, pRect, STACK_OFFS(0x44, 0x10));
 
 	const bool isCameo = PhobosToolTip::Instance.IsCameo;
 	const auto swSidebar = SWSidebarClass::Global();
 
 	if (isCameo && Phobos::UI::AnchoredToolTips
-		&&Phobos::UI::ExtendedToolTips
+		&& Phobos::UI::ExtendedToolTips
 		&& Phobos::Config::ToolTipDescriptions)
 	{
 		LEA_STACK(LTRBStruct*, pTextRect, STACK_OFFSET(0x44, -0x20));
-
 
 		if (const auto pButton = swSidebar->CurrentButton)
 		{
@@ -740,7 +757,7 @@ ASMJIT_PATCH(0x478FDC, CCToolTip_Draw2_FillRect, 0x5)
 	{
 		if (const auto pData = SideExtContainer::Instance.Find(pSide))
 		{
-			if(isCameo)
+			if (isCameo)
 				SidebarClass::Instance->SidebarBackgroundNeedsRedraw = true;
 
 			pThis->Fill_Rect_Trans(pRect

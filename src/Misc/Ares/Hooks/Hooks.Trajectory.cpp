@@ -58,7 +58,8 @@ ASMJIT_PATCH(0x6F7511, TechnoClass_InRange_Obstacle, 6)
 
 	auto pResult = AresBulletObstacleHelper::FindFirstImpenetrableObstacle(
 		*pSource, dest, pThis, pTarget, pWeapon, pThis->Owner);
-	if(!pResult){
+	if (!pResult)
+	{
 		auto subjectToGround = BulletTypeExtContainer::Instance.Find(pWeapon->Projectile)->SubjectToGround.Get();
 		const auto newSourceCoords = subjectToGround ? PhobosBulletObstacleHelper::AddFLHToSourceCoords(*pSource, dest, pThis, pTarget, pWeapon, subjectToGround) : *pSource;
 		pResult = PhobosBulletObstacleHelper::FindFirstImpenetrableObstacle(newSourceCoords, dest, pThis, pTarget, pThis->Owner, pWeapon, true, subjectToGround);
@@ -71,7 +72,7 @@ ASMJIT_PATCH(0x6F7511, TechnoClass_InRange_Obstacle, 6)
 		pThis->Location = *pSource; // Temporarily adjust the coordinates based on the path finding.
 
 		if (pThis->sub_703B10()) // Near by elevated bridge
-		pResult = MapClass::Instance->GetCellAt(*pSource);
+			pResult = MapClass::Instance->GetCellAt(*pSource);
 
 		pThis->Location = coords;
 	}
@@ -80,7 +81,6 @@ ASMJIT_PATCH(0x6F7511, TechnoClass_InRange_Obstacle, 6)
 
 	return 0x6F7647;
 }ASMJIT_PATCH_AGAIN(0x6F7631, TechnoClass_InRange_Obstacle, 6)
-
 
 ASMJIT_PATCH(0x4CC360, TrajectoryHelper_GetObstacle, 5)
 {

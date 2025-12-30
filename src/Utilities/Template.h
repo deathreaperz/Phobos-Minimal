@@ -58,8 +58,10 @@ public:
 	//using value_type = T;
 	//using base_type = std::remove_pointer_t<T>;
 
-	COMPILETIMEEVAL Valueable() {
-		if COMPILETIMEEVAL (std::is_pointer_v<T>) {
+	COMPILETIMEEVAL Valueable()
+	{
+		if COMPILETIMEEVAL(std::is_pointer_v<T>)
+		{
 			Value = nullptr;
 		}
 	}
@@ -80,12 +82,14 @@ public:
 		return *this;
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE operator const T& () const noexcept {
+	COMPILETIMEEVAL FORCEDINLINE operator const T& () const noexcept
+	{
 		return this->Get();
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE auto operator->() noexcept {
-		if COMPILETIMEEVAL (std::is_pointer<T>::type())
+	COMPILETIMEEVAL FORCEDINLINE auto operator->() noexcept
+	{
+		if COMPILETIMEEVAL(std::is_pointer<T>::type())
 			return this->Value;
 		else
 			return &this->Value;
@@ -93,12 +97,11 @@ public:
 
 	COMPILETIMEEVAL FORCEDINLINE auto operator->() const noexcept
 	{
-		if COMPILETIMEEVAL (std::is_pointer<T>::type())
+		if COMPILETIMEEVAL(std::is_pointer<T>::type())
 			return this->Value;
 		else
 			return &this->Value;
 	}
-
 
 	//COMPILETIMEEVAL FORCEDINLINE bool operator!() const
 	//{
@@ -169,7 +172,8 @@ public:
 		return *this;
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE size_t ToUnsigned() const noexcept {
+	COMPILETIMEEVAL FORCEDINLINE size_t ToUnsigned() const noexcept
+	{
 		return (size_t)this->Value;
 	}
 
@@ -212,7 +216,8 @@ public:
 
 	// return a copy of the value instead
 	// this can be used to fill an vector after reading
-	COMPILETIMEEVAL FORCEDINLINE T GetCopy() const noexcept{
+	COMPILETIMEEVAL FORCEDINLINE T GetCopy() const noexcept
+	{
 		return this->Value;
 	}
 
@@ -249,7 +254,7 @@ public:
 	COMPILETIMEEVAL FORCEDINLINE T* GetEx(Valueable<T>& ndefault) noexcept
 	{
 		const bool Isset = this->isset();
-		if COMPILETIMEEVAL (std::is_pointer<T>::type())
+		if COMPILETIMEEVAL(std::is_pointer<T>::type())
 			return Isset ? this->Value : ndefault.Value;
 		else
 			return Isset ? &this->Value : &ndefault.Value;
@@ -258,7 +263,7 @@ public:
 	COMPILETIMEEVAL FORCEDINLINE const T* GetEx(const Valueable<T>& ndefault) const noexcept
 	{
 		const bool Isset = this->isset();
-		if COMPILETIMEEVAL (std::is_pointer<T>::type())
+		if COMPILETIMEEVAL(std::is_pointer<T>::type())
 			return Isset ? this->Value : ndefault.Value;
 		else
 			return Isset ? &this->Value : &ndefault.Value;
@@ -285,15 +290,17 @@ public:
 
 private:
 
-	COMPILETIMEEVAL FORCEDINLINE T* GetEx() noexcept {
-		if COMPILETIMEEVAL (std::is_pointer<T>::type())
+	COMPILETIMEEVAL FORCEDINLINE T* GetEx() noexcept
+	{
+		if COMPILETIMEEVAL(std::is_pointer<T>::type())
 			return this->Value;
 		else
 			return &this->Value;
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE const T* GetEx() const noexcept {
-		if COMPILETIMEEVAL (std::is_pointer<T>::type())
+	COMPILETIMEEVAL FORCEDINLINE const T* GetEx() const noexcept
+	{
+		if COMPILETIMEEVAL(std::is_pointer<T>::type())
 			return this->Value;
 		else
 			return &this->Value;
@@ -347,8 +354,9 @@ public:
 	COMPILETIMEEVAL Promotable() = default;
 	COMPILETIMEEVAL explicit Promotable(T const& all) noexcept(noexcept(T { all })) : Rookie(all), Veteran(all), Elite(all) { }
 	COMPILETIMEEVAL explicit Promotable(T const& r, T const& v, T const& e)
-	noexcept(noexcept(T { r }) && noexcept(T { v }) && noexcept(T { e })) :
-		Rookie(r), Veteran(v), Elite(e) { }
+		noexcept(noexcept(T { r }) && noexcept(T { v }) && noexcept(T { e })) :
+		Rookie(r), Veteran(v), Elite(e)
+	{ }
 
 	COMPILETIMEEVAL Promotable(const Promotable&) = default;
 	COMPILETIMEEVAL Promotable(Promotable&&) = default;
@@ -356,13 +364,15 @@ public:
 
 	COMPILETIMEEVAL ~Promotable() = default;
 
-	COMPILETIMEEVAL FORCEDINLINE void SetAll(const T& val) {
+	COMPILETIMEEVAL FORCEDINLINE void SetAll(const T& val)
+	{
 		this->Elite = this->Veteran = this->Rookie = val;
 	}
 
 	OPTIONALINLINE void Read(INI_EX& parser, const char* pSection, const char* pBaseFlag, const char* pSingleFlag = nullptr, bool allocate = false);
 
-	COMPILETIMEEVAL FORCEDINLINE const T* GetEx(TechnoClass* pTechno) const noexcept {
+	COMPILETIMEEVAL FORCEDINLINE const T* GetEx(TechnoClass* pTechno) const noexcept
+	{
 		const auto rank = pTechno->Veterancy.GetRemainingLevel();
 		return &this->GetValue(rank);
 	}
@@ -382,7 +392,8 @@ public:
 		return this->Rookie;
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE const T& Get(TechnoClass* pTechno) const noexcept {
+	COMPILETIMEEVAL FORCEDINLINE const T& Get(TechnoClass* pTechno) const noexcept
+	{
 		auto const rank = pTechno->Veterancy.GetRemainingLevel();
 		if (rank == Rank::Elite)
 		{
@@ -395,7 +406,8 @@ public:
 		return this->Rookie;
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE const T& GetFromCurrentRank(TechnoClass* pTechno) const noexcept {
+	COMPILETIMEEVAL FORCEDINLINE const T& GetFromCurrentRank(TechnoClass* pTechno) const noexcept
+	{
 		if (pTechno->CurrentRanking == Rank::Elite)
 		{
 			return this->Elite;
@@ -420,22 +432,25 @@ public:
 	OPTIONALINLINE bool Save(PhobosStreamWriter& Stm) const;
 
 private:
-	COMPILETIMEEVAL FORCEDINLINE T GetValue(Rank rank) {
-		if (rank == Rank::Elite) {
-			if COMPILETIMEEVAL (std::is_pointer<T>::type())
+	COMPILETIMEEVAL FORCEDINLINE T GetValue(Rank rank)
+	{
+		if (rank == Rank::Elite)
+		{
+			if COMPILETIMEEVAL(std::is_pointer<T>::type())
 				return &this->Elite;
 			else
 				return this->Elite;
 		}
 
-		if (rank == Rank::Veteran) {
-			if COMPILETIMEEVAL (std::is_pointer<T>::type())
+		if (rank == Rank::Veteran)
+		{
+			if COMPILETIMEEVAL(std::is_pointer<T>::type())
 				return &this->Veteran;
 			else
 				return this->Veteran;
 		}
 
-		if COMPILETIMEEVAL (std::is_pointer<T>::type())
+		if COMPILETIMEEVAL(std::is_pointer<T>::type())
 			return &this->Rookie;
 		else
 			return this->Rookie;
@@ -454,11 +469,13 @@ public:
 
 	//~ValueableVector() = default;
 
-	std::vector<T>& AsVector() {
+	std::vector<T>& AsVector()
+	{
 		return *reinterpret_cast<std::vector<T>*>(this);
 	}
 
-	const std::vector<T>& AsVector() const{
+	const std::vector<T>& AsVector() const
+	{
 		return *reinterpret_cast<const std::vector<T>*>(this);
 	}
 
@@ -474,22 +491,28 @@ public:
 
 	COMPILETIMEEVAL FORCEDINLINE auto Find(const T& item) const
 	{
-		if COMPILETIMEEVAL (direct_comparable<T>) {
+		if COMPILETIMEEVAL(direct_comparable<T>)
+		{
 			auto i = this->begin();
 
-			for (; i != this->end(); ++i) {
-				if (*i == item) {
+			for (; i != this->end(); ++i)
+			{
+				if (*i == item)
+				{
 					break;
 				}
 			}
 
 			return i;
-		} else {
+		}
+		else
+		{
 			return std::find(this->begin(), this->end(), item);
 		}
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE bool Contains(const T& other) const {
+	COMPILETIMEEVAL FORCEDINLINE bool Contains(const T& other) const
+	{
 		return this->Find(other) != this->end();
 	}
 
@@ -499,19 +522,21 @@ public:
 		return it != this->end() ? std::distance(this->begin(), it) : -1;
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE bool ValidIndex(int index) const {
+	COMPILETIMEEVAL FORCEDINLINE bool ValidIndex(int index) const
+	{
 		return static_cast<size_t>(index) < this->size();
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE T GetItemAt(int nIdx) const {
-
+	COMPILETIMEEVAL FORCEDINLINE T GetItemAt(int nIdx) const
+	{
 		if (!this->ValidIndex(nIdx))
 			return T();
 
 		return *(this->begin() + nIdx);
 	}
 
-	COMPILETIMEEVAL size_t end_idx() const{
+	COMPILETIMEEVAL size_t end_idx() const
+	{
 		return this->size() - 1;
 	}
 
@@ -523,7 +548,7 @@ public:
 		return *(this->begin() + nIdx);
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE T GetItemAtOrDefault(int nIdx , const T& other) const
+	COMPILETIMEEVAL FORCEDINLINE T GetItemAtOrDefault(int nIdx, const T& other) const
 	{
 		if (!this->ValidIndex(nIdx))
 			return other;
@@ -546,51 +571,59 @@ public:
 	template <typename Func>
 	COMPILETIMEEVAL FORCEDINLINE void For_Each(Func&& act) const
 	{
-		for (auto i = this->begin(); i != this->end(); ++i) {
-        	act(*i);
-    	}
+		for (auto i = this->begin(); i != this->end(); ++i)
+		{
+			act(*i);
+		}
 	}
 
 	template <typename Func>
 	COMPILETIMEEVAL FORCEDINLINE void For_Each(Func&& act)
 	{
-		for (auto i = this->begin(); i != this->end(); ++i) {
-        	act(*i);
-    	}
+		for (auto i = this->begin(); i != this->end(); ++i)
+		{
+			act(*i);
+		}
 	}
 
 	template<typename func>
 	COMPILETIMEEVAL FORCEDINLINE bool None_Of(func&& fn) const
 	{
-		for (auto i = this->begin(); i != this->end(); ++i) {
-       	 	if (fn(*i)) {
-           	 	return false;
-        	}
-    	}
+		for (auto i = this->begin(); i != this->end(); ++i)
+		{
+			if (fn(*i))
+			{
+				return false;
+			}
+		}
 
-    	return true;
+		return true;
 	}
 
 	template<typename func>
 	COMPILETIMEEVAL FORCEDINLINE bool None_Of(func&& fn)
 	{
-		for (auto i = this->begin(); i != this->end(); ++i) {
-       	 	if (fn(*i)) {
-           	 	return false;
-        	}
-    	}
+		for (auto i = this->begin(); i != this->end(); ++i)
+		{
+			if (fn(*i))
+			{
+				return false;
+			}
+		}
 
-    	return true;
+		return true;
 	}
 
 	template<typename func>
 	COMPILETIMEEVAL FORCEDINLINE bool Any_Of(func&& fn) const
 	{
-		for (auto i = this->begin(); i != this->end(); ++i) {
-       		if (fn(*i)) {
-            	return true;
+		for (auto i = this->begin(); i != this->end(); ++i)
+		{
+			if (fn(*i))
+			{
+				return true;
 			}
-        }
+		}
 
 		return false;
 	}
@@ -598,11 +631,13 @@ public:
 	template<typename func>
 	COMPILETIMEEVAL FORCEDINLINE bool Any_Of(func&& fn)
 	{
-		for (auto i = this->begin(); i != this->end(); ++i) {
-       		if (fn(*i)) {
-            	return true;
+		for (auto i = this->begin(); i != this->end(); ++i)
+		{
+			if (fn(*i))
+			{
+				return true;
 			}
-        }
+		}
 
 		return false;
 	}
@@ -610,8 +645,10 @@ public:
 	template<typename func>
 	COMPILETIMEEVAL FORCEDINLINE bool All_Of(func&& fn) const
 	{
-		for (auto i = this->begin(); i != this->end(); ++i) {
-			if (!fn(*i)) {
+		for (auto i = this->begin(); i != this->end(); ++i)
+		{
+			if (!fn(*i))
+			{
 				return false;
 			}
 		}
@@ -622,8 +659,10 @@ public:
 	template<typename func>
 	COMPILETIMEEVAL FORCEDINLINE bool All_Of(func&& fn)
 	{
-		for (auto i = this->begin(); i != this->end(); ++i) {
-			if (!fn(*i)) {
+		for (auto i = this->begin(); i != this->end(); ++i)
+		{
+			if (!fn(*i))
+			{
 				return false;
 			}
 		}
@@ -648,7 +687,7 @@ protected:
 public:
 	//NullableVector() noexcept = default;
 	//~NullableVector() = default;
-	OPTIONALINLINE void Read(INI_EX& parser, const char* pSection, const char* pKey , bool allocate = false);
+	OPTIONALINLINE void Read(INI_EX& parser, const char* pSection, const char* pKey, bool allocate = false);
 
 	COMPILETIMEEVAL FORCEDINLINE bool HasValue() const noexcept
 	{
@@ -680,7 +719,7 @@ public:
 		return this->GetElements();
 	}
 
-	bool Eligible(const ValueableVector<T>& ndefault , const T& other) const
+	bool Eligible(const ValueableVector<T>& ndefault, const T& other) const
 	{
 		if (!this->hasValue)
 			return ndefault.Eligible(other);
@@ -732,20 +771,17 @@ public:
 	COMPILETIMEEVAL explicit Damageable(T const& all)
 		noexcept(noexcept(T { all }))
 		: BaseValue { all }
-	{
-	}
+	{ }
 
 	COMPILETIMEEVAL explicit Damageable(T const& undamaged, T const& damaged)
 		noexcept(noexcept(T { undamaged }) && noexcept(T { damaged }))
 		: BaseValue { undamaged }, ConditionYellow { damaged }
-	{
-	}
+	{ }
 
 	COMPILETIMEEVAL explicit Damageable(T const& green, T const& yellow, T const& red)
 		noexcept(noexcept(T { green }) && noexcept(T { yellow }) && noexcept(T { red }))
 		: BaseValue { green }, ConditionYellow { yellow }, ConditionRed { red }
-	{
-	}
+	{ }
 
 	COMPILETIMEEVAL ~Damageable() = default;
 
@@ -753,14 +789,14 @@ public:
 	COMPILETIMEEVAL Damageable(Damageable&&) = default;
 	COMPILETIMEEVAL Damageable& operator=(const Damageable& other) = default;
 
-	OPTIONALINLINE void Read(INI_EX& parser, const char* pSection, const char* pBaseFlag, const char* pSingleFlag = nullptr , bool Alloc = false);
+	OPTIONALINLINE void Read(INI_EX& parser, const char* pSection, const char* pBaseFlag, const char* pSingleFlag = nullptr, bool Alloc = false);
 
 	COMPILETIMEEVAL const T& Get(TechnoClass* pTechno) const noexcept
 	{
 		return Get(pTechno->GetHealthPercentage());
 	}
 
-	COMPILETIMEEVAL const T& Get(double ratio, double conditionYellow , double conditionRed) const noexcept
+	COMPILETIMEEVAL const T& Get(double ratio, double conditionYellow, double conditionRed) const noexcept
 	{
 		if (this->ConditionRed.isset() && ratio <= conditionRed)
 			return this->ConditionRed;
@@ -795,18 +831,15 @@ protected:
 public:
 	COMPILETIMEEVAL HealthOnFireData() noexcept :
 		RedOnFire { true }, GreenOnFire { false }, YellowOnFire { true }
-	{
-	}
+	{ }
 
 	COMPILETIMEEVAL HealthOnFireData(bool All) noexcept :
 		RedOnFire { All }, GreenOnFire { All }, YellowOnFire { All }
-	{
-	}
+	{ }
 
 	COMPILETIMEEVAL HealthOnFireData(bool R, bool G, bool Y) noexcept :
 		RedOnFire { R }, GreenOnFire { G }, YellowOnFire { Y }
-	{
-	}
+	{ }
 
 	COMPILETIMEEVAL ~HealthOnFireData() = default;
 
@@ -838,31 +871,27 @@ public:
 	NullableVector<T> ConditionRed {};
 	NullableVector<T> MaxValue {};
 
-	COMPILETIMEEVAL DamageableVector() noexcept  = default;
+	COMPILETIMEEVAL DamageableVector() noexcept = default;
 
 	COMPILETIMEEVAL explicit DamageableVector(ValueableVector<T> const& all)
 		noexcept(noexcept(ValueableVector<T> { all }))
 		: BaseValue { all }
-	{
-	}
+	{ }
 
 	COMPILETIMEEVAL explicit DamageableVector(ValueableVector<T> const& undamaged, NullableVector<T> const& damaged)
 		noexcept(noexcept(ValueableVector<T> { undamaged }) && noexcept(NullableVector<T> { damaged }))
 		: BaseValue { undamaged }, ConditionYellow { damaged }
-	{
-	}
+	{ }
 
 	COMPILETIMEEVAL explicit DamageableVector(ValueableVector<T> const& green, NullableVector<T> const& yellow, NullableVector<T> const& red)
 		noexcept(noexcept(ValueableVector<T> { green }) && noexcept(NullableVector<T> { yellow }) && noexcept(NullableVector<T> { red }))
 		: BaseValue { green }, ConditionYellow { yellow }, ConditionRed { red }
-	{
-	}
+	{ }
 
 	COMPILETIMEEVAL explicit DamageableVector(ValueableVector<T> const& green, NullableVector<T> const& yellow, NullableVector<T> const& red, NullableVector<T> const& max)
 		noexcept(noexcept(ValueableVector<T> { green }) && noexcept(NullableVector<T> { yellow }) && noexcept(NullableVector<T> { red }) && noexcept(NullableVector<T> { max }))
 		: BaseValue { green }, ConditionYellow { yellow }, ConditionRed { red }, MaxValue { max }
-	{
-	}
+	{ }
 
 	COMPILETIMEEVAL ~DamageableVector() = default;
 
@@ -976,7 +1005,7 @@ class TimedWarheadValue
 public:
 	T Value { };
 	CDTimerClass Timer { };
-	AffectedHouse ApplyToHouses  { AffectedHouse::None };
+	AffectedHouse ApplyToHouses { AffectedHouse::None };
 	WarheadTypeClass* SourceWarhead { };
 
 	COMPILETIMEEVAL TimedWarheadValue(const TimedWarheadValue&) = default;
@@ -1010,7 +1039,6 @@ public:
 	OPTIONALINLINE bool Save(PhobosStreamWriter& Stm) const;
 };
 
-
 template<typename T>
 class NullablePromotable
 {
@@ -1024,8 +1052,7 @@ public:
 	COMPILETIMEEVAL explicit NullablePromotable(T const& r, T const& v, T const& e)
 		noexcept(noexcept(T { r }) && noexcept(T { v }) && noexcept(T { e })) :
 		Rookie(r), Veteran(v), Elite(e)
-	{
-	}
+	{ }
 
 	COMPILETIMEEVAL NullablePromotable(const NullablePromotable&) = default;
 	COMPILETIMEEVAL NullablePromotable(NullablePromotable&&) = default;

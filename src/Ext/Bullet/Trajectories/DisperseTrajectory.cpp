@@ -18,7 +18,7 @@
 
 bool DisperseTrajectoryType::Load(PhobosStreamReader& Stm, bool RegisterForChange)
 {
-	return this->PhobosTrajectoryType::Load(Stm, false) &&  this->Serialize(Stm);
+	return this->PhobosTrajectoryType::Load(Stm, false) && this->Serialize(Stm);
 }
 
 bool DisperseTrajectoryType::Save(PhobosStreamWriter& Stm) const
@@ -894,7 +894,7 @@ bool DisperseTrajectory::PrepareDisperseWeapon()
 
 						while (pObject)
 						{
-							const auto pTechno = flag_cast_to<TechnoClass* , false>(pObject);
+							const auto pTechno = flag_cast_to<TechnoClass*, false>(pObject);
 
 							if (!pTechno)
 							{
@@ -1135,7 +1135,7 @@ bool DisperseTrajectory::PrepareDisperseWeapon()
 				{
 					for (auto burstNum = burstNow; burstNum < burstCount; ++burstNum)
 					{
-						const auto randomIndex = validTechnoNums > 1 ?  ScenarioClass::Instance->Random.RandomRanged(0, validTechnoNums - 1) : 0;
+						const auto randomIndex = validTechnoNums > 1 ? ScenarioClass::Instance->Random.RandomRanged(0, validTechnoNums - 1) : 0;
 						const auto pNewTarget = validTechnos[randomIndex];
 						validTargets.push_back(pNewTarget);
 						std::swap(validTechnos[randomIndex], validTechnos[--validTechnoNums]);

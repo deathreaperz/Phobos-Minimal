@@ -44,8 +44,7 @@ public:
 	template<bool check = true>
 	void FORCEDINLINE PrintAsMessage(int colorScheme) const
 	{
-
-		if COMPILETIMEEVAL (check)
+		if COMPILETIMEEVAL(check)
 		{
 			if (this->empty())
 				return;
@@ -86,5 +85,4 @@ public:
 
 	FixedString<0x20> Label;
 	const wchar_t* Text { nullptr };
-
 };

@@ -31,7 +31,7 @@ public:
 		this->AbsType = AircraftClass::AbsID;
 	}
 
-	AircraftExtData(AircraftClass * pObj, noinit_t nn) : FootExtData(pObj, nn) { }
+	AircraftExtData(AircraftClass* pObj, noinit_t nn) : FootExtData(pObj, nn) { }
 	virtual ~AircraftExtData() = default;
 
 	AircraftClass* This() const { return reinterpret_cast<AircraftClass*>(this->AttachedToObject); }
@@ -40,34 +40,38 @@ public:
 	virtual AbstractType WhatIam() const { return base_type::AbsID; }
 	virtual int GetSize() const { return sizeof(*this); };
 
-	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) {
+	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved)
+	{
 		this->FootExtData::InvalidatePointer(ptr, bRemoved);
 	}
 
-	virtual void LoadFromStream(PhobosStreamReader& Stm) {
+	virtual void LoadFromStream(PhobosStreamReader& Stm)
+	{
 		this->FootExtData::LoadFromStream(Stm);
 		Stm.Process(this->Strafe_BombsDroppedThisRound);
 		Stm.Process(this->CurrentAircraftWeaponIndex);
 		Stm.Process(this->Strafe_TargetCell);
 	}
 
-	virtual void SaveToStream(PhobosStreamWriter& Stm) {
+	virtual void SaveToStream(PhobosStreamWriter& Stm)
+	{
 		this->FootExtData::SaveToStream(Stm);
 		Stm.Process(this->Strafe_BombsDroppedThisRound);
 		Stm.Process(this->CurrentAircraftWeaponIndex);
 		Stm.Process(this->Strafe_TargetCell);
 	}
 
-	virtual void CalculateCRC(CRCEngine& crc) const {
+	virtual void CalculateCRC(CRCEngine& crc) const
+	{
 		this->FootExtData::CalculateCRC(crc);
 	}
 
-public :
+public:
 
 	static void FireBurst(AircraftClass* pThis, AbstractClass* pTarget, AircraftFireMode shotNumber);
-	static void FireBurst(AircraftClass* pThis, AbstractClass* pTarget, AircraftFireMode shotNumber , int WeaponIdx);
+	static void FireBurst(AircraftClass* pThis, AbstractClass* pTarget, AircraftFireMode shotNumber, int WeaponIdx);
 	static void FireBurst(AircraftClass* pThis, AbstractClass* pTarget, AircraftFireMode shotNumber, int WeaponIdx, WeaponTypeClass* pWeapon);
-	static void TriggerCrashWeapon(AircraftClass* pThis , int nMult);
+	static void TriggerCrashWeapon(AircraftClass* pThis, int nMult);
 	static bool IsValidLandingZone(AircraftClass* pThis);
 
 	static bool PlaceReinforcementAircraft(AircraftClass* pThis, CellStruct edgeCell);
@@ -103,11 +107,13 @@ public:
 
 	void _Detach(AbstractClass* target, bool all);
 
-	FORCEDINLINE AircraftExtData* _GetExtData() {
+	FORCEDINLINE AircraftExtData* _GetExtData()
+	{
 		return *reinterpret_cast<AircraftExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 
-	FORCEDINLINE const AircraftExtData* _GetExtData() const {
+	FORCEDINLINE const AircraftExtData* _GetExtData() const
+	{
 		return *reinterpret_cast<const AircraftExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 };

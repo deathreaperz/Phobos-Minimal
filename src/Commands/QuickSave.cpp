@@ -28,7 +28,6 @@ const wchar_t* QuickSaveCommandClass::GetUIDescription() const
 
 void QuickSaveCommandClass::Execute(WWKey eInput) const
 {
-
 	if (SessionClass::IsSingleplayer())
 	{
 		ScenarioClass::ScenarioSaved = false;

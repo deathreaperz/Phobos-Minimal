@@ -138,7 +138,6 @@ bool SWButtonClass::Draw(bool forced)
 		if (pSWExt->GClock_Transculency->GetIntValue() > 0)
 			_GCLOCK_Trans = pSWExt->GClock_Transculency->GetBlitterFlags();
 
-
 		pSurface->DrawSHP(_GCLOCK_Convert, _GCLOCK_Shape, ((FakeSuperClass*)pSuper)->_GetAnimStage() + 1, &loc, &bounds, BlitterFlags::bf_400 | _GCLOCK_Trans, 0, 0, ZGradient::Ground, 1000, 0, nullptr, 0, 0, 0);
 	}
 
@@ -189,5 +188,4 @@ bool SWButtonClass::Action(GadgetFlag flags, DWORD* pKey, KeyModifier modifier)
 bool SWButtonClass::LaunchSuper() const
 {
 	return SWTypeExtData::LauchSuper(HouseClass::CurrentPlayer->Supers.Items[this->SuperIndex]);
-
 }

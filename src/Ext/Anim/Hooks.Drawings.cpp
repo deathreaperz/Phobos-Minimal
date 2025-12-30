@@ -14,9 +14,11 @@ ASMJIT_PATCH(0x423855, AnimClass_DrawIt_ShadowLocation, 0x7)
 
 	int zCoord = pThis->GetZ();
 
-	if (auto const pUnit = cast_to<UnitClass*>(pThis->OwnerObject)) {
+	if (auto const pUnit = cast_to<UnitClass*>(pThis->OwnerObject))
+	{
 		// If deploying anim is played in air, cast shadow on ground.
-		if (pUnit->DeployAnim == pThis && pUnit->GetHeight() > 0) {
+		if (pUnit->DeployAnim == pThis && pUnit->GetHeight() > 0)
+		{
 			auto const pCell = pUnit->GetCell();
 			auto const coords = pCell->GetCenterCoords();
 			*pLocation = TacticalClass::Instance->CoordsToClient(coords);
@@ -42,7 +44,8 @@ ASMJIT_PATCH(0x4236F0, AnimClass_DrawIt_Tiled_Palette, 0x6)
 {
 	GET(FakeAnimClass* const, pThis, ESI);
 
-	if (auto pCustom = pThis->_GetTypeExtData()->Palette.GetConvert()) {
+	if (auto pCustom = pThis->_GetTypeExtData()->Palette.GetConvert())
+	{
 		R->EDX(pCustom);
 		return 0x4236F6;
 	}
@@ -239,7 +242,6 @@ struct DummyStructForDrawing
 
 						if (v16->HasCompression(shapenum))
 						{
-
 							if (auto blitter = drawer->Select_RLE_Blitter(flags))
 							{
 								reused_rect.X = xpos;
@@ -306,7 +308,6 @@ struct DummyStructForDrawing
 				}
 			}
 		}
-
 	}
 };
 
@@ -344,23 +345,23 @@ ASMJIT_PATCH(0x423061, AnimClass_Draw_Visibility, 0x6)
 
 	auto const pTypeExt = pThis->_GetTypeExtData();
 
-	if(!HouseClass::IsCurrentPlayerObserver()) {
-
-		const auto pTechno = flag_cast_to<TechnoClass* , true>(pThis->OwnerObject);
+	if (!HouseClass::IsCurrentPlayerObserver())
+	{
+		const auto pTechno = flag_cast_to<TechnoClass*, true>(pThis->OwnerObject);
 		HouseClass* const pCurrentHouse = HouseClass::CurrentPlayer;
 
 		if (pTypeExt->RestrictVisibilityIfCloaked
 			&& pTechno && pTechno->IsInCloakState()
-			&& (!pTechno->Owner || !pTechno->Owner->IsAlliedWith(pCurrentHouse))) {
-
+			&& (!pTechno->Owner || !pTechno->Owner->IsAlliedWith(pCurrentHouse)))
+		{
 			auto const pCell = pTechno->GetCell();
 
 			if (pCell && !pCell->Sensors_InclHouse(pCurrentHouse->ArrayIndex))
 				return SkipDrawing;
 		}
 
-		if(pTypeExt->VisibleTo != AffectedHouse::All) {
-
+		if (pTypeExt->VisibleTo != AffectedHouse::All)
+		{
 			auto pOwner = pThis->OwnerObject ? pThis->OwnerObject->GetOwningHouse() : pThis->Owner;
 
 			if (pTypeExt->VisibleTo_ConsiderInvokerAsOwner)
@@ -419,8 +420,10 @@ ASMJIT_PATCH(0x42308D, AnimClass_DrawIt_Transparency, 0x6)
 	{
 		auto translucency = pThis->Type->Translucency;
 
-		if (pTypeExt->Translucency_Cloaked.isset()) {
-			if (auto const pTechno = flag_cast_to<TechnoClass* , true>(pThis->OwnerObject)) {
+		if (pTypeExt->Translucency_Cloaked.isset())
+		{
+			if (auto const pTechno = flag_cast_to<TechnoClass*, true>(pThis->OwnerObject))
+			{
 				if (pTechno->IsInCloakState())
 					translucency = pTypeExt->Translucency_Cloaked.Get();
 			}
@@ -456,10 +459,13 @@ ASMJIT_PATCH(0x42308D, AnimClass_DrawIt_Transparency, 0x6)
 
 		int currentFrame = pThis->Animation.Stage;
 		int frames = pType->End;
-		if (pTypeExt->Translucent_Keyframes.KeyframeData.size() > 0) {
+		if (pTypeExt->Translucent_Keyframes.KeyframeData.size() > 0)
+		{
 			flags |= pTypeExt->Translucent_Keyframes.Get(static_cast<double>(currentFrame) / frames);
-		} else {
-					// No keyframes -> default behaviour.
+		}
+		else
+		{
+			// No keyframes -> default behaviour.
 			if (currentFrame > frames * 0.6)
 				flags |= BlitterFlags::TransLucent75;
 			else if (currentFrame > frames * 0.4)
@@ -532,9 +538,10 @@ ASMJIT_PATCH(0x423122, AnimClass_DrawIt_DrawOffset, 0x6)
 			}
 		}
 
-		if(pTechno){
-			if (auto const pShield = TechnoExtContainer::Instance.Find(pTechno)->Shield.get()) {
-
+		if (pTechno)
+		{
+			if (auto const pShield = TechnoExtContainer::Instance.Find(pTechno)->Shield.get())
+			{
 				auto const pShieldType = pShield->GetType();
 
 				if (pShield->IsAvailable() && !pShield->IsBrokenAndNonRespawning() && (pShield->GetHealthRatio() > 0.0 || !pShieldType->Pips_HideIfNoStrength))

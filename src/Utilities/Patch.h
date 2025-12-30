@@ -30,25 +30,24 @@ struct dllData
 
 	COMPILETIMEEVAL dllData() = default;
 
-	COMPILETIMEEVAL dllData(const char* name, HMODULE handle, uintptr_t baseaddr , size_t size) : ModuleName { name }
+	COMPILETIMEEVAL dllData(const char* name, HMODULE handle, uintptr_t baseaddr, size_t size) : ModuleName { name }
 		, Handle { handle }
 		, BaseAddr { baseaddr }
 		, Size { size }
 		, Impors {}
 		, Exports {}
-	//	, Patches {}
-	{
-	}
+		//	, Patches {}
+	{ }
 
 	COMPILETIMEEVAL ~dllData() = default;
 };
 
-
 #pragma pack(push, 1)
 #pragma warning(push)
 #pragma warning( disable : 4324)
-enum class PatchType : BYTE{
-	CALL_, CALL6_ , LJMP_ , VTABLE_ , PATCH_
+enum class PatchType : BYTE
+{
+	CALL_, CALL6_, LJMP_, VTABLE_, PATCH_
 };
 
 struct NOVTABLE
@@ -68,7 +67,8 @@ struct NOVTABLE
 	static OPTIONALINLINE void Apply_withmemcpy(uintptr_t addrFrom, To toImpl, DWORD& protect_flag, DWORD ReadFlag = PAGE_READWRITE, size_t size = 4u)
 	{
 		DWORD protect_flagb {};
-		if (VirtualProtect((LPVOID)addrFrom, size, ReadFlag, &protect_flag) == TRUE) {
+		if (VirtualProtect((LPVOID)addrFrom, size, ReadFlag, &protect_flag) == TRUE)
+		{
 			std::memcpy((void*)addrFrom, toImpl, size);
 			VirtualProtect((LPVOID)addrFrom, size, protect_flag, &protect_flagb);
 			FlushInstructionCache(CurrentProcess, (LPVOID)addrFrom, size);
@@ -102,12 +102,14 @@ struct NOVTABLE
 
 	static void Apply_RAW(uintptr_t offset, size_t sz, PatchType type, const BYTE* data);
 
-	static FORCEDINLINE void Apply_RAW(uintptr_t offset, std::initializer_list<BYTE> data) {
+	static FORCEDINLINE void Apply_RAW(uintptr_t offset, std::initializer_list<BYTE> data)
+	{
 		Patch::Apply_RAW(offset, data.size(), PatchType::PATCH_, const_cast<byte*>(data.begin()));
 	}
 
 	template <size_t Size>
-	static FORCEDINLINE void Apply_RAW(uintptr_t offset, const char(&str)[Size]) {
+	static FORCEDINLINE void Apply_RAW(uintptr_t offset, const char(&str)[Size])
+	{
 		Apply_RAW(offset, Size, PatchType::PATCH_, reinterpret_cast<const BYTE*>(str));
 	};
 
@@ -157,7 +159,7 @@ struct NOVTABLE
 	static int GetSection(HANDLE hInstance, const char* sectionName, void** pVirtualAddress);
 	static uintptr_t GetEATAddress(const char* moduleName, const char* funcName);
 	static uintptr_t GetIATAddress(const char* moduleName, const char* funcName);
-public :
+public:
 	static HANDLE CurrentProcess;
 	static std::string WindowsVersion;
 };

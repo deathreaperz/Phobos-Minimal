@@ -62,13 +62,11 @@ public:
 
 	EngraveTrajectory(TrajectoryFlag varian, BulletClass* pBullet, PhobosTrajectoryType* pType) :
 		PhobosTrajectory { varian , pBullet , pType }
-	{
-	}
+	{ }
 
 	EngraveTrajectory(BulletClass* pBullet, PhobosTrajectoryType* pType) :
 		PhobosTrajectory { TrajectoryFlag::Engrave , pBullet , pType }
-	{
-	}
+	{ }
 
 	virtual ~EngraveTrajectory() override = default;
 	//virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override { }
@@ -105,5 +103,4 @@ private:
 			.Process(this->FLHCoord)
 			;
 	};
-
 };

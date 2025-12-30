@@ -817,13 +817,12 @@ public:
 		Music_Duration(0),
 		Music_AffectedHouses(AffectedHouse::All)
 	{
-			this->AbsType = SuperWeaponTypeClass::AbsID;
-			this->Text_Ready = GameStrings::TXT_READY();
-			this->Text_Hold = GameStrings::TXT_HOLD();
-			this->Text_Charging = GameStrings::TXT_CHARGING();
-			this->Text_Active = GameStrings::TXT_FIRESTORM_ON();
-			this->Message_CannotFire = "MSG:CannotFire";
-
+		this->AbsType = SuperWeaponTypeClass::AbsID;
+		this->Text_Ready = GameStrings::TXT_READY();
+		this->Text_Hold = GameStrings::TXT_HOLD();
+		this->Text_Charging = GameStrings::TXT_CHARGING();
+		this->Text_Active = GameStrings::TXT_FIRESTORM_ON();
+		this->Message_CannotFire = "MSG:CannotFire";
 	}
 
 	SWTypeExtData(SuperWeaponTypeClass* pObj, noinit_t nn) : AbstractTypeExtData(pObj, nn) { }
@@ -889,7 +888,8 @@ public:
 
 	bool PreParse(CCINIClass* pINI);
 
-	OPTIONALINLINE const char* get_ID(){
+	OPTIONALINLINE const char* get_ID()
+	{
 		return this->Name.data();
 	}
 
@@ -904,7 +904,7 @@ public:
 	bool IsHouseAffected(HouseClass* pFirer, HouseClass* pHouse, AffectedHouse value);
 	bool Launch(SWTypeHandler* pNewType, SuperClass* pSuper, CellStruct const cell, bool const isPlayer);
 	void PrintMessage(const CSFText& message, HouseClass* pFirer);
-	Iterator<TechnoClass*> GetPotentialAITargets(HouseClass* pTarget , std::vector<TechnoClass*>& outVec) const;
+	Iterator<TechnoClass*> GetPotentialAITargets(HouseClass* pTarget, std::vector<TechnoClass*>& outVec) const;
 	bool IsCellEligible(CellClass* pCell, SuperWeaponTarget allowed);
 	bool IsTechnoEligible(TechnoClass* pTechno, SuperWeaponTarget allowed);
 	bool IsTechnoAffected(TechnoClass* pTechno);
@@ -918,7 +918,8 @@ public:
 	bool ApplyDrainBattlePoint(int timeLeft, HouseClass* pHouse);
 
 	//no arg(s)
-	COMPILETIMEEVAL OPTIONALINLINE double GetChargeToDrainRatio() const {
+	COMPILETIMEEVAL OPTIONALINLINE double GetChargeToDrainRatio() const
+	{
 		return this->SW_ChargeToDrainRatio.Get(RulesClass::Instance->ChargeToDrainRatio);
 	}
 
@@ -973,7 +974,6 @@ public:
 	static bool ChangeLighting(SuperWeaponTypeClass* pCustom = nullptr);
 	static LightingColor GetLightingColor(SuperWeaponTypeClass* pCustom = nullptr);
 	static double GetSuperChargePercent(SuperClass* pSuper, bool backward = false);
-
 };
 
 class SWTypeExtContainer final : public Container<SWTypeExtData>
@@ -994,10 +994,9 @@ public:
 	virtual void Clear();
 
 	virtual void LoadFromINI(ext_t::base_type* key, CCINIClass* pINI, bool parseFailAddr);
-	virtual void WriteToINI(ext_t::base_type * key, CCINIClass* pINI);
+	virtual void WriteToINI(ext_t::base_type* key, CCINIClass* pINI);
 
 	static void InvalidatePointer(AbstractClass* ptr, bool bRemoved);
-
 };
 
 class NOVTABLE FakeSuperWeaponTypeClass : public SuperWeaponTypeClass
@@ -1006,9 +1005,9 @@ public:
 
 	bool _ReadFromINI(CCINIClass* pINI);
 
-	SWTypeExtData* _GetExtData() {
+	SWTypeExtData* _GetExtData()
+	{
 		return *reinterpret_cast<SWTypeExtData**>((DWORD)this + AbstractExtOffset);
 	}
-
 };
 static_assert(sizeof(FakeSuperWeaponTypeClass) == sizeof(SuperWeaponTypeClass), "Invalid Size !");

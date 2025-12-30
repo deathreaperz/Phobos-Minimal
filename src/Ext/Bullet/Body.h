@@ -98,7 +98,8 @@ public:
 	virtual AbstractType WhatIam() const { return base_type::AbsID; }
 	virtual int GetSize() const { return sizeof(*this); };
 
-	virtual void CalculateCRC(CRCEngine& crc) const {
+	virtual void CalculateCRC(CRCEngine& crc) const
+	{
 		this->ObjectExtData::CalculateCRC(crc);
 	}
 
@@ -142,7 +143,6 @@ public:
 	static void SimulatedFiringElectricBolt(BulletClass* pBullet);
 	static void SimulatedFiringRadBeam(BulletClass* pBullet, HouseClass* pHouse);
 	static void SimulatedFiringParticleSystem(BulletClass* pBullet, HouseClass* pHouse);
-
 };
 
 class BulletExtContainer final : public Container<BulletExtData>
@@ -156,7 +156,6 @@ public:
 
 	virtual bool LoadAll(const json& root);
 	virtual bool SaveAll(json& root);
-
 };
 
 class FakeWarheadTypeClass;
@@ -175,31 +174,38 @@ public:
 
 	void _Detach(AbstractClass* target, bool all);
 
-	FORCEDINLINE BulletClass* _AsBullet() const {
+	FORCEDINLINE BulletClass* _AsBullet() const
+	{
 		return (BulletClass*)this;
 	}
 
-	FORCEDINLINE BulletExtData* _GetExtData() {
+	FORCEDINLINE BulletExtData* _GetExtData()
+	{
 		return *reinterpret_cast<BulletExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 
-	FORCEDINLINE BulletTypeExtData* _GetTypeExtData() {
+	FORCEDINLINE BulletTypeExtData* _GetTypeExtData()
+	{
 		return *reinterpret_cast<BulletTypeExtData**>(((DWORD)this->Type) + AbstractExtOffset);
 	}
 
-	FORCEDINLINE FakeWarheadTypeClass* _GetWarheadType() {
+	FORCEDINLINE FakeWarheadTypeClass* _GetWarheadType()
+	{
 		return (FakeWarheadTypeClass*)this->WH;
 	}
 
-	FORCEDINLINE WarheadTypeExtData* _GetWarheadTypeExtData() {
+	FORCEDINLINE WarheadTypeExtData* _GetWarheadTypeExtData()
+	{
 		return *reinterpret_cast<WarheadTypeExtData**>(((DWORD)this->WH) + AbstractExtOffset);
 	}
 
-	FORCEDINLINE FakeWeaponType* _GetWeaponType() {
+	FORCEDINLINE FakeWeaponType* _GetWeaponType()
+	{
 		return (FakeWeaponType*)this->WeaponType;
 	}
 
-	FORCEDINLINE WeaponTypeExtData* _GetWeaponTypeExtData() {
+	FORCEDINLINE WeaponTypeExtData* _GetWeaponTypeExtData()
+	{
 		return *reinterpret_cast<WeaponTypeExtData**>(((DWORD)this->WeaponType) + AbstractExtOffset);
 	}
 };

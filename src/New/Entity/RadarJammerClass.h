@@ -23,7 +23,6 @@ public:
 	void Jam(BuildingClass*);				//!< Attempts to jam the given building. (Actually just registers the Jammer with it, the jamming happens in a hook.)
 	void Unjam(BuildingClass*) const;			//!< Attempts to unjam the given building. (Actually just unregisters the Jammer with it, the unjamming happens in a hook.)
 
-
 public:
 
 	RadarJammerClass() = default;
@@ -57,8 +56,10 @@ private:
 };
 
 template <>
-struct Savegame::ObjectFactory<RadarJammerClass> {
-	std::unique_ptr<RadarJammerClass> operator() (PhobosStreamReader& Stm) const {
+struct Savegame::ObjectFactory<RadarJammerClass>
+{
+	std::unique_ptr<RadarJammerClass> operator() (PhobosStreamReader& Stm) const
+	{
 		return std::make_unique<RadarJammerClass>();
 	}
 };

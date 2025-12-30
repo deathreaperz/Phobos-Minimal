@@ -48,7 +48,8 @@ ASMJIT_PATCH(0x54BED4, JumpjetLocomotionClass_Hovering_DeployToLand, 0x7)
 
 	auto const pType = pLinkedTo->GetTechnoType();
 
-	if (!pType->BalloonHover || pType->DeployToLand) {
+	if (!pType->BalloonHover || pType->DeployToLand)
+	{
 		pThis->NextState = JumpjetLocomotionClass::State::Descending;
 	}
 
@@ -64,7 +65,8 @@ ASMJIT_PATCH(0x54C2DF, JumpjetLocomotionClass_Cruising_DeployToLand, 0xA)
 
 	auto const pType = pLinkedTo->GetTechnoType();
 
-	if (!pType->BalloonHover || pType->DeployToLand) {
+	if (!pType->BalloonHover || pType->DeployToLand)
+	{
 		pThis->__currentHeight = 0;
 		pThis->NextState = JumpjetLocomotionClass::State::Descending;
 	}

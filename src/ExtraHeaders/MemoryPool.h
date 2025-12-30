@@ -6,15 +6,15 @@
 //--------------------------------------------------------------------
 // Fundamental type definitions
 //--------------------------------------------------------------------
-typedef float							Real;							// 4 bytes 
+typedef float							Real;							// 4 bytes
 static_assert(sizeof(Real) == 0x4, "InvalidSize");
-typedef int								Int;							// 4 bytes 
+typedef int								Int;							// 4 bytes
 static_assert(sizeof(Int) == 0x4, "InvalidSize");
-typedef unsigned int			UnsignedInt;	  	// 4 bytes 
+typedef unsigned int			UnsignedInt;	  	// 4 bytes
 static_assert(sizeof(UnsignedInt) == 0x4, "InvalidSize");
-typedef unsigned short		UnsignedShort;		// 2 bytes 
+typedef unsigned short		UnsignedShort;		// 2 bytes
 static_assert(sizeof(UnsignedShort) == 0x2, "InvalidSize");
-typedef short							Short;					  // 2 bytes 
+typedef short							Short;					  // 2 bytes
 static_assert(sizeof(Short) == 0x2, "InvalidSize");
 typedef unsigned char			UnsignedByte;			// 1 byte		USED TO BE "Byte"
 static_assert(sizeof(UnsignedByte) == 0x1, "InvalidSize");
@@ -22,12 +22,12 @@ typedef char							Byte;							// 1 byte		USED TO BE "SignedByte"
 static_assert(sizeof(Byte) == 0x1, "InvalidSize");
 typedef char							Char;							// 1 byte of text
 static_assert(sizeof(Char) == 0x1, "InvalidSize");
-typedef bool							Bool;							// 
+typedef bool							Bool;							//
 static_assert(sizeof(Bool) == 0x1, "InvalidSize");
 // note, the types below should use "long long", but MSVC doesn't support it yet
-typedef __int64						Int64;							// 8 bytes 
+typedef __int64						Int64;							// 8 bytes
 static_assert(sizeof(Int64) == 0x8, "InvalidSize");
-typedef unsigned __int64	UnsignedInt64;	  	// 8 bytes 
+typedef unsigned __int64	UnsignedInt64;	  	// 8 bytes
 static_assert(sizeof(UnsignedInt64) == 0x8, "InvalidSize");
 
 enum
@@ -45,7 +45,7 @@ enum ErrorCode
 	ERROR_INVALID_FILE_VERSION = (ERROR_BASE + 0x0003),		///< Unrecognized file version.
 	ERROR_CORRUPT_FILE_FORMAT = (ERROR_BASE + 0x0004),		///< Invalid file format.
 	ERROR_BAD_INI = (ERROR_BASE + 0x0005),		///< Bad INI data.
-	ERROR_INVALID_D3D = (ERROR_BASE + 0x0006),    ///< Error initing D3D 
+	ERROR_INVALID_D3D = (ERROR_BASE + 0x0006),    ///< Error initing D3D
 
 	ERROR_LAST
 };
@@ -113,7 +113,6 @@ public:
 	}
 };
 
-
 class MemoryPoolFactory;
 class MemoryPoolBlob;
 class MemoryPoolSingleBlock
@@ -144,7 +143,6 @@ public:
 	void setNextFreeBlock(MemoryPoolSingleBlock* b);
 	MemoryPoolSingleBlock* getNextRawBlock();
 	void setNextRawBlock(MemoryPoolSingleBlock* b);
-
 };
 
 class MemoryPool;
@@ -179,7 +177,6 @@ public:
 	Int getFreeBlockCount();
 	Int getUsedBlockCount();
 	Int getTotalBlockCount();
-
 };
 
 class MemoryPoolFactory;
@@ -210,7 +207,7 @@ public:
 
 	// 'public' funcs that are really only for use by MemoryPoolFactory
 	MemoryPool* getNextPoolInList();	///< return next pool in linked list
-	
+
 	void addToList(MemoryPool** pHead);		///< add this pool to head of the linked list
 	void removeFromList(MemoryPool** pHead);	///< remove this pool from the linked list
 
@@ -367,7 +364,6 @@ public:
 	/// like allocateBytesImplementation, but zeroes the memory before returning
 	void* allocateBytesDoNotZeroImplementation(Int numBytes);
 
-
 	/// free the bytes. (assumes allocated by this dma.)
 	void freeBytes(void* pMem);
 
@@ -384,7 +380,6 @@ public:
 	void reset();
 	Int getDmaMemoryPoolCount() const;
 	MemoryPool* getNthDmaMemoryPool(Int i) const;
-
 };
 
 extern DynamicMemoryAllocator* TheDynamicMemoryAllocator;
@@ -392,7 +387,8 @@ extern DynamicMemoryAllocator* TheDynamicMemoryAllocator;
 extern CriticalSection* TheDmaCriticalSection;
 extern CriticalSection* TheMemoryPoolCriticalSection;
 
-struct Mem {
+struct Mem
+{
 	static void userMemoryManagerGetDmaParms(Int* numSubPools, const PoolInitRec** pParms);
 	static void userMemoryManagerInitPools();
 	static void preMainInitMemoryManager();
@@ -448,7 +444,7 @@ private: \
 	{ \
 		return ARGCLASS::getClassMemoryPool(); \
 	} \
-public: /* include this line at the end to reset visibility to 'public' */ 
+public: /* include this line at the end to reset visibility to 'public' */
 
 #define GCMP_CREATE(ARGCLASS, ARGPOOLNAME, ARGINITIAL, ARGOVERFLOW) \
 private: \
@@ -462,8 +458,7 @@ private: \
 		*/ \
 		static MemoryPool *The##ARGCLASS##Pool = TheMemoryPoolFactory->createMemoryPool(ARGPOOLNAME, sizeof(ARGCLASS), ARGINITIAL, ARGOVERFLOW); \
 		return The##ARGCLASS##Pool; \
-	} 
-
+	}
 
 #define NEW_INSTANCE_FUNC(ARGCLASS)\
 public: static ARGCLASS* createInstance() { return new(ARGCLASS::ARGCLASS##_GLUE_NOT_IMPLEMENTED) ARGCLASS; }

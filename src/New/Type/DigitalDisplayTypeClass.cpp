@@ -43,7 +43,6 @@ void DigitalDisplayTypeClass::LoadFromINI(CCINIClass* pINI)
 
 bool DigitalDisplayTypeClass::CanShow(TechnoClass* pThis)
 {
-
 	if (HouseClass::IsCurrentPlayerObserver() && !this->VisibleToHouses_Observer)
 	{
 		return false;
@@ -70,7 +69,6 @@ bool DigitalDisplayTypeClass::CanShow(TechnoClass* pThis)
 		return (current & flags) != DisplayShowType::None;
 
 	return (flags & DisplayShowType::Idle) != DisplayShowType::None; // not hovering & not selected
-
 }
 
 void DigitalDisplayTypeClass::Draw(Point2D position, int length, int value, int maxValue, bool isBuilding, bool isInfantry, bool hasShield)
@@ -110,7 +108,8 @@ void DigitalDisplayTypeClass::DisplayText(Point2D& position, int length, int val
 	static fmt::basic_memory_buffer<wchar_t> wbuf;
 	wbuf.clear();
 
-	if (!ValueAsTimer) {
+	if (!ValueAsTimer)
+	{
 		const int minute = value / 60;
 
 		if (const int hour = minute / 60)
@@ -120,11 +119,16 @@ void DigitalDisplayTypeClass::DisplayText(Point2D& position, int length, int val
 	}
 	else
 	{
-		if (Percentage){
+		if (Percentage)
+		{
 			fmt::format_to(std::back_inserter(wbuf), L"%{}", static_cast<int>(static_cast<double>(value) / maxValue * 100));
-		} else if (!HideMaxValue.Get(isInfantry)) {
+		}
+		else if (!HideMaxValue.Get(isInfantry))
+		{
 			fmt::format_to(std::back_inserter(wbuf), L"{}/{}", value, maxValue);
-		} else {
+		}
+		else
+		{
 			fmt::format_to(std::back_inserter(wbuf), L"{}", value);
 		}
 	}
@@ -151,7 +155,7 @@ COMPILETIMEEVAL Point2D GetSpacing(const Nullable<Point2D>& shapeSpace, bool isB
 	if (shapeSpace.isset())
 		return shapeSpace.Get();
 
-	return isBuilding ? Point2D{ 4, -2 } : Point2D{ 4 , 0 };
+	return isBuilding ? Point2D { 4, -2 } : Point2D { 4 , 0 };
 }
 
 struct FrameData
@@ -200,7 +204,7 @@ void DigitalDisplayTypeClass::DisplayShape(Point2D& position, int length, int va
 		}
 	}
 
-	Point2D spacing = GetSpacing(this->Shape_Spacing,isBuilding);
+	Point2D spacing = GetSpacing(this->Shape_Spacing, isBuilding);
 	const int pipsHeight = hasShield ? 4 : 0;
 
 	if (AnchorType.Vertical == VerticalPosition::Top)
@@ -214,9 +218,12 @@ void DigitalDisplayTypeClass::DisplayShape(Point2D& position, int length, int va
 		position.X -= (int)valueString.length() * spacing.X / 2;
 		position.Y += (int)valueString.length() * spacing.Y / 2;
 #else
-		if (Shape_PercentageFrame) {
+		if (Shape_PercentageFrame)
+		{
 			position.X -= static_cast<int>(Shape->Width) / 2;
-		} else {
+		}
+		else
+		{
 			position.X -= static_cast<int>(valueString.length()) * spacing.X / 2;
 			position.Y += static_cast<int>(valueString.length()) * spacing.Y / 2;
 		}
@@ -225,7 +232,6 @@ void DigitalDisplayTypeClass::DisplayShape(Point2D& position, int length, int va
 	}
 	case TextAlign::Right:
 	{
-
 #ifdef _old
 		std::ranges::reverse(valueString);
 		position.X -= spacing.X;

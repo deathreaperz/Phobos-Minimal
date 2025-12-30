@@ -8,7 +8,8 @@
 
 #include <Phobos.SaveGame.h>
 
-bool TerrainExtData::CanMoveHere(TechnoClass* pThis, TerrainClass* pTerrain) {
+bool TerrainExtData::CanMoveHere(TechnoClass* pThis, TerrainClass* pTerrain)
+{
 	const auto pExt = TerrainTypeExtContainer::Instance.Find(pTerrain->Type);
 
 	if (pExt->IsPassable)
@@ -96,7 +97,6 @@ void TerrainExtData::Unlimbo(TerrainClass* pThis, CoordStruct* pCoord)
 		TerrainExt->InitializeLightSource();
 		TerrainExt->InitializeAnim();
 	}
-
 }
 
 // =============================
@@ -149,7 +149,6 @@ bool TerrainExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool TerrainExtContainer::SaveAll(json& root)
@@ -179,7 +178,7 @@ bool TerrainExtContainer::SaveAll(json& root)
 // container hooks
 #include <Notifications.h>
 
-DEFINE_JUMP(LJMP, 0x71BC31 , 0x71BC86);
+DEFINE_JUMP(LJMP, 0x71BC31, 0x71BC86);
 
 ASMJIT_PATCH(0x71BE74, TerrainClass_CTOR, 0x5)
 {
@@ -196,13 +195,16 @@ ASMJIT_PATCH(0x71BCA5, TerrainClass_CTOR_MoveAndAllocate, 0x5)
 
 	auto pExt = TerrainExtContainer::Instance.FindOrAllocate(pItem);
 
-	if (pCoord->IsValid()) {
+	if (pCoord->IsValid())
+	{
 		//vtable may not instantiated
-		if (!pItem->TerrainClass::Unlimbo(CellClass::Cell2Coord(*pCoord), static_cast<DirType>(0))) {
+		if (!pItem->TerrainClass::Unlimbo(CellClass::Cell2Coord(*pCoord), static_cast<DirType>(0)))
+		{
 			pItem->ObjectClass::UnInit();
 		}
 
-		if(pItem->Type){
+		if (pItem->Type)
+		{
 			GeneralUtils::AdjacentCellsInRange(pExt->Adjencentcells, (short)TerrainTypeExtContainer::Instance.Find(pItem->Type)->SpawnsTiberium_Range);
 		}
 	}
@@ -215,14 +217,15 @@ ASMJIT_PATCH(0x71B824, TerrainClass_DTOR, 0x5)
 {
 	GET(TerrainClass*, pItem, ESI);
 
-	if(Unsorted::WTFMode() || pItem->Type)
+	if (Unsorted::WTFMode() || pItem->Type)
 	{
 		pItem->IsAlive = true;
 		if (!pItem->Limbo())
 			pItem->AnnounceExpiredPointer();
 	}
 
-	if(auto pExt = TerrainExtContainer::Instance.TryFind(pItem)) {
+	if (auto pExt = TerrainExtContainer::Instance.TryFind(pItem))
+	{
 		delete pExt;
 		TerrainExtContainer::Instance.ClearExtAttribute(pItem);
 		//PointerExpiredNotification::NotifyInvalidObject->Remove(pItem);
@@ -231,17 +234,19 @@ ASMJIT_PATCH(0x71B824, TerrainClass_DTOR, 0x5)
 	return 0x71B845;
 }
 
-
 #include <Misc/Hooks.Otamaa.h>
 
 void FakeTerrainClass::_AI()
 {
 	this->ObjectClass::Update();
-	if (this->Type->IsAnimated) {
-		if (!this->Animation.Stage) {
-			auto v2 =ScenarioClass::Instance->Random.Random();
+	if (this->Type->IsAnimated)
+	{
+		if (!this->Animation.Stage)
+		{
+			auto v2 = ScenarioClass::Instance->Random.Random();
 
-			if ((double)((int)Math::abs(v2) % 1000000) * 0.000001 < this->Type->AnimationProbability) {
+			if ((double)((int)Math::abs(v2) % 1000000) * 0.000001 < this->Type->AnimationProbability)
+			{
 				this->Animation.Stage = 0;
 				this->Animation.Start(this->Type->AnimationRate);
 			}
@@ -283,19 +288,19 @@ void FakeTerrainClass::_AI()
 
 void FakeTerrainClass::_Detach(AbstractClass* target, bool all)
 {
-	if(auto pExt = this->_GetExtData())
+	if (auto pExt = this->_GetExtData())
 		pExt->InvalidatePointer(target, all);
 	this->TerrainClass::PointerExpired(target, all);
 }
 DEFINE_FUNCTION_JUMP(VTABLE, 0x7F5254, FakeTerrainClass::_Detach);
 
-
-void FakeTerrainClass::_AnimPointerExpired(AnimClass* pAnim) {
-
+void FakeTerrainClass::_AnimPointerExpired(AnimClass* pAnim)
+{
 	auto pExt = this->_GetExtData();
 
-	if (pExt->AttachedFireAnim.get() == pAnim) {
+	if (pExt->AttachedFireAnim.get() == pAnim)
+	{
 		pExt->AttachedFireAnim.release();
 	}
 }
-DEFINE_FUNCTION_JUMP(VTABLE ,0x7F528C, FakeTerrainClass::_AnimPointerExpired)
+DEFINE_FUNCTION_JUMP(VTABLE, 0x7F528C, FakeTerrainClass::_AnimPointerExpired)

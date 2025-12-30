@@ -12,7 +12,8 @@ struct IEntity
 	EntityType m_Type { EntityType::None };
 	AbstractClass* m_OwnerObject { nullptr };
 
-	static void SetUP(IEntity* ett , EntityType type, AbstractClass* Owner) {
+	static void SetUP(IEntity* ett, EntityType type, AbstractClass* Owner)
+	{
 		ett->m_Type = type;
 		ett->m_OwnerObject = Owner;
 	}

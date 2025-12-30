@@ -2,12 +2,14 @@
 
 Enumerable<CrateTypeClass>::container_t Enumerable<CrateTypeClass>::Array;
 
-void CrateTypeClass::ReadListFromINI(CCINIClass* pINI) {
-
-	for (size_t i = 0; i < Array.size(); ++i) {
-
-		if(i < Powerups::Effects.size()) {
-			if(auto pAlloc = CrateTypeClass::Find(Powerups::Effects[i])){
+void CrateTypeClass::ReadListFromINI(CCINIClass* pINI)
+{
+	for (size_t i = 0; i < Array.size(); ++i)
+	{
+		if (i < Powerups::Effects.size())
+		{
+			if (auto pAlloc = CrateTypeClass::Find(Powerups::Effects[i]))
+			{
 				pAlloc->Weight = Powerups::Weights[i];
 				pAlloc->Argument = Powerups::Arguments[i];
 				pAlloc->Naval = Powerups::Naval[i];
@@ -47,9 +49,9 @@ void CrateTypeClass::ReadFromINIList(CCINIClass* pINI)
 	CrateTypeClass::LoadFromINIOnlyTheList(pINI);
 }
 
-void CrateTypeClass::LoadFromINI(CCINIClass *pINI)
+void CrateTypeClass::LoadFromINI(CCINIClass* pINI)
 {
-	const char *section = this->Name.c_str();
+	const char* section = this->Name.c_str();
 
 	INI_EX exINI(pINI);
 
@@ -75,7 +77,6 @@ void CrateTypeClass::LoadFromINI(CCINIClass *pINI)
 
 	//this->MoneyMin.Read(exINI, section, "Crate.MoneyMin");
 	//this->MoneyMax.Read(exINI, section, "Crate.MoneyMax");
-
 }
 
 template <typename T>
@@ -91,5 +92,5 @@ void CrateTypeClass::Serialize(T& Stm)
 		;
 }
 
-void CrateTypeClass::LoadFromStream(PhobosStreamReader &Stm) { this->Serialize(Stm); }
-void CrateTypeClass::SaveToStream(PhobosStreamWriter &Stm) { this->Serialize(Stm); }
+void CrateTypeClass::LoadFromStream(PhobosStreamReader& Stm) { this->Serialize(Stm); }
+void CrateTypeClass::SaveToStream(PhobosStreamWriter& Stm) { this->Serialize(Stm); }

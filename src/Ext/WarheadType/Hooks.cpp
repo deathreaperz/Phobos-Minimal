@@ -47,8 +47,8 @@ void ApplyExtraWarheads(
 	std::vector<int>& exWHDamageOverrides,
 	std::vector<double>& exWHChances,
 	std::vector<bool>& exWHFull,
-	CoordStruct* coords, HouseClass* pOwner) {
-
+	CoordStruct* coords, HouseClass* pOwner)
+{
 	const size_t damageoverride_size = exWHDamageOverrides.size();
 	const size_t fulldetonation_size = exWHFull.size();
 	const size_t chance_size = exWHChances.size();
@@ -77,10 +77,10 @@ void ApplyExtraWarheads(
 		else if (fulldetonation_size > 0)
 			isFull = exWHFull[fulldetonation_size - 1];
 
-		if (detonate) {
-
-			if(isFull)
-				WarheadTypeExtData::DetonateAt(pWH, pBullet->Target ? pBullet->Target : MapClass::Instance->GetCellAt(coords), *coords, pBullet->Owner, damage , pOwner);
+		if (detonate)
+		{
+			if (isFull)
+				WarheadTypeExtData::DetonateAt(pWH, pBullet->Target ? pBullet->Target : MapClass::Instance->GetCellAt(coords), *coords, pBullet->Owner, damage, pOwner);
 			else
 				WarheadTypeExtContainer::Instance.Find(pWH)->DamageAreaWithTarget(*coords, damage, pBullet->Owner, pWH, true, pOwner,
 				flag_cast_to<TechnoClass*>(pBullet->Target));
@@ -88,38 +88,43 @@ void ApplyExtraWarheads(
 	}
 }
 
-void ApplyLogics(WarheadTypeClass* pWH , WeaponTypeClass*pWeapon ,BulletClass * pThis , CoordStruct* coords) {
+void ApplyLogics(WarheadTypeClass* pWH, WeaponTypeClass* pWeapon, BulletClass* pThis, CoordStruct* coords)
+{
 	auto const pBulletExt = BulletExtContainer::Instance.Find(pThis);
 	auto const pOwner = pThis->Owner ? pThis->Owner->Owner : pBulletExt->Owner;
 	const auto pWHExt = WarheadTypeExtContainer::Instance.Find(pWH);
 
-	if(pThis->WeaponType){
+	if (pThis->WeaponType)
+	{
 		auto const pWeaponExt = WeaponTypeExtContainer::Instance.Find(pThis->WeaponType);
-		ApplyExtraWarheads(pThis , pWeaponExt->ExtraWarheads, pWeaponExt->ExtraWarheads_DamageOverrides, pWeaponExt->ExtraWarheads_DetonationChances, pWeaponExt->ExtraWarheads_FullDetonation, coords, pOwner);
+		ApplyExtraWarheads(pThis, pWeaponExt->ExtraWarheads, pWeaponExt->ExtraWarheads_DamageOverrides, pWeaponExt->ExtraWarheads_DetonationChances, pWeaponExt->ExtraWarheads_FullDetonation, coords, pOwner);
 	}
 
-		// Return to sender
+	// Return to sender
 	if (pThis->Type && pThis->Owner)
 	{
 		auto const pTypeExt = BulletTypeExtContainer::Instance.Find(pThis->Type);
-		if (pThis->Owner) {
+		if (pThis->Owner)
+		{
 			auto const pExt = TechnoExtContainer::Instance.Find(pThis->Owner);
 
-			if (pExt->AE.flags.HasExtraWarheads) {
-				for (auto const& aE : pExt->AeData.Data) {
+			if (pExt->AE.flags.HasExtraWarheads)
+			{
+				for (auto const& aE : pExt->AeData.Data)
+				{
 					if (aE.Type->ExtraWarheads.size() > 0)
-						ApplyExtraWarheads(pThis , aE.Type->ExtraWarheads, aE.Type->ExtraWarheads_DamageOverrides, aE.Type->ExtraWarheads_DetonationChances, aE.Type->ExtraWarheads_FullDetonation, coords, pOwner);
+						ApplyExtraWarheads(pThis, aE.Type->ExtraWarheads, aE.Type->ExtraWarheads_DamageOverrides, aE.Type->ExtraWarheads_DetonationChances, aE.Type->ExtraWarheads_FullDetonation, coords, pOwner);
 				}
 
-				for (auto const& pAE : pExt->PhobosAE) {
-
-					if(!pAE || !pAE->IsActive())
+				for (auto const& pAE : pExt->PhobosAE)
+				{
+					if (!pAE || !pAE->IsActive())
 						continue;
 
 					auto const pType = pAE->GetType();
 
 					if (pType->ExtraWarheads.size() > 0)
-						ApplyExtraWarheads(pThis , pType->ExtraWarheads, pType->ExtraWarheads_DamageOverrides, pType->ExtraWarheads_DetonationChances, pType->ExtraWarheads_FullDetonation, coords, pOwner);
+						ApplyExtraWarheads(pThis, pType->ExtraWarheads, pType->ExtraWarheads_DamageOverrides, pType->ExtraWarheads_DetonationChances, pType->ExtraWarheads_FullDetonation, coords, pOwner);
 				}
 			}
 		}
@@ -130,7 +135,7 @@ void ApplyLogics(WarheadTypeClass* pWH , WeaponTypeClass*pWeapon ,BulletClass * 
 			int damage = RpWeapon->Damage;
 
 			if (pTypeExt->ReturnWeapon_ApplyFirepowerMult)
-			 	damage = static_cast<int>(damage * pThis->Owner->FirepowerMultiplier * TechnoExtContainer::Instance.Find(pThis->Owner)->AE.FirepowerMultiplier);
+				damage = static_cast<int>(damage * pThis->Owner->FirepowerMultiplier * TechnoExtContainer::Instance.Find(pThis->Owner)->AE.FirepowerMultiplier);
 
 			if (BulletClass* pBullet = RpWeapon->Projectile->CreateBullet(pThis->Owner, pThis->Owner,
 				damage, RpWeapon->Warhead, RpWeapon->Speed, RpWeapon->Bright))
@@ -244,9 +249,9 @@ void ApplyLogics(WarheadTypeClass* pWH , WeaponTypeClass*pWeapon ,BulletClass * 
 
 ASMJIT_PATCH(0x469AA4, BulletClass_Logics_Extras, 0x5)
 {
-	GET(BulletClass* , pThis ,ESI);
+	GET(BulletClass*, pThis, ESI);
 	GET_BASE(CoordStruct*, coords, 0x8);
-	ApplyLogics(pThis->WH , pThis->WeaponType, pThis,  coords);
+	ApplyLogics(pThis->WH, pThis->WeaponType, pThis, coords);
 
 	return 0;
 }
@@ -255,7 +260,7 @@ ASMJIT_PATCH(0x469AA4, BulletClass_Logics_Extras, 0x5)
 
 #include <Ext/SWType/NewSuperWeaponType/LightningStorm.h>
 
-DEFINE_FUNCTION_JUMP(LJMP , 0x48A4F0 , WarheadTypeExtData::SelectCombatAnim)
+DEFINE_FUNCTION_JUMP(LJMP, 0x48A4F0, WarheadTypeExtData::SelectCombatAnim)
 
 /*
 void TechnoExt::RemoveParasite(TechnoClass* pThis, HouseClass* sourceHouse, WarheadTypeClass* wh)
@@ -339,7 +344,6 @@ void TechnoExt::RemoveParasite(TechnoClass* pThis, HouseClass* sourceHouse, Warh
 		Valueable<int> CanRemoveParasites_KickOut_Paralysis { 15 };
 		NullableIdx<VocClass> CanRemoveParasites_ReportSound { };
 		Nullable<AnimTypeClass*> CanRemoveParasites_KickOut_Anim { };
-
 
 	this->CanRemoveParasites.Read(exINI, pSection, "CanRemoveParasites");
 	this->CanRemoveParasites_KickOut.Read(exINI, pSection, "CanRemoveParasites.KickOut");

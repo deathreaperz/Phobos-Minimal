@@ -28,11 +28,11 @@ public:
 		Iterator<int> Nums);
 
 protected:
-	void newStateMachine(int Deferment, CellStruct XY, SuperClass* pSuper, CellClass* pTarget) {
+	void newStateMachine(int Deferment, CellStruct XY, SuperClass* pSuper, CellClass* pTarget)
+	{
 		SWStateMachine::Array.push_back(std::move(std::make_unique<ParaDropStateMachine>(Deferment, XY, pSuper, this, pTarget)));
 	}
 };
-
 
 class SW_AmericanParaDrop : public SW_ParaDrop
 {

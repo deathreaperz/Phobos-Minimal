@@ -177,10 +177,9 @@ public:
 
 	bool _ReadFromINI(CCINIClass* pINI);
 
-
-	TerrainTypeExtData* _GetExtData() {
+	TerrainTypeExtData* _GetExtData()
+	{
 		return *reinterpret_cast<TerrainTypeExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
-
 };
 static_assert(sizeof(FakeTerrainTypeClass) == sizeof(TerrainTypeClass), "Invalid Size !");

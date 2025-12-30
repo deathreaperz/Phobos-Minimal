@@ -42,7 +42,7 @@ bool LaserTrailClass::Update(CoordStruct const& location)
 			{
 				const auto pBolt = EboltExtData::_CreateOneOf(pType->Bolt_Disable[0], pType->Bolt_Disable[1], pType->Bolt_Disable[2],
 					pType->IsAlternateColor, pType->Bolt_Arcs, pType->FadeDuration.Get(64),
-					 pType->Bolt_Color[0] , pType->Bolt_Color[1] , pType->Bolt_Color[3]);
+					 pType->Bolt_Color[0], pType->Bolt_Color[1], pType->Bolt_Color[3]);
 
 				pBolt->Fire(this->LastLocation, location, 0);
 				break;

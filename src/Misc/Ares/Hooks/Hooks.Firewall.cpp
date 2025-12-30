@@ -48,7 +48,8 @@ ASMJIT_PATCH(0x43EFB3, BuildingClass_GetStaticImageFrame, 6)
 
 	const auto FrameIdx = FirewallFunctions::GetImageFrameIndex(pThis);
 
-	if (FrameIdx < 0) {
+	if (FrameIdx < 0)
+	{
 		return 0x43EFC6;
 	}
 
@@ -110,7 +111,7 @@ static void RecalculateCells(BuildingClass* pThis)
 
 			pCell->RecalcAttributes(DWORD(-1));
 
-			if COMPILETIMEEVAL (remove)
+			if COMPILETIMEEVAL(remove)
 				map->ResetZones(cell);
 			else
 				map->RecalculateZones(cell);
@@ -170,9 +171,10 @@ ASMJIT_PATCH(0x51BD4C, InfantryClass_Update_BuildingBelow, 6)
 {
 	//GET(InfantryClass*, pThis, EDI);
 	GET(BuildingClass*, pBld, EDI);
-	enum {
+	enum
+	{
 		canPass = 0x51BD7D,
-		checkHouseFirewallActive = 0x51BD56 ,
+		checkHouseFirewallActive = 0x51BD56,
 		cannotPass = 0x51BD68
 	};
 
@@ -192,8 +194,8 @@ ASMJIT_PATCH(0x51C4C8, InfantryClass_IsCellOccupied, 6)
 	//GET(InfantryClass* const, pThis , EBP);
 	GET(BuildingClass* const, pBld, ESI);
 
-	enum {
-
+	enum
+	{
 		Impassable = 0x51C7D0,
 		Ignore = 0x51C70F,
 		NoDecision = 0x51C4EB,
@@ -240,7 +242,7 @@ ASMJIT_PATCH(0x73F7B0, UnitClass_IsCellOccupied, 6)
 
 ASMJIT_PATCH(0x4DA54E, FootClass_Update_AresAddition, 6)
 {
-		enum
+	enum
 	{
 		CheckOtherState = 0x4DA63B,
 		SkipEverything = 0x4DAF00,
@@ -248,27 +250,34 @@ ASMJIT_PATCH(0x4DA54E, FootClass_Update_AresAddition, 6)
 		ProcessRadSiteCheckVanilla = 0x4DA59F,
 	};
 
-	GET(FootClass* , pThis, ESI);
+	GET(FootClass*, pThis, ESI);
 
 	pThis->isidle_6B3 = false;
 	auto const pType = pThis->GetTechnoType();
 	auto const pExt = TechnoExtContainer::Instance.Find(pThis);
 
-	if (pExt->HasRemainingWarpInDelay) {
-		if (pExt->LastWarpInDelay) {
+	if (pExt->HasRemainingWarpInDelay)
+	{
+		if (pExt->LastWarpInDelay)
+		{
 			pExt->LastWarpInDelay--;
 		}
-		else {
+		else
+		{
 			pExt->HasRemainingWarpInDelay = false;
 			pExt->IsBeingChronoSphered = false;
 			pThis->WarpingOut = false;
 		}
 	}
 
-	if (HouseExtContainer::Instance.IsAnyFirestormActive) {
-		if (pThis->IsAlive && !pThis->InLimbo && !pThis->InOpenToppedTransport && !pType->IgnoresFirestorm) {
-			if (auto const pBld = pThis->GetCell()->GetBuilding()) {
-				if (FirewallFunctions::IsActiveFirestormWall(pBld, nullptr)) {
+	if (HouseExtContainer::Instance.IsAnyFirestormActive)
+	{
+		if (pThis->IsAlive && !pThis->InLimbo && !pThis->InOpenToppedTransport && !pType->IgnoresFirestorm)
+		{
+			if (auto const pBld = pThis->GetCell()->GetBuilding())
+			{
+				if (FirewallFunctions::IsActiveFirestormWall(pBld, nullptr))
+				{
 					FirewallFunctions::ImmolateVictim(pBld, pThis, true);
 				}
 			}
@@ -305,13 +314,14 @@ ASMJIT_PATCH(0x4DA54E, FootClass_Update_AresAddition, 6)
 						{
 							pThis->Health += health;
 
-							if (pThis->Health > pType->Strength) {
+							if (pThis->Health > pType->Strength)
+							{
 								pThis->Health = pType->Strength;
 							}
 
 							if (wasDamaged
 								&& (pThis->GetHealthPercentage() > RulesClass::Instance->ConditionYellow
-								|| pThis->GetHeight() < -10))
+									|| pThis->GetHeight() < -10))
 							{
 								if (auto& dmgParticle = pThis->Sys.Damage)
 								{
@@ -326,11 +336,11 @@ ASMJIT_PATCH(0x4DA54E, FootClass_Update_AresAddition, 6)
 		}
 	}
 
-	 if(!pThis->IsAlive)
-	 	return SkipEverything;
+	if (!pThis->IsAlive)
+		return SkipEverything;
 
 	const bool IsMissisleSpawn = (RulesClass::Instance->V3Rocket.Type == pExt->Type ||
-	 pExt->Type  == RulesClass::Instance->DMisl.Type || pExt->Type  == RulesClass::Instance->CMisl.Type
+	 pExt->Type == RulesClass::Instance->DMisl.Type || pExt->Type == RulesClass::Instance->CMisl.Type
 	 || TechnoTypeExtContainer::Instance.Find(pExt->Type)->IsCustomMissile);
 
 	if (pThis->SpawnOwner && !IsMissisleSpawn
@@ -353,7 +363,6 @@ ASMJIT_PATCH(0x4DA54E, FootClass_Update_AresAddition, 6)
 
 				pThis->SpawnOwner->SpawnManager->ResetTarget();
 			}
-
 		}
 		else if (pSpawnTechnoTypeExt->MySpawnSupportDatas.Enable && pThis->SpawnOwner->GetCurrentMission() != Mission::Attack && pThis->GetCurrentMission() == Mission::Attack)
 		{
@@ -370,7 +379,7 @@ ASMJIT_PATCH(0x4DA54E, FootClass_Update_AresAddition, 6)
 	if ((pUnit && pUnit->DeathFrameCounter > 0) || !RadSiteClass::Array->Count)
 		return (CheckOtherState);
 
-	if (pThis->TemporalTargetingMe ||pThis->InLimbo || !pThis->Health || pThis->IsSinking || pThis->IsCrashing)
+	if (pThis->TemporalTargetingMe || pThis->InLimbo || !pThis->Health || pThis->IsSinking || pThis->IsCrashing)
 		return (CheckOtherState);
 
 	if (pThis->IsInAir())
@@ -418,11 +427,11 @@ ASMJIT_PATCH(0x467B94, BulletClass_Update_Ranged, 7)
 		{
 			HouseClass* pOwner = pThis->Owner ? pThis->Owner->Owner : BulletExtContainer::Instance.Find(pThis)->Owner;
 			if (WarheadTypeExtContainer::Instance.Find(RulesExtData::Instance()->FirestormWarhead)->CanAffectHouse(pBld->Owner, pOwner))
-				pOwner =  nullptr; // clear the pointer if can affect the bullet owner
+				pOwner = nullptr; // clear the pointer if can affect the bullet owner
 
 			if (FirewallFunctions::IsActiveFirestormWall(pBld, pOwner))
 			{
-				FirewallFunctions::ImmolateVictim(pBld , pThis, false);
+				FirewallFunctions::ImmolateVictim(pBld, pThis, false);
 				BulletExtData::HandleBulletRemove(pThis, ScenarioClass::Instance->Random.RandomBool(), true);
 				return 0x467FBA;
 			}
@@ -448,7 +457,7 @@ ASMJIT_PATCH(0x4688A9, BulletClass_SetMovement_Obstacle, 6)
 	if (pThis->Type->Inviso)
 	{
 		const auto pObstacleCell =
-		PhobosBulletObstacleHelper::FindFirstObstacle(*pLocation, dest, pThis->Owner, pThis->Target, pBulletOwner, pThis->Type, false, false);
+			PhobosBulletObstacleHelper::FindFirstObstacle(*pLocation, dest, pThis->Owner, pThis->Target, pBulletOwner, pThis->Type, false, false);
 
 		if (pObstacleCell)
 		{
@@ -472,7 +481,6 @@ ASMJIT_PATCH(0x4688A9, BulletClass_SetMovement_Obstacle, 6)
 			auto const pBld = pCell->GetBuilding();
 			FirewallFunctions::ImmolateVictim(pBld, pThis, false);
 			BulletExtData::HandleBulletRemove(pThis, ScenarioClass::Instance->Random.RandomBool(), true);
-
 		}
 		else
 		{
@@ -497,17 +505,18 @@ ASMJIT_PATCH(0x6FF008, TechnoClass_Fire_FSW, 8)
 
 	const DWORD origin = R->Origin();
 	auto const Bullet = origin == 0x6FF860
-	? R->EDI<FakeBulletClass*>()
-	: R->EBX<FakeBulletClass*>()
-	;
+		? R->EDI<FakeBulletClass*>()
+		: R->EBX<FakeBulletClass*>()
+		;
 
-	if(origin != 0x6FF860){
-
+	if (origin != 0x6FF860)
+	{
 		GET_STACK(CoordStruct, crdOffset, STACK_OFFSET(0xB0, -0x1C));
 		GET_STACK(CoordStruct, fireCoords, STACK_OFFSET(0xB0, -0x6C));
 
 		const auto crdTgt = crdOffset + fireCoords;
-		if (Bullet->Type->Arcing && !Bullet->_GetTypeExtData()->Arcing_AllowElevationInaccuracy) {
+		if (Bullet->Type->Arcing && !Bullet->_GetTypeExtData()->Arcing_AllowElevationInaccuracy)
+		{
 			REF_STACK(VelocityClass, velocity, STACK_OFFSET(0xB0, -0x60));
 			REF_STACK(CoordStruct, crdSrc, STACK_OFFSET(0xB0, -0x6C));
 
@@ -515,13 +524,15 @@ ASMJIT_PATCH(0x6FF008, TechnoClass_Fire_FSW, 8)
 		}
 	}
 
-	if (!HouseExtContainer::Instance.IsAnyFirestormActive || !Bullet->Type->IgnoresFirestorm) {
+	if (!HouseExtContainer::Instance.IsAnyFirestormActive || !Bullet->Type->IgnoresFirestorm)
+	{
 		return 0;
 	}
 
 	auto const crd = MapClass::Instance->FindFirstFirestorm(src, tgt, Bullet->Owner->Owner);
 
-	if (crd.IsValid()) {
+	if (crd.IsValid())
+	{
 		Bullet->Target = MapClass::Instance->GetCellAt(crd)->GetContent();
 		Bullet->Owner->ShouldLoseTargetNow = 1;
 	}

@@ -1,4 +1,4 @@
- #include "Body.h"
+#include "Body.h"
 #include <SpecificStructures.h>
 
 #include <Utilities/Macro.h>
@@ -11,7 +11,6 @@
 #include <Ext/Anim/Body.h>
 
 #include <RadarEventClass.h>
-
 
 // namespace EvaluateObjectTemp
 // {
@@ -47,7 +46,8 @@ static void applyRemoveParasite(TechnoClass* pThis, args_ReceiveDamage* args)
 
 				if (pWHExt->CanRemoveParasytes.Get())
 				{
-					if (pWHExt->CanRemoveParasytes_ReportSound.isset()) {
+					if (pWHExt->CanRemoveParasytes_ReportSound.isset())
+					{
 						auto _sound_coord = parasyte->GetCoords();
 						VocClass::SafeImmedietelyPlayAt(pWHExt->CanRemoveParasytes_ReportSound.Get(), &_sound_coord, nullptr);
 					}
@@ -115,31 +115,35 @@ ASMJIT_PATCH(0x6F6AC4, TechnoClass_Limbo_AfterRadioClassRemove, 0x5)
 	bool altered = false;
 
 	// Do not remove attached effects from undeploying buildings.
-	if (auto const pBuilding = cast_to<BuildingClass*, false>(pThis)) {
-		if ((pBuilding->Type->UndeploysInto && pBuilding->CurrentMission == Mission::Selling && pBuilding->MissionStatus == 2)) {
+	if (auto const pBuilding = cast_to<BuildingClass*, false>(pThis))
+	{
+		if ((pBuilding->Type->UndeploysInto && pBuilding->CurrentMission == Mission::Selling && pBuilding->MissionStatus == 2))
+		{
 			return 0;
 		}
 	}
 
-	pExt->PhobosAE.remove_all_if([&](auto& it){
+	pExt->PhobosAE.remove_all_if([&](auto& it)
+{
+	if (!it)
+		return true;
 
-		if(!it)
-			return true;
+	if ((it->GetType()->DiscardOn & DiscardCondition::Entry) != DiscardCondition::None)
+	{
+		altered = true;
 
-		if ((it->GetType()->DiscardOn & DiscardCondition::Entry) != DiscardCondition::None) {
-			altered = true;
+		if (it->GetType()->HasTint())
+			markForRedraw = true;
 
-			if (it->GetType()->HasTint())
-				markForRedraw = true;
-
-			if (it->ResetIfRecreatable()) {
-				return false;
-			}
-
-			return true;
+		if (it->ResetIfRecreatable())
+		{
+			return false;
 		}
 
-		return false;
+		return true;
+	}
+
+	return false;
 	});
 
 	if (altered)

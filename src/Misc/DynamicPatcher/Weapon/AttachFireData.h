@@ -4,7 +4,6 @@
 
 struct AttachFireData
 {
-
 	Valueable<bool> UseROF { true };
 	Valueable<bool> CheckRange { false };
 	Valueable<bool> RadialFire { false };
@@ -17,7 +16,8 @@ struct AttachFireData
 
 	void Read(INI_EX& parser, const char* pSection);
 
-	bool Load(PhobosStreamReader& Stm, bool RegisterForChange) {
+	bool Load(PhobosStreamReader& Stm, bool RegisterForChange)
+	{
 		return Stm
 			.Process(UseROF)
 			.Process(CheckRange)
@@ -32,7 +32,8 @@ struct AttachFireData
 			;
 	}
 
-	bool Save(PhobosStreamWriter& Stm) const {
+	bool Save(PhobosStreamWriter& Stm) const
+	{
 		return Stm
 			.Process(UseROF)
 			.Process(CheckRange)
@@ -46,5 +47,4 @@ struct AttachFireData
 			.Success()
 			;
 	}
-
 };

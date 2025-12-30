@@ -31,7 +31,7 @@ public:
 	Damageable<ColorStruct> GroundLineColor;
 	Valueable<bool> GroundLine_Dashed;
 
-	SelectBoxTypeClass(const char* pTitle ) : Enumerable<SelectBoxTypeClass>(pTitle)
+	SelectBoxTypeClass(const char* pTitle) : Enumerable<SelectBoxTypeClass>(pTitle)
 		, Shape {}
 		, Palette {}
 		, Frames {}
@@ -55,15 +55,15 @@ public:
 	void LoadFromINI(CCINIClass* pINI);
 	void LoadFromStream(PhobosStreamReader& Stm);
 	void SaveToStream(PhobosStreamWriter& Stm);
-	static void COMPILETIMEEVAL OPTIONALINLINE AddDefaults() {
-		auto pDefault=	FindOrAllocate(DEFAULT_STR2);
+	static void COMPILETIMEEVAL OPTIONALINLINE AddDefaults()
+	{
+		auto pDefault = FindOrAllocate(DEFAULT_STR2);
 
 		if (!pDefault->Shape)
 			pDefault->Shape = FileSystem::LoadSHPFile("select.shp");
 
-
 #ifdef _Print
-//the first item usually fine , the second item is for debugging
+		//the first item usually fine , the second item is for debugging
 		auto pDefault2 = FindOrAllocate(DEFAULT_STR);
 
 		if (!pDefault2->Shape)

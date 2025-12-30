@@ -12,38 +12,39 @@ ASMJIT_BEGIN_NAMESPACE
 
 //! \addtogroup asmjit_utilities
 //! \{
-
 //! \cond INTERNAL
 //! Lock.
 //!
 //! Lock is internal, it cannot be used outside of AsmJit, however, its internal
 //! layout is exposed as it's used by some other classes, which are public.
-class Lock {
+class Lock
+{
 public:
-  ASMJIT_NONCOPYABLE(Lock)
+	ASMJIT_NONCOPYABLE(Lock)
 
 #if defined(_WIN32)
 #pragma pack(push, 8)
-  struct ASMJIT_MAY_ALIAS Handle {
-    void* DebugInfo;
-    long LockCount;
-    long RecursionCount;
-    void* OwningThread;
-    void* LockSemaphore;
-    unsigned long* SpinCount;
-  };
-  Handle _handle;
+		struct ASMJIT_MAY_ALIAS Handle
+	{
+		void* DebugInfo;
+		long LockCount;
+		long RecursionCount;
+		void* OwningThread;
+		void* LockSemaphore;
+		unsigned long* SpinCount;
+	};
+	Handle _handle;
 #pragma pack(pop)
 #elif !defined(__EMSCRIPTEN__)
-  using Handle = pthread_mutex_t;
-  Handle _handle;
+		using Handle = pthread_mutex_t;
+	Handle _handle;
 #endif
 
-  ASMJIT_INLINE_NODEBUG Lock() noexcept;
-  ASMJIT_INLINE_NODEBUG ~Lock() noexcept;
+	ASMJIT_INLINE_NODEBUG Lock() noexcept;
+	ASMJIT_INLINE_NODEBUG ~Lock() noexcept;
 
-  ASMJIT_INLINE_NODEBUG void lock() noexcept;
-  ASMJIT_INLINE_NODEBUG void unlock() noexcept;
+	ASMJIT_INLINE_NODEBUG void lock() noexcept;
+	ASMJIT_INLINE_NODEBUG void unlock() noexcept;
 };
 //! \endcond
 

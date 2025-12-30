@@ -9,7 +9,7 @@ ASMJIT_PATCH(0x467CCA, BulletClass_AI_TargetSnapChecks, 0x6) //was C
 
 	GET(FakeBulletClass*, pThis, EBP);
 
-	retfunc_fixed nRet(R, SkipAirburstCheck , pThis->Type);
+	retfunc_fixed nRet(R, SkipAirburstCheck, pThis->Type);
 
 	// Do not require Airburst=no to check target snapping for Inviso / Trajectory=Straight projectiles
 	if (pThis->Type->Inviso)
@@ -55,7 +55,8 @@ ASMJIT_PATCH(0x468E61, BulletClass_Explode_TargetSnapChecks1, 0x6) //was C
 		if (pExt->Trajectory
 			&& PhobosTrajectory::CanSnap(pExt->Trajectory)
 			&& !pExt->SnappedToTarget
-		) {
+		)
+		{
 			return nRet();
 		}
 	}
@@ -65,7 +66,8 @@ ASMJIT_PATCH(0x468E61, BulletClass_Explode_TargetSnapChecks1, 0x6) //was C
 
 ASMJIT_PATCH(0x468E9F, BulletClass_Explode_TargetSnapChecks2, 0x6) //was C
 {
-	enum {
+	enum
+	{
 		SkipInitialChecks = 0x468EC7,
 		SkipSetCoordinate = 0x468F23,
 		SkipChecks = 0x468FF4
@@ -103,12 +105,13 @@ ASMJIT_PATCH(0x468E9F, BulletClass_Explode_TargetSnapChecks2, 0x6) //was C
 
 ASMJIT_PATCH(0x468D3F, BulletClass_ShouldExplode_AirTarget, 0x8)
 {
-	enum { DontExplode = 0x468D73 , Contine = 0x0 };
+	enum { DontExplode = 0x468D73, Contine = 0x0 };
 
 	GET(FakeBulletClass*, pThis, ESI);
 	auto const pExt = pThis->_GetExtData();
 
-	if (pExt->Trajectory && PhobosTrajectory::CanSnap(pExt->Trajectory)) {
+	if (pExt->Trajectory && PhobosTrajectory::CanSnap(pExt->Trajectory))
+	{
 		// Straight trajectory has its own proximity checks.
 		return DontExplode;
 	}

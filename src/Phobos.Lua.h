@@ -21,7 +21,8 @@ struct luastatedeleter
 
 using unique_luastate = std::unique_ptr<lua_State, luastatedeleter>;
 
-struct LuaData {
+struct LuaData
+{
 	static std::string LuaDir;
 	static std::string MainWindowStr;
 	static std::string filename;
@@ -31,7 +32,6 @@ struct LuaData {
 	static bool IsActive;
 
 	static void ApplyCoreHooks();
-
 };
 
 #define make_unique_luastate(to) unique_luastate to {}; to.reset(luaL_newstate())

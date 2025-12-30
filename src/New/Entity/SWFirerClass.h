@@ -4,7 +4,6 @@
 #include <Utilities/VectorHelper.h>
 #include <Utilities/Interfaces.h>
 
-
 class SuperClass;
 class SWFirerClass
 {

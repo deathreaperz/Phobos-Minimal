@@ -1,4 +1,3 @@
-
 #include "Body.h"
 
 #include <TacticalClass.h>
@@ -35,27 +34,36 @@ ASMJIT_PATCH(0x6FE3E3, TechnoClass_FireAt_OccupyDamageBonus, 0xA) //B
 
 	auto pExtType = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType());
 
-	if(pThis->CanOccupyFire()) {
-		if (auto const Building = cast_to<BuildingClass*, false>(pThis)) {
+	if (pThis->CanOccupyFire())
+	{
+		if (auto const Building = cast_to<BuildingClass*, false>(pThis))
+		{
 			nDamage = int(nDamage * BuildingTypeExtContainer::Instance.Find(Building->Type)->BuildingOccupyDamageMult.Get(RulesClass::Instance->OccupyDamageMultiplier));
-		} else {
+		}
+		else
+		{
 			nDamage = int(nDamage * RulesClass::Instance->OccupyDamageMultiplier);
 		}
 	}
 
-	if (pThis->InOpenToppedTransport) {
+	if (pThis->InOpenToppedTransport)
+	{
 		nDamage = int(nDamage * pExtType->OpenTransport_DamageMultiplier);
 
-		if (auto const  pTransport = pThis->Transporter) {
+		if (auto const  pTransport = pThis->Transporter)
+		{
 			float nDamageMult = TechnoTypeExtContainer::Instance.Find(pTransport->GetTechnoType())->OpenTopped_DamageMultiplier
 				.Get(RulesClass::Instance->OpenToppedDamageMultiplier);
 			nDamage = int(nDamage * nDamageMult);
-		} else {
+		}
+		else
+		{
 			nDamage = int(nDamage * RulesClass::Instance->OpenToppedDamageMultiplier);
 		}
 	}
 
-	if(!pWeapon->DiskLaser) {
+	if (!pWeapon->DiskLaser)
+	{
 		R->EDI(nDamage);
 		R->Stack(0x2C, nDamage);
 		return 0x6FE4F6; // continue check
@@ -88,31 +96,35 @@ ASMJIT_PATCH(0x6FD15E, TechnoClass_RearmDelay_RofMult, 0xA)
 
 	auto const Building = cast_to<BuildingClass*, false>(pThis);
 
-	if (pThis->CanOccupyFire()) {
+	if (pThis->CanOccupyFire())
+	{
 		const auto occupant = pThis->GetOccupantCount();
 
-		if (occupant > 0) {
+		if (occupant > 0)
+		{
 			nROF /= occupant;
 		}
 
 		auto OccupyRofMult = RulesClass::Instance->OccupyROFMultiplier;
 
-		if (Building) {
+		if (Building)
+		{
 			OccupyRofMult = BuildingTypeExtContainer::Instance.Find(Building->Type)->BuildingOccupyROFMult.Get(OccupyRofMult);
 		}
 
 		if (OccupyRofMult > 0.0)
 			nROF = int(float(nROF) / OccupyRofMult);
-
 	}
 
-	if (pThis->BunkerLinkedItem && !Building) {
+	if (pThis->BunkerLinkedItem && !Building)
+	{
 		auto BunkerMult = RulesClass::Instance->BunkerROFMultiplier;
-		if (auto const pBunkerIsBuilding = cast_to<BuildingClass* , false>(pThis->BunkerLinkedItem)) {
+		if (auto const pBunkerIsBuilding = cast_to<BuildingClass*, false>(pThis->BunkerLinkedItem))
+		{
 			BunkerMult = BuildingTypeExtContainer::Instance.Find(pBunkerIsBuilding->Type)->BuildingBunkerROFMult.Get(BunkerMult);
 		}
 
-		if(BunkerMult != 0.0)
+		if (BunkerMult != 0.0)
 			nROF = int(float(nROF) / BunkerMult);
 	}
 
@@ -255,11 +267,13 @@ ASMJIT_PATCH(0x505F6C, HouseClass_GenerateAIBuildList_AIBuildInstead, 0x6)
 {
 	GET(HouseClass*, pHouse, ESI);
 
-	if (!pHouse->IsControlledByHuman() && !pHouse->IsNeutral()) {
-		for (auto& nNodes : pHouse->Base.BaseNodes) {
+	if (!pHouse->IsControlledByHuman() && !pHouse->IsNeutral())
+	{
+		for (auto& nNodes : pHouse->Base.BaseNodes)
+		{
 			auto nIdx = nNodes.BuildingTypeIndex;
-			if (nIdx >= 0) {
-
+			if (nIdx >= 0)
+			{
 				const auto pBldTypeExt = BuildingTypeExtContainer::Instance.Find(BuildingTypeClass::Array->Items[nIdx]);
 
 				if (!pBldTypeExt->AIBuildInsteadPerDiff.empty() && pBldTypeExt->AIBuildInsteadPerDiff[pHouse->GetCorrectAIDifficultyIndex()] != -1)

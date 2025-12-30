@@ -60,7 +60,6 @@ public:
 
 	static void InvalidatePointer(void* ptr, bool removed);
 
-
 	bool Load(PhobosStreamReader& stm, bool registerForChange);
 	bool Save(PhobosStreamWriter& stm) const;
 

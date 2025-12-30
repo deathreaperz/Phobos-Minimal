@@ -39,7 +39,6 @@ bool UnitTypeExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool UnitTypeExtContainer::SaveAll(json& root)
@@ -80,12 +79,10 @@ void UnitTypeExtContainer::LoadFromINI(ext_t::base_type* key, CCINIClass* pINI, 
 		//this function can be called again multiple time but without need to re-init the data
 		ptr->SetInitState(InitState::Ruled);
 	}
-
 }
 
 void UnitTypeExtContainer::WriteToINI(ext_t::base_type* key, CCINIClass* pINI)
 {
-
 	if (auto ptr = this->TryFind(key))
 	{
 		if (!pINI)

@@ -2,13 +2,13 @@
 #include <AbstractClass.h>
 
 AbstractExtended::AbstractExtended(AbstractClass* abs) : AttachedToObject(abs)
- , AbsType()
- , Initialized()
+, AbsType()
+, Initialized()
 { };
 
 AbstractExtended::AbstractExtended(AbstractClass* abs, noinit_t) : AttachedToObject(abs)
-	, AbsType()
-	, Initialized()
+, AbsType()
+, Initialized()
 { };
 
 void AbstractExtended::Internal_LoadFromStream(PhobosStreamReader& Stm)

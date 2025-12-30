@@ -17,7 +17,8 @@ ASMJIT_PATCH(0x449E2E, BuildingClass_Mi_Selling_CreateUnit, 0x6)
 	R->ECX<HouseClass*>(pStructure->GetOriginalOwner());
 
 	// Remember MC ring animation.
-	if (pStructure->IsMindControlled()) {
+	if (pStructure->IsMindControlled())
+	{
 		TechnoExtContainer::Instance.Find(pStructure)->UpdateMindControlAnim();
 	}
 
@@ -27,12 +28,12 @@ ASMJIT_PATCH(0x449E2E, BuildingClass_Mi_Selling_CreateUnit, 0x6)
 ASMJIT_PATCH(0x7396AD, UnitClass_Deploy_CreateBuilding, 0x6)
 {
 	GET(UnitClass*, pThis, EBP);
-	GET(BuildingClass*, pBld , EDI);
+	GET(BuildingClass*, pBld, EDI);
 
 	const auto pOwner = pThis->GetOriginalOwner();
 
-	if(!pOwner) {
-
+	if (!pOwner)
+	{
 		GameDelete(pBld);
 		Debug::LogInfo("Unit[%s] Trying to undeploy but missing Ownership!", pThis->Type->ID);
 		return 0x739A77;

@@ -11,7 +11,8 @@ struct SWStatus
 	bool PowerSourced; //1
 	bool Charging;
 
-	COMPILETIMEEVAL void FORCEDINLINE reset() {
+	COMPILETIMEEVAL void FORCEDINLINE reset()
+	{
 		Available = 0;
 		PowerSourced = 0;
 		Charging = 0;
@@ -124,7 +125,6 @@ public:
 
 	virtual bool LoadAll(const json& root);
 	virtual bool SaveAll(json& root);
-
 };
 
 class SWTypeExtData;
@@ -134,11 +134,13 @@ public:
 
 	int _GetAnimStage();
 
-	SuperExtData* _GetExtData() {
+	SuperExtData* _GetExtData()
+	{
 		return *reinterpret_cast<SuperExtData**>((DWORD)this + AbstractExtOffset);
 	}
 
-	SWTypeExtData* _GetTypeExtData() {
+	SWTypeExtData* _GetTypeExtData()
+	{
 		return *reinterpret_cast<SWTypeExtData**>(((DWORD)this->Type) + AbstractExtOffset);
 	}
 };

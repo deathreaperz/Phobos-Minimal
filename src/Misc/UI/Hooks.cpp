@@ -18,11 +18,9 @@ enum SpawnerCustomDialogs : uint16_t
 	Last = 3002
 };
 
-
 class Dialogs
 {
 public:
-
 };
 
 /*
@@ -62,8 +60,10 @@ ASMJIT_PATCH(0x4A3B4B, FetchResource, 0x9)
 	GET(LPCTSTR, lpName, ECX);
 	GET(LPCTSTR, lpType, EDX);
 
-	if (HRSRC hResInfo = FindResource(hModule, lpName, lpType)) {
-		if (HGLOBAL hResData = LoadResource(hModule, hResInfo)) {
+	if (HRSRC hResInfo = FindResource(hModule, lpName, lpType))
+	{
+		if (HGLOBAL hResData = LoadResource(hModule, hResInfo))
+		{
 			LockResource(hResData);
 			R->EAX(hResData);
 

@@ -9,7 +9,7 @@ enum class TrajectoryFlag : int
 	Straight = 0,
 	Bombard = 1,
 	Artillery = 2,
-	Bounce= 3 ,
+	Bounce = 3,
 	Vertical = 4,
 	Meteor = 5,
 	Spiral = 6,
@@ -17,7 +17,7 @@ enum class TrajectoryFlag : int
 	Arcing = 8,
 	StraightVariantB = 9,
 	StraightVariantC = 10,
-	Disperse = 11 ,
+	Disperse = 11,
 	Engrave = 12,
 	Parabola = 13,
 	Tracing = 14
@@ -33,9 +33,9 @@ public:
 	Nullable<Leptons> DetonationDistance { };
 	Valueable<double> Trajectory_Speed { 100.0 };
 
-	PhobosTrajectoryType(noinit_t){ }
+	PhobosTrajectoryType(noinit_t) { }
 	PhobosTrajectoryType(TrajectoryFlag flag) : Flag { flag }
-	{}
+	{ }
 
 	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) { }
 	virtual bool Load(PhobosStreamReader& Stm, bool RegisterForChange);
@@ -50,12 +50,11 @@ public:
 	static void ProcessFromStream(PhobosStreamWriter& Stm, std::unique_ptr<PhobosTrajectoryType>& pType);
 	static bool TrajectoryValidation(BulletTypeClass* pAttached);
 
-	static constexpr auto TrajectoryTypeToSrings  = magic_enum::enum_entries<TrajectoryFlag>();;
+	static constexpr auto TrajectoryTypeToSrings = magic_enum::enum_entries<TrajectoryFlag>();;
 
-protected :
-	static bool UpdateType(std::unique_ptr<PhobosTrajectoryType>& pType , TrajectoryFlag flag);
+protected:
+	static bool UpdateType(std::unique_ptr<PhobosTrajectoryType>& pType, TrajectoryFlag flag);
 };
-
 
 template<typename T>
 concept TrajectoryType = std::is_base_of<PhobosTrajectoryType, T>::value;
@@ -70,10 +69,10 @@ public:
 	Leptons DetonationDistance { 0 };
 
 	PhobosTrajectory(noinit_t) { }
-	PhobosTrajectory(TrajectoryFlag flag ) : Flag { flag }
+	PhobosTrajectory(TrajectoryFlag flag) : Flag { flag }
 	{ }
 
-	PhobosTrajectory(TrajectoryFlag flag , BulletClass* pBullet , PhobosTrajectoryType* type) : Flag { flag }
+	PhobosTrajectory(TrajectoryFlag flag, BulletClass* pBullet, PhobosTrajectoryType* type) : Flag { flag }
 		, AttachedTo { pBullet }
 		, Type { type }
 		, DetonationDistance { 0 }
@@ -102,14 +101,14 @@ public:
 	static void ProcessFromStream(PhobosStreamReader& Stm, std::unique_ptr<PhobosTrajectory>& pTraj);
 	static void ProcessFromStream(PhobosStreamWriter& Stm, std::unique_ptr<PhobosTrajectory>& pTraj);
 
-	static DWORD OnAITargetCoordCheck(BulletClass* pBullet , CoordStruct& coords);
+	static DWORD OnAITargetCoordCheck(BulletClass* pBullet, CoordStruct& coords);
 	static DWORD OnAITechnoCheck(BulletClass* pBullet, TechnoClass* pTechno);
 
 	static bool CanSnap(std::unique_ptr<PhobosTrajectory>& traj);
 	static bool BlockDrawTrail(std::unique_ptr<PhobosTrajectory>& traj);
 	static bool IgnoreAircraftROT0(std::unique_ptr<PhobosTrajectory>& traj);
 protected:
-	static bool UpdateType(BulletClass* pBullet , std::unique_ptr<PhobosTrajectory>& pTraj , PhobosTrajectoryType*  pType);
+	static bool UpdateType(BulletClass* pBullet, std::unique_ptr<PhobosTrajectory>& pTraj, PhobosTrajectoryType* pType);
 };
 
 /*

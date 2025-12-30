@@ -43,7 +43,8 @@ ASMJIT_PATCH(0x45387A, BuildingClass_FireOffset_Replace_MuzzleFix, 0x6) // A
 {
 	GET(FakeBuildingClass*, pThis, ESI);
 
-	if (pThis->Type->MaxNumberOccupants > 10) {
+	if (pThis->Type->MaxNumberOccupants > 10)
+	{
 		R->EDX(pThis->_GetTypeExtData()->OccupierMuzzleFlashes.data() + pThis->FiringOccupantIndex);
 	}
 
@@ -54,7 +55,8 @@ ASMJIT_PATCH(0x458623, BuildingClass_KillOccupiers_Replace_MuzzleFix, 0x7)
 {
 	GET(FakeBuildingClass*, pThis, ESI);
 
-	if (pThis->Type->MaxNumberOccupants > 10) {
+	if (pThis->Type->MaxNumberOccupants > 10)
+	{
 		GET(int, nFiringIndex, EDI);
 		R->ECX(pThis->_GetTypeExtData()->OccupierMuzzleFlashes.data() + nFiringIndex);
 	}
@@ -73,7 +75,7 @@ ASMJIT_PATCH(0x47EFAE, CellClass_Draw_It_MakePlacementGridTranparent, 0x6)
 	LEA_STACK(BlitterFlags*, blitFlags, STACK_OFFS(0x68, 0x58));
 
 	const auto trans = RulesExtData::Instance()->Building_PlacementPreview ?
-		RulesExtData::Instance() ->PlacementGrid_TranslucencyWithPreview .Get(RulesExtData::Instance()->PlacementGrid_TranslucentLevel) : RulesExtData::Instance()->PlacementGrid_TranslucentLevel;
+		RulesExtData::Instance()->PlacementGrid_TranslucencyWithPreview.Get(RulesExtData::Instance()->PlacementGrid_TranslucentLevel) : RulesExtData::Instance()->PlacementGrid_TranslucentLevel;
 
 	*blitFlags |= EnumFunctions::GetTranslucentLevel(trans);
 	return 0;
@@ -122,7 +124,6 @@ bool FORCEDINLINE CanBePlacedHere(DisplayClass* pThis, BuildingTypeClass* pBld, 
 					  || (short)ypos < celly_1
 					  || (short)ypos >= (int)height + celly_1)
 					{
-
 						auto cellofcoord = MapClass::Instance->GetCellAt(coord);
 						if (auto base = cellofcoord->GetBuilding())
 						{
@@ -142,12 +143,15 @@ bool FORCEDINLINE CanBePlacedHere(DisplayClass* pThis, BuildingTypeClass* pBld, 
 								goto continue_bld;
 
 							auto owner = base->Owner;
-							if (owner->ArrayIndex == nHouse && base->Type->BaseNormal && !BuildingExtContainer::Instance.Find(base)->IsFromSW) {
+							if (owner->ArrayIndex == nHouse && base->Type->BaseNormal && !BuildingExtContainer::Instance.Find(base)->IsFromSW)
+							{
 								retval = 1;
 							}
 
-							if (GameModeOptionsClass::Instance->BuildOffAlly && owner->IsAlliedWith(HouseClass::Array->Items[nHouse])) {
-								if (base->Type->EligibileForAllyBuilding) {
+							if (GameModeOptionsClass::Instance->BuildOffAlly && owner->IsAlliedWith(HouseClass::Array->Items[nHouse]))
+							{
+								if (base->Type->EligibileForAllyBuilding)
+								{
 									retval = 1;
 								}
 							}
@@ -168,52 +172,57 @@ bool FORCEDINLINE CanBePlacedHere(DisplayClass* pThis, BuildingTypeClass* pBld, 
 }
 #ifndef Original
 
- ASMJIT_PATCH(0x4A8EB0, DisplayClass_BuildingProximityCheck_Override, 0x5) {
- 	GET(DisplayClass*, pThis, ECX);
- 	GET_STACK(BuildingTypeClass*, pObj, 0x4);
- 	GET_STACK(int , house, 0x8);
- 	GET_STACK(CellStruct*, pList, 0xC);
- 	GET_STACK(CellStruct*, pTry, 0x10);
- 	R->EAX(CanBePlacedHere(pThis , pObj , house , pList , pTry));
- 	return 0x4A9063;
- }
-
-template<typename Arr>
-void CountPowerOf(HouseClass*pHouse ,CounterClass& counter){
-	 if(counter.IsAllocated) {
-		 for (int a = 0; a < counter.Capacity; ++a)  {
-			 if (counter.Items[a] > 0) {
-				 const auto pExt = TechnoTypeExtContainer::Instance.Find(Arr::Array->Items[a]);
-
-				if(pExt->Power.isset()) {
-
-				 if (pExt->Power > 0)
-					 pHouse->PowerOutput += pExt->Power * counter.Items[a];
-				 else
-					 pHouse->PowerDrain -= pExt->Power * counter.Items[a];
-
-				}
-			 }
-		 }
-	 }
+ASMJIT_PATCH(0x4A8EB0, DisplayClass_BuildingProximityCheck_Override, 0x5)
+{
+	GET(DisplayClass*, pThis, ECX);
+	GET_STACK(BuildingTypeClass*, pObj, 0x4);
+	GET_STACK(int, house, 0x8);
+	GET_STACK(CellStruct*, pList, 0xC);
+	GET_STACK(CellStruct*, pTry, 0x10);
+	R->EAX(CanBePlacedHere(pThis, pObj, house, pList, pTry));
+	return 0x4A9063;
 }
 
- // Trigger power recalculation on gain / loss of any techno, not just buildings.
+template<typename Arr>
+void CountPowerOf(HouseClass* pHouse, CounterClass& counter)
+{
+	if (counter.IsAllocated)
+	{
+		for (int a = 0; a < counter.Capacity; ++a)
+		{
+			if (counter.Items[a] > 0)
+			{
+				const auto pExt = TechnoTypeExtContainer::Instance.Find(Arr::Array->Items[a]);
+
+				if (pExt->Power.isset())
+				{
+					if (pExt->Power > 0)
+						pHouse->PowerOutput += pExt->Power * counter.Items[a];
+					else
+						pHouse->PowerDrain -= pExt->Power * counter.Items[a];
+				}
+			}
+		}
+	}
+}
+
+// Trigger power recalculation on gain / loss of any techno, not just buildings.
 
 ASMJIT_PATCH(0x502A80, HouseClass_RegisterGain, 0x8)
 {
-	 GET(HouseClass*, pThis, ECX);
+	GET(HouseClass*, pThis, ECX);
 
-	 pThis->RecheckPower = true;
+	pThis->RecheckPower = true;
 
-	 return 0;
- }ASMJIT_PATCH_AGAIN(0x5025F0, HouseClass_RegisterGain, 0x5) // RegisterLoss
+	return 0;
+}ASMJIT_PATCH_AGAIN(0x5025F0, HouseClass_RegisterGain, 0x5) // RegisterLoss
 
 ASMJIT_PATCH(0x508D8D, HouseClass_UpdatePower_Techno, 0x6)
 {
 	GET(HouseClass*, pThis, ESI);
 
-	if(Phobos::Config::UnitPowerDrain){
+	if (Phobos::Config::UnitPowerDrain)
+	{
 		CountPowerOf<AircraftTypeClass>(pThis, pThis->ActiveAircraftTypes);
 		CountPowerOf<InfantryTypeClass>(pThis, pThis->ActiveInfantryTypes);
 		CountPowerOf<UnitTypeClass>(pThis, pThis->ActiveUnitTypes);

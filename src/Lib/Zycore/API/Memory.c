@@ -48,14 +48,14 @@ ZyanU32 ZyanMemoryGetSystemPageSize(void)
 {
 #if defined(ZYAN_WINDOWS)
 
-    SYSTEM_INFO system_info;
-    GetSystemInfo(&system_info);
+	SYSTEM_INFO system_info;
+	GetSystemInfo(&system_info);
 
-    return system_info.dwPageSize;
+	return system_info.dwPageSize;
 
 #elif defined(ZYAN_POSIX)
 
-    return sysconf(_SC_PAGE_SIZE);
+	return sysconf(_SC_PAGE_SIZE);
 
 #endif
 }
@@ -64,14 +64,14 @@ ZyanU32 ZyanMemoryGetSystemAllocationGranularity(void)
 {
 #if defined(ZYAN_WINDOWS)
 
-    SYSTEM_INFO system_info;
-    GetSystemInfo(&system_info);
+	SYSTEM_INFO system_info;
+	GetSystemInfo(&system_info);
 
-    return system_info.dwAllocationGranularity;
+	return system_info.dwAllocationGranularity;
 
 #elif defined(ZYAN_POSIX)
 
-    return sysconf(_SC_PAGE_SIZE);
+	return sysconf(_SC_PAGE_SIZE);
 
 #endif
 }
@@ -80,49 +80,49 @@ ZyanU32 ZyanMemoryGetSystemAllocationGranularity(void)
 /* Memory management                                                                              */
 /* ---------------------------------------------------------------------------------------------- */
 
-ZyanStatus ZyanMemoryVirtualProtect(void* address, ZyanUSize size, 
-    ZyanMemoryPageProtection protection)
+ZyanStatus ZyanMemoryVirtualProtect(void* address, ZyanUSize size,
+	ZyanMemoryPageProtection protection)
 {
 #if defined(ZYAN_WINDOWS)
 
-    DWORD old;
-    if (!VirtualProtect(address, size, protection, &old))
-    {
-        return ZYAN_STATUS_BAD_SYSTEMCALL;
-    }
+	DWORD old;
+	if (!VirtualProtect(address, size, protection, &old))
+	{
+		return ZYAN_STATUS_BAD_SYSTEMCALL;
+	}
 
 #elif defined(ZYAN_POSIX)
 
-    if (mprotect(address, size, protection))
-    {
-        return ZYAN_STATUS_BAD_SYSTEMCALL;
-    }
+	if (mprotect(address, size, protection))
+	{
+		return ZYAN_STATUS_BAD_SYSTEMCALL;
+	}
 
 #endif
 
-    return ZYAN_STATUS_SUCCESS;
+	return ZYAN_STATUS_SUCCESS;
 }
 
 ZyanStatus ZyanMemoryVirtualFree(void* address, ZyanUSize size)
 {
 #if defined(ZYAN_WINDOWS)
 
-    ZYAN_UNUSED(size);
-    if (!VirtualFree(address, 0, MEM_RELEASE))
-    {
-        return ZYAN_STATUS_BAD_SYSTEMCALL;
-    }
+	ZYAN_UNUSED(size);
+	if (!VirtualFree(address, 0, MEM_RELEASE))
+	{
+		return ZYAN_STATUS_BAD_SYSTEMCALL;
+	}
 
 #elif defined(ZYAN_POSIX)
 
-    if (munmap(address, size))
-    {
-        return ZYAN_STATUS_BAD_SYSTEMCALL;
-    }
+	if (munmap(address, size))
+	{
+		return ZYAN_STATUS_BAD_SYSTEMCALL;
+	}
 
 #endif
 
-    return ZYAN_STATUS_SUCCESS;    
+	return ZYAN_STATUS_SUCCESS;
 }
 
 /* ---------------------------------------------------------------------------------------------- */

@@ -40,19 +40,19 @@
 extern "C" {
 #endif
 
-/**
-* @addtogroup segment Segment
-* Functions and types providing encoding information about individual instruction bytes.
-* @{
-*/
+	/**
+	* @addtogroup segment Segment
+	* Functions and types providing encoding information about individual instruction bytes.
+	* @{
+	*/
 
-/* ============================================================================================== */
-/* Macros                                                                                         */
-/* ============================================================================================== */
+	/* ============================================================================================== */
+	/* Macros                                                                                         */
+	/* ============================================================================================== */
 
-/* ---------------------------------------------------------------------------------------------- */
-/* Constants                                                                                      */
-/* ---------------------------------------------------------------------------------------------- */
+	/* ---------------------------------------------------------------------------------------------- */
+	/* Constants                                                                                      */
+	/* ---------------------------------------------------------------------------------------------- */
 
 #define ZYDIS_MAX_INSTRUCTION_SEGMENT_COUNT 9
 
@@ -65,115 +65,115 @@ extern "C" {
 /**
  * Defines the `ZydisInstructionSegment` struct.
  */
-typedef enum ZydisInstructionSegment_
-{
-    ZYDIS_INSTR_SEGMENT_NONE,
-    /**
-     * The legacy prefixes (including ignored `REX` prefixes).
-     */
-    ZYDIS_INSTR_SEGMENT_PREFIXES,
-    /**
-     * The effective `REX` prefix byte.
-     */
-    ZYDIS_INSTR_SEGMENT_REX,
-    /**
-     * The `REX2` prefix bytes.
-     */
-    ZYDIS_INSTR_SEGMENT_REX2,
-    /**
-     * The `XOP` prefix bytes.
-     */
-    ZYDIS_INSTR_SEGMENT_XOP,
-    /**
-     * The `VEX` prefix bytes.
-     */
-    ZYDIS_INSTR_SEGMENT_VEX,
-    /**
-     * The `EVEX` prefix bytes.
-     */
-    ZYDIS_INSTR_SEGMENT_EVEX,
-    /**
-     * The `MVEX` prefix bytes.
-     */
-    ZYDIS_INSTR_SEGMENT_MVEX,
-    /**
-     * The opcode bytes.
-     */
-    ZYDIS_INSTR_SEGMENT_OPCODE,
-    /**
-     * The `ModRM` byte.
-     */
-    ZYDIS_INSTR_SEGMENT_MODRM,
-    /**
-     * The `SIB` byte.
-     */
-    ZYDIS_INSTR_SEGMENT_SIB,
-    /**
-     * The displacement bytes.
-     */
-    ZYDIS_INSTR_SEGMENT_DISPLACEMENT,
-    /**
-     * The immediate bytes.
-     */
-    ZYDIS_INSTR_SEGMENT_IMMEDIATE,
+	typedef enum ZydisInstructionSegment_
+	{
+		ZYDIS_INSTR_SEGMENT_NONE,
+		/**
+		 * The legacy prefixes (including ignored `REX` prefixes).
+		 */
+		ZYDIS_INSTR_SEGMENT_PREFIXES,
+		/**
+		 * The effective `REX` prefix byte.
+		 */
+		ZYDIS_INSTR_SEGMENT_REX,
+		/**
+		 * The `REX2` prefix bytes.
+		 */
+		ZYDIS_INSTR_SEGMENT_REX2,
+		/**
+		 * The `XOP` prefix bytes.
+		 */
+		ZYDIS_INSTR_SEGMENT_XOP,
+		/**
+		 * The `VEX` prefix bytes.
+		 */
+		ZYDIS_INSTR_SEGMENT_VEX,
+		/**
+		 * The `EVEX` prefix bytes.
+		 */
+		ZYDIS_INSTR_SEGMENT_EVEX,
+		/**
+		 * The `MVEX` prefix bytes.
+		 */
+		ZYDIS_INSTR_SEGMENT_MVEX,
+		/**
+		 * The opcode bytes.
+		 */
+		ZYDIS_INSTR_SEGMENT_OPCODE,
+		/**
+		 * The `ModRM` byte.
+		 */
+		ZYDIS_INSTR_SEGMENT_MODRM,
+		/**
+		 * The `SIB` byte.
+		 */
+		ZYDIS_INSTR_SEGMENT_SIB,
+		/**
+		 * The displacement bytes.
+		 */
+		ZYDIS_INSTR_SEGMENT_DISPLACEMENT,
+		/**
+		 * The immediate bytes.
+		 */
+		ZYDIS_INSTR_SEGMENT_IMMEDIATE,
 
-    /**
-     * Maximum value of this enum.
-     */
-    ZYDIS_INSTR_SEGMENT_MAX_VALUE = ZYDIS_INSTR_SEGMENT_IMMEDIATE,
-    /**
-     * The minimum number of bits required to represent all values of this enum.
-     */
-    ZYDIS_INSTR_SEGMENT_REQUIRED_BITS = ZYAN_BITS_TO_REPRESENT(ZYDIS_INSTR_SEGMENT_MAX_VALUE)
-} ZydisInstructionSegment;
+		/**
+		 * Maximum value of this enum.
+		 */
+		ZYDIS_INSTR_SEGMENT_MAX_VALUE = ZYDIS_INSTR_SEGMENT_IMMEDIATE,
+		/**
+		 * The minimum number of bits required to represent all values of this enum.
+		 */
+		ZYDIS_INSTR_SEGMENT_REQUIRED_BITS = ZYAN_BITS_TO_REPRESENT(ZYDIS_INSTR_SEGMENT_MAX_VALUE)
+	} ZydisInstructionSegment;
 
-/**
- * Defines the `ZydisInstructionSegments` struct.
- */
-typedef struct ZydisInstructionSegments_
-{
-    /**
-     * The number of logical instruction segments.
-     */
-    ZyanU8 count;
-    struct
-    {
-        /**
-         * The type of the segment.
-         */
-        ZydisInstructionSegment type;
-        /**
-         * The offset of the segment relative to the start of the instruction (in bytes).
-         */
-        ZyanU8 offset;
-        /**
-         * The size of the segment, in bytes.
-         */
-        ZyanU8 size;
-    } segments[ZYDIS_MAX_INSTRUCTION_SEGMENT_COUNT];
-} ZydisInstructionSegments;
+	/**
+	 * Defines the `ZydisInstructionSegments` struct.
+	 */
+	typedef struct ZydisInstructionSegments_
+	{
+		/**
+		 * The number of logical instruction segments.
+		 */
+		ZyanU8 count;
+		struct
+		{
+			/**
+			 * The type of the segment.
+			 */
+			ZydisInstructionSegment type;
+			/**
+			 * The offset of the segment relative to the start of the instruction (in bytes).
+			 */
+			ZyanU8 offset;
+			/**
+			 * The size of the segment, in bytes.
+			 */
+			ZyanU8 size;
+		} segments[ZYDIS_MAX_INSTRUCTION_SEGMENT_COUNT];
+	} ZydisInstructionSegments;
 
-/* ============================================================================================== */
-/* Exported functions                                                                             */
-/* ============================================================================================== */
+	/* ============================================================================================== */
+	/* Exported functions                                                                             */
+	/* ============================================================================================== */
 
-/**
- * Returns offsets and sizes of all logical instruction segments (e.g. `OPCODE`,
- * `MODRM`, ...).
- *
- * @param   instruction A pointer to the `ZydisDecodedInstruction` struct.
- * @param   segments    Receives the instruction segments information.
- *
- * @return  A zyan status code.
- */
-ZYDIS_EXPORT ZyanStatus ZydisGetInstructionSegments(const ZydisDecodedInstruction* instruction,
-        ZydisInstructionSegments* segments);
+	/**
+	 * Returns offsets and sizes of all logical instruction segments (e.g. `OPCODE`,
+	 * `MODRM`, ...).
+	 *
+	 * @param   instruction A pointer to the `ZydisDecodedInstruction` struct.
+	 * @param   segments    Receives the instruction segments information.
+	 *
+	 * @return  A zyan status code.
+	 */
+	ZYDIS_EXPORT ZyanStatus ZydisGetInstructionSegments(const ZydisDecodedInstruction* instruction,
+			ZydisInstructionSegments* segments);
 
-/* ============================================================================================== */
+	/* ============================================================================================== */
 
-/**
- * @}
- */
+	/**
+	 * @}
+	 */
 
 #ifdef __cplusplus
 }

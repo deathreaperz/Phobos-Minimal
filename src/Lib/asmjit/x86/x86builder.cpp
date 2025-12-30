@@ -15,42 +15,47 @@ ASMJIT_BEGIN_SUB_NAMESPACE(x86)
 // x86::Builder - Construction & Destruction
 // =========================================
 
-Builder::Builder(CodeHolder* code) noexcept : BaseBuilder() {
-  _arch_mask = (uint64_t(1) << uint32_t(Arch::kX86)) |
-              (uint64_t(1) << uint32_t(Arch::kX64)) ;
-  init_emitter_funcs(this);
+Builder::Builder(CodeHolder* code) noexcept : BaseBuilder()
+{
+	_arch_mask = (uint64_t(1) << uint32_t(Arch::kX86)) |
+		(uint64_t(1) << uint32_t(Arch::kX64));
+	init_emitter_funcs(this);
 
-  if (code) {
-    code->attach(this);
-  }
+	if (code)
+	{
+		code->attach(this);
+	}
 }
-Builder::~Builder() noexcept {}
+Builder::~Builder() noexcept { }
 
 // x86::Builder - Events
 // =====================
 
-Error Builder::on_attach(CodeHolder& code) noexcept {
-  ASMJIT_PROPAGATE(Base::on_attach(code));
+Error Builder::on_attach(CodeHolder& code) noexcept
+{
+	ASMJIT_PROPAGATE(Base::on_attach(code));
 
-  _instruction_alignment = uint8_t(1);
-  update_emitter_funcs(this);
+	_instruction_alignment = uint8_t(1);
+	update_emitter_funcs(this);
 
-  return Error::kOk;
+	return Error::kOk;
 }
 
-Error Builder::on_detach(CodeHolder& code) noexcept {
-  return Base::on_detach(code);
+Error Builder::on_detach(CodeHolder& code) noexcept
+{
+	return Base::on_detach(code);
 }
 
 // x86::Builder - Finalize
 // =======================
 
-Error Builder::finalize() {
-  ASMJIT_PROPAGATE(run_passes());
-  Assembler a(_code);
-  a.add_encoding_options(encoding_options());
-  a.add_diagnostic_options(diagnostic_options());
-  return serialize_to(&a);
+Error Builder::finalize()
+{
+	ASMJIT_PROPAGATE(run_passes());
+	Assembler a(_code);
+	a.add_encoding_options(encoding_options());
+	a.add_diagnostic_options(diagnostic_options());
+	return serialize_to(&a);
 }
 
 ASMJIT_END_SUB_NAMESPACE

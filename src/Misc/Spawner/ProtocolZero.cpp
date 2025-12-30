@@ -114,7 +114,8 @@ ASMJIT_PATCH(0x64C598, ExecuteDoList_ProtocolZero_DisableLog, 0x6)
 {
 	enum { break_ = 0x64C63D };
 
-	if (EventExt::ProtocolZero::Enable) {
+	if (EventExt::ProtocolZero::Enable)
+	{
 		auto dl = (uint8_t)R->DL();
 
 		if (dl == (uint8_t)EventType::EMPTY)
@@ -144,7 +145,6 @@ ASMJIT_PATCH(0x647E6B, QueueAIMultiplayer_ProtocolZero_SetTiming, 0x5)
 
 	return 0;
 }ASMJIT_PATCH_AGAIN(0x64771D, QueueAIMultiplayer_ProtocolZero_SetTiming, 0x5)
-
 
 ASMJIT_PATCH(0x647CC5, QueueAIMultiplayer_ProtocolZero_ResponseTime, 0x5)
 {

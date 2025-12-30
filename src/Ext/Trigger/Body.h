@@ -83,14 +83,13 @@ public:
 
 	virtual bool LoadAll(const json& root);
 	virtual bool SaveAll(json& root);
-
 };
 
 class NOVTABLE FakeTriggerClass : public TriggerClass
 {
 public:
 	void _Detach(AbstractClass* target, bool all);
-	
+
 	TriggerExtData* _GetExtData()
 	{
 		return *reinterpret_cast<TriggerExtData**>(((DWORD)this) + AbstractExtOffset);

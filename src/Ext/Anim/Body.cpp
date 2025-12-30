@@ -34,13 +34,11 @@ void AnimExtData::OnInit(AnimClass* pThis, CoordStruct* pCoord)
 	{
 		if (ScenarioClass::Instance->Random.RandomDouble() <= pTypeExt->ConcurrentChance.Get())
 		{
-
 			auto const nIdx = pTypeExt->ConcurrentAnim.size() == 1 ?
 				0 : ScenarioClass::Instance->Random.RandomFromMax(pTypeExt->ConcurrentAnim.size() - 1);
 
 			if (auto pType = pTypeExt->ConcurrentAnim[nIdx])
 			{
-
 				if (pType == pThis->Type)
 					return;
 
@@ -54,7 +52,8 @@ void AnimExtData::OnInit(AnimClass* pThis, CoordStruct* pCoord)
 	//}
 }
 
-void AnimExtData::CreateRandomAnim(Iterator<AnimTypeClass*> AnimList, CoordStruct coords, TechnoClass* pTechno, HouseClass* pHouse, bool ownedObject) {
+void AnimExtData::CreateRandomAnim(Iterator<AnimTypeClass*> AnimList, CoordStruct coords, TechnoClass* pTechno, HouseClass* pHouse, bool ownedObject)
+{
 	if (AnimList.empty() || !pTechno)
 		return;
 
@@ -148,8 +147,10 @@ bool AnimExtData::OnExpired(AnimClass* pThis, bool LandIsWater, bool EligibleHei
 				if (auto pSplashAnim = Helper::Otamaa::PickSplashAnim(pAnimTypeExt->SplashList, pAnimTypeExt->WakeAnim, pAnimTypeExt->SplashIndexRandom.Get(), pThis->Type->IsMeteor))
 				{
 					CoordStruct _SplashCoord = pThis->Location;
-					if (pAnimTypeExt->SplashList.HasValue()) {
-						if (pAnimTypeExt->SplashList.size() > 0) {
+					if (pAnimTypeExt->SplashList.HasValue())
+					{
+						if (pAnimTypeExt->SplashList.size() > 0)
+						{
 							_SplashCoord.Z += 3;
 						}
 					}
@@ -186,7 +187,7 @@ bool AnimExtData::OnExpired(AnimClass* pThis, bool LandIsWater, bool EligibleHei
 
 #include <Misc/PhobosGlobal.h>
 
-void ApplyDamage(AnimClass* pThis , AnimExtData* pExt , AnimTypeExtData* pTypeExt , TechnoClass* pInvoker, int appliedDamage)
+void ApplyDamage(AnimClass* pThis, AnimExtData* pExt, AnimTypeExtData* pTypeExt, TechnoClass* pInvoker, int appliedDamage)
 {
 	CoordStruct nCoord = pExt->BackupCoords.has_value() ? pExt->BackupCoords.get() : pThis->GetCoords();
 	const auto pOwner = pThis->Owner ? pThis->Owner : pInvoker ? pInvoker->Owner : nullptr;
@@ -232,7 +233,8 @@ void AnimExtData::DealDamageDelay(AnimClass* pThis)
 	TechnoClass* const pInvoker = AnimExtData::GetTechnoInvoker(pThis);
 	const double damageMultiplier = (pThis->OwnerObject && pThis->OwnerObject->WhatAmI() == TerrainClass::AbsID) ? 5.0 : 1.0;
 
-	if(!pTypeExt->Damaging_UseSeparateState){
+	if (!pTypeExt->Damaging_UseSeparateState)
+	{
 		auto state = &pThis->Animation;
 
 		int appliedDamage = 0;
@@ -249,11 +251,13 @@ void AnimExtData::DealDamageDelay(AnimClass* pThis)
 			double damage = damageMultiplier * pThis->Type->Damage + pThis->Accum;
 
 			// Deal damage if it is at least 1, otherwise accumulate it for later.
-			if (damage >= 1.0) {
+			if (damage >= 1.0)
+			{
 				appliedDamage = static_cast<int>(std::round(damage));
 				pThis->Accum = damage - appliedDamage;
-
-			} else {
+			}
+			else
+			{
 				pThis->Accum = damage;
 				return;
 			}
@@ -284,7 +288,8 @@ void AnimExtData::DealDamageDelay(AnimClass* pThis)
 			{
 				pThis->Accum += (pThis->Type->Damage * damageMultiplier);
 
-				if (pThis->Accum >= 1 && !pThis->IsPlaying) {
+				if (pThis->Accum >= 1 && !pThis->IsPlaying)
+				{
 					int damage = (int)pThis->Accum;
 					pThis->Accum -= damage;
 					ApplyDamage(pThis, pExt, pTypeExt, pInvoker, damage);
@@ -337,18 +342,18 @@ bool AnimExtData::OnMiddle(AnimClass* pThis)
 				{
 					int numParticle = pType->NumParticles;
 
-					if (numParticle > 0) {
-
+					if (numParticle > 0)
+					{
 						const auto nMin = pAnimTypeExt->ParticleRangeMin.Get();
 						const auto nMax = pAnimTypeExt->ParticleRangeMax.Get();
 
-						if (nMin || nMax) {
-
+						if (nMin || nMax)
+						{
 							double rad = Math::GAME_TWOPI / numParticle;
 							double start_distance = 0.0;
 
-							for (; numParticle > 0; --numParticle) {
-
+							for (; numParticle > 0; --numParticle)
+							{
 								int rand = Math::abs(ScenarioClass::Instance->Random.RandomRanged((int)nMin, (int)nMax));
 								double randDouble = ScenarioClass::Instance->Random.RandomDouble() * rad + start_distance;
 								CoordStruct dest {
@@ -361,10 +366,11 @@ bool AnimExtData::OnMiddle(AnimClass* pThis)
 								ParticleSystemClass::Instance->SpawnParticle(pParticleType, &dest);
 								start_distance += rad;
 							}
-
 						}
-						else {
-							for (int i = 0; i < numParticle; ++i) {
+						else
+						{
+							for (int i = 0; i < numParticle; ++i)
+							{
 								ParticleSystemClass::Instance->SpawnParticle(pParticleType, &nCoord);
 							}
 						}
@@ -373,13 +379,16 @@ bool AnimExtData::OnMiddle(AnimClass* pThis)
 			}
 		}
 
-		for (const auto& nLauch : pTypeExt->Launchs) {
-			if (nLauch.LaunchWhat) {
+		for (const auto& nLauch : pTypeExt->Launchs)
+		{
+			if (nLauch.LaunchWhat)
+			{
 				Helpers::Otamaa::LauchSW(nLauch, pHouse, nCoord, pObject);
 			}
 		}
 
-		if (auto pWeapon = pTypeExt->WeaponToCarry) {
+		if (auto pWeapon = pTypeExt->WeaponToCarry)
+		{
 			AbstractClass* pTarget = AnimExtData::GetTarget(pThis);
 			TechnoClass* const pInvoker = AnimExtData::GetTechnoInvoker(pThis);
 			//const auto nDamageResult = static_cast<int>(TechnoExtData::GetDamageMult(pInvoker, pWeapon->Damage , !pTypeExt->Damage_ConsiderOwnerVeterancy.Get()));
@@ -402,9 +411,9 @@ AbstractClass* AnimExtData::GetTarget(AnimClass* pThis)
 		if (pThis->AttachedBullet)
 			return pThis->AttachedBullet->Owner;
 
-		if(pThis->OwnerObject) {
-
-			if (auto const pBullet = cast_to<BulletClass* ,false>(pThis->OwnerObject))
+		if (pThis->OwnerObject)
+		{
+			if (auto const pBullet = cast_to<BulletClass*, false>(pThis->OwnerObject))
 				return pBullet->Owner;
 			else
 				return pThis->OwnerObject;
@@ -487,7 +496,6 @@ const std::pair<bool, OwnerHouseKind> AnimExtData::SetAnimOwnerHouseKind(AnimCla
 	auto const pTypeExt = AnimTypeExtContainer::Instance.Find(pAnim->Type);
 	if (!pTypeExt->NoOwner)
 	{
-
 		const auto Owner = pTypeExt->GetAnimOwnerHouseKind();
 
 		if (Owner == OwnerHouseKind::Invoker && !pInvoker || Owner == OwnerHouseKind::Victim && !pVictim)
@@ -517,7 +525,7 @@ const std::pair<bool, OwnerHouseKind> AnimExtData::SetAnimOwnerHouseKind(AnimCla
 
 		const auto Owner = pTypeExt->GetAnimOwnerHouseKind();
 
-		if ((Owner == OwnerHouseKind::Invoker && !pInvoker )|| (Owner == OwnerHouseKind::Victim && !pVictim))
+		if ((Owner == OwnerHouseKind::Invoker && !pInvoker) || (Owner == OwnerHouseKind::Victim && !pVictim))
 			return { false , OwnerHouseKind::Default };
 
 		const auto newOwner = HouseExtData::GetHouseKind(Owner, true, defaultToVictimOwner ? pVictim : nullptr, pInvoker, pVictim);
@@ -525,7 +533,8 @@ const std::pair<bool, OwnerHouseKind> AnimExtData::SetAnimOwnerHouseKind(AnimCla
 		if (!pAnim->Owner || pAnim->Owner != newOwner)
 		{
 			pAnim->SetHouse(newOwner);
-			if (pTypeExt->RemapAnim || pAnim->Type->MakeInfantry > -1 || (pTypeExt->CreateUnitType && pTypeExt->CreateUnitType->RemapAnim.Get(pTypeExt->RemapAnim))) {
+			if (pTypeExt->RemapAnim || pAnim->Type->MakeInfantry > -1 || (pTypeExt->CreateUnitType && pTypeExt->CreateUnitType->RemapAnim.Get(pTypeExt->RemapAnim)))
+			{
 				pAnim->LightConvert = ColorScheme::Array->Items[newOwner->ColorSchemeIndex]->LightConvert;
 			}
 
@@ -579,7 +588,7 @@ Layer __fastcall AnimExtData::GetLayer_patch(AnimClass* pThis, discard_t)
 
 	if (pExt->Layer_UseObjectLayer.Get())
 	{
-		if (auto const pFoot = flag_cast_to<FootClass* , false>(pThis->OwnerObject))
+		if (auto const pFoot = flag_cast_to<FootClass*, false>(pThis->OwnerObject))
 		{
 			if (auto const pLocomotor = pFoot->Locomotor.GetInterfacePtr())
 				return pLocomotor->In_Which_Layer();
@@ -618,7 +627,7 @@ void AnimExtData::SpawnFireAnims(AnimClass* pThis)
 			auto const loopCount = ScenarioClass::Instance->Random.RandomRanged(1, 2);
 			auto const pAnim = GameCreate<AnimClass>(pType, newCoords, 0, loopCount, 0x600u, 0, false);
 
-			AnimExtData::SetAnimOwnerHouseKind(pAnim, pThis->Owner, nullptr, pExt->Invoker ? pExt->Invoker : nullptr,  false, true);
+			AnimExtData::SetAnimOwnerHouseKind(pAnim, pThis->Owner, nullptr, pExt->Invoker ? pExt->Invoker : nullptr, false, true);
 
 			if (attach && pThis->OwnerObject)
 				pAnim->SetOwnerObject(pThis->OwnerObject);
@@ -821,7 +830,6 @@ bool AnimExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool AnimExtContainer::SaveAll(json& root)
@@ -829,7 +837,8 @@ bool AnimExtContainer::SaveAll(json& root)
 	auto& first_layer = root[AnimExtContainer::ClassName];
 
 	json _extRoot = json::array();
-	for (auto& _extData : AnimExtContainer::Array) {
+	for (auto& _extData : AnimExtContainer::Array)
+	{
 		PhobosByteStream saver(sizeof(*_extData));
 		PhobosStreamWriter writer(saver);
 
@@ -880,15 +889,16 @@ ASMJIT_PATCH(0x421EA0, AnimClass_CTOR_SetContext, 0x6)
 ASMJIT_PATCH(0x422058, AnimClass_CTOR, 0x5)
 {
 	GET(AnimClass*, pItem, ESI);
-	if(pItem->Type){
-
+	if (pItem->Type)
+	{
 		PhobosGlobal::Instance()->LastAnimName = pItem->Type->ID;
 
 		// Do this here instead of using a duplicate hook in SyncLogger.cpp
 		if (!SyncLogger::HooksDisabled && pItem->UniqueID != -2)
 			SyncLogger::AddAnimCreationSyncLogEvent(CTORTemp::coords, CTORTemp::callerAddress);
 
-		if (pItem->UniqueID == -2) {
+		if (pItem->UniqueID == -2)
+		{
 			Debug::LogInfo("Anim[{} - {}] with some weird ID", pItem->Type->ID, (void*)pItem);
 		}
 
@@ -897,23 +907,23 @@ ASMJIT_PATCH(0x422058, AnimClass_CTOR, 0x5)
 			AnimExtContainer::Instance.SetExtAttribute(pItem, val);
 
 			// Something about creating this in constructor messes with debris anims, so it has to be done for them later.
-			if (!pItem->HasExtras) {
-
+			if (!pItem->HasExtras)
+			{
 				auto pFake = (FakeAnimClass*)(pItem);
-				if (pFake->_GetTypeExtData()->Damaging_UseSeparateState) {
+				if (pFake->_GetTypeExtData()->Damaging_UseSeparateState)
+				{
 					int damagedelay = pFake->_GetTypeExtData()->Damaging_Rate == -1 ? pFake->Animation.Step : pFake->_GetTypeExtData()->Damaging_Rate;
 					pFake->_GetExtData()->DamagingState.Start(damagedelay);
 				}
 
 				val->CreateAttachedSystem();
 			}
-
 		}
 	}
-	else {
+	else
+	{
 		PhobosGlobal::Instance()->LastAnimName = "none";
 	}
-
 
 	PhobosGlobal::Instance()->LastAnimName.clear();
 	return 0;
@@ -934,23 +944,25 @@ ASMJIT_PATCH(0x425164, AnimClass_Detach, 0x6)
 	GET_STACK(bool, all, STACK_OFFS(0xC, -0x8));
 
 	R->EBX(0);
-	if(auto pExt = pThis->_GetExtData())
+	if (auto pExt = pThis->_GetExtData())
 		pExt->InvalidatePointer(target, all);
 
-	if (pThis->Type == target) {
+	if (pThis->Type == target)
+	{
 		//Debug::LogInfo("Anim[0x{}] detaching Type[{}] Pointer ! ", (void*)pThis, pThis->Type->ID);
 		pThis->Type = nullptr;
 	}
 
-	if(pThis->OwnerObject == target && target){
-
-		auto const pTechno = flag_cast_to<TechnoClass* , false>(target);
-		if(!pTechno)
+	if (pThis->OwnerObject == target && target)
+	{
+		auto const pTechno = flag_cast_to<TechnoClass*, false>(target);
+		if (!pTechno)
 			return 0x425174;
 
 		const auto pExt = TechnoExtContainer::Instance.Find(pTechno);
 
-		if(pExt && !pExt->IsDetachingForCloak) {
+		if (pExt && !pExt->IsDetachingForCloak)
+		{
 			return 0x425174;
 		}
 	}

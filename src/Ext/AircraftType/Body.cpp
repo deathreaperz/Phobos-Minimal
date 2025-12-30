@@ -87,8 +87,8 @@ bool AircraftTypeExtContainer::LoadAll(const json& root)
 	{
 		auto& container = root[AircraftTypeExtContainer::ClassName];
 
-		for (auto& entry : container[AircraftTypeExtData::ClassName]) {
-
+		for (auto& entry : container[AircraftTypeExtData::ClassName])
+		{
 			uint32_t oldPtr = 0;
 			if (!ExtensionSaveJson::ReadHex(entry, "OldPtr", oldPtr))
 				return false;
@@ -120,7 +120,8 @@ bool AircraftTypeExtContainer::SaveAll(json& root)
 	auto& first_layer = root[AircraftTypeExtContainer::ClassName];
 
 	json _extRoot = json::array();
-	for (auto& _extData : AircraftTypeExtContainer::Array) {
+	for (auto& _extData : AircraftTypeExtContainer::Array)
+	{
 		PhobosByteStream saver(sizeof(*_extData));
 		PhobosStreamWriter writer(saver);
 
@@ -139,8 +140,10 @@ bool AircraftTypeExtContainer::SaveAll(json& root)
 
 void AircraftTypeExtContainer::LoadFromINI(AircraftTypeClass* key, CCINIClass* pINI, bool parseFailAddr)
 {
-	if (auto ptr = this->Find(key)) {
-		if (!pINI) {
+	if (auto ptr = this->Find(key))
+	{
+		if (!pINI)
+		{
 			return;
 		}
 
@@ -149,14 +152,14 @@ void AircraftTypeExtContainer::LoadFromINI(AircraftTypeClass* key, CCINIClass* p
 		//this function can be called again multiple time but without need to re-init the data
 		ptr->SetInitState(InitState::Ruled);
 	}
-
 }
 
 void AircraftTypeExtContainer::WriteToINI(AircraftTypeClass* key, CCINIClass* pINI)
 {
-
-	if (auto ptr = this->TryFind(key)) {
-		if (!pINI) {
+	if (auto ptr = this->TryFind(key))
+	{
+		if (!pINI)
+		{
 			return;
 		}
 

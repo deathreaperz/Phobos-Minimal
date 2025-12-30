@@ -41,14 +41,14 @@
 //	return 0x0;
 //}
 
-ASMJIT_PATCH(0x718275 ,TeleportLocomotionClass_MakeRoom, 9)
+ASMJIT_PATCH(0x718275, TeleportLocomotionClass_MakeRoom, 9)
 {
 	LEA_STACK(CoordStruct*, pCoord, 0x3C);
 	GET(TeleportLocomotionClass*, pLoco, EBP);
 
 	const auto pCell = MapClass::Instance->GetCellAt(pCoord);
 
-	R->Stack(0x48 , false);
+	R->Stack(0x48, false);
 	const bool bLinkedIsInfantry = pLoco->LinkedTo->WhatAmI() == AbstractType::Infantry;
 	R->EBX(pCell->OverlayTypeIndex);
 	R->EDI(false);
@@ -63,7 +63,8 @@ ASMJIT_PATCH(0x718275 ,TeleportLocomotionClass_MakeRoom, 9)
 		if (pTypeExt && !pTypeExt->Chronoshift_Crushable)
 			bIsImmune = 1;
 
-		if (!RulesExtData::Instance()->ChronoInfantryCrush && bLinkedIsInfantry && !bObjIsInfantry) {
+		if (!RulesExtData::Instance()->ChronoInfantryCrush && bLinkedIsInfantry && !bObjIsInfantry)
+		{
 			pLoco->LinkedTo->ReceiveDamage(&pLoco->LinkedTo->GetType()->Strength, 0, RulesClass::Instance->C4Warhead, 0, 1, 0, 0);
 			break;
 		}
@@ -71,19 +72,25 @@ ASMJIT_PATCH(0x718275 ,TeleportLocomotionClass_MakeRoom, 9)
 		if (!bIsImmune && bObjIsInfantry && bLinkedIsInfantry)
 		{
 			auto nCoord = pObj->GetCoords();
-			if (nCoord.X == pCoord->X && nCoord.Y == pCoord->Y && nCoord.Z == pCoord->Z) {
+			if (nCoord.X == pCoord->X && nCoord.Y == pCoord->Y && nCoord.Z == pCoord->Z)
+			{
 				pObj->ReceiveDamage(&pObj->GetType()->Strength, 0, RulesClass::Instance->C4Warhead, 0, 1, 0, 0);
 			}
 		}
 		else if (bIsImmune || ((pObj->AbstractFlags & AbstractFlags::Foot) == AbstractFlags::None))
 		{
-			if ((pObj->AbstractFlags & AbstractFlags::Foot) == AbstractFlags::None) {
+			if ((pObj->AbstractFlags & AbstractFlags::Foot) == AbstractFlags::None)
+			{
 				R->Stack(0x48, true);
-			} else if(bIsImmune) {
+			}
+			else if (bIsImmune)
+			{
 				pLoco->LinkedTo->ReceiveDamage(&pLoco->LinkedTo->GetType()->Strength, 0, RulesClass::Instance->C4Warhead, 0, 1, 0, 0);
 				break;
 			}
-		} else {
+		}
+		else
+		{
 			pObj->ReceiveDamage(&pObj->GetType()->Strength, 0, RulesClass::Instance->C4Warhead, 0, 1, 0, 0);
 		}
 	}
@@ -91,11 +98,10 @@ ASMJIT_PATCH(0x718275 ,TeleportLocomotionClass_MakeRoom, 9)
 	if ((pCell->Flags & CellFlags(0x300)) == CellFlags(100))
 		R->Stack(0x48, true);
 
-	R->Stack(0x20 , pLoco->LinkedTo->GetCellAgain());
+	R->Stack(0x20, pLoco->LinkedTo->GetCellAgain());
 	R->EAX(true);
 	return 0x7184CE;
 }
-
 
 ASMJIT_PATCH(0x514E97, HoverLocomotionClass_ILocomotion_MoveTo, 0x7)
 {
@@ -140,24 +146,27 @@ ASMJIT_PATCH(0x4CD9C8, FlyLocomotionClass_sub_4CD600_HunterSeeker_UpdateTarget, 
 	const auto pObject = pThis->LinkedTo;
 	const auto pType = pObject->GetTechnoType();
 
-	if (pType->HunterSeeker) {
-
-		if (const auto pTarget = pObject->Target) {
-
+	if (pType->HunterSeeker)
+	{
+		if (const auto pTarget = pObject->Target)
+		{
 			// update the target's position, considering units in tunnels
 			auto crd = pTarget->GetCoords();
 
 			const auto abs = pTarget->WhatAmI();
-			if (abs == UnitClass::AbsID || abs == InfantryClass::AbsID) {
+			if (abs == UnitClass::AbsID || abs == InfantryClass::AbsID)
+			{
 				const auto pFoot = static_cast<FootClass* const>(pObject);
-				if (pFoot->TubeIndex >= 0) {
+				if (pFoot->TubeIndex >= 0)
+				{
 					crd = pFoot->CurrentTunnelCoords;
 				}
 			}
 
 			const auto  height = MapClass::Instance->GetCellFloorHeight(crd);
 
-			if (crd.Z < height) {
+			if (crd.Z < height)
+			{
 				crd.Z = height;
 			}
 
@@ -185,12 +194,14 @@ ASMJIT_PATCH(0x4CE85A, FlyLocomotionClass_UpdateLanding, 0x8)
 	const auto pObject = pThis->LinkedTo;
 	const auto pType = pObject->GetTechnoType();
 
-	if (pType->HunterSeeker) {
-		if (!pObject->Target) {
-
+	if (pType->HunterSeeker)
+	{
+		if (!pObject->Target)
+		{
 			pThis->Acquire_Hunter_Seeker_Target();
 
-			if (pObject->Target) {
+			if (pObject->Target)
+			{
 				pThis->IsLanding = false;
 				pThis->FlightLevel = pType->GetFlightLevel();
 
@@ -215,13 +226,14 @@ ASMJIT_PATCH(0x4CCB84, FlyLocomotionClass_ILocomotion_Process_HunterSeeker, 0x6)
 	const auto pObject = pLoco->Owner ? pLoco->Owner : pLoco->LinkedTo;
 	const auto pType = pObject->GetTechnoType();
 
-	if (pType->HunterSeeker) {
-		if (!pObject->Target) {
-
+	if (pType->HunterSeeker)
+	{
+		if (!pObject->Target)
+		{
 			pLoco->Acquire_Hunter_Seeker_Target();
 
-			if (pObject->Target) {
-
+			if (pObject->Target)
+			{
 				pLoco->IsLanding = false;
 				pLoco->FlightLevel = pType->GetFlightLevel();
 
@@ -320,7 +332,6 @@ ASMJIT_PATCH(0x4B9A4A, DropshipLoadout_PrintArmor, 7)
 	return 0x4B9A51;
 }
 
-
 ASMJIT_PATCH(0x4CDE64, FlyLocomotionClass_sub_4CD600_HunterSeeker_Ascent, 6)
 {
 	GET(FlyLocomotionClass* const, pThis, ESI);
@@ -338,7 +349,6 @@ ASMJIT_PATCH(0x4CDE64, FlyLocomotionClass_sub_4CD600_HunterSeeker_Ascent, 6)
 		{
 			// ordinary aircraft
 			max = (R->BL() != 0) ? 10 : 20;
-
 		}
 		else
 		{
@@ -371,9 +381,11 @@ ASMJIT_PATCH(0x4CDF54, FlyLocomotionClass_sub_4CD600_HunterSeeker_Descent, 5)
 	auto const pType = pObject->GetTechnoType();
 	auto const pExt = TechnoTypeExtContainer::Instance.Find(pType);
 
-	if (pType->HunterSeeker) {
+	if (pType->HunterSeeker)
+	{
 		auto ret = pExt->HunterSeekerDescentSpeed.Get(RulesExtData::Instance()->HunterSeekerDescentSpeed);
-		if (max < ret) {
+		if (max < ret)
+		{
 			ret = max;
 		}
 
@@ -448,7 +460,7 @@ ASMJIT_PATCH(0x4CDF54, FlyLocomotionClass_sub_4CD600_HunterSeeker_Descent, 5)
 // 	return 0x54C7A3;
 // }
 
-Point2D *__stdcall JumpjetLoco_ILoco_Shadow_Point(ILocomotion * iloco, Point2D *pPoint)
+Point2D* __stdcall JumpjetLoco_ILoco_Shadow_Point(ILocomotion* iloco, Point2D* pPoint)
 {
 	const auto pLoco = static_cast<JumpjetLocomotionClass*>(iloco);
 	const auto pThis = pLoco->LinkedTo;
@@ -466,7 +478,7 @@ Point2D *__stdcall JumpjetLoco_ILoco_Shadow_Point(ILocomotion * iloco, Point2D *
 	}
 
 	pPoint->X = 0;
-	pPoint->Y = Game::AdjustHeight(height) ;
+	pPoint->Y = Game::AdjustHeight(height);
 	return pPoint;
 }
 DEFINE_FUNCTION_JUMP(VTABLE, 0x7ECD98, JumpjetLoco_ILoco_Shadow_Point);

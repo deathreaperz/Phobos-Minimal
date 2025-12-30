@@ -112,11 +112,13 @@ public:
 		this->ObjectClass::UnInit();
 	}
 
-	VoxelAnimExtData* _GetExtData() {
+	VoxelAnimExtData* _GetExtData()
+	{
 		return *reinterpret_cast<VoxelAnimExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 
-	VoxelAnimTypeExtData* _GetTypeExtData() {
+	VoxelAnimTypeExtData* _GetTypeExtData()
+	{
 		return *reinterpret_cast<VoxelAnimTypeExtData**>(((DWORD)this->Type) + AbstractExtOffset);
 	}
 };

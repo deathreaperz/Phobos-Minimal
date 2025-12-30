@@ -18,19 +18,19 @@ TargetingData::TargetingData() : TypeExt { nullptr }
 , Suppressors {}
 { }
 
-TargetingData::TargetingData(SWTypeExtData* pTypeExt, HouseClass* pOwner) noexcept : 
+TargetingData::TargetingData(SWTypeExtData* pTypeExt, HouseClass* pOwner) noexcept :
 	TypeExt { pTypeExt }
-, Owner { pOwner }
-, NeedsLaunchSite { false }
-, NeedsDesignator { false }
-, NeedsAttractors { false }
-, NeedsSupressors { false }
-, NeedsInhibitors { false }
-, LaunchSites {}
-, Designators {}
-, Inhibitors {}
-, Attractors {}
-, Suppressors {}
+	, Owner { pOwner }
+	, NeedsLaunchSite { false }
+	, NeedsDesignator { false }
+	, NeedsAttractors { false }
+	, NeedsSupressors { false }
+	, NeedsInhibitors { false }
+	, LaunchSites {}
+	, Designators {}
+	, Inhibitors {}
+	, Attractors {}
+	, Suppressors {}
 { }
 
 void TargetingData::reset()

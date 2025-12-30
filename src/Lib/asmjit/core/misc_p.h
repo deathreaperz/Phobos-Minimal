@@ -13,7 +13,6 @@ ASMJIT_BEGIN_NAMESPACE
 //! \cond INTERNAL
 //! \addtogroup asmjit_utilities
 //! \{
-
 #define ASMJIT_LOOKUP_TABLE_4(T, I) T((I)), T((I+1)), T((I+2)), T((I+3))
 #define ASMJIT_LOOKUP_TABLE_8(T, I) ASMJIT_LOOKUP_TABLE_4(T, I), ASMJIT_LOOKUP_TABLE_4(T, I + 4)
 #define ASMJIT_LOOKUP_TABLE_16(T, I) ASMJIT_LOOKUP_TABLE_8(T, I), ASMJIT_LOOKUP_TABLE_8(T, I + 8)

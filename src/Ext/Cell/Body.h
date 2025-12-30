@@ -11,18 +11,21 @@ struct RadLevel
 	RadSiteClass* Rad { nullptr };
 	int Level { 0 };
 
-	bool Load(PhobosStreamReader& stm, bool registerForChange) {
+	bool Load(PhobosStreamReader& stm, bool registerForChange)
+	{
 		return this->Serialize(stm);
 	}
 
-	bool Save(PhobosStreamWriter& stm) const {
+	bool Save(PhobosStreamWriter& stm) const
+	{
 		return const_cast<RadLevel*>(this)->Serialize(stm);
 	}
 
 private:
 
 	template <typename T>
-	bool Serialize(T& stm) {
+	bool Serialize(T& stm)
+	{
 		return stm
 			.Process(this->Rad)
 			.Process(this->Level)
@@ -68,12 +71,14 @@ public:
 
 	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override { }
 
-	virtual void LoadFromStream(PhobosStreamReader& Stm) override {
+	virtual void LoadFromStream(PhobosStreamReader& Stm) override
+	{
 		this->AbstractExtended::Internal_LoadFromStream(Stm);
 		this->Serialize(Stm);
 	}
 
-	virtual void SaveToStream(PhobosStreamWriter& Stm) {
+	virtual void SaveToStream(PhobosStreamWriter& Stm)
+	{
 		const_cast<CellExtData*>(this)->AbstractExtended::Internal_SaveToStream(Stm);
 		const_cast<CellExtData*>(this)->Serialize(Stm);
 	}
@@ -135,6 +140,5 @@ public:
 	{
 		return *reinterpret_cast<CellExtData**>(((DWORD)this) + 0x18);
 	}
-
 };
 static_assert(sizeof(FakeCellClass) == sizeof(CellClass), "Missmathc size !");

@@ -56,5 +56,4 @@ struct DelayFireWeapon
 private:
 	template <typename T>
 	bool Serialize(T& Stm);
-
 };

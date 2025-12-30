@@ -66,13 +66,14 @@ void NOINLINE CheckGattling(InfantryClass* pThis)
 			case FireError::OK:
 			case FireError::REARM:
 			case FireError::FACING:
-			case FireError::ROTATING: {
+			case FireError::ROTATING:
+			{
 				if (pThis->IsDeployed())
 					pThis->GattlingRateDown(1);
 				else
 					pThis->GattlingRateUp(1);
 			}
-				break;
+			break;
 			default:
 				pThis->GattlingRateDown(1);
 				break;
@@ -179,7 +180,8 @@ ASMJIT_PATCH(0x5209A7, InfantryClass_FiringAI_BurstDelays, 0x8)
 	GET(InfantryClass*, pThis, EBP);
 	GET(int, fireUp, EDX);
 
-	if (!FiringAITemp::WeaponType) {
+	if (!FiringAITemp::WeaponType)
+	{
 		return ReturnFromFunction;
 	}
 
@@ -190,10 +192,11 @@ ASMJIT_PATCH(0x5209A7, InfantryClass_FiringAI_BurstDelays, 0x8)
 	const bool allowBurst = pWeaponExt->Burst_FireWithinSequence;
 
 	//IsFiring
-	if (R->AL()) {
-
+	if (R->AL())
+	{
 		// Calculate cumulative burst delay as well cumulative SellSounddelay after next shot (projected delay).
-		if (allowBurst) {
+		if (allowBurst)
+		{
 			for (int i = 0; i <= pThis->CurrentBurstIndex; i++)
 			{
 				int burstDelay = WeaponTypeExtData::GetBurstDelay(FiringAITemp::WeaponType, i);
@@ -214,7 +217,7 @@ ASMJIT_PATCH(0x5209A7, InfantryClass_FiringAI_BurstDelays, 0x8)
 		const int frame = pThis->Animation.Stage;
 		const int firingFrame = fireUp + cumulativeDelay;
 
-		if (TechnoExtData::HandleDelayedFireWithPauseSequence(pThis, FiringAITemp::WeaponType ,FiringAITemp::weaponIndex, frame , cumulativeDelay))
+		if (TechnoExtData::HandleDelayedFireWithPauseSequence(pThis, FiringAITemp::WeaponType, FiringAITemp::weaponIndex, frame, cumulativeDelay))
 			return ReturnFromFunction;
 
 		if (frame == firingFrame)

@@ -118,7 +118,6 @@ public:
 	// Clear used objects but preserve memory
 	void clear() noexcept
 	{
-
 		for (std::size_t i = 0; i < N; ++i)
 		{
 			if (used[i])

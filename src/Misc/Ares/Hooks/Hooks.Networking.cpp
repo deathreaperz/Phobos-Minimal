@@ -51,12 +51,14 @@ ASMJIT_PATCH(0x64B704, Add_Compressed_Events_PayloadSize, 0x8)
 // #666: Trench Traversal - check if traversal is possible & cursor display
 ASMJIT_PATCH(0x44725F, BuildingClass_GetActionOnObject_TargetABuilding, 5)
 {
-	GET(BuildingClass *, pThis, ESI);
-	GET(TechnoClass *, T, EBP);
+	GET(BuildingClass*, pThis, ESI);
+	GET(TechnoClass*, T, EBP);
 	// not decided on UI handling yet
 
-	if(auto targetBuilding = cast_to<BuildingClass*>(T)) {
-		if(TechnoExt_ExtData::canTraverseTo(pThis ,targetBuilding)) {
+	if (auto targetBuilding = cast_to<BuildingClass*>(T))
+	{
+		if (TechnoExt_ExtData::canTraverseTo(pThis, targetBuilding))
+		{
 			//show entry cursor, hooked up to traversal logic in Misc/Network.cpp -> EventExt::Handlers::RespondToTrenchRedirectClick
 			R->EAX(Action::Enter);
 			return 0x447273;
@@ -69,21 +71,23 @@ ASMJIT_PATCH(0x44725F, BuildingClass_GetActionOnObject_TargetABuilding, 5)
 ASMJIT_PATCH(0x443414, BuildingClass_ActionOnObject, 6)
 {
 	GET(Action, action, EAX);
-	GET(BuildingClass *, pThis, ECX);
+	GET(BuildingClass*, pThis, ECX);
 
-	GET_STACK(ObjectClass *, pTarget, 0x8);
+	GET_STACK(ObjectClass*, pTarget, 0x8);
 
-	if(action == Action::Detonate)
+	if (action == Action::Detonate)
 		return 0;
 
 	// part of deactivation logic
-	if(pThis->Deactivated) {
+	if (pThis->Deactivated)
+	{
 		R->EAX(1);
 		return 0x44344D;
 	}
 
 	// trenches
-	if(action == Action::Enter && pTarget->WhatAmI() == BuildingClass::AbsID) {
+	if (action == Action::Enter && pTarget->WhatAmI() == BuildingClass::AbsID)
+	{
 		CoordStruct XYZ = pTarget->GetCoords();
 		CellStruct tgt = CellClass::Coord2Cell(XYZ);
 		EventExt::TrenchRedirectClick::Raise(pThis, &tgt);
@@ -97,10 +101,11 @@ ASMJIT_PATCH(0x443414, BuildingClass_ActionOnObject, 6)
 ASMJIT_PATCH(0x4C6CCD, EventClass_Execute, 0xA)
 {
 	GET(int, EventKind, EAX);
-	GET(EventClass *, Event, ESI);
+	GET(EventClass*, Event, ESI);
 
 	const auto kind = static_cast<EventExt::Events>(EventKind);
-	if(EventExt::IsValidType(kind)) {
+	if (EventExt::IsValidType(kind))
+	{
 		// Received Ares event, do something about it
 		EventExt::RespondEvent(Event, kind);
 	}
@@ -108,9 +113,9 @@ ASMJIT_PATCH(0x4C6CCD, EventClass_Execute, 0xA)
 	--(EventKind);
 	R->EAX(EventKind);
 	return (EventKind > (int)EventType::ABANDON_ALL)
-	 ? 0x4C8109
-	 : 0x4C6CD7
-	;
+		? 0x4C8109
+		: 0x4C6CD7
+		;
 }
 
 ASMJIT_PATCH(0x4C65EF, EventClass_CTOR_Log, 0x7)
@@ -118,7 +123,8 @@ ASMJIT_PATCH(0x4C65EF, EventClass_CTOR_Log, 0x7)
 	GET(int, events, EAX);
 
 	const auto eventType = static_cast<EventExt::Events>(events);
-	if (EventExt::IsValidType(eventType)) {
+	if (EventExt::IsValidType(eventType))
+	{
 		// Received Ares event, send the names
 		R->ECX(EventExt::GetEventNames(eventType));
 		return 0x4C65F6;
@@ -130,7 +136,8 @@ ASMJIT_PATCH(0x4C65EF, EventClass_CTOR_Log, 0x7)
 ASMJIT_PATCH(0x64C5C7, Execute_DoList_Log, 0x7)
 {
 	const auto eventType = static_cast<EventExt::Events>(R->AL());
-	if (EventExt::IsValidType(eventType)) {
+	if (EventExt::IsValidType(eventType))
+	{
 		// Received Ares event, send the names
 		R->ECX(EventExt::GetEventNames(eventType));
 		return 0x64C5CE;

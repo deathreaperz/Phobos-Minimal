@@ -79,7 +79,8 @@ ASMJIT_PATCH(0x532150, CommandClassCallback_Register, 5)
 #pragma endregion Information
 
 #pragma region Adminexclusive
-	if(Phobos::Otamaa::IsAdmin) {
+	if (Phobos::Otamaa::IsAdmin)
+	{
 		Make<PlaceVeinholeMonster>();
 		Make<RevealMapCommandClass>();
 		Make<CaptureObjectsCommandClass>();
@@ -136,7 +137,8 @@ ASMJIT_PATCH(0x532150, CommandClassCallback_Register, 5)
 
 #pragma region SWSidebar
 	Make<ToggleSWSidebar>();
-	if (Phobos::Config::SuperWeaponSidebarCommands) {
+	if (Phobos::Config::SuperWeaponSidebarCommands)
+	{
 		SWSidebarClass::Commands[0] = Make<FireTacticalSWCommandClass<1>>();
 		SWSidebarClass::Commands[1] = Make<FireTacticalSWCommandClass<2>>();
 		SWSidebarClass::Commands[2] = Make<FireTacticalSWCommandClass<3>>();
@@ -149,7 +151,6 @@ ASMJIT_PATCH(0x532150, CommandClassCallback_Register, 5)
 		SWSidebarClass::Commands[9] = Make<FireTacticalSWCommandClass<10>>();
 	}
 #pragma endregion SWSidebar
-
 
 	return 0x0;
 }
@@ -175,33 +176,34 @@ ASMJIT_PATCH(0x533F50, Game_ScrollSidebar_Skip, 0x5)
 			return SkipScrollSidebar;
 	}
 
-	if (!Phobos::Config::ScrollSidebarStripInTactical) {
+	if (!Phobos::Config::ScrollSidebarStripInTactical)
+	{
 		const auto pMouse = WWMouseClass::Instance();
 
 		if (pMouse->XY1.X < Make_Global<int>(0xB0CE30)) // TacticalClass::view_bound.Width
 			return SkipScrollSidebar;
 	}
 
-	if(MessageColumnClass::Instance.IsHovering())
-		return SkipScrollSidebar ;
+	if (MessageColumnClass::Instance.IsHovering())
+		return SkipScrollSidebar;
 
 	return 0;
 }
-
 
 ASMJIT_PATCH(0x777998, Game_WndProc_ScrollMouseWheel, 0x6)
 {
 	GET(const WPARAM, WParam, ECX);
 
-	if (WParam & 0x80000000u) {
-
+	if (WParam & 0x80000000u)
+	{
 		if (DistributionModeHoldDownCommandClass::Enabled && Phobos::Config::AllowDistributionCommand_SpreadModeScroll)
 			DistributionModeHoldDownCommandClass::DistributionSpreadModeReduce();
 
-		 if(MessageColumnClass::Instance.IsHovering())
-			 MessageColumnClass::Instance.ScrollDown();
-	} else {
-
+		if (MessageColumnClass::Instance.IsHovering())
+			MessageColumnClass::Instance.ScrollDown();
+	}
+	else
+	{
 		if (DistributionModeHoldDownCommandClass::Enabled && Phobos::Config::AllowDistributionCommand_SpreadModeScroll)
 			DistributionModeHoldDownCommandClass::DistributionSpreadModeExpand();
 

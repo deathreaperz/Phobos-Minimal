@@ -48,7 +48,6 @@ ASMJIT_PATCH(0x732d47, TacticalClass_CollectSelectedIDs, 5)
 	return 0x732FD9;
 }
 
-
 ASMJIT_PATCH(0x4ABD6C, DisplayClass_LeftMouseButtonUp_GroupAs, 0xA)
 {
 	GET(ObjectClass*, pThis, ESI);

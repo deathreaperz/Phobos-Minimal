@@ -209,7 +209,6 @@ struct MarkForDeathDeleterB
 	}
 };
 
-
 template<typename T>
 struct DetachDeleter
 {

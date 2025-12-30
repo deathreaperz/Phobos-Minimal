@@ -127,7 +127,8 @@ public:
 	void __Reduce_Radiation();
 	double __Radiation_At(CellStruct* cell) const;
 
-	RadSiteExtData* _GetExtData() {
+	RadSiteExtData* _GetExtData()
+	{
 		return *reinterpret_cast<RadSiteExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 };

@@ -21,11 +21,13 @@ int PhobosAEFunctions::GetAttachedEffectCumulativeCount(TechnoClass* pTechno, Ph
 	auto pExt = TechnoExtContainer::Instance.Find(pTechno);
 	unsigned int foundCount = 0;
 
-	for (auto const& attachEffect : pExt->PhobosAE) {
-		if(!attachEffect)
+	for (auto const& attachEffect : pExt->PhobosAE)
+	{
+		if (!attachEffect)
 			continue;
 
-		if (attachEffect->GetType() == pAttachEffectType && attachEffect->IsActive()) {
+		if (attachEffect->GetType() == pAttachEffectType && attachEffect->IsActive())
+		{
 			if (ignoreSameSource && pInvoker && pSource && attachEffect->IsFromSource(pInvoker, pSource))
 				continue;
 
@@ -94,49 +96,55 @@ void PhobosAEFunctions::UpdateAttachEffects(TechnoClass* pTechno)
 	bool inTunnel = pExt->IsInTunnel || pExt->IsBurrowed;
 	bool markForRedraw = false;
 	std::vector<std::pair<WeaponTypeClass*, TechnoClass*>> expireWeapons {};
-    bool altered = false;
+	bool altered = false;
 
-	pExt->PhobosAE.remove_all_if([&](std::unique_ptr<PhobosAttachEffectClass>& attachEffect) {
-		if(!attachEffect.get()) {
-			altered = true;
-		   return true;
-		}
+	pExt->PhobosAE.remove_all_if([&](std::unique_ptr<PhobosAttachEffectClass>& attachEffect)
+ {
+	 if (!attachEffect.get())
+	 {
+		 altered = true;
+		 return true;
+	 }
 
-		if (!inTunnel)
-			attachEffect->SetAnimationTunnelState(true);
+	 if (!inTunnel)
+		 attachEffect->SetAnimationTunnelState(true);
 
-		attachEffect->AI();
- 		bool hasExpired = attachEffect->HasExpired();
-		bool shouldDiscard = attachEffect->IsActive() && attachEffect->ShouldBeDiscardedNow();
+	 attachEffect->AI();
+	 bool hasExpired = attachEffect->HasExpired();
+	 bool shouldDiscard = attachEffect->IsActive() && attachEffect->ShouldBeDiscardedNow();
 
-		if (hasExpired || shouldDiscard) {
+	 if (hasExpired || shouldDiscard)
+	 {
+		 attachEffect->ShouldBeDiscarded = false;
+		 auto const pType = attachEffect->GetType();
 
-			attachEffect->ShouldBeDiscarded = false;
-			auto const pType = attachEffect->GetType();
+		 if (pType->HasTint())
+			 markForRedraw = true;
 
-			if (pType->HasTint())
-				markForRedraw = true;
+		 if (pType->Cumulative && pType->CumulativeAnimations.size() > 0)
+			 PhobosAEFunctions::UpdateCumulativeAttachEffects(pTechno, attachEffect->GetType(), attachEffect.get());
 
-			if (pType->Cumulative && pType->CumulativeAnimations.size() > 0)
-				PhobosAEFunctions::UpdateCumulativeAttachEffects(pTechno , attachEffect->GetType(), attachEffect.get());
+		 if (pType->ExpireWeapon && ((hasExpired && (pType->ExpireWeapon_TriggerOn & ExpireWeaponCondition::Expire) != ExpireWeaponCondition::None)
+			 || (shouldDiscard && (pType->ExpireWeapon_TriggerOn & ExpireWeaponCondition::Discard) != ExpireWeaponCondition::None)))
+		 {
+			 if (!pType->Cumulative || !pType->ExpireWeapon_CumulativeOnlyOnce || PhobosAEFunctions::GetAttachedEffectCumulativeCount(pTechno, pType) < 1)
+			 {
+				 PhobosAttachEffectClass::CumulateExpireWeapon(pType, pTechno, attachEffect->Invoker, expireWeapons);
+			 }
+		 }
 
-			if (pType->ExpireWeapon && ((hasExpired && (pType->ExpireWeapon_TriggerOn & ExpireWeaponCondition::Expire) != ExpireWeaponCondition::None)
-				|| (shouldDiscard && (pType->ExpireWeapon_TriggerOn & ExpireWeaponCondition::Discard) != ExpireWeaponCondition::None)))	{
-					if (!pType->Cumulative || !pType->ExpireWeapon_CumulativeOnlyOnce || PhobosAEFunctions::GetAttachedEffectCumulativeCount(pTechno, pType) < 1) {
-						PhobosAttachEffectClass::CumulateExpireWeapon(pType, pTechno, attachEffect->Invoker , expireWeapons);
-					}
-				}
+		 if (!(shouldDiscard && attachEffect->ResetIfRecreatable()))
+		 {
+			 altered = true;
+			 return true;
+		 }
+	 }
 
-			if (!(shouldDiscard && attachEffect->ResetIfRecreatable())){
-				altered = true;
-				return true;
-			}
-		}
-
-		return false;
+	 return false;
 	});
 
-	if(altered){
+	if (altered)
+	{
 		AEProperties::Recalculate(pTechno);
 		AEProperties::UpdateAEAnimLogic(pTechno);
 	}
@@ -157,7 +165,8 @@ bool PhobosAEFunctions::HasAttachedEffects(
 	 std::vector<int> const* minCounts,
 	 std::vector<int> const* maxCounts,
 	 bool requireAnims
-	) {
+)
+{
 	unsigned int foundCount = 0;
 	unsigned int typeCounter = 1;
 	auto pExt = TechnoExtContainer::Instance.Find(pTechno);
@@ -166,28 +175,31 @@ bool PhobosAEFunctions::HasAttachedEffects(
 	{
 		for (auto const& attachEffect : pExt->PhobosAE)
 		{
-			if(!attachEffect)
+			if (!attachEffect)
 				continue;
 
 			if (attachEffect->Type == type
 				&& attachEffect->IsActive()
 				&& (!requireAnims || !attachEffect->Type->HasAnim() || attachEffect->HasAnim())
-			) {
+			)
+			{
 				if (ignoreSameSource && pInvoker && pSource && attachEffect->IsFromSource(pInvoker, pSource))
 					continue;
 
 				unsigned int minSize = minCounts ? minCounts->size() : 0;
 				unsigned int maxSize = maxCounts ? maxCounts->size() : 0;
 
-				if (type->Cumulative && (minSize > 0 || maxSize > 0)) {
-
+				if (type->Cumulative && (minSize > 0 || maxSize > 0))
+				{
 					int cumulativeCount = PhobosAEFunctions::GetAttachedEffectCumulativeCount(pTechno, type, ignoreSameSource, pInvoker, pSource);
 
-					if (minSize > 0 && (cumulativeCount < minCounts->operator[](typeCounter - 1 >= minSize ? minSize - 1 : typeCounter - 1))) {
+					if (minSize > 0 && (cumulativeCount < minCounts->operator[](typeCounter - 1 >= minSize ? minSize - 1 : typeCounter - 1)))
+					{
 						continue;
 					}
 
-					if (maxSize > 0 && (cumulativeCount > maxCounts->operator[](typeCounter - 1 >= maxSize ? maxSize - 1 : typeCounter - 1))) {
+					if (maxSize > 0 && (cumulativeCount > maxCounts->operator[](typeCounter - 1 >= maxSize ? maxSize - 1 : typeCounter - 1)))
+					{
 						continue;
 					}
 				}
@@ -238,36 +250,40 @@ void PhobosAEFunctions::UpdateSelfOwnedAttachEffects(TechnoClass* pTechno, Techn
 	bool markForRedraw = false;
 	bool altered = false;
 
-	if (!pExt->PhobosAE.empty()){
-
+	if (!pExt->PhobosAE.empty())
+	{
 		std::vector<std::pair<WeaponTypeClass*, TechnoClass*>>  expireWeapons {};
 
 		// Delete ones on old type and not on current.
-		pExt->PhobosAE.remove_all_if([&](std::unique_ptr<PhobosAttachEffectClass>& it) {
+		pExt->PhobosAE.remove_all_if([&](std::unique_ptr<PhobosAttachEffectClass>& it)
+ {
+	 if (!it.get())
+	 {
+		 altered = true;
+		 return true;
+	 }
 
-			if(!it.get()) {
-				altered = true;
-				return true;
-			}
+	 auto const attachEffect = it.get();
+	 auto const pType = attachEffect->GetType();
+	 bool selfOwned = attachEffect->IsSelfOwned();
+	 bool remove = selfOwned && !pTypeExt->PhobosAttachEffects.AttachTypes.Contains(pType);
 
-			auto const attachEffect = it.get();
-			auto const pType = attachEffect->GetType();
-			bool selfOwned = attachEffect->IsSelfOwned();
-			bool remove = selfOwned && !pTypeExt->PhobosAttachEffects.AttachTypes.Contains(pType);
+	 if (remove)
+	 {
+		 if (pType->ExpireWeapon && (pType->ExpireWeapon_TriggerOn & ExpireWeaponCondition::Expire) != ExpireWeaponCondition::None)
+		 {
+			 if (!pType->Cumulative || !pType->ExpireWeapon_CumulativeOnlyOnce || PhobosAEFunctions::GetAttachedEffectCumulativeCount(pTechno, pType) < 1)
+			 {
+				 PhobosAttachEffectClass::CumulateExpireWeapon(pType, pTechno, it->Invoker, expireWeapons);
+			 }
+		 }
 
-			if (remove) {
-				if (pType->ExpireWeapon && (pType->ExpireWeapon_TriggerOn & ExpireWeaponCondition::Expire) != ExpireWeaponCondition::None) {
-					if (!pType->Cumulative || !pType->ExpireWeapon_CumulativeOnlyOnce || PhobosAEFunctions::GetAttachedEffectCumulativeCount(pTechno, pType) < 1) {
-						PhobosAttachEffectClass::CumulateExpireWeapon(pType, pTechno, it->Invoker , expireWeapons);
-					}
-				}
+		 markForRedraw |= pType->HasTint();
+		 altered = true;
+		 return true;
+	 }
 
-				markForRedraw |= pType->HasTint();
-				altered = true;
-				return true;
-			}
-
-			return false;
+	 return false;
 		});
 
 		PhobosAttachEffectClass::DetonateExpireWeapon(expireWeapons);
@@ -276,7 +292,8 @@ void PhobosAEFunctions::UpdateSelfOwnedAttachEffects(TechnoClass* pTechno, Techn
 	// Add new ones.
 	int count = PhobosAttachEffectClass::Attach(pThis, pThis->Owner, pThis, pThis, &pTypeExt->PhobosAttachEffects);
 
-	if (altered && !count){
+	if (altered && !count)
+	{
 		AEProperties::Recalculate(pTechno);
 		AEProperties::UpdateAEAnimLogic(pTechno);
 		markForRedraw = true;
@@ -320,15 +337,16 @@ void PhobosAEFunctions::ApplyRevengeWeapon(TechnoClass* pThis, TechnoClass* pSou
 	}
 }
 
-void PhobosAEFunctions::ApplyReflectDamage(TechnoClass* pThis , int* pDamage , TechnoClass* pAttacker , HouseClass* pAttacker_House, WarheadTypeClass* pWH)
+void PhobosAEFunctions::ApplyReflectDamage(TechnoClass* pThis, int* pDamage, TechnoClass* pAttacker, HouseClass* pAttacker_House, WarheadTypeClass* pWH)
 {
 	//Debug::LogInfo(__FUNCTION__" Executed [%s - %s]", pThis->GetThisClassName(), pThis->get_ID());
 	auto pExt = TechnoExtContainer::Instance.Find(pThis);
 	const auto pWHExt = WarheadTypeExtContainer::Instance.Find(pWH);
 
-	if (pExt->AE.flags.ReflectDamage && *pDamage > 0 && pAttacker && pAttacker->IsAlive) {
-		for (auto& attachEffect : pExt->PhobosAE) {
-
+	if (pExt->AE.flags.ReflectDamage && *pDamage > 0 && pAttacker && pAttacker->IsAlive)
+	{
+		for (auto& attachEffect : pExt->PhobosAE)
+		{
 			if (!attachEffect || !attachEffect->IsActive())
 				continue;
 
@@ -344,11 +362,11 @@ void PhobosAEFunctions::ApplyReflectDamage(TechnoClass* pThis , int* pDamage , T
 				continue;
 
 			int damage = pType->ReflectDamage_Override.Get(static_cast<int>(*pDamage * pType->ReflectDamage_Multiplier));
-				auto const pReflectWH = pType->ReflectDamage_Warhead.Get(RulesClass::Instance->C4Warhead);
+			auto const pReflectWH = pType->ReflectDamage_Warhead.Get(RulesClass::Instance->C4Warhead);
 			auto const pWHExtRef = WarheadTypeExtContainer::Instance.Find(pReflectWH);
 
-			if (pType->ReflectDamage_UseInvokerAsOwner) {
-
+			if (pType->ReflectDamage_UseInvokerAsOwner)
+			{
 				auto const pInvoker = attachEffect->GetInvoker();
 
 				if (pInvoker && EnumFunctions::CanTargetHouse(pType->ReflectDamage_AffectsHouses, pInvoker->Owner, pAttacker_House))
@@ -366,7 +384,6 @@ void PhobosAEFunctions::ApplyReflectDamage(TechnoClass* pThis , int* pDamage , T
 			}
 			else  if (EnumFunctions::CanTargetHouse(pType->ReflectDamage_AffectsHouses, pThis->Owner, pAttacker_House))
 			{
-
 				pWHExtRef->Reflected = true;
 
 				if (pType->ReflectDamage_Warhead_Detonate)

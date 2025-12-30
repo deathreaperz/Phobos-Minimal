@@ -56,5 +56,3 @@ void TechnoImageReplacer::Replace(AircraftTypeClass* pType)
 		}
 	}
 }
-
-

@@ -160,7 +160,8 @@ ASMJIT_PATCH(0x644857, ParticleSystemTypeClass_ReadINI_BehavesLike_B, 0x6)
 		}
 	}
 
-	if (IS_SAME_STR_(pResult, "Web")) {
+	if (IS_SAME_STR_(pResult, "Web"))
+	{
 		R->EDI(ParticleSystemTypeBehavesLike(5)); //result;
 		return 0x64487F;
 	}
@@ -188,7 +189,8 @@ ASMJIT_PATCH(0x72590E, AnnounceInvalidPointer_Particle, 0x9)
 	{
 		GET(ParticleClass*, pThis, ESI);
 
-		if (auto pSys = pThis->ParticleSystem) {
+		if (auto pSys = pThis->ParticleSystem)
+		{
 			pSys->Particles.erase(pThis);
 		}
 
@@ -241,7 +243,6 @@ ASMJIT_PATCH(0x72590E, AnnounceInvalidPointer_Particle, 0x9)
 // 	int damage = pTypeExt->This()->Damage;
 // 	if (pItem->ReceiveDamage(&damage, distance, pTypeExt->This()->Warhead, pAttacker, false, false, pOwner) == DamageState::NowDead) {
 // 		if (pTypeExt->TransmogrifyChance >= 0) {
-
 // 			if (pTypeExt->TransmogrifyOwner != OwnerHouseKind::Neutral)
 // 				transmoOwner = HouseExtData::GetHouseKind(pTypeExt->TransmogrifyOwner, true, nullptr, pOwner, pItem->GetOwningHouse());
 
@@ -283,7 +284,6 @@ ASMJIT_PATCH(0x72590E, AnnounceInvalidPointer_Particle, 0x9)
 // 		}
 
 // 	} else {
-
 // 		const auto pVec = Helpers::Alex::getCellSpreadItems(pThis->Location, std::ceil(pTypeExt->DamageRange.Get()));
 
 // 		for (const auto pItem : pVec)
@@ -312,7 +312,8 @@ ASMJIT_PATCH(0x62D015, ParticleClass_Draw_Palette, 6)
 
 	ConvertClass* pConvert = FileSystem::ANIM_PAL();
 	const auto pTypeExt = ParticleTypeExtContainer::Instance.Find(pThis->Type);
-	if (const auto pConvertData = pTypeExt->Palette.GetConvert()) {
+	if (const auto pConvertData = pTypeExt->Palette.GetConvert())
+	{
 		pConvert = pConvertData;
 	}
 
@@ -330,7 +331,6 @@ ASMJIT_PATCH(0x62D015, ParticleClass_Draw_Palette, 6)
 // 	const auto pTypeExt = ParticleTypeExtContainer::Instance.Find(pThis->Type);
 
 // 	for (auto pOccupy = pCell->GetContent(pThis->Location.Z); pOccupy; pOccupy = pOccupy->NextObject) {
-
 // 		if (pOccupy && pOccupy->IsAlive && pOccupy->Health > 0 && !pOccupy->InLimbo)
 // 		{
 // 			if (pThis->ParticleSystem && pOccupy == pThis->ParticleSystem->Owner)

@@ -9,7 +9,7 @@ ASMJIT_PATCH(0x6F7CE2, TechnoClass_CanAutoTargetObject_DisallowMoving, 0x6)
 	GET(AbstractClass* const, pTarget, ESI);
 	GET(const int, WeaponIndex, EBX);
 
-	if (const auto pUnit = cast_to<UnitClass*,false>(pThis))
+	if (const auto pUnit = cast_to<UnitClass*, false>(pThis))
 	{
 		if (TechnoExtData::CannotMove(pUnit))
 		{
@@ -28,7 +28,7 @@ ASMJIT_PATCH(0x6F7E24, TechnoClass_EvaluateObject_MapZone, 0x6)
 	GET(TechnoClass*, pThis, EDI);
 	GET(ObjectClass*, pTarget, ESI);
 	GET(WeaponTypeClass*, pWeapon, EBP);
-	GET_STACK(ZoneType, zone, STACK_OFFSET(0x3C ,0x18));
+	GET_STACK(ZoneType, zone, STACK_OFFSET(0x3C, 0x18));
 
 	auto pThisTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType());
 
@@ -45,7 +45,7 @@ ASMJIT_PATCH(0x6F8E1F, TechnoClass_SelectAutoTarget_CeasefireMode, 0x6)
 	GET(TechnoTypeClass*, pType, EAX);
 	GET(TechnoClass*, pThis, ESI);
 
-	if(TechnoExtContainer::Instance.Find(pThis)->Is_DriverKilled)
+	if (TechnoExtContainer::Instance.Find(pThis)->Is_DriverKilled)
 		return 0x6F8E38;
 
 	R->CL(pType->NoAutoFire || (TechnoExtContainer::Instance.Find(pThis)->GetPassiveAcquireMode()) == PassiveAcquireMode::Ceasefire);

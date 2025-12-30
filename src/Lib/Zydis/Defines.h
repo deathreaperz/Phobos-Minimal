@@ -34,18 +34,18 @@
 
 #include <Zycore/Defines.h>
 
-// This is a cut-down version of what CMake's `GenerateExportHeader` would usually generate. To
-// simplify builds without CMake, we define these things manually instead of relying on CMake
-// to generate the header.
-//
-// For static builds, our CMakeList will define `ZYDIS_STATIC_BUILD`. For shared library builds,
-// our CMake will define `ZYDIS_SHOULD_EXPORT` depending on whether the target is being imported or
-// exported. If CMake isn't used, users can manually define these to fit their use-case.
+ // This is a cut-down version of what CMake's `GenerateExportHeader` would usually generate. To
+ // simplify builds without CMake, we define these things manually instead of relying on CMake
+ // to generate the header.
+ //
+ // For static builds, our CMakeList will define `ZYDIS_STATIC_BUILD`. For shared library builds,
+ // our CMake will define `ZYDIS_SHOULD_EXPORT` depending on whether the target is being imported or
+ // exported. If CMake isn't used, users can manually define these to fit their use-case.
 
-// Backward compatibility: CMake would previously generate these variables names. However, because
-// they have pretty cryptic names, we renamed them when we got rid of `GenerateExportHeader`. For
-// backward compatibility for users that don't use CMake and previously manually defined these, we
-// translate the old defines here and print a warning.
+ // Backward compatibility: CMake would previously generate these variables names. However, because
+ // they have pretty cryptic names, we renamed them when we got rid of `GenerateExportHeader`. For
+ // backward compatibility for users that don't use CMake and previously manually defined these, we
+ // translate the old defines here and print a warning.
 #if defined(ZYDIS_STATIC_DEFINE)
 #   pragma message("ZYDIS_STATIC_DEFINE was renamed to ZYDIS_STATIC_BUILD.")
 #   define ZYDIS_STATIC_BUILD
@@ -68,9 +68,9 @@
 #   endif
 #endif
 
-/**
- * Symbol is not exported and for internal use only.
- */
+ /**
+  * Symbol is not exported and for internal use only.
+  */
 #define ZYDIS_NO_EXPORT
 
 #endif // ZYDIS_DEFINES_H

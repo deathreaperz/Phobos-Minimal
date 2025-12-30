@@ -37,7 +37,8 @@ public:
 		return this->Invoker;
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE PhobosAttachEffectTypeClass* GetType() const {
+	COMPILETIMEEVAL FORCEDINLINE PhobosAttachEffectTypeClass* GetType() const
+	{
 		return this->Type;
 	}
 
@@ -45,28 +46,33 @@ public:
 
 	bool ResetIfRecreatable();
 
-	COMPILETIMEEVAL FORCEDINLINE bool IsSelfOwned() const {
+	COMPILETIMEEVAL FORCEDINLINE bool IsSelfOwned() const
+	{
 		return this->Source == this->Techno;
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE bool HasExpired() const {
+	COMPILETIMEEVAL FORCEDINLINE bool HasExpired() const
+	{
 		return this->IsSelfOwned() && this->Delay >= 0 ? false : !this->Duration;
 	}
 
 	bool ShouldBeDiscardedNow();
 
-	COMPILETIMEEVAL FORCEDINLINE bool HasAnim() const{
+	COMPILETIMEEVAL FORCEDINLINE bool HasAnim() const
+	{
 		return this->Animation != nullptr;
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE bool IsActive() const {
+	COMPILETIMEEVAL FORCEDINLINE bool IsActive() const
+	{
 		if (this->IsSelfOwned())
 			return this->InitialDelay <= 0 && this->CurrentDelay == 0 && this->HasInitialized && this->IsOnline && !this->NeedsDurationRefresh;
 		else
 			return this->Duration && this->IsOnline;
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE bool IsFromSource(TechnoClass* pInvoker, AbstractClass* pSource) const {
+	COMPILETIMEEVAL FORCEDINLINE bool IsFromSource(TechnoClass* pInvoker, AbstractClass* pSource) const
+	{
 		return pInvoker == this->Invoker && pSource == this->Source;
 	}
 
@@ -92,7 +98,7 @@ public:
 	static int DetachTypes(TechnoClass* pTarget, AEAttachInfoTypeClass* attachEffectInfo, std::vector<PhobosAttachEffectTypeClass*> const& types);
 	static int RemoveAllOfType(PhobosAttachEffectTypeClass* pType, TechnoClass* pTarget, int minCount, int maxCount);
 
-	static void CumulateExpireWeapon(PhobosAttachEffectTypeClass* pType, TechnoClass* pTarget, TechnoClass* pInvoker,	std::vector<std::pair<WeaponTypeClass*, TechnoClass*>>& expireContainer);
+	static void CumulateExpireWeapon(PhobosAttachEffectTypeClass* pType, TechnoClass* pTarget, TechnoClass* pInvoker, std::vector<std::pair<WeaponTypeClass*, TechnoClass*>>& expireContainer);
 	static void DetonateExpireWeapon(std::vector<std::pair<WeaponTypeClass*, TechnoClass*>>& expireContainer);
 
 	template <typename T>

@@ -124,8 +124,10 @@ ASMJIT_PATCH(0x51DF38, InfantryClass_Remove, 0xA)
 {
 	GET(FakeInfantryClass*, pThis, ESI);
 
-	if (auto pGarrison = std::exchange(pThis->_GetExtData()->GarrisonedIn , nullptr)) {
-		if (!pGarrison->Occupants.erase(pThis)) {
+	if (auto pGarrison = std::exchange(pThis->_GetExtData()->GarrisonedIn, nullptr))
+	{
+		if (!pGarrison->Occupants.erase(pThis))
+		{
 			Debug::LogInfo("Infantry {} was garrisoned in building {}, but building didn't find it. WTF?",
 				pThis->Type->ID, pGarrison->Type->ID);
 		}
@@ -291,22 +293,27 @@ ASMJIT_PATCH(0x51F628, InfantryClass_Guard_Doggie, 0x5)
 	GET(InfantryClass*, pThis, ESI);
 	GET(int, res, EAX);
 
-	if (res != -1) {
+	if (res != -1)
+	{
 		return 0x51F634;
 	}
 
 	// doggie sit down on tiberium handling
-	if (pThis->Type->Doggie && !pThis->Crawling && !pThis->Target && !pThis->Destination) {
-
+	if (pThis->Type->Doggie && !pThis->Crawling && !pThis->Target && !pThis->Destination)
+	{
 		const auto& nPrimaryFacing = pThis->PrimaryFacing;
 
-		if (!nPrimaryFacing.Is_Rotating() && pThis->GetCell()->LandType == LandType::Tiberium) {
-			if (nPrimaryFacing.Current().GetDir() == DirType::East) {
+		if (!nPrimaryFacing.Is_Rotating() && pThis->GetCell()->LandType == LandType::Tiberium)
+		{
+			if (nPrimaryFacing.Current().GetDir() == DirType::East)
+			{
 				// correct facing, sit down
 				pThis->PlayAnim(DoType::Down);
-			} else {
+			}
+			else
+			{
 				// turn to correct facing
-				pThis->Locomotor.GetInterfacePtr()->Do_Turn(DirStruct{ 3u , DirType::East });
+				pThis->Locomotor.GetInterfacePtr()->Do_Turn(DirStruct { 3u , DirType::East });
 			}
 		}
 	}
@@ -331,24 +338,31 @@ ASMJIT_PATCH(0x5200C1, InfantryClass_UpdatePanic_Doggie, 0x6)
 
 	const auto pType = pThis->Type;
 
-	if(!pType->Doggie) {
+	if (!pType->Doggie)
+	{
 		return 0;
 	}
 
 	// if panicking badly, lay down on tiberium
-	if (pThis->PanicDurationLeft >= RulesExtData::Instance()->DoggiePanicMax) {
-		if (!pThis->Destination && !pThis->Locomotor.GetInterfacePtr()->Is_Moving())		{
-			if (pThis->GetCell()->LandType == LandType::Tiberium) {
+	if (pThis->PanicDurationLeft >= RulesExtData::Instance()->DoggiePanicMax)
+	{
+		if (!pThis->Destination && !pThis->Locomotor.GetInterfacePtr()->Is_Moving())
+		{
+			if (pThis->GetCell()->LandType == LandType::Tiberium)
+			{
 				// is on tiberium. just lay down
 				//if(!pType->Fraidycat)
-					pThis->PlayAnim(DoType::Down);
+				pThis->PlayAnim(DoType::Down);
 				//else {
 					//return 0x5201EC;
 				//}
-			} else if (!pThis->InLimbo) {
-					// search tiberium and abort current mission
-					pThis->MoveToTiberium(16, false);
-				if (pThis->Destination) {
+			}
+			else if (!pThis->InLimbo)
+			{
+				// search tiberium and abort current mission
+				pThis->MoveToTiberium(16, false);
+				if (pThis->Destination)
+				{
 					pThis->SetTarget(nullptr);
 					pThis->QueueMission(Mission::Move, false);
 					pThis->NextMission();
@@ -357,8 +371,9 @@ ASMJIT_PATCH(0x5200C1, InfantryClass_UpdatePanic_Doggie, 0x6)
 		}
 	}
 
-	if (!(pType->Fearless || pThis->HasAbility(AbilityType::Fearless))) {
-	 	--pThis->PanicDurationLeft;
+	if (!(pType->Fearless || pThis->HasAbility(AbilityType::Fearless)))
+	{
+		--pThis->PanicDurationLeft;
 	}
 
 	return 0x52025A;
@@ -414,7 +429,7 @@ ASMJIT_PATCH(0x51D799, InfantryClass_PlayAnim_WaterSound, 0x7)
 	GET(InfantryClass* const, I, ESI);
 
 	return (I->Transporter || I->Type->MovementZone != MovementZone::AmphibiousDestroyer)
-		? SkipPlay : Play ;
+		? SkipPlay : Play;
 }
 
 ASMJIT_PATCH(0x520731, InfantryClass_UpdateFiringState_Heal, 0x5)
@@ -438,7 +453,8 @@ ASMJIT_PATCH(0x51BCB2, InfantryClass_Update_Reload, 0x6)
 {
 	GET(InfantryClass* const, I, ESI);
 
-	if (I->InLimbo) {
+	if (I->InLimbo)
+	{
 		return 0x51BDCF;
 	}
 
@@ -459,7 +475,8 @@ ASMJIT_PATCH(0x52070F, InfantryClass_UpdateFiringState_Uncloak, 0x5)
 	//if (pWeapon && pWeapon->WeaponType->DecloakToFire) {
 	//	pThis->Uncloak(false);
 	//}else
-	if (pThis->IsCloseEnough(pThis->Target, idxWeapon)) {
+	if (pThis->IsCloseEnough(pThis->Target, idxWeapon))
+	{
 		pThis->Uncloak(false);
 	}
 
@@ -475,10 +492,12 @@ ASMJIT_PATCH(0x51DF27, InfantryClass_Remove_Teleport, 0x6)
 {
 	GET(InfantryClass* const, pThis, ECX);
 
-	if (pThis->Type->Teleporter) {
+	if (pThis->Type->Teleporter)
+	{
 		const auto pLoco = pThis->Locomotor.GetInterfacePtr();
 
-		if (VTable::Get(pLoco) == TeleportLocomotionClass::ILoco_vtable) {
+		if (VTable::Get(pLoco) == TeleportLocomotionClass::ILoco_vtable)
+		{
 			static_cast<TeleportLocomotionClass*>(pLoco)->LastCoords = CoordStruct::Empty;
 		}
 	}
@@ -489,7 +508,7 @@ ASMJIT_PATCH(0x51DF27, InfantryClass_Remove_Teleport, 0x6)
 ASMJIT_PATCH(0x5243DD, InfantryTypeClass_AllowDamageSparks, 0x6)
 {
 	GET(InfantryTypeClass*, pThis, ESI)
-	GET(INIClass* const, pINI, EBP);
+		GET(INIClass* const, pINI, EBP);
 
 	pThis->DamageSparks = pINI->ReadBool(pThis->ID, "AllowDamageSparks", R->AL());
 
@@ -502,7 +521,8 @@ ASMJIT_PATCH(0x51E3B0, InfantryClass_GetActionOnObject_EMP, 0x7)
 	GET_STACK(TechnoClass* const, pTarget, 0x4);
 
 	// infantry should really not be able to deploy then EMP'd.
-	if ((pInfantry == pTarget) && pInfantry->Type->Deployer && pInfantry->IsUnderEMP()) {
+	if ((pInfantry == pTarget) && pInfantry->Type->Deployer && pInfantry->IsUnderEMP())
+	{
 		R->EAX(Action::NoDeploy);
 		return 0x51F187;
 	}
@@ -556,10 +576,12 @@ ASMJIT_PATCH(0x51EB48, InfantryClass_GetActionOnObject_IvanGrinder, 0xA)
 	GET(InfantryClass*, pThis, EDI);
 	GET(ObjectClass*, pTarget, ESI);
 
-	if (auto pTargetBld = cast_to<BuildingClass*>(pTarget)) {
-		if (pTargetBld->Type->Grinding && pThis->Owner->IsAlliedWith(pTargetBld)) {
-
-			if (!InputManagerClass::Instance->IsForceFireKeyPressed()) {
+	if (auto pTargetBld = cast_to<BuildingClass*>(pTarget))
+	{
+		if (pTargetBld->Type->Grinding && pThis->Owner->IsAlliedWith(pTargetBld))
+		{
+			if (!InputManagerClass::Instance->IsForceFireKeyPressed())
+			{
 				static COMPILETIMEEVAL BYTE return_grind[] = {
 					0x5F, 0x5E, 0x5D, // pop edi, esi and ebp
 					0xB8, 0x0B, 0x00, 0x00, 0x00, // eax = Action::Repair (not Action::Eaten)

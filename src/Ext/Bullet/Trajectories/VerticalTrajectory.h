@@ -18,8 +18,6 @@ public:
 
 	virtual bool Read(CCINIClass* const pINI, const char* pSection) override;
 	virtual const char* Name() { return "VerticalTrajectoryType"; }
-
-
 };
 
 class VerticalTrajectory final : public PhobosTrajectory

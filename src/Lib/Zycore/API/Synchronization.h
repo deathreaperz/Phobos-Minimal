@@ -41,9 +41,9 @@
 extern "C" {
 #endif
 
-/* ============================================================================================== */
-/* Enums and types                                                                                */
-/* ============================================================================================== */
+	/* ============================================================================================== */
+	/* Enums and types                                                                                */
+	/* ============================================================================================== */
 
 #if   defined(ZYAN_POSIX)
 
@@ -53,9 +53,9 @@ extern "C" {
 /* Critical Section                                                                               */
 /* ---------------------------------------------------------------------------------------------- */
 
-typedef pthread_mutex_t ZyanCriticalSection;
+	typedef pthread_mutex_t ZyanCriticalSection;
 
-/* ---------------------------------------------------------------------------------------------- */
+	/* ---------------------------------------------------------------------------------------------- */
 
 #elif defined(ZYAN_WINDOWS)
 
@@ -65,9 +65,9 @@ typedef pthread_mutex_t ZyanCriticalSection;
 /* Critical Section                                                                               */
 /* ---------------------------------------------------------------------------------------------- */
 
-typedef CRITICAL_SECTION ZyanCriticalSection;
+	typedef CRITICAL_SECTION ZyanCriticalSection;
 
-/* ---------------------------------------------------------------------------------------------- */
+	/* ---------------------------------------------------------------------------------------------- */
 
 #else
 #   error "Unsupported platform detected"
@@ -86,42 +86,42 @@ typedef CRITICAL_SECTION ZyanCriticalSection;
  *
  * @param   critical_section    A pointer to the `ZyanCriticalSection` struct.
  */
-ZYCORE_EXPORT ZyanStatus ZyanCriticalSectionInitialize(ZyanCriticalSection* critical_section);
+	ZYCORE_EXPORT ZyanStatus ZyanCriticalSectionInitialize(ZyanCriticalSection* critical_section);
 
-/**
- * Enters a critical section.
- *
- * @param   critical_section    A pointer to the `ZyanCriticalSection` struct.
- */
-ZYCORE_EXPORT ZyanStatus ZyanCriticalSectionEnter(ZyanCriticalSection* critical_section);
+	/**
+	 * Enters a critical section.
+	 *
+	 * @param   critical_section    A pointer to the `ZyanCriticalSection` struct.
+	 */
+	ZYCORE_EXPORT ZyanStatus ZyanCriticalSectionEnter(ZyanCriticalSection* critical_section);
 
-/**
- * Tries to enter a critical section.
- *
- * @param   critical_section    A pointer to the `ZyanCriticalSection` struct.
- *
- * @return  Returns `ZYAN_TRUE` if the critical section was successfully entered or `ZYAN_FALSE`,
- *          if not.
- */
-ZYCORE_EXPORT ZyanBool ZyanCriticalSectionTryEnter(ZyanCriticalSection* critical_section);
+	/**
+	 * Tries to enter a critical section.
+	 *
+	 * @param   critical_section    A pointer to the `ZyanCriticalSection` struct.
+	 *
+	 * @return  Returns `ZYAN_TRUE` if the critical section was successfully entered or `ZYAN_FALSE`,
+	 *          if not.
+	 */
+	ZYCORE_EXPORT ZyanBool ZyanCriticalSectionTryEnter(ZyanCriticalSection* critical_section);
 
-/**
- * Leaves a critical section.
- *
- * @param   critical_section    A pointer to the `ZyanCriticalSection` struct.
- */
-ZYCORE_EXPORT ZyanStatus ZyanCriticalSectionLeave(ZyanCriticalSection* critical_section);
+	/**
+	 * Leaves a critical section.
+	 *
+	 * @param   critical_section    A pointer to the `ZyanCriticalSection` struct.
+	 */
+	ZYCORE_EXPORT ZyanStatus ZyanCriticalSectionLeave(ZyanCriticalSection* critical_section);
 
-/**
- * Deletes a critical section.
- *
- * @param   critical_section    A pointer to the `ZyanCriticalSection` struct.
- */
-ZYCORE_EXPORT ZyanStatus ZyanCriticalSectionDelete(ZyanCriticalSection* critical_section);
+	/**
+	 * Deletes a critical section.
+	 *
+	 * @param   critical_section    A pointer to the `ZyanCriticalSection` struct.
+	 */
+	ZYCORE_EXPORT ZyanStatus ZyanCriticalSectionDelete(ZyanCriticalSection* critical_section);
 
-/* ---------------------------------------------------------------------------------------------- */
+	/* ---------------------------------------------------------------------------------------------- */
 
-/* ============================================================================================== */
+	/* ============================================================================================== */
 
 #ifdef __cplusplus
 }

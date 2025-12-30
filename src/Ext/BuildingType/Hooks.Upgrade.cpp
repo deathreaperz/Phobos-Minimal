@@ -93,7 +93,8 @@ ASMJIT_PATCH(0x451630, BuildingClass_CreateUpgradeAnims_AnimIndex, 0x7)
 
 	const int animIndex = pThis->_GetExtData()->PoweredUpToLevel - 1;
 
-	if (animIndex) {
+	if (animIndex)
+	{
 		R->EAX(animIndex);
 		return SkipGameCode;
 	}

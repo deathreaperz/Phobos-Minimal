@@ -21,7 +21,8 @@ public:
 	bool PowerDown();
 	bool Update();
 
-	COMPILETIMEEVAL OPTIONALINLINE bool IsPowered() const {
+	COMPILETIMEEVAL OPTIONALINLINE bool IsPowered() const
+	{
 		return this->Powered;
 	}
 
@@ -44,10 +45,11 @@ private:
 	}
 };
 
-
 template <>
-struct Savegame::ObjectFactory<PoweredUnitClass> {
-	std::unique_ptr<PoweredUnitClass> operator() (PhobosStreamReader& Stm) const {
+struct Savegame::ObjectFactory<PoweredUnitClass>
+{
+	std::unique_ptr<PoweredUnitClass> operator() (PhobosStreamReader& Stm) const
+	{
 		return std::make_unique<PoweredUnitClass>();
 	}
 };

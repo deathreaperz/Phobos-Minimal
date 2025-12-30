@@ -43,7 +43,7 @@ public:
 	{
 		int nNewRef = Imports::InterlockedDecrementFunc.invoke()(&this->nRefCount);
 		if (!nNewRef)
-			GameDelete<true,false>(this);
+			GameDelete<true, false>(this);
 		return nNewRef;
 	}
 
@@ -63,7 +63,7 @@ public:
 		HRESULT hr = pThis->QueryInterface(riid, ppvObject);
 
 		if (FAILED(hr))
-			GameDelete<false ,false>(pThis);
+			GameDelete<false, false>(pThis);
 
 		return hr;
 	}
@@ -99,7 +99,6 @@ void RegisterFactoryForClass()
 		Debug::Log("Class factory for %s registered.\n", name.c_str());
 
 	Game::ClassFactories->push_back((ULONG)dwRegister);
-
 
 	//LPOLESTR str = nullptr;
 	//StringFromCLSID(clsid, &str);

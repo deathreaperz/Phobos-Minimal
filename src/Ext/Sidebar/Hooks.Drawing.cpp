@@ -33,7 +33,6 @@ public:
 	const wchar_t* __Help_Text(int index);
 };
 
-
 class FakeSelectClass : public SelectClass
 {
 public:
@@ -69,8 +68,8 @@ int FakeSelectClass::__Action(GadgetFlag flags,
 	DWORD* key,
 	KeyModifier a4)
 {
-
-	if (!this->Strip) {
+	if (!this->Strip)
+	{
 		return 1;
 	}
 
@@ -82,31 +81,37 @@ int FakeSelectClass::__Action(GadgetFlag flags,
 	KeyModifier shiftPressed = a4 & KeyModifier::Shift;
 	BuildType* pBuild = &cameos[buildableIdx];
 
-	if((size_t)buildableIdx >= cameos.size() || (size_t)buildableIdx >= (size_t)strip->BuildableCount) {
+	if ((size_t)buildableIdx >= cameos.size() || (size_t)buildableIdx >= (size_t)strip->BuildableCount)
+	{
 		flags = GadgetFlag::None;
 		EPILOGUE();
 	}
 
-	if (buildableIdx < (int)cameos.size() && buildableIdx < strip->BuildableCount) {
-	
-		if (pBuild->ItemIndex >= 0) {
+	if (buildableIdx < (int)cameos.size() && buildableIdx < strip->BuildableCount)
+	{
+		if (pBuild->ItemIndex >= 0)
+		{
 			auto pCurrentFactory = pBuild->CurrentFactory;
 
-			if (pBuild->ItemType != AbstractType::Special) {
-				if (auto Techno_Type = TechnoTypeClass::FetchTechnoType(pBuild->ItemType, pBuild->ItemIndex)) {
+			if (pBuild->ItemType != AbstractType::Special)
+			{
+				if (auto Techno_Type = TechnoTypeClass::FetchTechnoType(pBuild->ItemType, pBuild->ItemIndex))
+				{
+					flags &= ~GadgetFlag::LeftUp;
 
-					flags &=  ~GadgetFlag::LeftUp;
-
-					if (flags & GadgetFlag::RightPress) {
-						if (pCurrentFactory) {
-					
-							if (Unsorted::PendingObject) {
+					if (flags & GadgetFlag::RightPress)
+					{
+						if (pCurrentFactory)
+						{
+							if (Unsorted::PendingObject)
+							{
 								const AbstractType abs = Unsorted::PendingObject->WhatAmI();
 
-								if (abs == AbstractType::Building 
-									|| abs == AbstractType::Aircraft 
-									|| abs == AbstractType::Unit 
-									|| abs == AbstractType::Infantry) {
+								if (abs == AbstractType::Building
+									|| abs == AbstractType::Aircraft
+									|| abs == AbstractType::Unit
+									|| abs == AbstractType::Infantry)
+								{
 									Unsorted::PendingObject = nullptr;
 									Unsorted::CurrentBuildingType = nullptr;
 									Unsorted::unknown_11AC = -1;
@@ -114,7 +119,8 @@ int FakeSelectClass::__Action(GadgetFlag flags,
 								}
 							}
 
-							if (!pCurrentFactory->Production.Timer.Rate || pCurrentFactory->IsSuspended) {
+							if (!pCurrentFactory->Production.Timer.Rate || pCurrentFactory->IsSuspended)
+							{
 								VocClass::PlayGlobal(RulesClass::Instance->GUIBuildSound, Panning::Center, 1.0, 0);
 								VoxClass::Play("EVA_Canceled");
 								EventType ev = shiftPressed != KeyModifier::None ? EventType::ABANDON_ALL : EventType::ABANDON;
@@ -128,7 +134,9 @@ int FakeSelectClass::__Action(GadgetFlag flags,
 								};
 
 								EventClass::AddEvent(&Event);
-							} else {
+							}
+							else
+							{
 								VocClass::PlayGlobal(RulesClass::Instance->GUIBuildSound, Panning::Center, 1.0, 0);
 								VoxClass::Play("EVA_OnHold");
 
@@ -144,8 +152,11 @@ int FakeSelectClass::__Action(GadgetFlag flags,
 							}
 
 							SidebarClass::Column[strip->TabIndex].NeedsRedraw = 1;
-						} else {
-							if (pBuild->Status == BuildState::Building) {
+						}
+						else
+						{
+							if (pBuild->Status == BuildState::Building)
+							{
 								pBuild->Status = BuildState::OnHold;
 								strip->NeedsRedraw = 1;
 								MapClass::Instance->RedrawSidebar(0);
@@ -165,7 +176,8 @@ int FakeSelectClass::__Action(GadgetFlag flags,
 
 							auto pHouseFactory = PlayerPtr->GetPrimaryFactory(pBuild->ItemType, Techno_Type->Naval, pBuild->Cat);
 
-							if (pHouseFactory && pHouseFactory->IsQueued(Techno_Type)) {
+							if (pHouseFactory && pHouseFactory->IsQueued(Techno_Type))
+							{
 								VocClass::PlayGlobal(RulesClass::Instance->GUIBuildSound, Panning::Center, 1.0, 0);
 								EventClass Event {
 									PlayerPtr->ArrayIndex ,
@@ -180,21 +192,27 @@ int FakeSelectClass::__Action(GadgetFlag flags,
 						}
 					}
 
-					if (flags & GadgetFlag::LeftPress) {
-						if (!pCurrentFactory || pCurrentFactory->Production.Timer.Rate && !pCurrentFactory->IsSuspended) {
+					if (flags & GadgetFlag::LeftPress)
+					{
+						if (!pCurrentFactory || pCurrentFactory->Production.Timer.Rate && !pCurrentFactory->IsSuspended)
+						{
 							Techno_Type = TechnoTypeClass::FetchTechnoType(pBuild->ItemType, pBuild->ItemIndex);
 							auto pHouseFactory = PlayerPtr->GetPrimaryFactory(pBuild->ItemType, Techno_Type->Naval, pBuild->Cat);
 							bool ShouldDisableCameo = PlayerPtr->ShouldDisableCameo(Techno_Type);
 							bool unable_to_comply = false;
-							if (pHouseFactory && (pHouseFactory->Production.Timer.Rate && !pHouseFactory->IsSuspended || pHouseFactory->Object || pHouseFactory->QueuedObjects.Count > 0)) {
+							if (pHouseFactory && (pHouseFactory->Production.Timer.Rate && !pHouseFactory->IsSuspended || pHouseFactory->Object || pHouseFactory->QueuedObjects.Count > 0))
+							{
 								unable_to_comply = 1;
-								if (pBuild->ItemType == AbstractType::BuildingType && !RulesExtData::Instance()->ExpandBuildingQueue) {
+								if (pBuild->ItemType == AbstractType::BuildingType && !RulesExtData::Instance()->ExpandBuildingQueue)
+								{
 									VoxClass::Play("EVA_UnableToComply");
 									EPILOGUE();
 								}
-
-							} else {
-								if (!ShouldDisableCameo) {
+							}
+							else
+							{
+								if (!ShouldDisableCameo)
+								{
 									VoxClass::Play(pBuild->ItemType == AbstractType::InfantryType ? "EVA_Training" : "EVA_Building");
 								}
 							}
@@ -203,9 +221,11 @@ int FakeSelectClass::__Action(GadgetFlag flags,
 
 							bool v70 = 0;
 
-							if (!ShouldDisableCameo) {
+							if (!ShouldDisableCameo)
+							{
 								VocClass::PlayGlobal(RulesClass::Instance->GUIBuildSound, Panning::Center, 1.0, 0);
-								if (!pHouseFactory && !BusyStatus) {
+								if (!pHouseFactory && !BusyStatus)
+								{
 									PlayerPtr->SetBusy(pBuild->ItemType, Techno_Type->Naval, pBuild->Cat);
 									v70 = 1;
 								}
@@ -218,48 +238,61 @@ int FakeSelectClass::__Action(GadgetFlag flags,
 									bool(Techno_Type->Naval)
 								};
 
-								for (int i = ((4 * ((DWORD)shiftPressed)) | 1); i > 0; --i) {
+								for (int i = ((4 * ((DWORD)shiftPressed)) | 1); i > 0; --i)
+								{
 									EventClass::AddEvent(&Event);
 								}
 
-								if (v70) {
-									if (!unable_to_comply && !ShouldDisableCameo) {
+								if (v70)
+								{
+									if (!unable_to_comply && !ShouldDisableCameo)
+									{
 										pBuild->Status = BuildState::Building;
 										strip->NeedsRedraw = true;
-										Techno_Type = TechnoTypeClass::FetchTechnoType(pBuild->ItemType, pBuild->ItemIndex);								
+										Techno_Type = TechnoTypeClass::FetchTechnoType(pBuild->ItemType, pBuild->ItemIndex);
 
-										if (Techno_Type) {
+										if (Techno_Type)
+										{
 											const double divisor = 53.822631;
 											const int maxAhead = Game::Network::MaxAhead();
 											const int cost = Techno_Type->GetActualCost(PlayerPtr);
 											const double raw = double(cost) * double(maxAhead) / divisor;
 											const int corrected = (int)(raw >= 0 ? std::floor(raw) : std::ceil(raw));
 
-											if (PlayerPtr->Available_Money() >= corrected) {
-												if (Techno_Type->FindFactory(true, false, false, PlayerPtr)) {
+											if (PlayerPtr->Available_Money() >= corrected)
+											{
+												if (Techno_Type->FindFactory(true, false, false, PlayerPtr))
+												{
 													int time = Techno_Type->GetBuildSpeed();
-													if (pBuild->ItemType == AbstractType::BuildingType && static_cast<BuildingTypeClass*>(Techno_Type)->Wall) {
+													if (pBuild->ItemType == AbstractType::BuildingType && static_cast<BuildingTypeClass*>(Techno_Type)->Wall)
+													{
 														time = int(time * RulesClass::Instance->WallBuildSpeedCoefficient);
 													}
 
-													if (time <= maxAhead + 15) {
+													if (time <= maxAhead + 15)
+													{
 														time = maxAhead + 15;
 													}
 
 													int v52 = time / 54;
-													if (54 * (v52) < maxAhead + 15) {
+													if (54 * (v52) < maxAhead + 15)
+													{
 														++v52;
 													}
 
-													if (v52 >= 1) {
-														if (v52 > 255) {
+													if (v52 >= 1)
+													{
+														if (v52 > 255)
+														{
 															v52 = 255;
 														}
-													} else {
+													}
+													else
+													{
 														v52 = 1;
 													}
 
-													pBuild->Progress.Start(v52, 1 , 0);
+													pBuild->Progress.Start(v52, 1, 0);
 													EPILOGUE();
 												}
 											}
@@ -268,63 +301,86 @@ int FakeSelectClass::__Action(GadgetFlag flags,
 								}
 							}
 
-							if (!BusyStatus) {
-								if (!unable_to_comply && !ShouldDisableCameo) {
+							if (!BusyStatus)
+							{
+								if (!unable_to_comply && !ShouldDisableCameo)
+								{
 									pBuild->Status = BuildState::Building;
 									strip->NeedsRedraw = true;
 									Techno_Type = TechnoTypeClass::FetchTechnoType(pBuild->ItemType, pBuild->ItemIndex);
 
-									if (Techno_Type) {
+									if (Techno_Type)
+									{
 										const double divisor = 53.822631;
 										const int maxAhead = Game::Network::MaxAhead();
 										const int cost = Techno_Type->GetActualCost(PlayerPtr);
 										const double raw = double(cost) * double(maxAhead) / divisor;
 										const int corrected = (int)(raw >= 0 ? std::floor(raw) : std::ceil(raw));
 
-										if (PlayerPtr->Available_Money() >= corrected) {
-											if (Techno_Type->FindFactory(true, false, false, PlayerPtr)) {
+										if (PlayerPtr->Available_Money() >= corrected)
+										{
+											if (Techno_Type->FindFactory(true, false, false, PlayerPtr))
+											{
 												int time = Techno_Type->GetBuildSpeed();
-												if (pBuild->ItemType == AbstractType::BuildingType && static_cast<BuildingTypeClass*>(Techno_Type)->Wall) {
+												if (pBuild->ItemType == AbstractType::BuildingType && static_cast<BuildingTypeClass*>(Techno_Type)->Wall)
+												{
 													time = int(time * RulesClass::Instance->WallBuildSpeedCoefficient);
 												}
 
-												if (time <= maxAhead + 15) {
+												if (time <= maxAhead + 15)
+												{
 													time = maxAhead + 15;
 												}
 
 												int rate = time / 54;
-												if (54 * (rate) < maxAhead + 15) {
+												if (54 * (rate) < maxAhead + 15)
+												{
 													++rate;
 												}
 
-												if (rate >= 1) {
-													if (rate > 255) {
+												if (rate >= 1)
+												{
+													if (rate > 255)
+													{
 														rate = 255;
 													}
-												} else {
+												}
+												else
+												{
 													rate = 1;
 												}
 
-												pBuild->Progress.Start(rate, 1 , 0);
-												EPILOGUE();
-											} else {
+												pBuild->Progress.Start(rate, 1, 0);
 												EPILOGUE();
 											}
-										} else {
+											else
+											{
+												EPILOGUE();
+											}
+										}
+										else
+										{
 											EPILOGUE();
 										}
-									} else {
+									}
+									else
+									{
 										EPILOGUE();
 									}
-								} else {
+								}
+								else
+								{
 									EPILOGUE();
 								}
-							} else {
+							}
+							else
+							{
 								EPILOGUE();
 							}
 						}
 
-						if (!pCurrentFactory->IsDone()) {
+						if (!pCurrentFactory->IsDone())
+						{
 							VocClass::PlayGlobal(RulesClass::Instance->GUIBuildSound, Panning::Center, 1.0, 0);
 							VoxClass::Play(pBuild->ItemType == AbstractType::InfantryType ? "EVA_Training" : "EVA_Building");
 							Techno_Type = TechnoTypeClass::FetchTechnoType(pBuild->ItemType, pBuild->ItemIndex);
@@ -347,23 +403,32 @@ int FakeSelectClass::__Action(GadgetFlag flags,
 								: 0
 								;
 
-							if (pBuild->Status == BuildState::Building) {
-								if (pBuild->Progress.Stage > Progress) {
+							if (pBuild->Status == BuildState::Building)
+							{
+								if (pBuild->Progress.Stage > Progress)
+								{
 									Progress = (pBuild->Progress.Stage + Progress) / 2;
 								}
 							}
 
-							pBuild->Progress.Start(pCurrentFactory->GetBuildTimeFrames() + 1 , 1 , Progress);
+							pBuild->Progress.Start(pCurrentFactory->GetBuildTimeFrames() + 1, 1, Progress);
 							strip->NeedsRedraw = 1;
 							MapClass::Instance->RedrawSidebar(0);
 							CCToolTip::Bound = 1;
-						} else {
-							if(auto Object = pCurrentFactory->GetFactoryObject()) {
+						}
+						else
+						{
+							if (auto Object = pCurrentFactory->GetFactoryObject())
+							{
 								VocClass::PlayGlobal(RulesClass::Instance->GUIBuildSound, Panning::Center, 1.0, 0);
-								if(auto v23 = Object->FindFactory(0, 0)) {
-									if (auto pBld = cast_to<BuildingClass*, false>(Object)) {
+								if (auto v23 = Object->FindFactory(0, 0))
+								{
+									if (auto pBld = cast_to<BuildingClass*, false>(Object))
+									{
 										PlayerPtr->Manual_Place(v23, pBld);
-									} else {
+									}
+									else
+									{
 										VocClass::PlayGlobal(RulesClass::Instance->GUIBuildSound, Panning::Center, 1.0, 0);
 										EventClass Event {
 											Object->GetOwningHouseIndex() ,
@@ -376,7 +441,9 @@ int FakeSelectClass::__Action(GadgetFlag flags,
 
 										EventClass::AddEvent(&Event);
 									}
-								} else {
+								}
+								else
+								{
 									EventClass Event {
 										Object->GetOwningHouseIndex() ,
 										EventType::ABANDON ,
@@ -388,37 +455,49 @@ int FakeSelectClass::__Action(GadgetFlag flags,
 									EventClass::AddEvent(&Event);
 
 									VoxClass::Play("EVA_UnableToComply");
-								} 
-							} else {
-								if (pCurrentFactory->SpecialItem != -1) {
+								}
+							}
+							else
+							{
+								if (pCurrentFactory->SpecialItem != -1)
+								{
 									Unsorted::CurrentSWType = 1;
 								}
-							} 
+							}
 						}
 					}
-
-				} else {
+				}
+				else
+				{
 					flags = GadgetFlag::None;
 				}
-
-			} else {
-				if (flags & GadgetFlag::LeftUp) {
-					flags &=  ~GadgetFlag::LeftUp;
+			}
+			else
+			{
+				if (flags & GadgetFlag::LeftUp)
+				{
+					flags &= ~GadgetFlag::LeftUp;
 				}
 
-				if (flags & GadgetFlag::RightPress) {
+				if (flags & GadgetFlag::RightPress)
+				{
 					Unsorted::CurrentSWType = -1;
 				}
 
-				if (flags & GadgetFlag::LeftPress || pBuild->ItemIndex < PlayerPtr->Supers.Count) {
+				if (flags & GadgetFlag::LeftPress || pBuild->ItemIndex < PlayerPtr->Supers.Count)
+				{
 					VocClass::PlayGlobal(RulesClass::Instance->GUIBuildSound, Panning::Center, 1.0, 0);
 					SWTypeExtData::LauchSuper(PlayerPtr->Supers.Items[pBuild->ItemIndex]);
 				}
 			}
-		} else {
+		}
+		else
+		{
 			flags = GadgetFlag::None;
 		}
-	} else {
+	}
+	else
+	{
 		flags = GadgetFlag::None;
 	}
 
@@ -428,7 +507,7 @@ int FakeSelectClass::__Action(GadgetFlag flags,
 
 #ifndef _backport
 DEFINE_FUNCTION_JUMP(VTABLE, 0x7F3048, FakeSelectClass::__Action)
-#else 
+#else
 ASMJIT_PATCH(0x6AAD2F, SelectClass_ProcessInput_LoadCameo1, 7)
 {
 	GET(int, CameoIndex, ESI);
@@ -553,7 +632,7 @@ ASMJIT_PATCH(0x6AB92F, SelectClass_ProcessInput_FixOffset9, 7)
 	R->EBX<byte*>(R->EBX<byte*>() + 0x6C);
 	return 0x6AB936;
 }
-#endif 
+#endif
 
 static COMPILETIMEEVAL reference<bool, 0xB0B518> const SidebarBlitRequested_FullRedraw {};
 static COMPILETIMEEVAL reference<int, 0xB0B4F8> const Sidebar_B0B4F8 {};
@@ -573,7 +652,7 @@ const wchar_t* FakeStripClass::__Help_Text(int index)
 
 	const auto& tab = MouseClassExt::TabCameos[MouseClass::Instance->ActiveTabIndex];
 
-	if(tab.empty())
+	if (tab.empty())
 		return nullptr;
 
 	auto& cameo = tab[index + 2 * this->TopRowIndex];
@@ -590,7 +669,6 @@ const wchar_t* FakeStripClass::__Help_Text(int index)
 	}
 	else if (cameo.ItemType == AbstractType::Special)
 	{
-
 		PhobosToolTip::Instance.IsCameo = true;
 		auto pSW = SuperWeaponTypeClass::Array->Items[cameo.ItemIndex];
 		const auto pData = SWTypeExtContainer::Instance.Find(pSW);
@@ -803,7 +881,8 @@ void __thiscall FakeStripClass::__Draw_It(bool forceRedraw)
 					originalScreenY = screenY;
 				}
 
-				if (buildableIndex >= buildableCount) { // dont proceed further if the index is out of bounds
+				if (buildableIndex >= buildableCount)
+				{ // dont proceed further if the index is out of bounds
 					return;
 				}
 
@@ -818,7 +897,7 @@ void __thiscall FakeStripClass::__Draw_It(bool forceRedraw)
 					// HOOK: 0x6A9747 - StripClass_Draw_GetCameo (6 bytes)
 					// Replaces buildable lookup with MouseClassExt::TabCameos access
 					// Original: lea edx, [ecx+ecx*2] / lea eax, [ecx+edx*4] / mov ecx, [edi+eax*4+5Ch]
-					// Hook: 
+					// Hook:
 					//   auto& Item = MouseClassExt::TabCameos[MouseClass::Instance->ActiveTabIndex][CameoIndex];
 					//   Returns 0x6A9936 for SuperWeapon (AbstractType::Special)
 					//   Returns 0x6A9761 for Techno
@@ -906,24 +985,32 @@ void __thiscall FakeStripClass::__Draw_It(bool forceRedraw)
 							//       RulesExtData::Instance()->ExpandBuildingQueue is enabled
 							// ==========================================================================
 
-							if (!RulesExtData::Instance()->ExpandBuildingQueue){
-								if (pTechnoType->WhatAmI() == AbstractType::BuildingType && hasActiveProduction) {
+							if (!RulesExtData::Instance()->ExpandBuildingQueue)
+							{
+								if (pTechnoType->WhatAmI() == AbstractType::BuildingType && hasActiveProduction)
+								{
 									shouldDisable = true;
 								}
 							}
-							else if (const auto pBuildingType = type_cast<BuildingTypeClass*, false>(pTechnoType)) {
-								if (const auto pFactory = pPlayer->GetPrimaryFactory(AbstractType::BuildingType, pTechnoType->Naval, pBuildingType->BuildCat)) {
-									if (const auto pProduct = cast_to<BuildingClass*>(pFactory->Object)) {
+							else if (const auto pBuildingType = type_cast<BuildingTypeClass*, false>(pTechnoType))
+							{
+								if (const auto pFactory = pPlayer->GetPrimaryFactory(AbstractType::BuildingType, pTechnoType->Naval, pBuildingType->BuildCat))
+								{
+									if (const auto pProduct = cast_to<BuildingClass*>(pFactory->Object))
+									{
 										if (pFactory->IsDone() && pProduct->Type != pTechnoType && ((pProduct->Type->BuildCat != BuildCat::Combat) ^ (pBuildingType->BuildCat == BuildCat::Combat)))
 											shouldDisable = true;
 									}
 								}
-							} 
-							
-							{// 006A978C-006A97B2: Check if cameo should be disabled			
-								if (!pTechnoType->FindFactory(true, true, true, pPlayer)) {
+							}
+
+							{// 006A978C-006A97B2: Check if cameo should be disabled
+								if (!pTechnoType->FindFactory(true, true, true, pPlayer))
+								{
 									shouldDisable = true;
-								} else {
+								}
+								else
+								{
 									// 006A97B4-006A97F9: Check Can_Build and ShouldDisableCameo
 									pFactoryType = TechnoTypeClass::FetchTechnoType(pBuildable->ItemType, pBuildable->ItemIndex);
 
@@ -988,7 +1075,8 @@ void __thiscall FakeStripClass::__Draw_It(bool forceRedraw)
 									int completion = 0;
 									if (pBuildable->Status != BuildState::Building) //transition check
 										progressFrame = completion;
-									else {
+									else
+									{
 										int storedProgress = pBuildable->Progress.Stage;
 										if (storedProgress > completion)
 											completion = (storedProgress + completion) / 2;
@@ -1019,7 +1107,9 @@ void __thiscall FakeStripClass::__Draw_It(bool forceRedraw)
 									shouldDarken = false;
 									break;
 								}
-							} else {
+							}
+							else
+							{
 								// ------------------------------------------------
 								// Factory exists - 006A981D-006A9877
 								// ------------------------------------------------
@@ -1036,8 +1126,10 @@ void __thiscall FakeStripClass::__Draw_It(bool forceRedraw)
 								// 006A9822-006A982D: Check if completed
 								isCompleted = pBuildCameo->IsDone();
 
-								if (isCompleted) {
-									if (auto pBuilding = cast_to<BuildingClass*, false>(pBuildCameo->Object)) {
+								if (isCompleted)
+								{
+									if (auto pBuilding = cast_to<BuildingClass*, false>(pBuildCameo->Object))
+									{
 										isCompleted = pBuilding->FindFactory(true, true) != nullptr;
 									}
 								}
@@ -1246,7 +1338,6 @@ void __thiscall FakeStripClass::__Draw_It(bool forceRedraw)
 									&& BuildingTypeExtContainer::Instance.Find(pBuildingType)->Cameo_ShouldCount.Get(pBuildingType->BuildCat != BuildCat::Combat || (pBuildingType->BuildLimit != INT_MAX))
 									)
 								{
-
 									const TextPrintType printType = TextPrintType::Background | TextPrintType::Right | TextPrintType::FullShadow | TextPrintType::Point8;
 									auto textPosition = Point2D { screenX , screenY + 1 };
 									static fmt::basic_memory_buffer<wchar_t> text;
@@ -1257,7 +1348,6 @@ void __thiscall FakeStripClass::__Draw_It(bool forceRedraw)
 								}
 							}
 						}
-
 					}
 
 					// 006A9B4B-006A9BC5: Draw flashing effect
@@ -1444,17 +1534,14 @@ void __thiscall FakeStripClass::__Draw_It(bool forceRedraw)
 			// --------------------------------------------------------------------
 			if (pHouseType)
 			{
-
 				const auto pData = HouseTypeExtContainer::Instance.Find(pHouseType);
 
 				if (pData->ObserverBackgroundSHP)
 				{
-
 					RectangleStruct factionBounds = { 0, 0, panelX + pData->ObserverBackgroundSHP->Width, panelY + pData->ObserverBackgroundSHP->Height };
 					Point2D factionPos = { panelX, panelY };
 					CC_Draw_Shape(SidebarSurface, FileSystem::ObserverDrawer(), pData->ObserverBackgroundSHP, 0, &factionPos,
 								  &factionBounds, BlitterFlags::bf_400, 0, 0, ZGradient::Ground, 1000, 0, 0, 0, 0, 0);
-
 				}
 				else if (auto PCXSurface = pData->ObserverBackground.GetSurface())
 				{
@@ -1483,7 +1570,6 @@ void __thiscall FakeStripClass::__Draw_It(bool forceRedraw)
 				}
 				else
 				{
-
 					const auto pData = HouseTypeExtContainer::Instance.Find(pHouseType);
 
 					if (pData->ObserverFlagSHP)

@@ -49,7 +49,7 @@ public:
 		DeleteWhenReachWater(false),
 		WindMult(),
 		Gas_DriftSpeedX({ -2 , 2 }),
-		Gas_DriftSpeedY({ -2 , 2}),
+		Gas_DriftSpeedY({ -2 , 2 }),
 		Transmogrify(false),
 		TransmogrifyChance(-1),
 		TransmogrifyType(nullptr),
@@ -122,9 +122,9 @@ public:
 
 	bool _ReadFromINI(CCINIClass* pINI);
 
-	ParticleTypeExtData* _GetExtData() {
+	ParticleTypeExtData* _GetExtData()
+	{
 		return *reinterpret_cast<ParticleTypeExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
-
 };
 static_assert(sizeof(FakeParticleTypeClass) == sizeof(ParticleTypeClass), "Invalid Size !");

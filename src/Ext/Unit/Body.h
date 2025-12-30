@@ -17,7 +17,6 @@ public:
 
 	OptionalStruct<bool, true> AltOccupation; // if the unit marks cell occupation flags, this is set to whether it uses the "high" occupation members
 
-
 	// Replaces use of TechnoClass->Animation StageClass timer for IsSimpleDeployer to simplify
 	// the deploy animation timer calcs and eliminate possibility of outside interference.
 	CDTimerClass SimpleDeployerAnimationTimer;
@@ -75,7 +74,6 @@ public:
 	const UnitClass* This_Const() const { return reinterpret_cast<const UnitClass*>(this->AttachedToObject); }
 
 public:
-
 };
 
 class UnitExtContainer final : public Container<UnitExtData>
@@ -112,11 +110,13 @@ public:
 	void _Detach(AbstractClass* target, bool all);
 	DamageState _Take_Damage(int* damage, int distance, WarheadTypeClass* warhead, TechnoClass* source, bool ignoreDefenses, bool PreventsPassengerEscape, HouseClass* sourceHouse);
 
-	FORCEDINLINE UnitExtData* _GetExtData() {
+	FORCEDINLINE UnitExtData* _GetExtData()
+	{
 		return *reinterpret_cast<UnitExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 
-	FORCEDINLINE UnitTypeExtData* _GetTypeExtData() {
+	FORCEDINLINE UnitTypeExtData* _GetTypeExtData()
+	{
 		return *reinterpret_cast<UnitTypeExtData**>(((DWORD)this->Type) + AbstractExtOffset);
 	}
 };

@@ -103,7 +103,8 @@ public:
 
 public:
 
-	TEventExtData(TEventClass* pObj) : AbstractExtended(pObj) , TechnoType() {
+	TEventExtData(TEventClass* pObj) : AbstractExtended(pObj), TechnoType()
+	{
 		this->AbsType = TEventClass::AbsID;
 	}
 	TEventExtData(TEventClass* pObj, noinit_t nn) : AbstractExtended(pObj, nn) { }
@@ -111,8 +112,7 @@ public:
 	virtual ~TEventExtData() = default;
 
 	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override
-	{
-	}
+	{ }
 
 	virtual void LoadFromStream(PhobosStreamReader& Stm) override
 	{
@@ -130,8 +130,7 @@ public:
 	virtual int GetSize() const { return sizeof(*this); };
 
 	virtual void CalculateCRC(CRCEngine& crc) const
-	{
-	}
+	{ }
 
 	TEventClass* This() const { return reinterpret_cast<TEventClass*>(this->AttachedToObject); }
 	const TEventClass* This_Const() const { return reinterpret_cast<const TEventClass*>(this->AttachedToObject); }
@@ -319,9 +318,9 @@ public:
 
 	bool _Occured(TriggerEvent event, HouseClass* house, ObjectClass* obj, CDTimerClass* td, bool* bool1, AbstractClass* source);
 
-	TEventExtData* _GetExtData() {
+	TEventExtData* _GetExtData()
+	{
 		return *reinterpret_cast<TEventExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
-
 };
 static_assert(sizeof(FakeTEventClass) == sizeof(TEventClass), "Invalid Size !");

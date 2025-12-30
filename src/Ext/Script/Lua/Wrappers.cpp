@@ -1,4 +1,3 @@
-
 #include "Wrapper.h"
 
 #include <Phobos.Lua.h>
@@ -46,7 +45,6 @@ struct TeamClassWrapper
 
 	static int GetAreaGuardTimerTimeLeft(lua_State* L)
 	{
-
 		TeamClass* pTeam = (TeamClass*)lua_tointeger(L, -1);
 		const int result = pTeam->GuardAreaTimer.GetTimeLeft();
 		lua_pushnumber(L, result);
@@ -83,7 +81,6 @@ struct _Unit
 		lua_pushnumber(L, (uintptr_t)pFoot->NextTeamMember);
 		return 1;
 	}
-
 };
 
 struct _MissionClass
@@ -140,9 +137,7 @@ struct LuaScript
 				State["_MissionClass_QueueMission"] = _MissionClass::QueueMission;
 				State["_Unit_GetNextTeamMember"] = _Unit::GetNextTeamMember;
 			}
-
 		}catch(const sol::error& what) {
-
 			Debug::LogInfo("Cannot Find [%s] File ! Reason (%s)", Lua_Name.c_str(), what.what());
 			State = nullptr;
 		}
@@ -150,7 +145,8 @@ struct LuaScript
 };
 
 //static std::vector<LuaScript> LuaScripts {};
-struct PairOfNumbers {
+struct PairOfNumbers
+{
 	int Alternate;
 	int Original;
 };
@@ -344,7 +340,6 @@ void LuaBridge::InitScriptLuaList(unique_luastate& sol_state)
 	//		}
 	//	}
 	//}
-
 }
 
 #include <Ext/Script/Body.h>
@@ -354,8 +349,10 @@ ASMJIT_PATCH(0x69192E, ScriptTypeClass_Read_INI_TeamMission, 0x7)
 	GET(ScriptTypeClass*, pThis, ESI);
 	GET(int, team, ECX);
 
-	for (auto& cur : SriptNumbers) {
-		if (cur.Alternate == team) {
+	for (auto& cur : SriptNumbers)
+	{
+		if (cur.Alternate == team)
+		{
 			Debug::LogInfo("[{}]Replacing TMission[{} to {}]", pThis->ID, team, cur.Original);
 			R->ECX(cur.Original);
 			return 0x0;

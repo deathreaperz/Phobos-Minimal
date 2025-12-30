@@ -2,7 +2,6 @@
 
 #include "PhobosTrajectory.h"
 
-
 class StraightVariantCTrajectoryType final : public PhobosTrajectoryType
 {
 public:
@@ -46,7 +45,6 @@ public:
 
 	virtual const char* Name() { return "StraightVariantCTrajectoryType"; }
 };
-
 
 class StraightTrajectoryVarianC : public PhobosTrajectory
 {

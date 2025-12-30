@@ -7,16 +7,19 @@
 
 struct SwizzleWrapperClass : public SwizzleManagerClass
 {
-	COM_DECLSPEC_NOTHROW LONG STDAPICALLTYPE _Reset() {
+	COM_DECLSPEC_NOTHROW LONG STDAPICALLTYPE _Reset()
+	{
 		PhobosSwizzleManager.Reset();
 		return S_OK;
 	}
 
-	COM_DECLSPEC_NOTHROW LONG STDAPICALLTYPE _Swizzle(void** pointer) {
+	COM_DECLSPEC_NOTHROW LONG STDAPICALLTYPE _Swizzle(void** pointer)
+	{
 		return PhobosSwizzleManager.Swizzle(pointer);
 	}
 
-	COM_DECLSPEC_NOTHROW LONG STDAPICALLTYPE _Fetch_Swizzle_ID(void* pointer, LONG* id) {
+	COM_DECLSPEC_NOTHROW LONG STDAPICALLTYPE _Fetch_Swizzle_ID(void* pointer, LONG* id)
+	{
 		if (pointer == nullptr || id == nullptr)
 		{
 			return E_POINTER;
@@ -27,10 +30,10 @@ struct SwizzleWrapperClass : public SwizzleManagerClass
 		return S_OK;
 	}
 
-	COM_DECLSPEC_NOTHROW LONG STDAPICALLTYPE _Here_I_Am(LONG id, void* pointer) {
+	COM_DECLSPEC_NOTHROW LONG STDAPICALLTYPE _Here_I_Am(LONG id, void* pointer)
+	{
 		return PhobosSwizzleManager.Here_I_Am(id, pointer);
 	}
-
 };
 
 //DEFINE_FUNCTION_JUMP(LJMP, 0x6CF350, SwizzleWrapperClass::_Reset)

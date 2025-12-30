@@ -3,7 +3,6 @@
 #include <Ext/Techno/Body.h>
 #include <Utilities/Macro.h>
 
-
 // =============================
 // load / save
 //template <typename T>
@@ -81,19 +80,23 @@ void FakeSpawnManagerClass::_DetachB(AbstractClass* pTarget, bool removed)
 	{
 		this->Target = nullptr;
 
-		if (!this->NewTarget){
+		if (!this->NewTarget)
+		{
 			//will call _Detach function internally
 			this->ResetTarget();
 		}
 	}
 
-	if (pTarget == this->NewTarget && removed) {
+	if (pTarget == this->NewTarget && removed)
+	{
 		this->NewTarget = 0;
 	}
 
 	// Search through SpawnControls
-	for (int max = this->SpawnedNodes.Count - 1; max >= 0; --max) {
-		if (auto pSpawnee = this->SpawnedNodes.Items[max]) {
+	for (int max = this->SpawnedNodes.Count - 1; max >= 0; --max)
+	{
+		if (auto pSpawnee = this->SpawnedNodes.Items[max])
+		{
 			if ((pSpawnee->Unit && ((pSpawnee->Unit == pTarget && removed)
 				|| pSpawnee->Unit->Health <= 0
 				|| pSpawnee->Unit->IsSinking
@@ -101,7 +104,8 @@ void FakeSpawnManagerClass::_DetachB(AbstractClass* pTarget, bool removed)
 				|| pSpawnee->Unit->IsCrashing
 				|| pSpawnee->Unit->IsKamikaze))
 //				|| pSpawnee->IsSpawnMissile == 1
-				) {
+)
+			{
 				this->SpawnedNodes.Items[max]->Unit = nullptr;
 				this->SpawnedNodes.Items[max]->NodeSpawnTimer.Start(this->RegenRate);
 				this->SpawnedNodes.Items[max]->Status = SpawnNodeStatus::Dead;
@@ -109,7 +113,8 @@ void FakeSpawnManagerClass::_DetachB(AbstractClass* pTarget, bool removed)
 		}
 	}
 
-	if (pTarget == this->Owner && removed && !Phobos::Otamaa::ExeTerminated) {
+	if (pTarget == this->Owner && removed && !Phobos::Otamaa::ExeTerminated)
+	{
 		this->KillNodes();
 		//will call _Detach function internally
 		this->ResetTarget();

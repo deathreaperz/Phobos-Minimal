@@ -28,21 +28,21 @@ DEFINE_FUNCTION_JUMP(CALL, 0x484FF3, CellExtData::GetTiberiumType);
 //DEFINE_FUNCTION_JUMP(CALL, 0x485013, CellExtData::GetTiberiumType)); JMP
 
 //DEFINE_FUNCTION_JUMP(CALL, 0x485026, CellExtData::GetTiberiumType));
-ASMJIT_PATCH(0x485020, CellClass_GetTibValue, 0x6) {
+ASMJIT_PATCH(0x485020, CellClass_GetTibValue, 0x6)
+{
 	GET(FakeCellClass*, pThis, ECX);
-//	GET_STACK(DWORD, caller , 0x0);
+	//	GET_STACK(DWORD, caller , 0x0);
 
-	//if (((int)*((DWORD*)pThis)) == -1) {
-	//	Debug::FatalError(__FUNCTION__" called with invalid cell , caller %x", caller);
-	//	R->EAX(0);
-	//	return 0x485052;
-	//}
+		//if (((int)*((DWORD*)pThis)) == -1) {
+		//	Debug::FatalError(__FUNCTION__" called with invalid cell , caller %x", caller);
+		//	R->EAX(0);
+		//	return 0x485052;
+		//}
 
 	int type = pThis->_GetTiberiumType();
 	R->EAX(type == -1 ? 0 : TiberiumClass::Array->Items[type]->Value);
 	return 0x485052;
 }
-
 
 DEFINE_FUNCTION_JUMP(LJMP, 0x485013, CellExtData::GetTiberiumType);
 DEFINE_FUNCTION_JUMP(LJMP, 0x5FDD20, CellExtData::GetTiberiumType);

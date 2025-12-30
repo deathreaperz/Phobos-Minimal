@@ -14,8 +14,8 @@ ASMJIT_PATCH(0x465201, BuildingTypeClass_LoadFromStream_Foundation, 0x6)
 	pThis->ToTile = 0;
 	auto pExt = BuildingTypeExtContainer::Instance.Find(pThis);
 
-	if (pExt->IsCustom && pExt->CustomWidth > 0 && pExt->CustomHeight > 0) {
-
+	if (pExt->IsCustom && pExt->CustomWidth > 0 && pExt->CustomHeight > 0)
+	{
 		// if there's custom data, assign it
 		pThis->FoundationData = pExt->CustomData.data();
 		pThis->FoundationOutside = pExt->OutlineData.data();
@@ -26,7 +26,6 @@ ASMJIT_PATCH(0x465201, BuildingTypeClass_LoadFromStream_Foundation, 0x6)
 		//pThis->FoundationOutside = FoundationDataStruct::Outlines[(int)pThis->Foundation].Datas;
 		pThis->FoundationData = BuildingTypeClass::FoundationlinesData[(int)pThis->Foundation].Datas;
 		pThis->FoundationOutside = BuildingTypeClass::FoundationOutlinesData[(int)pThis->Foundation].Datas;
-
 	}
 
 	SwizzleManagerClass::Instance->Swizzle((void**)&pThis->ToOverlay);
@@ -68,7 +67,8 @@ ASMJIT_PATCH(0x45eca0, BuildingTypeClass_GetFoundationHeight, 6)
 {
 	GET(BuildingTypeClass*, pThis, ECX);
 
-	if (pThis->Foundation == BuildingTypeExtData::CustomFoundation) {
+	if (pThis->Foundation == BuildingTypeExtData::CustomFoundation)
+	{
 		const bool bIncludeBib = (R->Stack8(0x4) != 0);
 		R->EAX(BuildingTypeExtContainer::Instance.Find(pThis)->CustomHeight + (bIncludeBib && pThis->Bib));
 		return 0x45ECDA;
@@ -98,12 +98,17 @@ ASMJIT_PATCH(0x656584, RadarClass_GetFoundationShape, 6)
 	const auto fnd = pType->Foundation;
 	DWORD* ret = nullptr;
 
-	if (fnd == BuildingTypeExtData::CustomFoundation) {
+	if (fnd == BuildingTypeExtData::CustomFoundation)
+	{
 		const auto pTypeExt = BuildingTypeExtContainer::Instance.Find(pType);
 		ret = reinterpret_cast<DWORD*>(&pTypeExt->FoundationRadarShape);
-	} else if(fnd >= Foundation::_1x1 && fnd <= Foundation::_0x0) {
+	}
+	else if (fnd >= Foundation::_1x1 && fnd <= Foundation::_0x0)
+	{
 		ret = reinterpret_cast<DWORD*>(pThis->FoundationTypePixels + (int)fnd);
-	} else {
+	}
+	else
+	{
 		ret = reinterpret_cast<DWORD*>(pThis->FoundationTypePixels + (int)Foundation::_2x2);
 	}
 
@@ -131,8 +136,10 @@ ASMJIT_PATCH(0x568565, MapClass_AddContentAt_Foundation_OccupyHeight, 5)
 	auto const AffectedCells = CustomFoundation::GetCoveredCells(
 		pThis, *MainCoords, ShadowHeight);
 
-	for(const auto& cell : *AffectedCells) {
-		if (auto pCell = MapClass::Instance->TryGetCellAt(cell)) {
+	for (const auto& cell : *AffectedCells)
+	{
+		if (auto pCell = MapClass::Instance->TryGetCellAt(cell))
+		{
 			++pCell->OccupyHeightsCoveringMe;
 		}
 	}
@@ -147,7 +154,8 @@ ASMJIT_PATCH(0x568411, MapClass_AddContentAt_Foundation_P1, 6)
 {
 	GET(ObjectClass*, pThis, EDI);
 
-	if (auto pTerrain = cast_to<TerrainClass*, false>(pThis)) {
+	if (auto pTerrain = cast_to<TerrainClass*, false>(pThis))
+	{
 		if (pTerrain->Type->Foundation == 21)
 			return 0x5687DF;
 	}
@@ -172,8 +180,10 @@ ASMJIT_PATCH(0x568997, MapClass_RemoveContentAt_Foundation_OccupyHeight, 5)
 	auto const AffectedCells = CustomFoundation::GetCoveredCells(
 		pThis, *MainCoords, ShadowHeight);
 
-	for (const auto& cell : *AffectedCells) {
-		if (auto pCell = MapClass::Instance->TryGetCellAt(cell)) {
+	for (const auto& cell : *AffectedCells)
+	{
+		if (auto pCell = MapClass::Instance->TryGetCellAt(cell))
+		{
 			if (pCell->OccupyHeightsCoveringMe > 0)
 				--pCell->OccupyHeightsCoveringMe;
 		}
@@ -246,9 +256,10 @@ ASMJIT_PATCH(0x465550, BuildingTypeClass_GetFoundationOutline, 6)
 	}
 
 	auto sz = (int)pThis->Foundation;
-	if ( sz == 9 ) {
-        sz = 6;
-    }
+	if (sz == 9)
+	{
+		sz = 6;
+	}
 
 	R->EAX(BuildingTypeClass::FoundationOutlinesData[sz].Datas);
 	//R->EAX(FoundationDataStruct::Outlines[sz].Datas);
@@ -270,5 +281,4 @@ ASMJIT_PATCH(0x464AF0, BuildingTypeClass_GetSizeInLeptons, 6)
 		return 0x464B2C;
 	}
 	return 0;
-
 }

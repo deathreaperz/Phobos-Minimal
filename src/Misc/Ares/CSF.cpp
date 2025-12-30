@@ -40,14 +40,16 @@ void CSFLoader::LoadAdditionalCSF(const char* pFileName, bool ignoreLanguage)
 					++CSFCount;
 					const bool succeeded = StringTable::ReadFile(pFileName); //must be modified to do the rest ;)
 
-					if(succeeded){
+					if (succeeded)
+					{
 						std::sort(StringTable::Labels(), StringTable::Labels() + StringTable::LabelCount(),
-							[](const CSFLabel& lhs, const CSFLabel& rhs) {
-							return IMPL_STRCMPI(lhs.Name, rhs.Name) < 0;
+							[](const CSFLabel& lhs, const CSFLabel& rhs)
+ {
+	 return IMPL_STRCMPI(lhs.Name, rhs.Name) < 0;
 						});
 					}
 
-					_loaded =  succeeded;
+					_loaded = succeeded;
 				}
 			}
 		}
@@ -61,12 +63,14 @@ const wchar_t* CSFLoader::GetDynamicString(const char* pLabelName, const wchar_t
 {
 	auto pData = FindOrAllocateDynamicStrings(pLabelName);
 
-	if(!pData->TextLoaded) {
+	if (!pData->TextLoaded)
+	{
 		swprintf_s(pData->Text, std::size(pData->Text), pPattern, pDefault);
 		pData->TextLoaded = true;
 		pData->IsMissingValue = !isNostr;
 
-		if(Phobos::Otamaa::OutputMissingStrings && !isNostr) {
+		if (Phobos::Otamaa::OutputMissingStrings && !isNostr)
+		{
 			Debug::LogInfo("[CSFLoader] ***NO_STRING*** label \"{}\" with value \"{}\".", pLabelName, PhobosCRT::WideStringToString(pData->Text));
 		}
 	}
@@ -184,11 +188,12 @@ static COMPILETIMEEVAL constant_ptr<const char, 0x840D40> const ra2md_str {};
 
 ASMJIT_PATCH(0x6BD84E, CSF_LoadExtraFiles, 5)
 {
-	if (!StringTable::LoadFile(ra2md_str())) {
+	if (!StringTable::LoadFile(ra2md_str()))
+	{
 		const std::string _msg = fmt::format("Unable to initialize '{0}', please reinstall {1}.\n"
 			"Keine Initialisierung von '{0}' möglich. Bitte installieren Sie {1} erneut.\n"
 			"Initialisation de '{0}' impossible. Veuillez réinstaller {1}."
-			, ra2md_str() , LuaData::MainWindowStr);
+			, ra2md_str(), LuaData::MainWindowStr);
 
 		Imports::MessageBoxA.invoke()(NULL,
 			_msg.c_str(),
@@ -197,7 +202,7 @@ ASMJIT_PATCH(0x6BD84E, CSF_LoadExtraFiles, 5)
 		return 0x6BD86F;
 	}
 
-	static fmt::basic_memory_buffer<char , 60> buffer {};
+	static fmt::basic_memory_buffer<char, 60> buffer {};
 	CSFLoader::LoadAdditionalCSF("ares.csf", true);
 	buffer.clear();
 	std::string res = "us";
@@ -210,7 +215,8 @@ ASMJIT_PATCH(0x6BD84E, CSF_LoadExtraFiles, 5)
 
 	buffer.clear();
 
-	for (int idx = 0; idx < 100; ++idx) {
+	for (int idx = 0; idx < 100; ++idx)
+	{
 		fmt::format_to(std::back_inserter(buffer), "stringtable{:02}.csf", idx);
 		buffer.push_back('\0');
 		CSFLoader::LoadAdditionalCSF(buffer.data());
@@ -221,18 +227,21 @@ ASMJIT_PATCH(0x6BD84E, CSF_LoadExtraFiles, 5)
 	return 0x6BD88B;
 }
 
-const wchar_t* __fastcall CSFLoader::FetchStringManager(const char* label, char* speech, const char* file, int line) {
-
-	if (speech) {
+const wchar_t* __fastcall CSFLoader::FetchStringManager(const char* label, char* speech, const char* file, int line)
+{
+	if (speech)
+	{
 		*speech = 0;
 	}
 
-	if (!StringTable::Labels()) {
+	if (!StringTable::Labels())
+	{
 		return L"***FATAL*** String Manager failed to initilaized properly";
 	}
 
-	if (strncmp(label, "NOSTR:", 6) == 0) {
-		return CSFLoader::GetDynamicString(label, L"%hs", &label[6] , true);
+	if (strncmp(label, "NOSTR:", 6) == 0)
+	{
+		return CSFLoader::GetDynamicString(label, L"%hs", &label[6], true);
 	}
 
 	CSFLabel* pLabel = static_cast<CSFLabel*>(bsearch(

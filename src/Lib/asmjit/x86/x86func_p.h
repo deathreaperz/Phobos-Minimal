@@ -13,16 +13,14 @@ ASMJIT_BEGIN_SUB_NAMESPACE(x86)
 //! \cond INTERNAL
 //! \addtogroup asmjit_x86
 //! \{
-
 //! X86-specific function API (calling conventions and other utilities).
-namespace FuncInternal {
+namespace FuncInternal
+{
+	//! Initialize `CallConv` structure (X86 specific).
+	Error init_call_conv(CallConv& cc, CallConvId call_conv_id, const Environment& environment) noexcept;
 
-//! Initialize `CallConv` structure (X86 specific).
-Error init_call_conv(CallConv& cc, CallConvId call_conv_id, const Environment& environment) noexcept;
-
-//! Initialize `FuncDetail` (X86 specific).
-Error init_func_detail(FuncDetail& func, const FuncSignature& signature, uint32_t register_size) noexcept;
-
+	//! Initialize `FuncDetail` (X86 specific).
+	Error init_func_detail(FuncDetail& func, const FuncSignature& signature, uint32_t register_size) noexcept;
 } // {FuncInternal}
 
 //! \}

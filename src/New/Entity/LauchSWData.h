@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <Utilities/TemplateDef.h>
 
 class SuperWeaponTypeClass;
@@ -25,9 +24,9 @@ struct LauchSWData final
 
 	Valueable<OwnerHouseKind> LauchhSW_Owner { OwnerHouseKind::Invoker };
 
-	bool Read(INI_EX& exINI, const char* pID, int Prefix , SuperWeaponTypeClass* pReaded);
+	bool Read(INI_EX& exINI, const char* pID, int Prefix, SuperWeaponTypeClass* pReaded);
 	bool ReadSingle(INI_EX& exINI, const char* pID, int Prefix);
-	static bool ReadVector(std::vector<LauchSWData>& res , INI_EX& exINI, const char* pSection , bool CompatibilityMode);
+	static bool ReadVector(std::vector<LauchSWData>& res, INI_EX& exINI, const char* pSection, bool CompatibilityMode);
 	//LauchSWData() = default;
 	//LauchSWData(INI_EX& exINI, const char* pID, int Prefix, SuperWeaponTypeClass* pReaded)
 	//{

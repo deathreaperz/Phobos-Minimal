@@ -32,7 +32,7 @@
 
 ZyanU64 ZycoreGetVersion(void)
 {
-    return ZYCORE_VERSION;
+	return ZYCORE_VERSION;
 }
 
 /* ============================================================================================== */

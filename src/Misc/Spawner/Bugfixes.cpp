@@ -93,7 +93,7 @@ ASMJIT_PATCH(0x649851, WaitForPlayers_OnlineOptimizations, 0x5)
  //	, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90
  //);
 
- DEFINE_JUMP(LJMP, 0x5F5896 , 0x5F58E1);
+DEFINE_JUMP(LJMP, 0x5F5896, 0x5F58E1);
 //  ASMJIT_PATCH(0x5F5893, ObjectClass_Mark_Unessesarycalls, 0x5) {
 //  	return R->EBX<int>() == 1 ? 0x5F58EC : 0x5F58E7;
 //  }
@@ -144,16 +144,16 @@ ASMJIT_PATCH(0x454174, BuildingClass_Load_SwizzleLighsource, 0xA)
 	return 0x45417E;
 }
 
-ASMJIT_PATCH(0x50C8F4, HouseClass_Flag_To_Chear_Disable ,0x5)
+ASMJIT_PATCH(0x50C8F4, HouseClass_Flag_To_Chear_Disable, 0x5)
 {
 	if ((SessionClass::Instance->GameMode == GameMode::LAN && !Game::LANTaunts)
-		|| (SessionClass::Instance->GameMode == GameMode::Internet && !Game::WOLTaunts)){
+		|| (SessionClass::Instance->GameMode == GameMode::Internet && !Game::WOLTaunts))
+	{
 		return 0x50C910;
 	}
 
 	return 0x0;
 }
-
 
 #include <DisplayClass.h>
 #include <TacticalClass.h>
@@ -181,7 +181,7 @@ ASMJIT_PATCH(0x700536, TechnoClass_WhatAction_Object_AllowAttack, 0x6)
 
 	auto const pType = pThis->GetTechnoType();
 
-	if(TechnoTypeExtContainer::Instance.Find(pType)
+	if (TechnoTypeExtContainer::Instance.Find(pType)
 		->NoManualFire)
 		return 0x70056Cu;
 
@@ -203,7 +203,7 @@ ASMJIT_PATCH(0x6FC8F5, TechnoClass_CanFire_SkipROF, 0x6)
 	return WhatActionObjectTemp::Skip ? 0x6FC981 : 0;
 }
 
-DEFINE_PATCH_ADDR_OFFSET(DWORD , 0x7B8536, 6, 1);
+DEFINE_PATCH_ADDR_OFFSET(DWORD, 0x7B8536, 6, 1);
 
 #pragma region InfBlockTreeFix
 #include <Ext/Cell/Body.h>
@@ -213,7 +213,7 @@ ASMJIT_PATCH(0x52182A, InfantryClass_MarkAllOccupationBits_SetOwnerIdx, 0x6)
 	GET(CellClass*, pCell, ESI);
 
 	//avoid invalid cell
-	if(auto pExt = CellExtContainer::Instance.TryFind(pCell))
+	if (auto pExt = CellExtContainer::Instance.TryFind(pCell))
 		pExt->InfantryCount++;
 
 	return 0;
@@ -229,7 +229,8 @@ ASMJIT_PATCH(0x5218C2, InfantryClass_UnmarkAllOccupationBits_ResetOwnerIdx, 0x6)
 	pCell->OccupationFlags = newFlag;
 	bool noInfantry = false;
 
-	if (auto pExt = CellExtContainer::Instance.TryFind(pCell)){
+	if (auto pExt = CellExtContainer::Instance.TryFind(pCell))
+	{
 		noInfantry = pExt->InfantryCount-- == 0;
 	}
 

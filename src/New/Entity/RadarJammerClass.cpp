@@ -6,7 +6,6 @@
 #include <Ext/TechnoType/Body.h>
 #include <Misc/Ares/Hooks/Header.h>
 
-
 //! \param TargetBuilding The building whose eligibility to check.
 bool RadarJammerClass::IsEligible(BuildingClass* TargetBuilding)
 {
@@ -15,18 +14,20 @@ bool RadarJammerClass::IsEligible(BuildingClass* TargetBuilding)
 		- either a radar or a spysat
 	*/
 	auto const pExt = TechnoTypeExtContainer::Instance.Find(this->AttachedToObject->GetTechnoType());
-	if (EnumFunctions::CanTargetHouse(pExt->RadarJamHouses, this->AttachedToObject->Owner, TargetBuilding->Owner)) {
-		if(pExt->RadarJamIgnore.Contains(TargetBuilding->Type)
+	if (EnumFunctions::CanTargetHouse(pExt->RadarJamHouses, this->AttachedToObject->Owner, TargetBuilding->Owner))
+	{
+		if (pExt->RadarJamIgnore.Contains(TargetBuilding->Type)
 				|| (!pExt->RadarJamAffect.empty() && !pExt->RadarJamAffect.Contains(TargetBuilding->Type)))
-				return false;
+			return false;
 
 		if (TargetBuilding->Type->Radar || TargetBuilding->Type->SpySat)
 			return true;
 
-		for (auto pType : TargetBuilding->GetTypes()) {
-			if (pType && pType->SpySat) {
-
-				if(pExt->RadarJamIgnore.Contains(pType)
+		for (auto pType : TargetBuilding->GetTypes())
+		{
+			if (pType && pType->SpySat)
+			{
+				if (pExt->RadarJamIgnore.Contains(pType)
 					|| (!pExt->RadarJamAffect.empty() && !pExt->RadarJamAffect.Contains(pType)))
 					return false;
 
@@ -39,11 +40,12 @@ bool RadarJammerClass::IsEligible(BuildingClass* TargetBuilding)
 }
 
 void RadarJammerClass::Update()
-{	
+{
 	auto const pExt = TechnoTypeExtContainer::Instance.Find(this->AttachedToObject->GetTechnoType());
 
 	// we don't want to scan & crunch numbers every frame - this limits it to ScanInterval frames
-	if ((Unsorted::CurrentFrame - this->LastScan) < pExt->RadarJamDelay) {
+	if ((Unsorted::CurrentFrame - this->LastScan) < pExt->RadarJamDelay)
+	{
 		return;
 	}
 

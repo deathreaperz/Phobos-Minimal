@@ -56,10 +56,10 @@
 #include <MouseClass.h>
 #include <AircraftTrackerClass.h>
 
-namespace Helpers {
-
-	namespace Alex {
-
+namespace Helpers
+{
+	namespace Alex
+	{
 		//! Less comparison for pointer types.
 		/*!
 			Dereferences the values before comparing them using std::less.
@@ -67,11 +67,13 @@ namespace Helpers {
 			This compares the actual objects pointed to instead of their
 			arbitrary pointer values.
 		*/
-		struct deref_less {
+		struct deref_less
+		{
 			using is_transparent = void;
 
 			template <typename T, typename U>
-			COMPILETIMEEVAL bool operator()(T&& lhs, U&& rhs) const {
+			COMPILETIMEEVAL bool operator()(T&& lhs, U&& rhs) const
+			{
 				return std::less<>()(*lhs, *rhs);
 			}
 		};
@@ -85,30 +87,36 @@ namespace Helpers {
 			a parameter, or iterate the set through the begin and end methods.
 		*/
 		template<typename T>
-		class DistinctCollector {
+		class DistinctCollector
+		{
 			using less_type = std::conditional_t<std::is_pointer<T>::value, deref_less, std::less<>>;
 			using set_type = std::set<T, less_type>;
 			set_type _set;
 
 		public:
-			OPTIONALINLINE bool operator() (T item) {
+			OPTIONALINLINE bool operator() (T item)
+			{
 				insert(item);
 				return true;
 			}
 
-			OPTIONALINLINE void insert(T value) {
+			OPTIONALINLINE void insert(T value)
+			{
 				_set.insert(value);
 			}
 
-			COMPILETIMEEVAL OPTIONALINLINE size_t size() const {
+			COMPILETIMEEVAL OPTIONALINLINE size_t size() const
+			{
 				return _set.size();
 			}
 
-			COMPILETIMEEVAL OPTIONALINLINE typename set_type::const_iterator begin() const {
+			COMPILETIMEEVAL OPTIONALINLINE typename set_type::const_iterator begin() const
+			{
 				return _set.begin();
 			}
 
-			COMPILETIMEEVAL OPTIONALINLINE typename set_type::const_iterator end() const {
+			COMPILETIMEEVAL OPTIONALINLINE typename set_type::const_iterator end() const
+			{
 				return _set.end();
 			}
 
@@ -192,7 +200,6 @@ namespace Helpers {
 
 						if (auto const pTechno = flag_cast_to<TechnoClass*, false>(*obj))
 						{
-
 							// Starkku: Buildings need their distance from the origin coords checked at cell level.
 							if (pTechno->WhatAmI() == AbstractType::Building)
 							{
@@ -247,8 +254,8 @@ namespace Helpers {
 				std::vector<TechnoClass*> ret;
 				ret.reserve(set.size());
 
-				for (auto const& pTechno : set) {
-
+				for (auto const& pTechno : set)
+				{
 					if (!allowLimbo && pTechno->InLimbo)
 						continue;
 
@@ -336,7 +343,6 @@ namespace Helpers {
 
 					if (auto const pTechno = flag_cast_to<TechnoClass*, false>(*obj))
 					{
-
 						// Starkku: Buildings need their distance from the origin coords checked at cell level.
 						if (pTechno->WhatAmI() == AbstractType::Building)
 						{
@@ -369,12 +375,15 @@ namespace Helpers {
 			}
 
 			// flying objects are not included normally, use AircraftTrackerClass to find the affected ones.
-			if (IncludeAir) {
+			if (IncludeAir)
+			{
 				auto const airTracker = &AircraftTrackerClass::Instance.get();
 				airTracker->AircraftTrackerClass_logics_412B40(MapClass::Instance->GetCellAt(coords), int(arange));
 
-				for (auto pTechno = airTracker->Get(); pTechno; pTechno = airTracker->Get()) {
-					if (pTechno->IsAlive && pTechno->IsOnMap && pTechno->Health > 0) {
+				for (auto pTechno = airTracker->Get(); pTechno; pTechno = airTracker->Get())
+				{
+					if (pTechno->IsAlive && pTechno->IsOnMap && pTechno->Health > 0)
+					{
 						if (pTechno->Location.DistanceFrom(coords) <= arange)
 						{
 							set.insert(pTechno);
@@ -387,20 +396,23 @@ namespace Helpers {
 			std::vector<AbstractClass*> ret;
 			ret.reserve(set.size());
 
-			for (auto const& pItems : set) {
-
-				if (pItems->WhatAmI() != AbstractType::Building) {
+			for (auto const& pItems : set)
+			{
+				if (pItems->WhatAmI() != AbstractType::Building)
+				{
 					auto target = pItems->GetCoords();
 					// Ignore Z coordinate if detonation is cylindrical.
 					if (IsCylindrical)
 						target.Z = coords.Z;
 
-					if (target.DistanceFrom(coords) > arange) {
+					if (target.DistanceFrom(coords) > arange)
+					{
 						continue;
 					}
 				}
 
-				if (action(pItems)) {
+				if (action(pItems))
+				{
 					ret.push_back(pItems);
 				}
 			}
@@ -410,7 +422,7 @@ namespace Helpers {
 
 		template<typename Func>
 		OPTIONALINLINE void ApplyFuncToCellSpreadItems(
-			CoordStruct const& coords, double const spread, bool includeInAir, bool IsCylindrical, bool allowLimbo, bool AffectAir, bool AffectsGround , bool IgnoreBuildings, Func action)
+			CoordStruct const& coords, double const spread, bool includeInAir, bool IsCylindrical, bool allowLimbo, bool AffectAir, bool AffectsGround, bool IgnoreBuildings, Func action)
 		{
 			if (AffectAir || AffectsGround)
 			{
@@ -432,7 +444,6 @@ namespace Helpers {
 
 						if (auto const pTechno = flag_cast_to<TechnoClass*, false>(*obj))
 						{
-
 							// Starkku: Buildings need their distance from the origin coords checked at cell level.
 							if (pTechno->WhatAmI() == AbstractType::Building && !IgnoreBuildings)
 							{
@@ -483,8 +494,8 @@ namespace Helpers {
 					}
 				}
 
-				for (auto const& pTechno : set) {
-
+				for (auto const& pTechno : set)
+				{
 					if (!allowLimbo && pTechno->InLimbo)
 						continue;
 
@@ -505,7 +516,8 @@ namespace Helpers {
 					bool isBuilding = false;
 
 					// ignore buildings that are not visible, like ambient light posts
-					if (abs == AbstractType::Building) {
+					if (abs == AbstractType::Building)
+					{
 						if (IgnoreBuildings)
 							continue;
 
@@ -513,9 +525,13 @@ namespace Helpers {
 						if (pBuilding->Type->InvisibleInGame) { continue; }
 
 						isBuilding = true;
-					} else {
-						if (abs == UnitClass::AbsID) {
-							if (static_cast<const UnitClass*>(pTechno)->DeathFrameCounter > 0) {
+					}
+					else
+					{
+						if (abs == UnitClass::AbsID)
+						{
+							if (static_cast<const UnitClass*>(pTechno)->DeathFrameCounter > 0)
+							{
 								continue;
 							}
 						}
@@ -537,7 +553,8 @@ namespace Helpers {
 
 					// this is good
 					// Starkku: Building distance is checked prior on cell level, skip here.
-					if (isBuilding || dist <= spreadMult) {
+					if (isBuilding || dist <= spreadMult)
+					{
 						action(pTechno);
 					}
 				}
@@ -568,27 +585,33 @@ namespace Helpers {
 			\author AlexB
 			\date 2010-04-27
 		*/
-		COMPILETIMEEVAL OPTIONALINLINE int getCappedDuration(int CurrentValue, int Duration, int Cap) {
+		COMPILETIMEEVAL OPTIONALINLINE int getCappedDuration(int CurrentValue, int Duration, int Cap)
+		{
 			// Usually, the new duration is just added.
 			int ProposedDuration = CurrentValue + Duration;
 
-			if (Duration > 0) {
+			if (Duration > 0)
+			{
 				// Positive damage.
-				if (Cap < 0) {
+				if (Cap < 0)
+				{
 					// Do not stack. Use the maximum value.
 					return MaxImpl(Duration, CurrentValue);
 				}
-				else if (Cap > 0) {
+				else if (Cap > 0)
+				{
 					// Cap the duration.
 					int cappedValue = MinImpl(ProposedDuration, Cap);
 					return MaxImpl(CurrentValue, cappedValue);
 				}
-				else {
+				else
+				{
 					// There is no cap. Allow the duration to stack up.
 					return ProposedDuration;
 				}
 			}
-			else {
+			else
+			{
 				// Negative damage.
 				return (Cap < 0 ? ProposedDuration : MinImpl(ProposedDuration, Cap));
 			}
@@ -733,59 +756,70 @@ namespace Helpers {
 		}
 
 		template <typename Value, typename... Options>
-		[[nodiscard]] OPTIONALINLINE COMPILETIMEEVAL bool is_any_of(Value&& value, Options&&... options) {
+		[[nodiscard]] OPTIONALINLINE COMPILETIMEEVAL bool is_any_of(Value&& value, Options&&... options)
+		{
 			return ((value == options) || ...);
 		}
 
 		OPTIONALINLINE void remove_non_paradroppables(std::vector<TechnoTypeClass*>& types,
-									   const char* section, const char* key) {
+									   const char* section, const char* key)
+		{
 			// Use std::erase_if (C++20) if available, otherwise use erase-remove
-			std::erase_if(types, [section, key](TechnoTypeClass* pItem) -> bool {
-				if (!pItem) {
-					Debug::INIParseFailed(section, key, "nullptr", "Invalid types are removed.");
-					return true;
-				}
+			std::erase_if(types, [section, key](TechnoTypeClass* pItem) -> bool
+ {
+	 if (!pItem)
+	 {
+		 Debug::INIParseFailed(section, key, "nullptr", "Invalid types are removed.");
+		 return true;
+	 }
 
-				if (!is_any_of(pItem->WhatAmI(), AbstractType::InfantryType, AbstractType::UnitType)) {
-					Debug::INIParseFailed(section, key, pItem->ID, 
-										 "Only InfantryTypes and UnitTypes are supported.");
-					return true;
-				}
+	 if (!is_any_of(pItem->WhatAmI(), AbstractType::InfantryType, AbstractType::UnitType))
+	 {
+		 Debug::INIParseFailed(section, key, pItem->ID,
+							  "Only InfantryTypes and UnitTypes are supported.");
+		 return true;
+	 }
 
-				if (pItem->Strength <= 0) {
-					Debug::INIParseFailed(section, key, pItem->ID, 
-										 "0 Strength types are removed.");
-					return true;
-				}
+	 if (pItem->Strength <= 0)
+	 {
+		 Debug::INIParseFailed(section, key, pItem->ID,
+							  "0 Strength types are removed.");
+		 return true;
+	 }
 
-				return false;
+	 return false;
 			});
 		}
 
 		// IMPROVED: Use std::partial_sort instead of custom selection sort
 		template <typename FwdIt>
-		OPTIONALINLINE COMPILETIMEEVAL void selectionsort(FwdIt first, FwdIt last) {
+		OPTIONALINLINE COMPILETIMEEVAL void selectionsort(FwdIt first, FwdIt last)
+		{
 			// Use standard library's more efficient implementation
 			std::sort(first, last);
 		}
 
 		template <typename FwdIt, typename Pred>
-		OPTIONALINLINE COMPILETIMEEVAL void selectionsort(FwdIt first, FwdIt last, Pred pred) {
+		OPTIONALINLINE COMPILETIMEEVAL void selectionsort(FwdIt first, FwdIt last, Pred pred)
+		{
 			std::sort(first, last, std::forward<Pred>(pred));
 		}
 
 		template <typename FwdIt>
-		OPTIONALINLINE COMPILETIMEEVAL void selectionsort(FwdIt first, FwdIt middle, FwdIt last) {
+		OPTIONALINLINE COMPILETIMEEVAL void selectionsort(FwdIt first, FwdIt middle, FwdIt last)
+		{
 			// Use std::partial_sort - much more efficient than selection sort
 			std::partial_sort(first, middle, last);
 		}
 
 		template <typename FwdIt, typename Pred>
-		OPTIONALINLINE COMPILETIMEEVAL void selectionsort(FwdIt first, FwdIt middle, FwdIt last, Pred pred) {
+		OPTIONALINLINE COMPILETIMEEVAL void selectionsort(FwdIt first, FwdIt middle, FwdIt last, Pred pred)
+		{
 			std::partial_sort(first, middle, last, std::forward<Pred>(pred));
 		}
 
-		namespace ranges {
+		namespace ranges
+		{
 			template <typename T, typename Func>
 				requires std::invocable<Func, T>
 			constexpr void for_each_if(std::ranges::input_range auto&& range,

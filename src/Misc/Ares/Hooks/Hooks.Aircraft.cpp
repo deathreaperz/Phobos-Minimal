@@ -27,17 +27,20 @@ ASMJIT_PATCH(0x415085, AircraftClass_Update_DamageSmoke, 7)
 	const auto pExt = TechnoTypeExtContainer::Instance.Find(pThis->Type);
 
 	AnimTypeClass* pType = pExt->SmokeAnim.Get(RulesExtData::Instance()->DefaultAircraftDamagedSmoke);
-	if(!pType)
+	if (!pType)
 		return 0x41512C;
 
 	const int chance = (pThis->Health > 0) ? pExt->SmokeChanceRed.Get(10) : pExt->SmokeChanceDead.Get(80);
 
-	if(chance <= 0 )
+	if (chance <= 0)
 		return 0x41512C;
 
-	if (pThis->GetHealthPercentage() < RulesClass::Instance->ConditionRed) {
-		if (pThis->GetHeight() > 0) {
-			if (ScenarioClass::Instance->Random.RandomFromMax(99) < chance) {
+	if (pThis->GetHealthPercentage() < RulesClass::Instance->ConditionRed)
+	{
+		if (pThis->GetHeight() > 0)
+		{
+			if (ScenarioClass::Instance->Random.RandomFromMax(99) < chance)
+			{
 				AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pType, pThis->Location),
 					pThis->Owner,
 					nullptr,
@@ -145,7 +148,8 @@ ASMJIT_PATCH(0x413FA3, AircraftClass_Init_Cloakable, 0x5)
 {
 	GET(AircraftClass*, Item, ESI);
 
-	if (Item->Type->Cloakable) {
+	if (Item->Type->Cloakable)
+	{
 		Item->Cloakable = true;
 	}
 
@@ -157,10 +161,13 @@ ASMJIT_PATCH(0x415533, AircraftClass_Mi_Unload_Blocked, 0x5)
 	GET(AircraftClass*, pThis, ESI);
 	GET(FootClass*, pCargo, EDI);
 
-	if (pThis->KickOutUnit(pCargo, CellStruct::Empty) != KickOutResult::Failed) {
+	if (pThis->KickOutUnit(pCargo, CellStruct::Empty) != KickOutResult::Failed)
+	{
 		pCargo->Transporter = nullptr;
 		pCargo->IsOnCarryall = false;
-	} else {
+	}
+	else
+	{
 		pThis->AddPassenger(pCargo);
 		pThis->EnterIdleMode(false, 1);
 	}
@@ -212,10 +219,10 @@ ASMJIT_PATCH(0x414338, AircraftClass_Put_SpawnHigh, 0x6)
 ASMJIT_PATCH(0x6B7838, SpawnManagerClass_Update_SpawnHigh, 0x5)
 {
 	GET(SpawnManagerClass*, pThis, ESI);
-	GET(TechnoClass*, pSpawnee , EDI);
+	GET(TechnoClass*, pSpawnee, EDI);
 
 	pSpawnee->SetDestination(pThis->Owner->GetHeight() > 0
-		? (AbstractClass*)pThis->Owner->GetCell() : (AbstractClass*)pThis->Owner , true);
+		? (AbstractClass*)pThis->Owner->GetCell() : (AbstractClass*)pThis->Owner, true);
 
 	return 0x6B7848;
 }
@@ -223,7 +230,8 @@ ASMJIT_PATCH(0x6B7838, SpawnManagerClass_Update_SpawnHigh, 0x5)
 /* #1354 - Aircraft and empty SovParaDropInf list */
 ASMJIT_PATCH(0x41D887, AirstrikeClass_Fire, 0x6)
 {
-	if (!RulesClass::Instance->SovParaDropInf.Count) {
+	if (!RulesClass::Instance->SovParaDropInf.Count)
+	{
 		R->ECX(-1);
 		return 0x41D895;
 	}

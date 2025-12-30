@@ -80,7 +80,6 @@ void LaserTrailTypeClass::Serialize(T& Stm)
 				}
 				return result;
 			}
-
 		};
 	//Debug::LogInfo("Processing Element From LaserTrailTypeClass ! ");
 	debugProcess(this->IsHouseColor, "IsHouseColor");

@@ -24,13 +24,13 @@
 
 #include <Phobos.SaveGame.h>
 
-static bool IsAllowedSplitsTarget(TechnoClass* pSource, HouseClass* pOwner, WeaponTypeClass* pWeapon, TechnoClass* pTarget , bool useverses)
+static bool IsAllowedSplitsTarget(TechnoClass* pSource, HouseClass* pOwner, WeaponTypeClass* pWeapon, TechnoClass* pTarget, bool useverses)
 {
 	auto const pWH = pWeapon->Warhead;
 	auto const pType = pTarget->GetTechnoType();
 	const auto pWHExt = WarheadTypeExtContainer::Instance.Find(pWH);
 
-	if (!pType->LegalTarget || !pWHExt->CanDealDamage(pTarget,false,!useverses))
+	if (!pType->LegalTarget || !pWHExt->CanDealDamage(pTarget, false, !useverses))
 		return false;
 
 	auto const pWeaponExt = WeaponTypeExtContainer::Instance.Find(pWeapon);
@@ -45,7 +45,7 @@ static bool IsAllowedSplitsTarget(TechnoClass* pSource, HouseClass* pOwner, Weap
 		return false;
 	}
 
-	if(!TechnoExtData::ObjectHealthAllowFiring(pTarget, pWeapon))
+	if (!TechnoExtData::ObjectHealthAllowFiring(pTarget, pWeapon))
 		return false;
 
 	if (!pWeaponExt->HasRequiredAttachedEffects(pTarget, pSource))
@@ -66,7 +66,7 @@ void BulletExtData::ApplyArcingFix(const CoordStruct& sourceCoords, const CoordS
 	const double gravity = BulletTypeExtData::GetAdjustedGravity(This()->Type);
 	const double speed = speedMult * Math::sqrt(horizontalDistance * gravity * 1.2); // 0x48AB90
 
-	if (horizontalDistance < 1e-10 || speed< 1e-10)
+	if (horizontalDistance < 1e-10 || speed < 1e-10)
 	{
 		// No solution
 		velocity.Z = speed;
@@ -86,12 +86,12 @@ void BulletExtData::ApplyAirburst(BulletClass* pThis)
 	const auto pExt = BulletTypeExtContainer::Instance.Find(pType);
 
 	auto const GetWeapon = [pExt, pType]()
-	{
-		if (pExt->AirburstWeapons.empty())
-			return pType->AirburstWeapon;
+		{
+			if (pExt->AirburstWeapons.empty())
+				return pType->AirburstWeapon;
 
-		return pExt->AirburstWeapons[ScenarioClass::Instance->Random.RandomFromMax(pExt->AirburstWeapons.size() - 1)];
-	};
+			return pExt->AirburstWeapons[ScenarioClass::Instance->Random.RandomFromMax(pExt->AirburstWeapons.size() - 1)];
+		};
 
 	if (WeaponTypeClass* pWeapon = GetWeapon())
 	{
@@ -120,12 +120,14 @@ void BulletExtData::ApplyAirburst(BulletClass* pThis)
 
 			// fill target list with cells around the target
 			CellRangeIterator<CellClass>{}(cellDest, pExt->AirburstSpread.Get(),
-			[&targets](CellClass* const pCell) -> bool {
-				 targets.push_back(pCell);
-				 return true;
+			[&targets](CellClass* const pCell) -> bool
+ {
+	 targets.push_back(pCell);
+	 return true;
 			});
 
-			if (pExt->Airburst_UseCluster) {
+			if (pExt->Airburst_UseCluster)
+			{
 				HelperedVector<AbstractClass*> newTargets;
 				newTargets.reserve(cluster + 1);
 
@@ -140,7 +142,8 @@ void BulletExtData::ApplyAirburst(BulletClass* pThis)
 						int index = ScenarioClass::Instance->Random.RandomFromMax(targetCount - 1);
 						auto const pTarget = targets[index];
 
-						if (count > targetCount || newTargets.find(pTarget)  == newTargets.end()) {
+						if (count > targetCount || newTargets.find(pTarget) == newTargets.end())
+						{
 							newTargets.push_back(pTarget);
 							count++;
 						}
@@ -151,7 +154,8 @@ void BulletExtData::ApplyAirburst(BulletClass* pThis)
 					// Do evenly selected cells for amount matching Cluster.
 					double stepSize = (targets.size() - 1.0) / (cluster - 1.0);
 
-					for (int i = 0; i < cluster; i++) {
+					for (int i = 0; i < cluster; i++)
+					{
 						newTargets.push_back(targets[(static_cast<int>(round(stepSize * i)))]);
 					}
 				}
@@ -173,44 +177,45 @@ void BulletExtData::ApplyAirburst(BulletClass* pThis)
 
 			// this thing , i hope compiler optimized properly ,..
 			// if not i will make another variant of the function that pass the vector referece instead of doing this
-			targets = Helpers::Alex::getCellTechnoRangeItems(crdDest, pExt->Splits_Range, true, true, [pThis, pWeapon ,pWHExt, pExt , pBulletOwner , pBulletHouseOwner](AbstractClass* pTech){
-				auto pTechno = static_cast<TechnoClass*>(pTech);
-					if(!pExt->Splits_UseWeaponTargeting) {
-						if(!pWHExt->CanDealDamage(pTechno, false, !pExt->Splits_TargetingUseVerses.Get()))
-							return false;
+			targets = Helpers::Alex::getCellTechnoRangeItems(crdDest, pExt->Splits_Range, true, true, [pThis, pWeapon, pWHExt, pExt, pBulletOwner, pBulletHouseOwner](AbstractClass* pTech)
+{
+	auto pTechno = static_cast<TechnoClass*>(pTech);
+	if (!pExt->Splits_UseWeaponTargeting)
+	{
+		if (!pWHExt->CanDealDamage(pTechno, false, !pExt->Splits_TargetingUseVerses.Get()))
+			return false;
 
-						if (!pTechno->IsInPlayfield || !pTechno->IsOnMap || (!pExt->RetargetOwner.Get() && pTechno == pBulletOwner))
-							return false;
+		if (!pTechno->IsInPlayfield || !pTechno->IsOnMap || (!pExt->RetargetOwner.Get() && pTechno == pBulletOwner))
+			return false;
 
-						if (pWHExt->CanTargetHouse(pBulletHouseOwner, pTechno))
-						{
-							const auto nLayer = pTechno->InWhichLayer();
+		if (pWHExt->CanTargetHouse(pBulletHouseOwner, pTechno))
+		{
+			const auto nLayer = pTechno->InWhichLayer();
 
-							if (nLayer == Layer::Underground || nLayer == Layer::None)
-								return false;
-
-							if (((!pTechno->IsInAir() && pWeapon->Projectile->AG)
-								|| (pTechno->IsInAir() && pWeapon->Projectile->AA)))
-							{
-								return true;
-							}
-						}
-					}
-					else
-					{
-						if (pTechno->IsInPlayfield && pTechno->IsOnMap && pTechno->Health > 0 && (pExt->RetargetOwner || pTechno != pThis->Owner))
-						{
-							auto const coords = pTechno->GetCoords();
-
-							if ((pThis->Type->AA || !pTechno->IsInAir())
-								&& IsAllowedSplitsTarget(pBulletOwner, pBulletHouseOwner, pWeapon, pTechno, pExt->Splits_TargetingUseVerses))
-							{
-								return true;
-							}
-						}
-
-					}
+			if (nLayer == Layer::Underground || nLayer == Layer::None)
 				return false;
+
+			if (((!pTechno->IsInAir() && pWeapon->Projectile->AG)
+				|| (pTechno->IsInAir() && pWeapon->Projectile->AA)))
+			{
+				return true;
+			}
+		}
+	}
+	else
+	{
+		if (pTechno->IsInPlayfield && pTechno->IsOnMap && pTechno->Health > 0 && (pExt->RetargetOwner || pTechno != pThis->Owner))
+		{
+			auto const coords = pTechno->GetCoords();
+
+			if ((pThis->Type->AA || !pTechno->IsInAir())
+				&& IsAllowedSplitsTarget(pBulletOwner, pBulletHouseOwner, pWeapon, pTechno, pExt->Splits_TargetingUseVerses))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 			});
 
 			if (pExt->Splits_FillRemainingClusterWithRandomcells)
@@ -243,7 +248,6 @@ void BulletExtData::ApplyAirburst(BulletClass* pThis)
 			{
 				// simple iteration
 				pTarget = targets[i];
-
 			}
 			else if (!pTarget || pExt->RetargetAccuracy < random.RandomDouble())
 			{
@@ -272,9 +276,8 @@ void BulletExtData::ApplyAirburst(BulletClass* pThis)
 					Debug::LogInfo("Airburst [{}] targeting Target [{}] ", pWeapon->get_ID(), pTechno->get_ID());
 #endif
 				if (const auto pBullet = BulletTypeExtContainer::Instance
-					.Find(pWeapon->Projectile)->CreateBullet(pTarget, pThis->Owner, pBulletHouseOwner,  pWeapon, pExt->AirburstWeapon_ApplyFirepowerMult, true))
+					.Find(pWeapon->Projectile)->CreateBullet(pTarget, pThis->Owner, pBulletHouseOwner, pWeapon, pExt->AirburstWeapon_ApplyFirepowerMult, true))
 				{
-
 #ifdef _OLD_AIRBURSt
 					DirStruct const dir(5, random.RandomRangedSpecific<short>(0, 32));
 					auto const radians = dir.GetRadian();
@@ -295,7 +298,7 @@ void BulletExtData::ApplyAirburst(BulletClass* pThis)
 					// Draw particle system
 					Helpers_DP::AttachedParticleSystem(pWeapon, sourcePos, pTarget, pBulletOwner, targetPos);
 					// Play report sound
-					Helpers_DP::PlayReportSound(pWeapon, sourcePos , pThis->Owner);
+					Helpers_DP::PlayReportSound(pWeapon, sourcePos, pThis->Owner);
 					// Draw weapon anim
 					Helpers_DP::DrawWeaponAnim(pWeapon, sourcePos, targetPos, pBulletOwner, pTarget);
 #else
@@ -436,8 +439,9 @@ bool BulletExtData::AllowShrapnel(BulletClass* pThis, CellClass* pCell)
 	auto const pData = BulletTypeExtContainer::Instance.Find(pThis->Type);
 
 	if (pData->Shrapnel_Chance.isset()
-		&& ScenarioClass::Instance->Random.RandomDouble() < Math::abs(pData->Shrapnel_Chance.Get())) {
-			return false;
+		&& ScenarioClass::Instance->Random.RandomDouble() < Math::abs(pData->Shrapnel_Chance.Get()))
+	{
+		return false;
 	}
 
 	if (const auto pObject = pCell->FirstObject)
@@ -464,9 +468,9 @@ bool BulletExtData::ShrapnelTargetEligible(BulletClass* pThis, AbstractClass* pT
 		const auto pWhExt = WarheadTypeExtContainer::Instance.Find(pWH);
 		const auto pWeaponExt = WeaponTypeExtContainer::Instance.Find(pThis->Type->ShrapnelWeapon);
 
-		if (const auto pTargetObj = flag_cast_to<ObjectClass* , false>(pTarget))
+		if (const auto pTargetObj = flag_cast_to<ObjectClass*, false>(pTarget))
 		{
-			if(!pWeaponExt->SkipWeaponPicking && !TechnoExtData::ObjectHealthAllowFiring(pTargetObj, pThis->Type->ShrapnelWeapon))
+			if (!pWeaponExt->SkipWeaponPicking && !TechnoExtData::ObjectHealthAllowFiring(pTargetObj, pThis->Type->ShrapnelWeapon))
 				return false;
 
 			auto pTargetType = pTargetObj->GetType();
@@ -478,11 +482,11 @@ bool BulletExtData::ShrapnelTargetEligible(BulletClass* pThis, AbstractClass* pT
 			case UnitClass::vtable:
 			case BuildingClass::vtable:
 			{
-
 				if (!pTargetType->LegalTarget || !pWhExt->CanDealDamage(static_cast<TechnoClass*>(pTargetObj), false, false))
 					return false;
 
-				if(!pWeaponExt->SkipWeaponPicking){
+				if (!pWeaponExt->SkipWeaponPicking)
+				{
 					if (!EnumFunctions::IsTechnoEligible(static_cast<TechnoClass*>(pTargetObj), pWeaponExt->CanTarget))
 						return false;
 
@@ -493,8 +497,10 @@ bool BulletExtData::ShrapnelTargetEligible(BulletClass* pThis, AbstractClass* pT
 			break;
 			default:
 			{
-				if (const auto pType = pTargetObj->GetType()) {
-					if (GeneralUtils::GetWarheadVersusArmor(pWH, pType->Armor) < 0.001) {
+				if (const auto pType = pTargetObj->GetType())
+				{
+					if (GeneralUtils::GetWarheadVersusArmor(pWH, pType->Armor) < 0.001)
+					{
 						return false;
 					}
 				}
@@ -502,7 +508,8 @@ bool BulletExtData::ShrapnelTargetEligible(BulletClass* pThis, AbstractClass* pT
 			break;
 			}
 
-			if(!pWeaponExt->SkipWeaponPicking) {
+			if (!pWeaponExt->SkipWeaponPicking)
+			{
 				if (!EnumFunctions::CanTargetHouse(pWeaponExt->CanTargetHouses, pThis->Owner ? pThis->Owner->Owner : BulletExtContainer::Instance.Find(pThis)->Owner, pTargetObj->GetOwningHouse()))
 					return false;
 
@@ -510,15 +517,20 @@ bool BulletExtData::ShrapnelTargetEligible(BulletClass* pThis, AbstractClass* pT
 					return false;
 			}
 		}
-		else if (pTarget->WhatAmI() == CellClass::AbsID) {
-			if (!pWeaponExt->SkipWeaponPicking && !EnumFunctions::IsCellEligible((CellClass*)pTarget, pWeaponExt->CanTarget, true, true)) {
+		else if (pTarget->WhatAmI() == CellClass::AbsID)
+		{
+			if (!pWeaponExt->SkipWeaponPicking && !EnumFunctions::IsCellEligible((CellClass*)pTarget, pWeaponExt->CanTarget, true, true))
+			{
 				return false;
 			}
 		}
 	}
-	else {
-		if (pThis->Owner && checkOwner) {
-			if (pThis->Owner->Owner->IsAlliedWith(pTarget)) {
+	else
+	{
+		if (pThis->Owner && checkOwner)
+		{
+			if (pThis->Owner->Owner->IsAlliedWith(pTarget))
+			{
 				return false;
 			}
 		}
@@ -567,7 +579,6 @@ void BulletExtData::ApplyShrapnel(BulletClass* pThis)
 					if (++nTotal == nCount)
 						break; //stop the loop
 				}
-
 			}
 
 			auto const nRemaining = Math::abs(nCount - nTotal);
@@ -623,7 +634,7 @@ bool BulletExtData::HandleBulletRemove(BulletClass* pThis, bool bDetonate, bool 
 			pTechno->ReceiveDamage(&damage, 0, RulesClass::Instance->C4Warhead, nullptr, true, false, nullptr);
 		}
 
-		GameDelete<true,false>(pThis);
+		GameDelete<true, false>(pThis);
 		return true;
 	}
 
@@ -641,7 +652,7 @@ bool BulletExtData::ApplyMCAlternative(BulletClass* pThis)
 
 	const auto pTarget = flag_cast_to<TechnoClass*>(pThis->Target);
 
-	if(!pTarget || !pTarget->IsAlive)
+	if (!pTarget || !pTarget->IsAlive)
 		return false;
 
 	//const auto pTargetType = pTarget->GetTechnoType();
@@ -708,19 +719,20 @@ bool BulletExtData::IsReallyAlive(BulletClass* pThis)
 
 HouseClass* BulletExtData::GetHouse(BulletClass* const pThis)
 {
-	if (pThis->Owner) {
+	if (pThis->Owner)
+	{
 		return pThis->Owner->Owner;
 	}
 
 	return BulletExtContainer::Instance.Find(pThis)->Owner;
 }
 
-void BulletExtData::InvalidatePointer(AbstractClass* ptr, bool bRemoved) {
-
+void BulletExtData::InvalidatePointer(AbstractClass* ptr, bool bRemoved)
+{
 	this->ObjectExtData::InvalidatePointer(ptr, bRemoved);
 
 	AnnounceInvalidPointer(OriginalTarget, ptr, bRemoved);
-	AnnounceInvalidPointer(Owner , ptr);
+	AnnounceInvalidPointer(Owner, ptr);
 	AnnounceInvalidPointer(NukeSW, ptr);
 
 	if (auto& pTraj = Trajectory)
@@ -728,7 +740,7 @@ void BulletExtData::InvalidatePointer(AbstractClass* ptr, bool bRemoved) {
 
 	if (this->AttachedSystem == ptr)
 		this->AttachedSystem.detachptr();
- }
+}
 
 void BulletExtData::ApplyRadiationToCell(CellClass* pCell, int Spread, int RadLevel)
 {
@@ -738,32 +750,34 @@ void BulletExtData::ApplyRadiationToCell(CellClass* pCell, int Spread, int RadLe
 	const auto pRadType = pWeaponExt->RadType.Get(RadTypeClass::FindOrAllocate(GameStrings::Radiation()));
 	auto const pCellExt = CellExtContainer::Instance.Find(pCell);
 
-	auto const it = pCellExt->RadSites.find_if([=](RadSiteClass* const pSite) {
-		if (pSite->RadTimeLeft <= 0)
-			return false;
+	auto const it = pCellExt->RadSites.find_if([=](RadSiteClass* const pSite)
+ {
+	 if (pSite->RadTimeLeft <= 0)
+		 return false;
 
-		auto const pRadExt = RadSiteExtContainer::Instance.Find(pSite);
-		if (pRadExt->Type != pRadType)
-			return false;
+	 auto const pRadExt = RadSiteExtContainer::Instance.Find(pSite);
+	 if (pRadExt->Type != pRadType)
+		 return false;
 
-		if (Spread != pSite->Spread)
-			return false;
+	 if (Spread != pSite->Spread)
+		 return false;
 
-		if (pWeapon != pRadExt->Weapon)
-			return false;
+	 if (pWeapon != pRadExt->Weapon)
+		 return false;
 
-		if (pRadExt->TechOwner && pThis->Owner)
-			return pRadExt->TechOwner == pThis->Owner;
+	 if (pRadExt->TechOwner && pThis->Owner)
+		 return pRadExt->TechOwner == pThis->Owner;
 
-		return true;
+	 return true;
 	});
 
-	if (it != pCellExt->RadSites.end()) {
-
+	if (it != pCellExt->RadSites.end())
+	{
 		const auto nMax = pRadType->GetLevelMax();
 		const auto nCurrent = (*it)->GetCurrentRadLevel();
 
-		if (nCurrent + RadLevel > nMax) {
+		if (nCurrent + RadLevel > nMax)
+		{
 			RadLevel = nMax - nCurrent;
 		}
 
@@ -791,10 +805,11 @@ void BulletExtData::InitializeLaserTrails()
 
 	this->LaserTrails.reserve(pTypeExt->LaserTrail_Types.size());
 
-	for (auto const& idxTrail: pTypeExt->LaserTrail_Types) {
+	for (auto const& idxTrail : pTypeExt->LaserTrail_Types)
+	{
 		this->LaserTrails.emplace_back(
 			std::move(std::make_unique<LaserTrailClass>(
-			LaserTrailTypeClass::Array[idxTrail].get(), pOwner->LaserColor)));
+				LaserTrailTypeClass::Array[idxTrail].get(), pOwner->LaserColor)));
 	}
 }
 
@@ -802,7 +817,6 @@ void BulletExtData::InterceptBullet(BulletClass* pThis, TechnoClass* pSource, Bu
 {
 	if (pInterceptor)
 	{
-
 		auto const pExt = BulletExtContainer::Instance.Find(pThis);
 		auto pTypeExt = BulletTypeExtContainer::Instance.Find(pThis->Type);
 		const auto pInterceptorType = TechnoTypeExtContainer::Instance.Find(BulletExtContainer::Instance.Find(pInterceptor)->InterceptorTechnoType);
@@ -819,11 +833,10 @@ void BulletExtData::InterceptBullet(BulletClass* pThis, TechnoClass* pSource, Bu
 
 			if (canAffect)
 			{
-
 				const int damage = static_cast<int>(pInterceptor->Health * pWHExt->GetVerses(pTypeExt->Armor.Get()).Verses);
 				pExt->CurrentStrength -= damage;
 
-				FlyingStrings::Instance.DisplayDamageNumberString(damage, DamageDisplayType::Intercept, pThis->GetRenderCoords(), pExt->DamageNumberOffset , Phobos::Debug_DisplayDamageNumbers);
+				FlyingStrings::Instance.DisplayDamageNumberString(damage, DamageDisplayType::Intercept, pThis->GetRenderCoords(), pExt->DamageNumberOffset, Phobos::Debug_DisplayDamageNumbers);
 
 				if (pExt->CurrentStrength <= 0)
 				{
@@ -839,7 +852,6 @@ void BulletExtData::InterceptBullet(BulletClass* pThis, TechnoClass* pSource, Bu
 
 		if (const auto pWeaponOverride = pInterceptorType->Interceptor_WeaponOverride.Get(pTypeExt->Interceptable_WeaponOverride))
 		{
-
 			pThis->WeaponType = pWeaponOverride;
 			pThis->Health = pInterceptorType->Interceptor_WeaponCumulativeDamage.Get() ? pThis->Health + pWeaponOverride->Damage : pWeaponOverride->Damage;
 			pThis->WH = pWeaponOverride->Warhead;
@@ -862,7 +874,7 @@ void BulletExtData::InterceptBullet(BulletClass* pThis, TechnoClass* pSource, Bu
 				// Lose target if the current bullet is no longer interceptable.
 
 				if (pSource && (!pTypeExt->Interceptable || (pTypeExt->Armor.isset() &&
-							Math::abs(WarheadTypeExtContainer::Instance.Find(pInterceptor->WH)->GetVerses(pTypeExt->Armor.Get()).Verses) < 0.001)))
+					Math::abs(WarheadTypeExtContainer::Instance.Find(pInterceptor->WH)->GetVerses(pTypeExt->Armor.Get()).Verses) < 0.001)))
 					pSource->SetTarget(nullptr);
 			}
 		}
@@ -873,16 +885,19 @@ static COMPILETIMEEVAL bool TimerIsRunning(CDTimerClass& nTimer)
 {
 	const auto nStart = nTimer.StartTime;
 
-	if (nStart == -1 && nTimer.TimeLeft) {
+	if (nStart == -1 && nTimer.TimeLeft)
+	{
 		return true;
 	}
 
 	auto nTimerLeft = nTimer.TimeLeft;
 
-	if (Unsorted::CurrentFrame() - nStart < nTimerLeft) {
+	if (Unsorted::CurrentFrame() - nStart < nTimerLeft)
+	{
 		nTimerLeft -= Unsorted::CurrentFrame() - nStart;
 
-		if (nTimerLeft) {
+		if (nTimerLeft)
+		{
 			return true;
 		}
 	}
@@ -936,7 +951,6 @@ Fuse BulletExtData::FuseCheckup(BulletClass* pBullet, CoordStruct* newlocation)
 //
 // }
 
-
 #pragma region BulletAffects
 //TODO : fuckton more stuffs from the `Fire` function
 //		 Use proper function call for some of these shits
@@ -980,7 +994,7 @@ void BulletExtData::SimulatedFiringAnim(BulletClass* pBullet, HouseClass* pHouse
 
 	const auto pAnim = GameCreate<AnimClass>(pAnimType, pBullet->SourceCoords);
 
-	AnimExtData::SetAnimOwnerHouseKind(pAnim, pHouse, nullptr, pFirer,false, false);
+	AnimExtData::SetAnimOwnerHouseKind(pAnim, pHouse, nullptr, pFirer, false, false);
 
 	if (pAttach)
 	{
@@ -1005,7 +1019,7 @@ void BulletExtData::SimulatedFiringReport(BulletClass* pBullet)
 
 	const auto pFirer = pBullet->Owner;
 	const auto reportIndex = pWeapon->Report[(pFirer ? pFirer->weapon_sound_randomnumber_3C8 : ScenarioClass::Instance->Random.Random()) % pWeapon->Report.Count];
-	VocClass::SafeImmedietelyPlayAt(reportIndex, & pBullet->Location, nullptr);
+	VocClass::SafeImmedietelyPlayAt(reportIndex, &pBullet->Location, nullptr);
 }
 
 // Make sure pBullet and pBullet->WeaponType is not empty before call
@@ -1051,7 +1065,7 @@ void BulletExtData::SimulatedFiringElectricBolt(BulletClass* pBullet)
 	if (!pWeapon->IsElectricBolt)
 		return;
 
-	const auto pEBolt = EboltExtData::_CreateOneOf(pWeapon , nullptr);
+	const auto pEBolt = EboltExtData::_CreateOneOf(pWeapon, nullptr);
 	pEBolt->Fire(pBullet->SourceCoords, (pBullet->Type->Inviso ? pBullet->Location : pBullet->TargetCoords), 0);
 }
 
@@ -1095,12 +1109,12 @@ void BulletExtData::SimulatedFiringUnlimbo(BulletClass* pBullet, HouseClass* pHo
 	// Velocity
 	auto velocity = VelocityClass::Empty;
 	if (pBullet->Type->FirersPalette)
-			pBullet->InheritedColor = pHouse->ColorSchemeIndex;
+		pBullet->InheritedColor = pHouse->ColorSchemeIndex;
 
 	const auto gravity = BulletTypeExtData::GetAdjustedGravity(pBullet->Type);
 	const auto targetCoords = pBullet->Target->GetCenterCoords();
 	const auto distanceCoords = targetCoords - sourceCoords;
-	const auto horizontalDistance = Point2D{distanceCoords.X, distanceCoords.Y}.Length();
+	const auto horizontalDistance = Point2D { distanceCoords.X, distanceCoords.Y }.Length();
 	const bool lobber = pWeapon->Lobber || static_cast<int>(horizontalDistance) < distanceCoords.Z; // 0x70D590
 	// The lower the horizontal velocity, the higher the trajectory
 	// WW calculates the launch angle (and limits it) before calculating the velocity
@@ -1217,7 +1231,6 @@ bool BulletExtContainer::LoadAll(const json& root)
 
 		for (auto& entry : container[BulletExtData::ClassName])
 		{
-
 			uint32_t oldPtr = 0;
 			if (!ExtensionSaveJson::ReadHex(entry, "OldPtr", oldPtr))
 				return false;
@@ -1278,7 +1291,8 @@ ASMJIT_PATCH(0x4664BA, BulletClass_CTOR, 0x5)
 	return 0;
 }
 
-ASMJIT_PATCH(0x466501, BulletClass_InitSomeStuffs, 0x6) {
+ASMJIT_PATCH(0x466501, BulletClass_InitSomeStuffs, 0x6)
+{
 	GET(FakeBulletClass*, pItem, ECX);
 	pItem->_GetExtData()->Name = pItem->Type->ID;
 	return 0x0;
@@ -1291,11 +1305,11 @@ ASMJIT_PATCH(0x4665E9, BulletClass_DTOR, 0xA)
 	return 0;
 }
 
-void FakeBulletClass::_Detach(AbstractClass* target , bool all)
+void FakeBulletClass::_Detach(AbstractClass* target, bool all)
 {
-	if(auto pExt = this->_GetExtData())
+	if (auto pExt = this->_GetExtData())
 		pExt->InvalidatePointer(target, all);
-	this->BulletClass::PointerExpired(target , all);
+	this->BulletClass::PointerExpired(target, all);
 }
 
 DEFINE_FUNCTION_JUMP(VTABLE, 0x7E470C, FakeBulletClass::_Detach)

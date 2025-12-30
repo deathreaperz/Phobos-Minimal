@@ -136,7 +136,6 @@ public:
 		return true;
 	}
 
-
 	static inline std::filesystem::path GetExtPath(const wchar_t* baseSave)
 	{
 		std::filesystem::path p(baseSave);
@@ -165,7 +164,6 @@ public:
 
 		return GetExtPath(wide.c_str());
 	}
-
 };
 
 struct Base64Handler
@@ -224,5 +222,4 @@ struct Base64Handler
 
 		return decoded;
 	}
-
 };

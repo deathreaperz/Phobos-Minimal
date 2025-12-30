@@ -8,8 +8,9 @@ SuperWeaponFlags SW_IonCannon::Flags(const SWTypeExtData* pData) const
 
 bool SW_IonCannon::Activate(SuperClass* pThis, const CellStruct& Coords, bool IsPlayer)
 {
-	if (pThis->IsCharged) {
-		this->newStateMachine(Coords, pThis, this->GetFirer(pThis , Coords, false));
+	if (pThis->IsCharged)
+	{
+		this->newStateMachine(Coords, pThis, this->GetFirer(pThis, Coords, false));
 	}
 
 	return true;
@@ -92,8 +93,9 @@ void IonCannonStateMachine::Update()
 			this->Anim = pCreated;
 		}
 
-		if (pData->SW_ActivationSound.isset()) {
-			VocClass::SafeImmedietelyPlayAt(pData->SW_ActivationSound, & coords, nullptr);
+		if (pData->SW_ActivationSound.isset())
+		{
+			VocClass::SafeImmedietelyPlayAt(pData->SW_ActivationSound, &coords, nullptr);
 		}
 
 		pData->PrintMessage(pData->Message_Activate, this->Owner);
@@ -143,7 +145,8 @@ void IonCannonStateMachine::Update()
 		// wait for the last frame... WTF?
 		if (AnimClass* pAnim = this->Anim)
 		{
-			if(pAnim->Type) {
+			if (pAnim->Type)
+			{
 				int currentFrame = pAnim->Animation.Stage;
 				short frameCount = pAnim->Type->GetImage()->Frames;
 
@@ -229,14 +232,15 @@ void IonCannonStateMachine::Fire()
 	auto damage = pNewType->GetDamage(pData);
 	auto pWarhead = pNewType->GetWarhead(pData);
 
-	if (pWarhead && damage != 0) {
+	if (pWarhead && damage != 0)
+	{
 		WarheadTypeExtData::DetonateAt(pWarhead, pTarget, coords, this->Firer, damage, this->Owner);
 	}
 }
 
 void IonCannonStateMachine::InvalidatePointer(AbstractClass* ptr, bool remove)
 {
-	AnnounceInvalidPointer(this->Firer, ptr , remove);
+	AnnounceInvalidPointer(this->Firer, ptr, remove);
 	AnnounceInvalidPointer(this->Owner, ptr);
 	AnnounceInvalidPointer(this->Anim, ptr);
 }

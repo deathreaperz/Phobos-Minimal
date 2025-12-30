@@ -137,17 +137,19 @@ public:
 	void ApplyFireDamage();
 	void UpdateFireMovement();
 
-	FORCEDINLINE ParticleClass* _AsParticle() const {
+	FORCEDINLINE ParticleClass* _AsParticle() const
+	{
 		return ((ParticleClass*)this);
 	}
 
-	FORCEDINLINE ParticleExtData* _GetExtData() {
+	FORCEDINLINE ParticleExtData* _GetExtData()
+	{
 		return *reinterpret_cast<ParticleExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 
-	FORCEDINLINE ParticleTypeExtData* _GetTypeExtData() {
+	FORCEDINLINE ParticleTypeExtData* _GetTypeExtData()
+	{
 		return *reinterpret_cast<ParticleTypeExtData**>(((DWORD)this->Type) + AbstractExtOffset);
 	}
-
 };
 static_assert(sizeof(FakeParticleClass) == sizeof(ParticleClass), "Invalid Size !");

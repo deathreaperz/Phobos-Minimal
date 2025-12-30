@@ -1,5 +1,6 @@
 #pragma once
 
-struct MouseHooker {
+struct MouseHooker
+{
 	static void Exec();
 };

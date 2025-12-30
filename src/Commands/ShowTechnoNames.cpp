@@ -36,14 +36,14 @@ void ShowTechnoNameCommandClass::Execute(WWKey eInput) const
 	Phobos::Config::ShowTechnoNamesIsActive = !Phobos::Config::ShowTechnoNamesIsActive;
 }
 
-bool ShowTechnoNameCommandClass::IsActivated() {
+bool ShowTechnoNameCommandClass::IsActivated()
+{
 	return Phobos::Config::ShowTechnoNamesIsActive;
 }
 
 void ShowTechnoNameCommandClass::AI()
 {
-
-	if(IsActivated())
+	if (IsActivated())
 	{
 		auto const pCiv = HouseExtData::FindFirstCivilianHouse();
 
@@ -86,7 +86,7 @@ void ShowTechnoNameCommandClass::AI()
 			{
 				TextDrawing::Fancy_Text_Print_Wide_NoFormat(pText.c_str(),
 					DSurface::Temp(),
-					&bound, 
+					&bound,
 					&pos,
 					ColorScheme::Array->Items[pResultOwner->ColorSchemeIndex],
 					0,

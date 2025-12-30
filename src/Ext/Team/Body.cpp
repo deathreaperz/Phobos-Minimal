@@ -18,7 +18,6 @@
 template<typename Func, typename... Args>
 concept ReturnsBool = std::same_as<std::invoke_result_t<Func, Args...>, bool>;
 
-
 // Helper function for comparator operations
 static NOINLINE COMPILETIMEEVAL bool EvaluateComparator(int counter, AITriggerConditionComparator comp, bool ret)
 {
@@ -52,10 +51,13 @@ void LoopThruMembers(TeamClass* pTeam, Func&& act)
 			//we fetch next team member early for these specific usage
 			auto pNext = pFirst->NextTeamMember;
 
-			if constexpr (ReturnsBool<Func, FootClass*>) {
+			if constexpr (ReturnsBool<Func, FootClass*>)
+			{
 				if (act(pFirst))
 					return;// break from function with return true
-			} else {
+			}
+			else
+			{
 				act(pFirst);
 			}
 
@@ -110,7 +112,7 @@ bool TeamExtData::HouseOwns(AITriggerTypeClass* pThis, HouseClass* pHouse, bool 
 		}
 	}
 
-	return EvaluateComparator(counter, pThis->Conditions[0] , false);
+	return EvaluateComparator(counter, pThis->Conditions[0], false);
 }
 
 bool TeamExtData::EnemyOwns(AITriggerTypeClass* pThis, HouseClass* pHouse, HouseClass* pEnemy, bool onlySelectedEnemy, const Iterator<TechnoTypeClass*>& list)
@@ -326,7 +328,8 @@ void FakeTeamClass::_TMission_GatherAtBase(ScriptActionNode* nNode, bool arg3)
 	// ------------------------------------------------------------
    // Early exit - just coordinate movement
    // ------------------------------------------------------------
-	if (!arg3) {
+	if (!arg3)
+	{
 		this->_CoordinateMove();
 		return;
 	}
@@ -341,9 +344,11 @@ void FakeTeamClass::_TMission_GatherAtBase(ScriptActionNode* nNode, bool arg3)
 	// ------------------------------------------------------------
 	HouseClass* pEnemyHouse = nullptr;
 
-	if (pLeader) {
+	if (pLeader)
+	{
 		int enemyIndex = pLeader->Owner->EnemyHouseIndex;
-		if (enemyIndex != -1) {
+		if (enemyIndex != -1)
+		{
 			pEnemyHouse = HouseClass::Array->Items[enemyIndex];
 		}
 	}
@@ -440,7 +445,8 @@ void FakeTeamClass::_TMission_GatherAtEnemy(ScriptActionNode* nNode, bool arg3)
 	// ------------------------------------------------------------
 // Early exit - just coordinate movement
 // ------------------------------------------------------------
-	if (!arg3) {
+	if (!arg3)
+	{
 		this->_CoordinateMove();
 		return;
 	}
@@ -482,7 +488,8 @@ void FakeTeamClass::_TMission_GatherAtEnemy(ScriptActionNode* nNode, bool arg3)
 	CoordStruct enemyBase;
 	pEnemyHouse->GetBaseCenterCoords(&enemyBase);
 
-	if (!enemyBase.IsValid()) {
+	if (!enemyBase.IsValid())
+	{
 		this->StepCompleted = true;
 		return;
 	}
@@ -493,7 +500,8 @@ void FakeTeamClass::_TMission_GatherAtEnemy(ScriptActionNode* nNode, bool arg3)
 	CoordStruct ourBase;
 	pLeader->Owner->GetBaseCenterCoords(&ourBase);
 
-	if (!ourBase.IsValid()) {
+	if (!ourBase.IsValid())
+	{
 		ourBase = pLeader->GetCoords();
 	}
 
@@ -522,7 +530,7 @@ void FakeTeamClass::_TMission_GatherAtEnemy(ScriptActionNode* nNode, bool arg3)
 	// ------------------------------------------------------------
 	// Apply coordinate transformation
 	// ------------------------------------------------------------
-	CoordStruct transformedCoord(rawX , rawY , enemyBase.Z);
+	CoordStruct transformedCoord(rawX, rawY, enemyBase.Z);
 
 	// ------------------------------------------------------------
 	// Convert to cell coordinates (signed division with rounding)
@@ -595,7 +603,6 @@ void FakeTeamClass::_TMission_ChangeHouse(ScriptActionNode* nNode, bool arg3)
 		}
 		else
 		{
-
 			FootClass* nextTeam = nullptr;
 
 			do
@@ -605,18 +612,19 @@ void FakeTeamClass::_TMission_ChangeHouse(ScriptActionNode* nNode, bool arg3)
 				Member = nextTeam;
 			}
 			while (nextTeam);
-
 		}
 	}
 
 	this->StepCompleted = true;
 }
 
-bool FakeTeamClass::_Add(FootClass* obj){
+bool FakeTeamClass::_Add(FootClass* obj)
+{
 	return this->_Add2(obj, 1);
 }
 
-bool FakeTeamClass::_Add2(FootClass* member, bool ignoreQuantity) {
+bool FakeTeamClass::_Add2(FootClass* member, bool ignoreQuantity)
+{
 	if (!member)
 		return false;
 
@@ -626,7 +634,8 @@ bool FakeTeamClass::_Add2(FootClass* member, bool ignoreQuantity) {
 		return false;
 
 	// Remove from previous team if needed
-	if (FakeTeamClass* pTeam = (FakeTeamClass*)member->Team) {
+	if (FakeTeamClass* pTeam = (FakeTeamClass*)member->Team)
+	{
 		pTeam->_Remove(member, -1, false);
 	}
 
@@ -653,7 +662,8 @@ bool FakeTeamClass::_Add2(FootClass* member, bool ignoreQuantity) {
 		bool shouldAttachTrigger = !this->Type->OnTransOnly ||
 			member->GetTechnoType()->Passengers > 0;
 
-		if (shouldAttachTrigger) {
+		if (shouldAttachTrigger)
+		{
 			member->AttachTrigger(this->Tag);
 		}
 	}
@@ -664,7 +674,8 @@ bool FakeTeamClass::_Add2(FootClass* member, bool ignoreQuantity) {
 	this->TotalThreatValue += memberRisk;
 
 	// Calculate team center if not set
-	if (!this->Zone) {
+	if (!this->Zone)
+	{
 		this->_Calc_Center(&this->Zone, &this->ClosestMember);
 	}
 
@@ -678,7 +689,8 @@ bool FakeTeamClass::_Add2(FootClass* member, bool ignoreQuantity) {
 	return true;
 }
 
-bool NOINLINE EligibleToRecruit(TechnoTypeClass* unit, TechnoTypeClass* toRecruit) {
+bool NOINLINE EligibleToRecruit(TechnoTypeClass* unit, TechnoTypeClass* toRecruit)
+{
 	if (unit == toRecruit)
 		return true;
 
@@ -699,7 +711,7 @@ int NOINLINE FindUnitTypeInTaskForce(TeamClass* team, FootClass* unit)
 
 	for (int i = 0; i < taskForce->CountEntries; i++)
 	{
-		if (EligibleToRecruit(taskForce->Entries[i].Type,unitType))
+		if (EligibleToRecruit(taskForce->Entries[i].Type, unitType))
 			return i;
 	}
 
@@ -739,15 +751,18 @@ bool NOINLINE CanRecruitUnit(TeamClass* team, FootClass* unit, int typeIndex, bo
 
 	// Aircraft with weapons must have ammo
 	AbstractType unitKind = unit->WhatAmI();
-	if (unitKind == AbstractType::Aircraft) {
-		if (unit->IsArmed() && unit->Ammo <= 0) {
+	if (unitKind == AbstractType::Aircraft)
+	{
+		if (unit->IsArmed() && unit->Ammo <= 0)
+		{
 			return false;
 		}
 	}
 
 	// Check if we need more of this type (unless ignoring quantity)
-	if (!ignoreQuantity && team->CountObjects[typeIndex] >= team->Type->TaskForce->Entries[typeIndex].Amount) {
-			return false;
+	if (!ignoreQuantity && team->CountObjects[typeIndex] >= team->Type->TaskForce->Entries[typeIndex].Amount)
+	{
+		return false;
 	}
 
 	// Cannot recruit if unit has locomotor source (being hijacked/mind controlled)
@@ -757,8 +772,8 @@ bool NOINLINE CanRecruitUnit(TeamClass* team, FootClass* unit, int typeIndex, bo
 	return true;
 }
 
-bool FakeTeamClass::_Can_Add(FootClass* unit, int* outTypeIndex, bool ignoreQuantity) {
-
+bool FakeTeamClass::_Can_Add(FootClass* unit, int* outTypeIndex, bool ignoreQuantity)
+{
 	// Basic validation checks
 	if (!unit || !unit->IsAlive || !unit->Health || unit->IsCrashing || unit->IsSinking)
 		return false;
@@ -780,7 +795,8 @@ bool FakeTeamClass::_Can_Add(FootClass* unit, int* outTypeIndex, bool ignoreQuan
 		return false;
 
 	// Check if unit is in radio contact
-	if (unit->HasAnyLink()) {
+	if (unit->HasAnyLink())
+	{
 		// Exception: Crate goodie aircraft can be recruited even when in radio contact
 		if (unit->WhatAmI() != AbstractType::Aircraft || !((AircraftClass*)unit)->Type->AirportBound)
 			return false;
@@ -882,14 +898,16 @@ bool NOINLINE RemoveMemberFromChain(TeamClass* team, FootClass* memberToRemove)
 	return HasTeamLeader;
 }
 
-bool FakeTeamClass::_Remove(FootClass* obj, int typeindex, bool enterIdleMode) {
+bool FakeTeamClass::_Remove(FootClass* obj, int typeindex, bool enterIdleMode)
+{
 	TeamClass* Team = obj->Team;
 	obj->removed = 1;
 	// /*
 	// **   Make sure that the object is in fact a member of this team. If not, then it can't
 	// **   be removed. Return success because the end result is the same.
 	// */
-	if (this != Team) {
+	if (this != Team)
+	{
 		return 1;
 	}
 
@@ -898,9 +916,12 @@ bool FakeTeamClass::_Remove(FootClass* obj, int typeindex, bool enterIdleMode) {
 	// **   team have that trigger attached. The exception is for player team members that
 	// **   get removed from a reinforcement team.
 	// */
-	if (obj->AttachedTag == this->Tag) {
-		if (auto House = obj->Owner) {
-			if (!House->IsControlledByHuman()) {
+	if (obj->AttachedTag == this->Tag)
+	{
+		if (auto House = obj->Owner)
+		{
+			if (!House->IsControlledByHuman())
+			{
 				obj->AttachTrigger(nullptr);
 			}
 		}
@@ -912,15 +933,19 @@ bool FakeTeamClass::_Remove(FootClass* obj, int typeindex, bool enterIdleMode) {
 	// **   process however, since removing this object from the team is a good idea.
 	// */
 
-	if(this->Type->TaskForce){
-		if (typeindex == -1) {
-			for (typeindex = 0; typeindex < this->Type->TaskForce->CountEntries; ++typeindex) {
+	if (this->Type->TaskForce)
+	{
+		if (typeindex == -1)
+		{
+			for (typeindex = 0; typeindex < this->Type->TaskForce->CountEntries; ++typeindex)
+			{
 				if (this->Type->TaskForce->Entries[typeindex].Type == obj->GetTechnoType())
 					break;
 			}
 		}
 
-		if (typeindex >= 0 && typeindex < this->Type->TaskForce->CountEntries) {
+		if (typeindex >= 0 && typeindex < this->Type->TaskForce->CountEntries)
+		{
 			--this->CountObjects[typeindex];
 		}
 	}
@@ -935,7 +960,8 @@ bool FakeTeamClass::_Remove(FootClass* obj, int typeindex, bool enterIdleMode) {
 	bool hasInitiatedMember = RemoveMemberFromChain(this, obj);
 
 	// Clear member's team reference if still set
-	if (obj->Team) {
+	if (obj->Team)
+	{
 		obj->Team = nullptr;
 	}
 
@@ -957,7 +983,8 @@ bool FakeTeamClass::_Remove(FootClass* obj, int typeindex, bool enterIdleMode) {
 	// */
 	if (!hasInitiatedMember)
 	{
-		if (FootClass* firstMember = this->FirstUnit) {
+		if (FootClass* firstMember = this->FirstUnit)
+		{
 			firstMember->IsTeamLeader = 1;
 			this->Zone = 0;
 		}
@@ -1003,7 +1030,8 @@ bool NOINLINE ShouldRetaliateAgainstAttacker(TeamClass* team, ObjectClass* attac
 	return false;
 }
 
-void FakeTeamClass::_Took_Damage(FootClass* attacker, DamageState result, ObjectClass* source) {
+void FakeTeamClass::_Took_Damage(FootClass* attacker, DamageState result, ObjectClass* source)
+{
 	// Ignore if no attacker, no damage, or team is suicidal
 	if (!attacker || result == DamageState::Unaffected || this->Type->Suicide)
 		return;
@@ -1152,14 +1180,16 @@ void FakeTeamClass::_Took_Damage(FootClass* attacker, DamageState result, Object
 #endif
 }
 
-void FakeTeamClass::_Coordinate_Attack() {
-
-	if (!this->ArchiveTarget) {
+void FakeTeamClass::_Coordinate_Attack()
+{
+	if (!this->ArchiveTarget)
+	{
 		this->ArchiveTarget = this->QueuedFocus;
 	}
 
 	FootClass* teamLeader = this->_Fetch_A_Leader();
-	if (!teamLeader) {
+	if (!teamLeader)
+	{
 		this->StepCompleted = 1;
 		return;
 	}
@@ -1171,17 +1201,19 @@ void FakeTeamClass::_Coordinate_Attack() {
 		&& this->FirstUnit
 		&& teamLeader->WhatAmI() != AircraftClass::AbsID)
 	{
-
-		if (auto cellObject = targetCell->GetSomeObject(Point2D::Empty, false)) {
+		if (auto cellObject = targetCell->GetSomeObject(Point2D::Empty, false))
+		{
 			this->ArchiveTarget = cellObject;
 		}
 	}
 
 	// Check if team leader can fire at target (every 8 frames, on frame 4)
-	if (Unsorted::CurrentFrame % 8 == 4) {
+	if (Unsorted::CurrentFrame % 8 == 4)
+	{
 		const int weaponIndex = teamLeader->SelectWeapon(this->ArchiveTarget);
 
-		if (teamLeader->GetFireError(this->ArchiveTarget, weaponIndex, true) == FireError::ILLEGAL) {
+		if (teamLeader->GetFireError(this->ArchiveTarget, weaponIndex, true) == FireError::ILLEGAL)
+		{
 			this->TargetNotAssigned = 1;
 		}
 	}
@@ -1249,7 +1281,7 @@ void FakeTeamClass::_Coordinate_Attack() {
 			const auto currentMission = unitToProcess->GetCurrentMission();
 
 			// Special handling for infantry capture missions
-			if (curMission ==TeamMissionType::Spy
+			if (curMission == TeamMissionType::Spy
 				&& unitToProcess->WhatAmI() == InfantryClass::AbsID
 				&& ((InfantryClass*)unitToProcess)->Type->Infiltrate)
 			{
@@ -1305,7 +1337,8 @@ void FakeTeamClass::_Coordinate_Attack() {
 	}
 }
 
-void FakeTeamClass::_CoordinateMove() {
+void FakeTeamClass::_CoordinateMove()
+{
 	bool finished = true;
 	FootClass* unit = this->FirstUnit;
 	bool found = false;
@@ -1339,8 +1372,11 @@ void FakeTeamClass::_CoordinateMove() {
 			if (unit->DistanceFrom(this->Zone) <= strayDistance)
 			{
 				unit->IsTeamLeader = true;
-			} else {
-				if (!unit->Destination) {
+			}
+			else
+			{
+				if (!unit->Destination)
+				{
 					unit->QueueMission(Mission::Move, 0);
 					unit->SetTarget(nullptr);
 					unit->SetDestination(this->Zone, 1);
@@ -1371,7 +1407,8 @@ void FakeTeamClass::_CoordinateMove() {
 			int strayDistance = this->_Get_Stray();
 
 			// Double for airborne units
-			if (unit->IsInAir()){
+			if (unit->IsInAir())
+			{
 				strayDistance *= 2;
 			}
 
@@ -1389,13 +1426,15 @@ void FakeTeamClass::_CoordinateMove() {
 				{
 					bool isAircraft = (unit->WhatAmI() == AircraftClass::AbsID);
 
-					if (!isAircraft) {
+					if (!isAircraft)
+					{
 						hasArrived = true;
 					}
 					else
 					{
 						// Aircraft - check if landed
-						if (unit->GetZ() <= 0) {
+						if (unit->GetZ() <= 0)
+						{
 							hasArrived = true;
 						}
 						else
@@ -1404,7 +1443,8 @@ void FakeTeamClass::_CoordinateMove() {
 							CoordStruct unitCoord = unit->GetCoords();
 							CellClass* unitCell = MapClass::Instance->GetCellAt(unitCoord);
 
-							if (unitCell == this->ArchiveTarget || nextMissionType == TeamMissionType::Move){
+							if (unitCell == this->ArchiveTarget || nextMissionType == TeamMissionType::Move)
+							{
 								hasArrived = true;
 							}
 						}
@@ -1417,17 +1457,21 @@ void FakeTeamClass::_CoordinateMove() {
 				// Unit has arrived, handle arrival
 				if (unit->GetMission() == Mission::Move)
 				{
-					if (!unit->Destination) {
+					if (!unit->Destination)
+					{
 						// No destination, idle if not engaged
-						if (!unit->Target) {
+						if (!unit->Target)
+						{
 							unit->SetDestination(nullptr, 1);
 							unit->EnterIdleMode(0, 1);
 						}
 					}
 					else if (unit->DistanceFrom(unit->Destination) <= RulesClass::Instance->CloseEnough)
 					{
-						if (!unit->Locomotor->Is_Moving()) {
-							if (!unit->Target) {
+						if (!unit->Locomotor->Is_Moving())
+						{
+							if (!unit->Target)
+							{
 								unit->SetDestination(nullptr, 1);
 								unit->EnterIdleMode(0, 1);
 							}
@@ -1440,29 +1484,35 @@ void FakeTeamClass::_CoordinateMove() {
 				// Unit hasn't arrived, continue moving
 
 				// Handle aggressive teams engaging threats
-				if (this->Type->Aggressive && unit->Target) {
-					if (unit->__AssignNewThreat) {
+				if (this->Type->Aggressive && unit->Target)
+				{
+					if (unit->__AssignNewThreat)
+					{
 						unit->SetTarget(nullptr);
 					}
 				}
 
 				// Ensure MOVE mission
-				if (unit->GetCurrentMission() != Mission::Move) {
+				if (unit->GetCurrentMission() != Mission::Move)
+				{
 					unit->QueueMission(Mission::Move, 0);
-					if (unit->ReadyToNextMission()) {
+					if (unit->ReadyToNextMission())
+					{
 						unit->NextMission();
 					}
 				}
 
 				// Set destination if needed
-				if (!unit->Destination) {
+				if (!unit->Destination)
+				{
 					unit->SetDestination(this->ArchiveTarget, 1);
 				}
 
 				// Update destination for special cases
 				AbstractClass* navCom = unit->Destination;
 
-				if (navCom != this->ArchiveTarget) {
+				if (navCom != this->ArchiveTarget)
+				{
 					TechnoTypeClass* technoType = unit->GetTechnoType();
 					const bool isAircraft = (unit->WhatAmI() == AircraftClass::AbsID);
 
@@ -1500,7 +1550,8 @@ void FakeTeamClass::_CoordinateMove() {
 	}
 }
 
-bool FakeTeamClass::_Coordinate_Conscript(FootClass* a2) {
+bool FakeTeamClass::_Coordinate_Conscript(FootClass* a2)
+{
 	if (!a2 || !a2->IsAlive || !a2->Health || !Unsorted::ScenarioInit && a2->InLimbo || a2->IsTeamLeader)
 	{
 		return 0;
@@ -1519,17 +1570,19 @@ bool FakeTeamClass::_Coordinate_Conscript(FootClass* a2) {
 	}
 	if (!a2->Destination)
 	{
-		a2->QueueMission( Mission::Move, 0);
+		a2->QueueMission(Mission::Move, 0);
 		a2->SetTarget(0);
 		a2->SetDestination(this->Zone, 1);
 	}
 	return 1;
 }
 
-void FakeTeamClass::_Coordinate_Do(ScriptActionNode* pNode, CellStruct unused) {
+void FakeTeamClass::_Coordinate_Do(ScriptActionNode* pNode, CellStruct unused)
+{
 	auto const& [miss, value] = *pNode;
 
-	for (auto i = this->FirstUnit; i; i = i->NextTeamMember) {
+	for (auto i = this->FirstUnit; i; i = i->NextTeamMember)
+	{
 		if (i->IsAlive)
 		{
 			int stray = this->_Get_Stray();
@@ -1562,7 +1615,7 @@ void FakeTeamClass::_Coordinate_Do(ScriptActionNode* pNode, CellStruct unused) {
 							  && ((Mission)value != Mission::Guard || i->GetCurrentMission() != Mission::Unload))
 							{
 								i->ArchiveTarget = nullptr;
-								i->QueueMission((Mission)value,false);
+								i->QueueMission((Mission)value, false);
 								i->SetTarget(nullptr);
 								i->SetDestination(nullptr, true);
 							}
@@ -1582,17 +1635,20 @@ void FakeTeamClass::_Coordinate_Do(ScriptActionNode* pNode, CellStruct unused) {
 	}
 }
 
-bool FakeTeamClass::_Is_A_Member(FootClass* member) {
-
+bool FakeTeamClass::_Is_A_Member(FootClass* member)
+{
 	FootClass* v2 = this->FirstUnit;
 
-	if (!v2) {
+	if (!v2)
+	{
 		return 0;
 	}
 
-	while (v2 != member) {
+	while (v2 != member)
+	{
 		v2 = v2->NextTeamMember;
-		if (!v2) {
+		if (!v2)
+		{
 			return 0;
 		}
 	}
@@ -1600,11 +1656,15 @@ bool FakeTeamClass::_Is_A_Member(FootClass* member) {
 	return 1;
 }
 
-void _fastcall FakeTeamClass::_Suspend_Teams(int priority, HouseClass* house) {
-	for (auto& team : *TeamClass::Array) {
-		if (team && team->OwnerHouse == house && team->Type->Priority < priority) {
-			for (auto i = team->FirstUnit; i; i = team->FirstUnit) {
-				((FakeTeamClass*)team)->_Remove(i,-1, false);
+void _fastcall FakeTeamClass::_Suspend_Teams(int priority, HouseClass* house)
+{
+	for (auto& team : *TeamClass::Array)
+	{
+		if (team && team->OwnerHouse == house && team->Type->Priority < priority)
+		{
+			for (auto i = team->FirstUnit; i; i = team->FirstUnit)
+			{
+				((FakeTeamClass*)team)->_Remove(i, -1, false);
 
 				team->JustDisappeared = 1;
 				team->NeedsToDisappear = 1;
@@ -1615,13 +1675,18 @@ void _fastcall FakeTeamClass::_Suspend_Teams(int priority, HouseClass* house) {
 	}
 }
 
-bool FakeTeamClass::_Is_Leaving_Map() {
-	if (this->IsMoving) {
-		if (this->CurrentScript->HasMissionsRemaining()) {
-			auto const&[Current_Mission , val] = this->CurrentScript->GetCurrentAction();
-			if (Current_Mission == TeamMissionType::Move) {
+bool FakeTeamClass::_Is_Leaving_Map()
+{
+	if (this->IsMoving)
+	{
+		if (this->CurrentScript->HasMissionsRemaining())
+		{
+			auto const& [Current_Mission, val] = this->CurrentScript->GetCurrentAction();
+			if (Current_Mission == TeamMissionType::Move)
+			{
 				CellStruct  Waypoint_Location = ScenarioClass::Instance->GetWaypointCoords(val);
-				if (!MapClass::Instance->IsWithinUsableArea(Waypoint_Location, 1)) {
+				if (!MapClass::Instance->IsWithinUsableArea(Waypoint_Location, 1))
+				{
 					return true;
 				}
 			}
@@ -1630,9 +1695,9 @@ bool FakeTeamClass::_Is_Leaving_Map() {
 	return false;
 }
 
-bool FakeTeamClass::_Has_Entered_Map() {
-
-	FootClass*  Member = this->FirstUnit;
+bool FakeTeamClass::_Has_Entered_Map()
+{
+	FootClass* Member = this->FirstUnit;
 	bool result = 1;
 	if (Member)
 	{
@@ -1649,13 +1714,16 @@ bool FakeTeamClass::_Has_Entered_Map() {
 	return result;
 }
 
-bool FakeTeamClass::_has_aircraft() {
-
+bool FakeTeamClass::_has_aircraft()
+{
 	TaskForceClass* TaskForce = this->Type->TaskForce;
 
-	for (int i = 0; i < TaskForce->CountEntries; ++i) {
-		if (TaskForce->Entries[i].Type && TaskForce->Entries[i].Amount > 0) {
-			if (TaskForce->Entries[i].Type->WhatAmI() == AircraftTypeClass::AbsID && TaskForce->Entries[i].Type->Passengers > 0) {
+	for (int i = 0; i < TaskForce->CountEntries; ++i)
+	{
+		if (TaskForce->Entries[i].Type && TaskForce->Entries[i].Amount > 0)
+		{
+			if (TaskForce->Entries[i].Type->WhatAmI() == AircraftTypeClass::AbsID && TaskForce->Entries[i].Type->Passengers > 0)
+			{
 				return true;
 			}
 		}
@@ -1664,22 +1732,25 @@ bool FakeTeamClass::_has_aircraft() {
 	return 0;
 }
 
-void FakeTeamClass::_Scan_Limit() {
+void FakeTeamClass::_Scan_Limit()
+{
 	this->_AssignMissionTarget(0);
-	for (auto i = this->FirstUnit; i; i = i->NextTeamMember) {
+	for (auto i = this->FirstUnit; i; i = i->NextTeamMember)
+	{
 		i->SetTarget(0);
 		i->IsScanLimited = 1;
 	}
 }
 
-FootClass* FakeTeamClass::_Fetch_A_Leader() {
-
+FootClass* FakeTeamClass::_Fetch_A_Leader()
+{
 	FootClass* member = this->FirstUnit;
 	int last_rating = -1;
 
 	FootClass* last_leader = member;
 
-	if (!member) {
+	if (!member)
+	{
 		return 0;
 	}
 
@@ -1703,19 +1774,24 @@ FootClass* FakeTeamClass::_Fetch_A_Leader() {
 }
 
 #ifdef _old
-void FakeTeamClass::_GetTaskForceMissingMemberTypes(std::vector<TechnoTypeClass*>& missings) {
+void FakeTeamClass::_GetTaskForceMissingMemberTypes(std::vector<TechnoTypeClass*>& missings)
+{
 	const auto pType = this->Type;
 	const auto pTaskForce = pType->TaskForce;
 	int amount = 0;
-	for (auto& ent : pTaskForce->Entries) {
+	for (auto& ent : pTaskForce->Entries)
+	{
 		amount += ent.Amount;
 	}
 
 	missings.reserve(amount);
 
-	for (int a = 0; a < pTaskForce->CountEntries; ++a) {
-		for (int i = 0; i < pTaskForce->Entries[a].Amount; ++i) {
-			if (auto pTaskType = pTaskForce->Entries[a].Type) {
+	for (int a = 0; a < pTaskForce->CountEntries; ++a)
+	{
+		for (int i = 0; i < pTaskForce->Entries[a].Amount; ++i)
+		{
+			if (auto pTaskType = pTaskForce->Entries[a].Type)
+			{
 				missings.emplace_back(pTaskType);
 			}
 		}
@@ -1724,8 +1800,9 @@ void FakeTeamClass::_GetTaskForceMissingMemberTypes(std::vector<TechnoTypeClass*
 	//remove first finded similarity
 	for (auto pMember = this->FirstUnit; pMember; pMember = pMember->NextTeamMember)
 	{
-		auto it = std::ranges::find_if(missings, [&](TechnoTypeClass* pMissType) {
-			return EligibleToRecruit(pMissType , pMember->GetTechnoType())pMember->GetTechnoType();
+		auto it = std::ranges::find_if(missings, [&](TechnoTypeClass* pMissType)
+ {
+	 return EligibleToRecruit(pMissType, pMember->GetTechnoType())pMember->GetTechnoType();
 		});
 
 		if (it != std::ranges::end(missings))
@@ -1740,24 +1817,32 @@ void FakeTeamClass::_GetTaskForceMissingMemberTypes(std::vector<TechnoTypeClass*
 	// Build a map of required units: Type -> Count
 	std::unordered_map<TechnoTypeClass*, int> required;
 
-	for (int i = 0; i < pTaskForce->CountEntries; ++i) {
+	for (int i = 0; i < pTaskForce->CountEntries; ++i)
+	{
 		TechnoTypeClass* technoType = pTaskForce->Entries[i].Type;
-		if (technoType) {
+		if (technoType)
+		{
 			required[technoType] = pTaskForce->Entries[i].Amount;
 		}
 	}
 
 	// Subtract existing team members
-	for (auto pMember = this->FirstUnit; pMember; pMember = pMember->NextTeamMember) {
+	for (auto pMember = this->FirstUnit; pMember; pMember = pMember->NextTeamMember)
+	{
 		TechnoTypeClass* memberType = pMember->GetTechnoType();
 
 		// Try exact match first
-		if (required.count(memberType) && required[memberType] > 0) {
+		if (required.count(memberType) && required[memberType] > 0)
+		{
 			required[memberType]--;
-		} else {
+		}
+		else
+		{
 			// Check if eligible for any required type
-			for (auto& [reqType, count] : required) {
-				if (count > 0 && EligibleToRecruit(reqType, memberType)) {
+			for (auto& [reqType, count] : required)
+			{
+				if (count > 0 && EligibleToRecruit(reqType, memberType))
+				{
 					required[reqType]--;
 					break;
 				}
@@ -1767,45 +1852,52 @@ void FakeTeamClass::_GetTaskForceMissingMemberTypes(std::vector<TechnoTypeClass*
 
 	// Build final missing list
 	missings.clear();
-	for (const auto& [technoType, count] : required) {
+	for (const auto& [technoType, count] : required)
+	{
 		missings.insert(missings.end(), count, technoType);
 	}
 }
 #endif
 
-void FakeTeamClass::_Flash_For(int a2) {
-	for (auto i = this->FirstUnit; i; i = i->NextTeamMember) {
+void FakeTeamClass::_Flash_For(int a2)
+{
+	for (auto i = this->FirstUnit; i; i = i->NextTeamMember)
+	{
 		i->Flashing.DurationRemaining = a2;
 	}
 }
 
-int FakeTeamClass::_Get_Stray() {
+int FakeTeamClass::_Get_Stray()
+{
 	auto const& [TMission, arg] = this->CurrentScript->GetCurrentAction();
 
-	if (TMission == TeamMissionType::Gather_at_base || TMission == TeamMissionType::Gather_at_enemy) {
+	if (TMission == TeamMissionType::Gather_at_base || TMission == TeamMissionType::Gather_at_enemy)
+	{
 		return RulesClass::Instance->RelaxedStray;
 	}
 
 	return RulesClass::Instance->Stray;
 }
 
-bool FakeTeamClass::_Does_Any_Member_Have_Ammo() {
-	FootClass*  Member = this->FirstUnit;
+bool FakeTeamClass::_Does_Any_Member_Have_Ammo()
+{
+	FootClass* Member = this->FirstUnit;
 
-	if (!Member) {
+	if (!Member)
+	{
 		return 0;
 	}
 
 	while (Member->GetTechnoType()->Ammo > 0 && Member->Ammo <= 0)
 	{
 		Member = Member->NextTeamMember;
-		if (!Member) {
+		if (!Member)
+		{
 			return 0;
 		}
 	}
 
 	return 1;
-
 }
 
 // Find closest infantry that matches criteria
@@ -1890,7 +1982,7 @@ FootClass* FindClosestUnit(TeamClass* team, int memberIndex, const CoordStruct& 
 			distance += 12800; // Penalty for wrong group
 
 		// Check if this unit matches requirements
-		if (unit->Owner == team->OwnerHouse && EligibleToRecruit(team->Type->TaskForce->Entries[memberIndex].Type , unit->Type) &&
+		if (unit->Owner == team->OwnerHouse && EligibleToRecruit(team->Type->TaskForce->Entries[memberIndex].Type, unit->Type) &&
 			(minDistance == -1 || distance < minDistance) &&
 			((FakeTeamClass*)team)->_Can_Add(unit, &memberIndex, 0))
 		{
@@ -1902,7 +1994,8 @@ FootClass* FindClosestUnit(TeamClass* team, int memberIndex, const CoordStruct& 
 	return closestUnit;
 }
 
-bool FakeTeamClass::_Recruit(int memberIndex) {
+bool FakeTeamClass::_Recruit(int memberIndex)
+{
 	// Check if we already have enough units of this type
 	TaskForceClass* pTaskForce = this->Type->TaskForce;
 
@@ -1918,7 +2011,8 @@ bool FakeTeamClass::_Recruit(int memberIndex) {
 	// Override with origin location if specified
 	CellStruct origin;
 	this->Type->GetWaypoint(&origin);
-	if (origin.IsValid()) {
+	if (origin.IsValid())
+	{
 		recruitLocation = CellClass::Cell2Coord(origin);
 	}
 
@@ -1979,8 +2073,10 @@ void FakeTeamClass::_TeamClass_6EA080()
 	this->IsHasBeen = true;
 	this->IsUnderStrength = false;
 
-	for (FootClass* Member = this->FirstUnit; Member; Member = Member->NextTeamMember) {
-		if (this->IsReforming || this->IsForcedActive) {
+	for (FootClass* Member = this->FirstUnit; Member; Member = Member->NextTeamMember)
+	{
+		if (this->IsReforming || this->IsForcedActive)
+		{
 			Member->IsTeamLeader = 1;
 		}
 	}
@@ -1993,7 +2089,8 @@ void FakeTeamClass::_AssignMissionTarget(AbstractClass* new_target)
 {
 	// If the new target is different than current mission target
 
-	if (new_target && new_target != this->QueuedFocus) {
+	if (new_target && new_target != this->QueuedFocus)
+	{
 		FootClass* unit = this->FirstUnit;
 
 		while (unit)
@@ -2018,7 +2115,8 @@ void FakeTeamClass::_AssignMissionTarget(AbstractClass* new_target)
 	}
 
 	// If Target was linked to previous QueuedFocus or is null, update Target as well
-	if (this->ArchiveTarget == this->QueuedFocus || !this->ArchiveTarget) {
+	if (this->ArchiveTarget == this->QueuedFocus || !this->ArchiveTarget)
+	{
 		this->ArchiveTarget = new_target;
 	}
 
@@ -2027,9 +2125,12 @@ void FakeTeamClass::_AssignMissionTarget(AbstractClass* new_target)
 	// If new target is a CellClass (special case for map cells)
 	if (auto pCellTarget = cast_to<CellClass*>(new_target))
 	{
-		if (MapClass::Instance->IsWithinUsableArea(pCellTarget, true)) {
+		if (MapClass::Instance->IsWithinUsableArea(pCellTarget, true))
+		{
 			this->IsLeavingMap = false;
-		} else {
+		}
+		else
+		{
 			this->IsLeavingMap = true;
 
 			// Clear destinations for all team members
@@ -2068,7 +2169,6 @@ bool FakeTeamClass::_Lagging_Units()
 				  && (Unsorted::ScenarioInit || !unit->InLimbo)
 				  && (unit->IsTeamLeader || unit->WhatAmI() == AircraftClass::AbsID))
 				{
-
 					int stray = this->_Get_Stray();
 					if (unit->WhatAmI() == AircraftClass::AbsID)
 					{
@@ -2119,93 +2219,107 @@ bool FakeTeamClass::_Lagging_Units()
 	return result;
 }
 
-bool FakeTeamClass::_Recalculate() {
-    bool was_IsUnderStrength = this->IsUnderStrength;
+bool FakeTeamClass::_Recalculate()
+{
+	bool was_IsUnderStrength = this->IsUnderStrength;
 	TeamTypeClass* pType = this->Type;
-    int desired = pType->TaskForce->Required();
-    int total = this->TotalObjects;
+	int desired = pType->TaskForce->Required();
+	int total = this->TotalObjects;
 
-    if (total > 0 ) {
-        this->IsFullStrength = total == desired;
+	if (total > 0)
+	{
+		this->IsFullStrength = total == desired;
 
-        if ( total == desired ) {
-            this->IsHasBeen = 1;
-        }
+		if (total == desired)
+		{
+			this->IsHasBeen = 1;
+		}
 
-        // /*
-        // **   Reinforceable teams will revert (or snap out of) the under strength
-        // **   mode when the members transition the magic 1/3 strength threshold.
-        // */
-        if (pType->Reinforce) {
-            this->IsUnderStrength = desired <= 2  ? total < desired : (total <= desired / 3);
+		// /*
+		// **   Reinforceable teams will revert (or snap out of) the under strength
+		// **   mode when the members transition the magic 1/3 strength threshold.
+		// */
+		if (pType->Reinforce)
+		{
+			this->IsUnderStrength = desired <= 2 ? total < desired : (total <= desired / 3);
+		}
+		else
+		{
+			// /*
+			// **   Teams that are not flagged as reinforceable are never considered under
+			// **   strength if the team has already started its main mission. This
+			// **   ensures that once the team has started, it won't dally to pick up
+			// **   new members.
+			// */
+			this->IsUnderStrength = this->IsHasBeen == 0;
+		}
 
-        } else {
-            // /*
-            // **   Teams that are not flagged as reinforceable are never considered under
-            // **   strength if the team has already started its main mission. This
-            // **   ensures that once the team has started, it won't dally to pick up
-            // **   new members.
-            // */
-            this->IsUnderStrength = this->IsHasBeen == 0;
-        }
-
-        if (pType->GuardSlower) {
+		if (pType->GuardSlower)
+		{
 			this->GuardSlowerIsNotUnderStrength = !this->IsUnderStrength;
 		}
 
-        this->JustDisappeared = 0;
-        this->NeedsToDisappear = 0;
+		this->JustDisappeared = 0;
+		this->NeedsToDisappear = 0;
 
-		if (was_IsUnderStrength != this->IsUnderStrength) {
-            this->IsReforming = 1;
-        }
+		if (was_IsUnderStrength != this->IsUnderStrength)
+		{
+			this->IsReforming = 1;
+		}
 
-        return 1;
-    }
+		return 1;
+	}
 
-    this->GuardSlowerIsNotUnderStrength = 0;
-    this->IsUnderStrength = 1;
-    this->IsFullStrength = 0;
-    this->Zone = 0;
+	this->GuardSlowerIsNotUnderStrength = 0;
+	this->IsUnderStrength = 1;
+	this->IsFullStrength = 0;
+	this->Zone = 0;
 
-    // /*
-    // **   A team that exists on the player's side is automatically destroyed
-    // **   when there are no team members left. This team was created as a
-    // **   result of reinforcement logic and no longer needs to exist when there
-    // **   are no more team members.
-    // */
-    if (!this->IsHasBeen) {
-        if (was_IsUnderStrength != this->IsUnderStrength){
-            this->IsReforming = 1;
-        }
+	// /*
+	// **   A team that exists on the player's side is automatically destroyed
+	// **   when there are no team members left. This team was created as a
+	// **   result of reinforcement logic and no longer needs to exist when there
+	// **   are no more team members.
+	// */
+	if (!this->IsHasBeen)
+	{
+		if (was_IsUnderStrength != this->IsUnderStrength)
+		{
+			this->IsReforming = 1;
+		}
 
-        return 1;
-    }
+		return 1;
+	}
 
-    // /*
-    // **   If this team had no members (i.e., the team object wasn't terminated by some
-    // **   outside means), then pass through the logic triggers to see if one that
-    // **   depends on this team leaving the map should be sprung.
-    // */
-    if (this->IsLeavingMap) {
-		for(int i = TagClass::Array->Count -1; i >= 0; --i) {
+	// /*
+	// **   If this team had no members (i.e., the team object wasn't terminated by some
+	// **   outside means), then pass through the logic triggers to see if one that
+	// **   depends on this team leaving the map should be sprung.
+	// */
+	if (this->IsLeavingMap)
+	{
+		for (int i = TagClass::Array->Count - 1; i >= 0; --i)
+		{
 			TagClass::Array->operator[](i)->SpringEvent(TriggerEvent::TeamLeavesMap,
-				nullptr ,
+				nullptr,
 				CellStruct::Empty,
-				false ,
+				false,
 				nullptr);
 		}
-    }
+	}
 
-	if (this) {
+	if (this)
+	{
 		((TeamClass*)this)->_scalar_dtor(1);
 	}
 
-    return 0;
+	return 0;
 }
 
-void StopScript(FakeTeamClass* pTeam) {
-	if (pTeam->IsFullStrength || pTeam->IsForcedActive) {
+void StopScript(FakeTeamClass* pTeam)
+{
+	if (pTeam->IsFullStrength || pTeam->IsForcedActive)
+	{
 		pTeam->_TeamClass_6EA080();
 	}
 }
@@ -2228,8 +2342,10 @@ bool NOINLINE IsTechnoMemberEligible(FootClass* pTech, TeamClass* pTeam)
 }
 
 template<typename T>
-void NOINLINE SearchThruArray(DynamicVectorClass<T>* arr, TeamClass* pTeam, int& minDistance , FootClass*& closestAlly) {
-	for (int i = 0; i < arr->Count; i++) {
+void NOINLINE SearchThruArray(DynamicVectorClass<T>* arr, TeamClass* pTeam, int& minDistance, FootClass*& closestAlly)
+{
+	for (int i = 0; i < arr->Count; i++)
+	{
 		T unit = arr->operator[](i);
 
 		if (!IsTechnoMemberEligible(unit, pTeam))
@@ -2241,7 +2357,8 @@ void NOINLINE SearchThruArray(DynamicVectorClass<T>* arr, TeamClass* pTeam, int&
 		const CoordStruct diff = memberCoord - unitCoord;
 		const int distance = (int)diff.Length();
 
-		if (minDistance == -1 || distance < minDistance) {
+		if (minDistance == -1 || distance < minDistance)
+		{
 			minDistance = distance;
 			closestAlly = unit;
 		}
@@ -2387,7 +2504,8 @@ void FakeTeamClass::_Regroup()
 	this->IsMoving = false;
 	this->CurrentScript->ClearMission();
 
-	if (this->TotalObjects <= 0) {
+	if (this->TotalObjects <= 0)
+	{
 		this->Zone = nullptr;
 		return;
 	}
@@ -2546,7 +2664,8 @@ BuildingClass* Find_Enemy_Building(
 		BuildingFindType find_type,
 		bool onlyTargetHouseEnemy)
 {
-	if (buildingidx >= BuildingTypeClass::Array->Count) {
+	if (buildingidx >= BuildingTypeClass::Array->Count)
+	{
 		Debug::FatalError("Find_Enemy_Building BuildingType Index is too big(%d of %d) !",
 			buildingidx, BuildingTypeClass::Array->Count);
 	}
@@ -2627,7 +2746,7 @@ BuildingClass* Find_Own_Building(
 	if (buildingidx >= BuildingTypeClass::Array->Count)
 	{
 		Debug::FatalError("Find_Own_Building of [%x - %s] BuildingType Index is too big(%d of %d) !",
-			house , house->Type->ID , buildingidx, BuildingTypeClass::Array->Count);
+			house, house->Type->ID, buildingidx, BuildingTypeClass::Array->Count);
 	}
 
 	if (house->Buildings.Count <= 0)
@@ -2703,7 +2822,8 @@ bool NOINLINE ShouldFindNearbyLocation(TeamClass* team)
 	// 4. Next waypoint in script is visible on radar
 	CellStruct nextWaypoint = ScenarioClass::Instance->GetWaypointCoords(val);
 
-	if (MapClass::Instance->IsWithinUsableArea(nextWaypoint, true)) {
+	if (MapClass::Instance->IsWithinUsableArea(nextWaypoint, true))
+	{
 		return true;
 	}
 
@@ -2816,7 +2936,8 @@ void FakeTeamClass::_TMission_Unload(ScriptActionNode* nNode, bool arg3)
 {
 	FootClass* member = this->FirstUnit;
 
-	if (!member) {
+	if (!member)
+	{
 		this->StepCompleted = true;
 		return;
 	}
@@ -2825,17 +2946,20 @@ void FakeTeamClass::_TMission_Unload(ScriptActionNode* nNode, bool arg3)
 
 	// First pass: Process each member for unloading
 	FootClass* current = member;
-	while (current) {
+	while (current)
+	{
 		FootClass* next = current->NextTeamMember;
 
-		if (current->IsAlive) {
+		if (current->IsAlive)
+		{
 			// Initialize uninitiated members
 			ProcessMemberInitiation(this, current);
 
 			// Process initiated members with cargo
 			if (current->IsAlive && current->Health &&
 				(Unsorted::ScenarioInit || !current->InLimbo) &&
-				(current->IsTeamLeader || current->WhatAmI() == AircraftClass::AbsID)) {
+				(current->IsTeamLeader || current->WhatAmI() == AircraftClass::AbsID))
+			{
 				// Check if member has cargo
 				if (current->Passengers.NumPassengers)
 				{
@@ -2846,7 +2970,8 @@ void FakeTeamClass::_TMission_Unload(ScriptActionNode* nNode, bool arg3)
 
 					// Only unload if not in a building and not already unloading
 					if (!memberCell->GetBuilding() &&
-						current->GetCurrentMission() != Mission::Unload) {
+						current->GetCurrentMission() != Mission::Unload)
+					{
 						// Start unloading
 						current->SetDestination(nullptr, 1);
 						current->SetTarget(nullptr);
@@ -2860,7 +2985,8 @@ void FakeTeamClass::_TMission_Unload(ScriptActionNode* nNode, bool arg3)
 	}
 
 	// If all members have unloaded, process transports
-	if (!allUnloaded) {
+	if (!allUnloaded)
+	{
 		return;
 	}
 
@@ -3064,7 +3190,6 @@ void FakeTeamClass::_TMission_Deploy(ScriptActionNode* nNode, bool arg3)
 							// Handle searching for free space in Hunt mission handler
 							member->ForceMission(Mission::Hunt);
 							member->MissionStatus = 2; // Tells UnitClass::Mission_Hunt to omit certain checks.
-
 						}
 						else
 						{
@@ -3100,7 +3225,8 @@ void FakeTeamClass::_TMission_Deploy(ScriptActionNode* nNode, bool arg3)
 	}
 	while (member);
 
-	if (allDeployed) {
+	if (allDeployed)
+	{
 		this->StepCompleted = true;
 	}
 }
@@ -3109,53 +3235,58 @@ void FakeTeamClass::_TMission_Scout(ScriptActionNode* nNode, bool arg3)
 {
 	bool shouldContinue = true;
 
-		if (this->TargetHouse)
-		{
-			// Already scouting a house, check if movement is done
-			FootClass* leader = this->_Fetch_A_Leader();
+	if (this->TargetHouse)
+	{
+		// Already scouting a house, check if movement is done
+		FootClass* leader = this->_Fetch_A_Leader();
 
-			if (leader &&
-				leader->CurrentMission != Mission::Move &&
-				leader->QueuedMission != Mission::Move)
+		if (leader &&
+			leader->CurrentMission != Mission::Move &&
+			leader->QueuedMission != Mission::Move)
+		{
+			// Movement complete, mark house as scouted
+			this->OwnerHouse->UpdateScoutNodes(this->TargetHouse);
+			this->TargetHouse = nullptr;
+		}
+	}
+	else
+	{
+		// Find an unscouted house
+		HouseClass* house = this->OwnerHouse;
+		int unscoutedCount = 0;
+
+		// Count unscouted nodes
+		for (int i = 0; i < house->ScoutNodes.Count; i++)
+		{
+			if (!house->ScoutNodes.Items[i].IsPreferred) // Check scouted flag
 			{
-				// Movement complete, mark house as scouted
-				this->OwnerHouse->UpdateScoutNodes(this->TargetHouse);
-				this->TargetHouse = nullptr;
+				unscoutedCount++;
 			}
+		}
+
+		if (unscoutedCount <= 0)
+		{
+			shouldContinue = false;
 		}
 		else
 		{
-			// Find an unscouted house
-			HouseClass* house = this->OwnerHouse;
-			int unscoutedCount = 0;
+			// Pick random unscouted house
+			int randomPick = ScenarioClass::Instance->Random.RandomRanged(0, unscoutedCount - 1);
 
-			// Count unscouted nodes
-			for (int i = 0; i < house->ScoutNodes.Count; i++) {
-				if (!house->ScoutNodes.Items[i].IsPreferred) // Check scouted flag
+			for (int i = 0; i < house->ScoutNodes.Count; i++)
+			{
+				if (!house->ScoutNodes.Items[i].IsPreferred)
 				{
-					unscoutedCount++;
-				}
-			}
-
-			if (unscoutedCount <= 0)
-			{
-				shouldContinue = false;
-			}
-			else
-			{
-				// Pick random unscouted house
-				int randomPick = ScenarioClass::Instance->Random.RandomRanged(0, unscoutedCount - 1);
-
-				for (int i = 0; i < house->ScoutNodes.Count; i++) {
-					if (!house->ScoutNodes.Items[i].IsPreferred) {
-						if (randomPick-- == 0) {
-							this->TargetHouse = house->ScoutNodes.Items[i].House;
-							break;
-						}
+					if (randomPick-- == 0)
+					{
+						this->TargetHouse = house->ScoutNodes.Items[i].House;
+						break;
 					}
 				}
+			}
 
-				auto IsValidTarget = [](BuildingClass* pBld) -> bool {
+			auto IsValidTarget = [](BuildingClass* pBld) -> bool
+				{
 					if (!pBld->IsAlive)
 						return false;
 
@@ -3172,63 +3303,74 @@ void FakeTeamClass::_TMission_Scout(ScriptActionNode* nNode, bool arg3)
 					return true;
 				};
 
-				// Find a building owned by the scout target house
-				std::vector<BuildingClass*> targetBuildings;
-				targetBuildings.reserve(this->TargetHouse->Buildings.Count);
+			// Find a building owned by the scout target house
+			std::vector<BuildingClass*> targetBuildings;
+			targetBuildings.reserve(this->TargetHouse->Buildings.Count);
 
-				for (int i = 0; i < this->TargetHouse->Buildings.Count; i++) {
-					if (IsValidTarget(this->TargetHouse->Buildings.Items[i])) {
-						targetBuildings.push_back(this->TargetHouse->Buildings.Items[i]);
-					}
+			for (int i = 0; i < this->TargetHouse->Buildings.Count; i++)
+			{
+				if (IsValidTarget(this->TargetHouse->Buildings.Items[i]))
+				{
+					targetBuildings.push_back(this->TargetHouse->Buildings.Items[i]);
 				}
-					
-				if (targetBuildings.empty()) {
-					// No buildings found, mark as scouted
-					this->OwnerHouse->UpdateScoutNodes(this->TargetHouse);
-					this->TargetHouse = nullptr;
-				} else {
-					// Pick random building
-					const BuildingClass* target = targetBuildings[ScenarioClass::Instance->Random.RandomRanged(0, targetBuildings.size() - 1)];
+			}
 
-					// Find leader and nearby location
-					if (FootClass* leader = this->_Fetch_A_Leader())
+			if (targetBuildings.empty())
+			{
+				// No buildings found, mark as scouted
+				this->OwnerHouse->UpdateScoutNodes(this->TargetHouse);
+				this->TargetHouse = nullptr;
+			}
+			else
+			{
+				// Pick random building
+				const BuildingClass* target = targetBuildings[ScenarioClass::Instance->Random.RandomRanged(0, targetBuildings.size() - 1)];
+
+				// Find leader and nearby location
+				if (FootClass* leader = this->_Fetch_A_Leader())
+				{
+					CoordStruct targetCoord = target->GetCoords();
+					CellStruct targetCell = CellClass::Coord2Cell(targetCoord);
+
+					TechnoTypeClass* leaderType = leader->GetTechnoType();
+
+					CellStruct result = MapClass::Instance->NearByLocation(
+						targetCell,
+						leaderType->SpeedType,
+						ZoneType::None,
+						MovementZone::Normal,
+						false, 1, 1, 0, 0, 0, 1,
+						CellStruct::Empty,
+						0, 0
+					);
+
+					if (result.IsValid())
 					{
-						CoordStruct targetCoord = target->GetCoords();
-						CellStruct targetCell = CellClass::Coord2Cell(targetCoord);
-
-						TechnoTypeClass* leaderType = leader->GetTechnoType();
-
-						CellStruct result = MapClass::Instance->NearByLocation(
-							targetCell,
-							leaderType->SpeedType,
-							ZoneType::None,
-							MovementZone::Normal,
-							false, 1, 1, 0, 0, 0, 1,
-							CellStruct::Empty,
-							0, 0
-						);
-
-						if (result.IsValid()) {
-							this->_AssignMissionTarget(MapClass::Instance->GetCellAt(result));
-						} else {
-							this->_AssignMissionTarget(nullptr);
-						}
+						this->_AssignMissionTarget(MapClass::Instance->GetCellAt(result));
+					}
+					else
+					{
+						this->_AssignMissionTarget(nullptr);
 					}
 				}
 			}
 		}
+	}
 
-		this->_CoordinateMove();
-		this->StepCompleted = shouldContinue ? false : true;
+	this->_CoordinateMove();
+	this->StepCompleted = shouldContinue ? false : true;
 }
 
 void FakeTeamClass::_TMission_Move_To_Own_Building(ScriptActionNode* nNode, bool arg3)
 {
-	if (arg3) {
-		if (!this->QueuedFocus) {
+	if (arg3)
+	{
+		if (!this->QueuedFocus)
+		{
 			FootClass* member = this->FirstUnit;
 
-			if (!member) {
+			if (!member)
+			{
 				this->StepCompleted = true;
 				return;
 			}
@@ -3241,7 +3383,8 @@ void FakeTeamClass::_TMission_Move_To_Own_Building(ScriptActionNode* nNode, bool
 			// Get enemy house
 			HouseClass* enemyHouse = nullptr;
 			int enemyIndex = member->Owner->EnemyHouseIndex;
-			if (enemyIndex != -1) {
+			if (enemyIndex != -1)
+			{
 				enemyHouse = HouseClass::Array->Items[enemyIndex];
 			}
 
@@ -3251,7 +3394,8 @@ void FakeTeamClass::_TMission_Move_To_Own_Building(ScriptActionNode* nNode, bool
 				0,
 				member,
 				(BuildingFindType)findMode
-			)) {
+			))
+			{
 				// Find nearby accessible location
 				CoordStruct buildingCoord = targetBuilding->Location;
 				CellStruct buildingCell = CellClass::Coord2Cell(buildingCoord);
@@ -3277,18 +3421,24 @@ void FakeTeamClass::_TMission_Move_To_Own_Building(ScriptActionNode* nNode, bool
 					0, 0
 				);
 
-				if (nearbyCell.IsValid()) {
+				if (nearbyCell.IsValid())
+				{
 					this->_AssignMissionTarget(MapClass::Instance->GetCellAt(nearbyCell));
-				} else {
+				}
+				else
+				{
 					this->_AssignMissionTarget(nullptr);
 				}
 			}
-		} else {
+		}
+		else
+		{
 			this->_CoordinateMove();
 		}
 	}
 
-	if (!this->QueuedFocus) {
+	if (!this->QueuedFocus)
+	{
 		this->StepCompleted = true;
 		return;
 	}
@@ -3314,7 +3464,8 @@ void FakeTeamClass::_TMission_Attack_Enemy_Building(ScriptActionNode* nNode, boo
 		}
 
 		FootClass* member = this->FirstUnit;
-		if (!member) {
+		if (!member)
+		{
 			this->_AssignMissionTarget(nullptr);
 			this->StepCompleted = true;
 			return;
@@ -3338,7 +3489,8 @@ void FakeTeamClass::_TMission_Attack_Enemy_Building(ScriptActionNode* nNode, boo
 		// Get enemy house
 		HouseClass* enemyHouse = nullptr;
 		int enemyIndex = member->Owner->EnemyHouseIndex;
-		if (enemyIndex != -1) {
+		if (enemyIndex != -1)
+		{
 			enemyHouse = HouseClass::Array->Items[enemyIndex];
 		}
 
@@ -3349,12 +3501,14 @@ void FakeTeamClass::_TMission_Attack_Enemy_Building(ScriptActionNode* nNode, boo
 			member,
 			(BuildingFindType)findMode,
 			this->Type->OnlyTargetHouseEnemy
-		)) {
+		))
+		{
 			this->_AssignMissionTarget(targetBuilding);
 		}
 	}
 
-	if (!this->QueuedFocus || !this->_Does_Any_Member_Have_Ammo()) {
+	if (!this->QueuedFocus || !this->_Does_Any_Member_Have_Ammo())
+	{
 		this->_AssignMissionTarget(nullptr);
 		this->StepCompleted = true;
 		return;
@@ -3366,7 +3520,8 @@ void FakeTeamClass::_TMission_Attack_Enemy_Building(ScriptActionNode* nNode, boo
 void FakeTeamClass::_TMission_Chrono_prep_for_abwp(ScriptActionNode* nNode, bool arg3)
 {
 	FootClass* leader = this->_Fetch_A_Leader();
-	if (!leader) {
+	if (!leader)
+	{
 		this->StepCompleted = true;
 		return;
 	}
@@ -3377,8 +3532,8 @@ void FakeTeamClass::_TMission_Chrono_prep_for_abwp(ScriptActionNode* nNode, bool
 	SuperClass* chronosphere = nullptr;
 	SuperClass* chronoshift = nullptr;
 
-	for (int i = 0; i < house->Supers.Count; i++) {
-
+	for (int i = 0; i < house->Supers.Count; i++)
+	{
 		SuperClass* super = house->Supers.Items[i];
 		SWTypeExtData* pExt = SWTypeExtContainer::Instance.Find(super->Type);
 
@@ -3387,12 +3542,13 @@ void FakeTeamClass::_TMission_Chrono_prep_for_abwp(ScriptActionNode* nNode, bool
 
 		if (super->Type->Type == SuperWeaponType::ChronoSphere) // Chronosphere
 			chronosphere = super;
-		
+
 		if (super->Type->Type == SuperWeaponType::ChronoWarp) // Chronoshift
 			chronoshift = super;
 	}
 
-	if (!chronosphere || !chronoshift) {
+	if (!chronosphere || !chronoshift)
+	{
 		this->StepCompleted = true;
 		return;
 	}
@@ -3403,7 +3559,8 @@ void FakeTeamClass::_TMission_Chrono_prep_for_abwp(ScriptActionNode* nNode, bool
 		// Find enemy building target
 		HouseClass* enemyHouse = nullptr;
 		int enemyIndex = leader->Owner->EnemyHouseIndex;
-		if (enemyIndex != -1) {
+		if (enemyIndex != -1)
+		{
 			enemyHouse = HouseClass::Array->Items[enemyIndex];
 		}
 
@@ -3412,7 +3569,8 @@ void FakeTeamClass::_TMission_Chrono_prep_for_abwp(ScriptActionNode* nNode, bool
 		int findMode = packedArg >> 16;
 
 		// Validate building type index
-		if (buildingTypeIndex >= BuildingTypeClass::Array->Count) {
+		if (buildingTypeIndex >= BuildingTypeClass::Array->Count)
+		{
 			Debug::FatalError("Team [%s] TMission_CHRONO_PREP_FOR_ABWP: Invalid building type index %d (max: %d)",
 				this->Type->ID, buildingTypeIndex, BuildingTypeClass::Array->Count - 1);
 			this->StepCompleted = true;
@@ -3425,7 +3583,8 @@ void FakeTeamClass::_TMission_Chrono_prep_for_abwp(ScriptActionNode* nNode, bool
 			leader,
 			(BuildingFindType)findMode,
 			this->Type->OnlyTargetHouseEnemy
-		)) {
+		))
+		{
 			// Fire Chronosphere at team zone
 			CoordStruct zoneCoord = this->Zone->GetCoords();
 			CellStruct zoneCell = CellClass::Coord2Cell(zoneCoord);
@@ -3440,14 +3599,16 @@ void FakeTeamClass::_TMission_Chrono_prep_for_abwp(ScriptActionNode* nNode, bool
 
 		this->StepCompleted = true;
 	}
-	else {
+	else
+	{
 		CheckSuperweaponReady(this, chronosphere);
 	}
 }
 
 void FakeTeamClass::_TMission_Play_Animation(ScriptActionNode* nNode, bool arg3)
 {
-	if (!arg3) {
+	if (!arg3)
+	{
 		this->StepCompleted = true;
 		return;
 	}
@@ -3457,7 +3618,8 @@ void FakeTeamClass::_TMission_Play_Animation(ScriptActionNode* nNode, bool arg3)
 	int loopCount = packedArg >> 16;
 
 	// Validate anim index
-	if (animIndex >= AnimTypeClass::Array->Count) {
+	if (animIndex >= AnimTypeClass::Array->Count)
+	{
 		Debug::FatalErrorAndExit("Team [%s] TMission_Play_Animation: Invalid anim type index %d (max: %d)",
 			this->Type->ID, animIndex, AnimTypeClass::Array->Count - 1);
 
@@ -3468,7 +3630,8 @@ void FakeTeamClass::_TMission_Play_Animation(ScriptActionNode* nNode, bool arg3)
 	AnimTypeClass* animType = AnimTypeClass::Array->Items[animIndex];
 	FootClass* member = this->FirstUnit;
 
-	if (!member || !animType) {
+	if (!member || !animType)
+	{
 		this->StepCompleted = true;
 		return;
 	}
@@ -3485,7 +3648,8 @@ void FakeTeamClass::_TMission_Play_Animation(ScriptActionNode* nNode, bool arg3)
 				AnimFlag::AnimFlag_600,
 				0,
 				0
-			)) {
+			))
+			{
 				created->SetOwnerObject(member);
 			}
 		}
@@ -3623,7 +3787,6 @@ void FakeTeamClass::_TMission_Chrono_prep_for_aq(ScriptActionNode* nNode, bool a
 	{
 		CheckSuperweaponReady(this, chronosphere);
 	}
-
 }
 
 void FakeTeamClass::_TMission_Enter_Grinder(ScriptActionNode* nNode, bool arg3)
@@ -3712,14 +3875,17 @@ void FakeTeamClass::_TMission_Occupy_Tank_Bunker(ScriptActionNode* nNode, bool a
 
 void FakeTeamClass::_TMission_Attack(ScriptActionNode* nNode, bool arg3)
 {
-	if (!this->QueuedFocus) {
-		if (FootClass* pLeader = this->_Fetch_A_Leader()) {
+	if (!this->QueuedFocus)
+	{
+		if (FootClass* pLeader = this->_Fetch_A_Leader())
+		{
 			const ThreatType tt = ThreatFromQuarry((QuarryType)nNode->Argument);
 			this->_AssignMissionTarget(pLeader->GreatestThreat(tt, &pLeader->Location, this->Type->OnlyTargetHouseEnemy));
 		}
 	}
 
-	if (!this->QueuedFocus || !this->_Does_Any_Member_Have_Ammo()) {
+	if (!this->QueuedFocus || !this->_Does_Any_Member_Have_Ammo())
+	{
 		this->StepCompleted = true;
 		return;
 	}
@@ -3729,15 +3895,20 @@ void FakeTeamClass::_TMission_Attack(ScriptActionNode* nNode, bool arg3)
 
 void FakeTeamClass::_TMission_Attack_Waypoint(ScriptActionNode* nNode, bool arg3)
 {
-	if (arg3) {
+	if (arg3)
+	{
 		CellClass* pWaypCell = ScenarioClass::Instance->GetWaypointCell(nNode->Argument);
 		AbstractClass* pTarget = nullptr;
 
-		if (pWaypCell && pWaypCell->WhatAmI() == CellClass::AbsID) {
+		if (pWaypCell && pWaypCell->WhatAmI() == CellClass::AbsID)
+		{
 			bool revealed = (pWaypCell->Flags & CellFlags::CenterRevealed) != CellFlags::Empty;
-			if (auto pObj = pWaypCell->GetSomeObject(Point2D::Empty, revealed)) {
+			if (auto pObj = pWaypCell->GetSomeObject(Point2D::Empty, revealed))
+			{
 				pTarget = pObj;
-			} else {
+			}
+			else
+			{
 				pTarget = pWaypCell;
 			}
 		}
@@ -3745,9 +3916,12 @@ void FakeTeamClass::_TMission_Attack_Waypoint(ScriptActionNode* nNode, bool arg3
 		this->_AssignMissionTarget(pTarget);
 	}
 
-	if (this->QueuedFocus && this->_Does_Any_Member_Have_Ammo()) {
+	if (this->QueuedFocus && this->_Does_Any_Member_Have_Ammo())
+	{
 		this->_Coordinate_Attack();
-	} else {
+	}
+	else
+	{
 		this->_AssignMissionTarget(nullptr);
 		this->StepCompleted = true;
 	}
@@ -3756,7 +3930,7 @@ void FakeTeamClass::_TMission_Attack_Waypoint(ScriptActionNode* nNode, bool arg3
 void FakeTeamClass::_TMission_Move_To_Cell(ScriptActionNode* nNode, bool arg3)
 {
 	const int nDivisor = ScenarioClass::NewINIFormat() < 4 ? 128 : 1000;
-	CellStruct toCell { 
+	CellStruct toCell {
 		short(nNode->Argument % nDivisor),
 		short(nNode->Argument / nDivisor)
 	};
@@ -3784,7 +3958,8 @@ void FakeTeamClass::_TMission_Player_loses(ScriptActionNode* nNode, bool arg3)
 
 void FakeTeamClass::_TMission_Talk_bubble(ScriptActionNode* nNode, bool arg3)
 {
-	if(arg3){
+	if (arg3)
+	{
 		if (this->FirstUnit)
 			this->FirstUnit->CreateTalkBubble(nNode->Argument);
 
@@ -3797,11 +3972,15 @@ void FakeTeamClass::_AI()
 	//HouseExtContainer::HousesTeams[this->OwnerHouse].emplace(this);
 #pragma region UpdateFuncs
 
-	if (this->IsSuspended) {
+	if (this->IsSuspended)
+	{
 		const int suspend_timeleft = this->SuspendTimer.GetTimeLeft();
-		if(suspend_timeleft == 0) {
+		if (suspend_timeleft == 0)
+		{
 			this->IsSuspended = false;
-		} else {
+		}
+		else
+		{
 			return;
 		}
 	}
@@ -3834,7 +4013,6 @@ void FakeTeamClass::_AI()
 	if ((!this->IsMoving || (!this->IsFullStrength && this->Type->Reinforce))
 		&& (!this->OwnerHouse->IsControlledByHuman() || !this->IsHasBeen))
 	{
-
 		int v5 = 0;
 		TaskForceClass* TaskForce = this->Type->TaskForce;
 
@@ -3843,7 +4021,6 @@ void FakeTeamClass::_AI()
 			int* Quantity = this->CountObjects;
 			do
 			{
-
 				if (*Quantity < TaskForce->Entries[v5].Amount)
 				{
 					this->_Recruit(v5);
@@ -3906,8 +4083,10 @@ void FakeTeamClass::_AI()
 
 		for (FootClass* j = this->FirstUnit; j; j = j->NextTeamMember)
 		{
-			if (this->Type->TransportsReturnOnUnload && j->GetTechnoType()->Passengers > 0) {
-				if (j->ArchiveTarget) {
+			if (this->Type->TransportsReturnOnUnload && j->GetTechnoType()->Passengers > 0)
+			{
+				if (j->ArchiveTarget)
+				{
 					Debug::LogInfo("[{}][{}] Transport just recieved orders to go home after unloading ", (void*)this, this->get_ID());
 				}
 			}
@@ -3999,8 +4178,8 @@ void FakeTeamClass::_AI()
 	//dont prematurely finish the `Script` ,...
 	//bailout the script if the `Action` already -1
 	//this will free the Member and allow them to be recuited
-	//if (node.Action == TeamMissionType::none || (TeamMissionType)node.Action >= TeamMissionType::count && 
-	//	(AresScripts)node.Action >= AresScripts::count && 
+	//if (node.Action == TeamMissionType::none || (TeamMissionType)node.Action >= TeamMissionType::count &&
+	//	(AresScripts)node.Action >= AresScripts::count &&
 	//	(PhobosScripts)node.Action >= PhobosScripts::count
 	//) {
 	//	// Unknown action. This action finished
@@ -4087,7 +4266,7 @@ void FakeTeamClass::_AI()
 		this->_TMission_Enter_Grinder(&node, arg4);
 		return;
 	}
-	case TeamMissionType::Enter_bio_reactor: 
+	case TeamMissionType::Enter_bio_reactor:
 	{
 		this->_TMission_Enter_Bio_Reactor(&node, arg4);
 		return;
@@ -4145,8 +4324,10 @@ void FakeTeamClass::_AI()
 	}
 	case TeamMissionType::Flash:
 	{
-		for (FootClass* f = this->FirstUnit; f; f = f->NextTeamMember) {
-			if (f->Health > 0 && f->IsAlive && !f->IsCrashing && !f->IsSinking && !f->InLimbo) {
+		for (FootClass* f = this->FirstUnit; f; f = f->NextTeamMember)
+		{
+			if (f->Health > 0 && f->IsAlive && !f->IsCrashing && !f->IsSinking && !f->InLimbo)
+			{
 				f->Flashing.DurationRemaining = node.Argument;
 			}
 		}
@@ -4162,7 +4343,8 @@ void FakeTeamClass::_AI()
 			do
 			{
 				auto pFirstType = pFirst->GetTechnoType();
-				if (IS_SAME_STR_(pFirstType->ID, "TRUCKB")) {
+				if (IS_SAME_STR_(pFirstType->ID, "TRUCKB"))
+				{
 					TechnoExt_ExtData::ConvertToType(pFirst, UnitTypeClass::Find("TRUCKA"));
 				}
 
@@ -4172,7 +4354,6 @@ void FakeTeamClass::_AI()
 					pNext = pNext->NextTeamMember;
 
 				pFirst = pCur;
-
 			}
 			while (pCur);
 		}
@@ -4189,7 +4370,8 @@ void FakeTeamClass::_AI()
 			do
 			{
 				auto pFirstType = pFirst->GetTechnoType();
-				if (IS_SAME_STR_(pFirstType->ID, "TRUCKA")) {
+				if (IS_SAME_STR_(pFirstType->ID, "TRUCKA"))
+				{
 					TechnoExt_ExtData::ConvertToType(pFirst, UnitTypeClass::Find("TRUCKB"));
 				}
 
@@ -4199,7 +4381,6 @@ void FakeTeamClass::_AI()
 					pNext = pNext->NextTeamMember;
 
 				pFirst = pCur;
-
 			}
 			while (pCur);
 		}
@@ -4209,7 +4390,7 @@ void FakeTeamClass::_AI()
 	}
 	case TeamMissionType::Wait_till_fully_loaded:
 	{
-		if(!this->FirstUnit)
+		if (!this->FirstUnit)
 			this->StepCompleted = true;
 
 		return;
@@ -4218,7 +4399,8 @@ void FakeTeamClass::_AI()
 	{
 		FootClass* member = this->FirstUnit;
 
-		if (!member) {
+		if (!member)
+		{
 			this->StepCompleted = true;
 			return;
 		}
@@ -4233,15 +4415,19 @@ void FakeTeamClass::_AI()
 		while (member)
 		{
 			// Check if member is currently moving
-			if (member->Locomotor->Is_Moving()) {
+			if (member->Locomotor->Is_Moving())
+			{
 				// Member is moving, can't complete facing yet
 				allMembersFacing = false;
-			} else {
+			}
+			else
+			{
 				// Get member's current facing
 				DirStruct currentDir = member->PrimaryFacing.Current();
 
 				// Check if already facing the correct direction
-				if (currentDir.GetDir() != targetFacing) {
+				if (currentDir.GetDir() != targetFacing)
+				{
 					// Not facing correct direction, turn the unit
 					member->Locomotor->Do_Turn(DirStruct(targetFacing));
 					allMembersFacing = false;
@@ -4252,7 +4438,8 @@ void FakeTeamClass::_AI()
 		}
 
 		// Mission complete when all members are facing the target direction
-		if (allMembersFacing) {
+		if (allMembersFacing)
+		{
 			this->StepCompleted = true;
 		}
 
@@ -4290,12 +4477,12 @@ void FakeTeamClass::_AI()
 			auto pNext = pFirst->NextTeamMember;
 			do
 			{
-
 				if (pFirst->Health > 0
 					&& pFirst->IsAlive
 					&& !pFirst->IsCrashing
 					&& !pFirst->IsSinking
-					&& !pFirst->InLimbo) {
+					&& !pFirst->InLimbo)
+				{
 					pFirst->Limbo();
 					pFirst->UnInit();
 				}
@@ -4306,7 +4493,6 @@ void FakeTeamClass::_AI()
 					pNext = pNext->NextTeamMember;
 
 				pFirst = pCur;
-
 			}
 			while (pCur);
 		}
@@ -4328,19 +4514,21 @@ void FakeTeamClass::_AI()
 	}
 	case TeamMissionType::Ion_storm_start_in:
 	{
-		if (!LightningStorm::IsActive()) {
+		if (!LightningStorm::IsActive())
+		{
 			LightningStorm::Start(
 				node.Argument,
 				RulesClass::Instance->LightningDeferment,
 				CellStruct::Empty, nullptr
-				);
+			);
 		}
 		this->StepCompleted = true;
 		return;
 	}
 	case TeamMissionType::Ion_storn_end:
 	{
-		if (LightningStorm::IsActive()) {
+		if (LightningStorm::IsActive())
+		{
 			LightningStorm::RequestStop();
 		}
 		this->StepCompleted = true;
@@ -4348,7 +4536,8 @@ void FakeTeamClass::_AI()
 	}
 	case TeamMissionType::Center_view_on_team:
 	{
-		if (this->Zone) {
+		if (this->Zone)
+		{
 			CoordStruct place = this->Zone->GetCoords();
 			auto pCell = MapClass::Instance->GetCellAt(place);
 			place.Z = pCell->ContainsBridgeEx() ? place.Z + CellClass::BridgeHeight : 0;
@@ -4384,7 +4573,6 @@ void FakeTeamClass::_AI()
 					pNext = pNext->NextTeamMember;
 
 				pFirst = pCur;
-
 			}
 			while (pCur);
 		}
@@ -4405,7 +4593,8 @@ void FakeTeamClass::_AI()
 	}
 	case TeamMissionType::Reduce_tiberium:
 	{
-		if (this->FirstUnit) {
+		if (this->FirstUnit)
+		{
 			this->FirstUnit->GetCell()->ReduceTiberiumWithinCircularArea();
 		}
 
@@ -4414,7 +4603,8 @@ void FakeTeamClass::_AI()
 	}
 	case TeamMissionType::Goto_nearby_shroud:
 	{
-		if (arg4) {
+		if (arg4)
+		{
 			AbstractClass* pTarget = this->Zone;
 			if (!this->Zone)
 				pTarget = this->FirstUnit;
@@ -4439,7 +4629,6 @@ void FakeTeamClass::_AI()
 					pNext = pNext->NextTeamMember;
 
 				pFirst = pCur;
-
 			}
 			while (pCur);
 		}
@@ -4449,7 +4638,8 @@ void FakeTeamClass::_AI()
 	}
 	case TeamMissionType::Panic:
 	{
-		for (FootClass* f = this->FirstUnit; f; f = f->NextTeamMember) {
+		for (FootClass* f = this->FirstUnit; f; f = f->NextTeamMember)
+		{
 			f->Panic();
 		}
 		this->StepCompleted = true;
@@ -4457,7 +4647,8 @@ void FakeTeamClass::_AI()
 	}
 	case TeamMissionType::Unpanic:
 	{
-		for (FootClass* f = this->FirstUnit; f; f = f->NextTeamMember) {
+		for (FootClass* f = this->FirstUnit; f; f = f->NextTeamMember)
+		{
 			f->UnPanic();
 		}
 
@@ -4479,8 +4670,8 @@ void FakeTeamClass::_AI()
 				  && (Unsorted::ScenarioInit || !i->InLimbo)
 				  && (i->IsTeamLeader || i->WhatAmI() == AircraftClass::AbsID))
 				{
-
-					if (i->Target && i->Target != pTechno->Target) {
+					if (i->Target && i->Target != pTechno->Target)
+					{
 						i->SetTarget(0);
 					}
 
@@ -4506,7 +4697,8 @@ void FakeTeamClass::_AI()
 	}
 	case TeamMissionType::Idle_anim:
 	{
-		for (auto f = this->FirstUnit; f; f = f->NextTeamMember) {
+		for (auto f = this->FirstUnit; f; f = f->NextTeamMember)
+		{
 			f->PlayIdleAnim(node.Argument);
 		}
 
@@ -4520,12 +4712,14 @@ void FakeTeamClass::_AI()
 	}
 	case TeamMissionType::Change_script:
 	{
-		if (node.Argument < 0) {
+		if (node.Argument < 0)
+		{
 			this->StepCompleted = true;
 			return;
 		}
 
-		if (this->CurrentScript) {
+		if (this->CurrentScript)
+		{
 			GameDelete<true, false>(this->CurrentScript);
 		}
 
@@ -4537,13 +4731,15 @@ void FakeTeamClass::_AI()
 	}
 	case TeamMissionType::Change_team:
 	{
-		if (node.Argument < 0 || !this->FirstUnit) {
+		if (node.Argument < 0 || !this->FirstUnit)
+		{
 			this->StepCompleted = true;
 			return;
 		}
 
 		auto pNewTeam = GameCreate<TeamClass>(TeamTypeClass::Array->operator[](node.Argument), this->OwnerHouse, 0);
-		for (FootClass* f = this->FirstUnit; f; f = f->NextTeamMember) {
+		for (FootClass* f = this->FirstUnit; f; f = f->NextTeamMember)
+		{
 			this->_Remove(f, -1, false);
 			pNewTeam->AddMember(f);
 		}
@@ -4561,7 +4757,8 @@ void FakeTeamClass::_AI()
 		this->_TMission_GatherAtBase(&node, arg4);
 		return;
 	}
-	case TeamMissionType::Play_speech:{
+	case TeamMissionType::Play_speech:
+	{
 		ScriptExtData::PlaySpeech(this);
 		return;
 	}
@@ -4573,7 +4770,7 @@ void FakeTeamClass::_AI()
 	}
 	case TeamMissionType::Play_movie:
 	{
-		Game::PlayMovie(node.Argument, -1,1, 1, 0);
+		Game::PlayMovie(node.Argument, -1, 1, 1, 0);
 		this->StepCompleted = 1;
 		return;
 	}
@@ -4585,7 +4782,7 @@ void FakeTeamClass::_AI()
 	}
 	case TeamMissionType::Do:
 	{
-		this->_Coordinate_Do(&node,CellStruct::Empty);
+		this->_Coordinate_Do(&node, CellStruct::Empty);
 		return;
 	}
 	case TeamMissionType::Patrol:
@@ -4595,7 +4792,8 @@ void FakeTeamClass::_AI()
 		CellClass* waypointCell = ScenarioClass::Instance->GetWaypointCell(waypointIndex);
 
 		// On first call, set waypoint as initial target
-		if (arg4) {
+		if (arg4)
+		{
 			this->_AssignMissionTarget(waypointCell);
 		}
 
@@ -4605,7 +4803,8 @@ void FakeTeamClass::_AI()
 			auto const& [miss, value] = this->CurrentScript->GetCurrentAction();
 
 			// Mission data < 702 is some threshold check (possibly frame-based)
-			if (value < 702) {
+			if (value < 702)
+			{
 				this->_AssignMissionTarget(waypointCell);
 			}
 		}
@@ -4632,7 +4831,6 @@ void FakeTeamClass::_AI()
 				{
 					// Found a threat, attack it
 					this->_AssignMissionTarget(threat);
-
 				}
 				else if (this->ArchiveTarget != waypointCell)
 				{
@@ -4658,9 +4856,10 @@ void FakeTeamClass::_AI()
 	}
 	case TeamMissionType::Move:
 	{
-		if (arg4) {
-			if (FootClass* pLeader = this->_Fetch_A_Leader()) {
-
+		if (arg4)
+		{
+			if (FootClass* pLeader = this->_Fetch_A_Leader())
+			{
 				CellStruct wp = ScenarioClass::Instance->GetWaypointCoords(node.Argument);
 				CellClass* pCell = MapClass::Instance->GetCellAt(wp);
 				this->_AssignMissionTarget(pCell);
@@ -4712,7 +4911,8 @@ void FakeTeamClass::_AI()
 				// Get enemy house
 				HouseClass* enemyHouse = nullptr;
 				int enemyIndex = member->Owner->EnemyHouseIndex;
-				if (enemyIndex != -1) {
+				if (enemyIndex != -1)
+				{
 					enemyHouse = HouseClass::Array->Items[enemyIndex];
 				}
 
@@ -4749,16 +4949,20 @@ void FakeTeamClass::_AI()
 						0, 0
 					);
 
-					if (nearbyCell.IsValid()) {
+					if (nearbyCell.IsValid())
+					{
 						this->_AssignMissionTarget(MapClass::Instance->GetCellAt(nearbyCell));
-					} else {
+					}
+					else
+					{
 						this->_AssignMissionTarget(nullptr);
 					}
 				}
 			}
 		}
 
-		if (!this->QueuedFocus) {
+		if (!this->QueuedFocus)
+		{
 			this->StepCompleted = true;
 			return;
 		}
@@ -4768,22 +4972,28 @@ void FakeTeamClass::_AI()
 	}
 	case TeamMissionType::Spy:
 	{
-		if (arg4) {
+		if (arg4)
+		{
 			CellClass* pWaypCell = ScenarioClass::Instance->GetWaypointCell(node.Argument);
 			this->_AssignMissionTarget(pWaypCell);
 		}
 
 		AbstractClass* pTarget = nullptr;
 
-		if (this->QueuedFocus && this->QueuedFocus->WhatAmI() == CellClass::AbsID) {
-			if (auto pObj = ((CellClass*)this->QueuedFocus)->GetSomeObject(Point2D::Empty, false)) {
+		if (this->QueuedFocus && this->QueuedFocus->WhatAmI() == CellClass::AbsID)
+		{
+			if (auto pObj = ((CellClass*)this->QueuedFocus)->GetSomeObject(Point2D::Empty, false))
+			{
 				pTarget = pObj;
 			}
 
 			this->_AssignMissionTarget(pTarget);
 			this->_Coordinate_Attack();
-		} else {
-			if (this->QueuedFocus) {
+		}
+		else
+		{
+			if (this->QueuedFocus)
+			{
 				this->_Coordinate_Attack();
 			}
 
@@ -4810,7 +5020,8 @@ bool FakeTeamClass::_CoordinateRegroup()
 	FootClass* Member = this->FirstUnit;
 
 	// If no members exist, mark as regrouped and return true
-	if (!Member) {
+	if (!Member)
+	{
 		this->NeedsReGrouping = 0;
 		return true;
 	}
@@ -4818,12 +5029,16 @@ bool FakeTeamClass::_CoordinateRegroup()
 	int stray = this->_Get_Stray();
 
 	// Process each member in the team
-	do {
-		if (Member->IsAlive) {
+	do
+	{
+		if (Member->IsAlive)
+		{
 			// Check if member is valid and ready for regrouping
-			if (Member->Health && (Unsorted::ScenarioInit || !Member->InLimbo) && !Member->IsTeamLeader) {
+			if (Member->Health && (Unsorted::ScenarioInit || !Member->InLimbo) && !Member->IsTeamLeader)
+			{
 				// Check if member is close enough to initiate
-				if (FakeObjectClass::_GetDistanceOfObj(Member , discard_t() , this->Zone) <= stray) {
+				if (FakeObjectClass::_GetDistanceOfObj(Member, discard_t(), this->Zone) <= stray)
+				{
 					Member->IsTeamLeader = true;
 				}
 				else if (!Member->Destination)
@@ -4843,7 +5058,7 @@ bool FakeTeamClass::_CoordinateRegroup()
 			{
 				// Check if member is in position or guarding with target
 				if (FakeObjectClass::_GetDistanceOfObj(Member, discard_t(), this->Zone) <= stray
-					|| (Member->GetCurrentMission()  == Mission::Area_Guard && Member->Target))
+					|| (Member->GetCurrentMission() == Mission::Area_Guard && Member->Target))
 				{
 					// Set to guard mission if not already guarding
 					if (Member->GetCurrentMission() != Mission::Area_Guard)
@@ -5002,7 +5217,6 @@ bool TeamExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool TeamExtContainer::SaveAll(json& root)
@@ -5050,7 +5264,7 @@ ASMJIT_PATCH(0x6E8ECB, TeamClass_DTOR, 0x7)
 
 void FakeTeamClass::_Detach(AbstractClass* target, bool all)
 {
-	if(auto pExt = this->_GetExtData())
+	if (auto pExt = this->_GetExtData())
 		pExt->InvalidatePointer(target, all);
 	this->TeamClass::PointerExpired(target, all);
 }

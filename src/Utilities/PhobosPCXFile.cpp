@@ -70,7 +70,8 @@ void PhobosPCXFile::Erase()
 PhobosPCXFile& PhobosPCXFile::Assign(const char* pFilename)
 {
 	// fucker
-	if (!pFilename || !*pFilename || !strlen(pFilename)) {
+	if (!pFilename || !*pFilename || !strlen(pFilename))
+	{
 		this->Clear();
 		return *this;
 	}
@@ -90,7 +91,8 @@ void PhobosPCXFile::Insert(const char* pFilename)
 {
 	std::string cachedWithExt = pFilename;
 
-	if (!cachedWithExt.empty() && cachedWithExt[0]) {
+	if (!cachedWithExt.empty() && cachedWithExt[0])
+	{
 		_strlwr(cachedWithExt.data());
 
 		if (cachedWithExt.find(".pcx") == std::string::npos)
@@ -98,10 +100,13 @@ void PhobosPCXFile::Insert(const char* pFilename)
 
 		auto& iter = LoadedMap[cachedWithExt];
 
-		if (!iter.surface) {
+		if (!iter.surface)
+		{
 			this->Assign(cachedWithExt.c_str());
 			iter.surface = this->Surface;
-		} else {
+		}
+		else
+		{
 			this->Surface = iter.surface;
 		}
 	}
@@ -119,28 +124,28 @@ bool PhobosPCXFile::Read(INIClass* pINI, const char* pSection, const char* pKey,
 
 		auto& iter = LoadedMap[cachedWithExt];
 
-		if (!iter.surface) {
+		if (!iter.surface)
+		{
 			this->Assign(cachedWithExt.c_str());
-			iter.surface  = this->Surface;
+			iter.surface = this->Surface;
 
-			if (!iter.logged && this->filename && !this->Surface) {
+			if (!iter.logged && this->filename && !this->Surface)
+			{
 				iter.logged = true;
 				Debug::INIParseFailed(pSection, pKey, this->filename, "PCX file not found.");
 			}
-
-		} else {
+		}
+		else
+		{
 			this->Surface = iter.surface;
 		}
-
 	}
 
 	return buffer[0] != 0;
 }
 
-
 bool PhobosPCXFile::Load(PhobosStreamReader& Stm, bool RegisterForChange)
 {
-
 	this->Clear();
 	long oldPtr = 0l;
 
@@ -154,8 +159,8 @@ bool PhobosPCXFile::Load(PhobosStreamReader& Stm, bool RegisterForChange)
 	{
 		auto& iter = LoadedMap[this->filename.data()];
 
-		if(!iter.surface){
-
+		if (!iter.surface)
+		{
 			BSurface* pSource = PCX::Instance->GetSurface(this->filename);
 			if (!pSource && PCX::Instance->LoadFile(this->filename))
 				pSource = PCX::Instance->GetSurface(this->filename, nullptr);
@@ -163,13 +168,16 @@ bool PhobosPCXFile::Load(PhobosStreamReader& Stm, bool RegisterForChange)
 			this->Surface = pSource;
 			iter.surface = pSource;
 
-			if (!iter.logged && !this->Surface) {
+			if (!iter.logged && !this->Surface)
+			{
 				iter.logged = true;
 				Debug::LogInfo("PCX file[{}] not found.", this->filename.data());
 			}
 
-			PHOBOS_SWIZZLE_REGISTER_POINTER((long)oldPtr,  this->Surface, "BSurface")
-		} else {
+			PHOBOS_SWIZZLE_REGISTER_POINTER((long)oldPtr, this->Surface, "BSurface")
+		}
+		else
+		{
 			this->Surface = iter.surface;
 		}
 	}
@@ -179,7 +187,7 @@ bool PhobosPCXFile::Load(PhobosStreamReader& Stm, bool RegisterForChange)
 
 bool PhobosPCXFile::Save(PhobosStreamWriter& Stm) const
 {
-	if(!Stm.Save((long)this->Surface))
+	if (!Stm.Save((long)this->Surface))
 		return false;
 
 	return Stm

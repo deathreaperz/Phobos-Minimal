@@ -27,29 +27,35 @@
 
 void FakeTechnoClass::__HandleGattlingAudio(TechnoClass* pThis)
 {
-	if (pThis->GetTechnoType()->IsGattling) {
+	if (pThis->GetTechnoType()->IsGattling)
+	{
 		VocClass::PlayIfInRange(pThis->Location, &pThis->Audio3);
 	}
 }
 
 void FakeTechnoClass::__HandleVoicePlayback(TechnoClass* pThis)
 {
-	if (pThis->QueuedVoiceIndex == -1) {
+	if (pThis->QueuedVoiceIndex == -1)
+	{
 		return;
 	}
 
-	if (!pThis->Audio6.AudioEventHandleGet()) {
+	if (!pThis->Audio6.AudioEventHandleGet())
+	{
 		int voiceToPlay = pThis->QueuedVoiceIndex;
 		pThis->__LastVoicePlayed = voiceToPlay;
 		VocClass::PlayGlobal(voiceToPlay, Panning::Center, 1.0, &pThis->Audio6);
-	} else if (pThis->__LastVoicePlayed == pThis->QueuedVoiceIndex) {
+	}
+	else if (pThis->__LastVoicePlayed == pThis->QueuedVoiceIndex)
+	{
 		pThis->QueuedVoiceIndex = -1;
 	}
 }
 
 void FakeTechnoClass::__HandleBerzerkState(TechnoClass* pThis)
 {
-	if (!pThis->Berzerk) {
+	if (!pThis->Berzerk)
+	{
 		return;
 	}
 
@@ -69,15 +75,18 @@ void FakeTechnoClass::__HandleStrengthSmoothing(TechnoClass* pThis)
 	int currentStrength = pThis->Health;
 
 	// Clamp Strength2 to not exceed actual strength
-	if (pThis->EstimatedHealth > currentStrength) {
+	if (pThis->EstimatedHealth > currentStrength)
+	{
 		pThis->EstimatedHealth = currentStrength;
 	}
 
 	// Smoothly increase Strength2 every 4 frames
 	if ((Unsorted::CurrentFrame() & 4) != 0)
 	{
-		if (pThis->EstimatedHealth < currentStrength) {
-			if (pThis->EstimatedHealth + 30 < 0) {
+		if (pThis->EstimatedHealth < currentStrength)
+		{
+			if (pThis->EstimatedHealth + 30 < 0)
+			{
 				pThis->EstimatedHealth = -30;
 			}
 			++pThis->EstimatedHealth;
@@ -89,18 +98,23 @@ void FakeTechnoClass::__HandleTurretAudio(TechnoClass* pThis)
 {
 	auto pType = pThis->GetTechnoType();
 
-	if (!pType->Turret) {
+	if (!pType->Turret)
+	{
 		return;
 	}
 
-	if (pThis->TurretIsRotating) {
-		if (pThis->__IsTurretTurning_49C) {
+	if (pThis->TurretIsRotating)
+	{
+		if (pThis->__IsTurretTurning_49C)
+		{
 			pThis->Audio3.AudioEventHandleStop();
 			VocClass::SafeImmedietelyPlayAt(pType->TurretRotateSound, &pThis->Location, &pThis->Audio3);
 
 			pThis->__IsTurretTurning_49C = 0;
 		}
-	} else {
+	}
+	else
+	{
 		pThis->Audio3.AudioEventHandleStop();
 		pThis->__IsTurretTurning_49C = 1;
 	}
@@ -112,27 +126,32 @@ void FakeTechnoClass::__HandleVeterancyPromotion(TechnoClass* pThis)
 {
 	const auto currentRank = pThis->Veterancy.GetRemainingLevel();
 
-	if (pThis->CurrentRanking == currentRank) {
+	if (pThis->CurrentRanking == currentRank)
+	{
 		return;
 	}
 
 	// Only process promotions, not demotions
-	if (pThis->CurrentRanking == Rank::Invalid) {
+	if (pThis->CurrentRanking == Rank::Invalid)
+	{
 		pThis->CurrentRanking = currentRank;
 		return;
 	}
 
-	if (currentRank == Rank::Invalid) {
+	if (currentRank == Rank::Invalid)
+	{
 		pThis->CurrentRanking = currentRank;
 		return;
 	}
 
 	// Handle promotion to Elite
-	if (currentRank == Rank::Veteran && pThis->Owner->ControlledByCurrentPlayer()) {
+	if (currentRank == Rank::Veteran && pThis->Owner->ControlledByCurrentPlayer())
+	{
 		VocClass::SafeImmedietelyPlayAt(RulesClass::Instance->UpgradeVeteranSound, &pThis->Location);
 		VoxClass::Play("EVA_UnitPromoted");
 	}
-	else if (pThis->Owner->ControlledByCurrentPlayer()) {
+	else if (pThis->Owner->ControlledByCurrentPlayer())
+	{
 		VocClass::SafeImmedietelyPlayAt(RulesClass::Instance->UpgradeEliteSound, &pThis->Location);
 		VoxClass::Play("EVA_UnitPromoted");
 		pThis->Flashing.DurationRemaining = RulesClass::Instance->EliteFlashTimer;
@@ -143,17 +162,20 @@ void FakeTechnoClass::__HandleVeterancyPromotion(TechnoClass* pThis)
 
 void FakeTechnoClass::__HandleMoneyDrain(TechnoClass* pThis)
 {
-	if (!pThis->DrainingMe) {
+	if (!pThis->DrainingMe)
+	{
 		return;
 	}
 
 	TechnoTypeClass* techType = pThis->GetTechnoType();
 
-	if (!techType->ResourceDestination) {
+	if (!techType->ResourceDestination)
+	{
 		return;
 	}
 
-	if ((Unsorted::CurrentFrame() % RulesClass::Instance()->DrainMoneyFrameDelay) != 0) {
+	if ((Unsorted::CurrentFrame() % RulesClass::Instance()->DrainMoneyFrameDelay) != 0)
+	{
 		return;
 	}
 
@@ -164,17 +186,19 @@ void FakeTechnoClass::__HandleDrainTarget(TechnoClass* pThis)
 {
 	TechnoClass* drainTarget = pThis->DrainTarget;
 
-	if (!drainTarget) {
+	if (!drainTarget)
+	{
 		return;
 	}
 
 	// Check if drain target became an ally
-	if (!drainTarget->Owner->IsAlliedWith(pThis)) {
+	if (!drainTarget->Owner->IsAlliedWith(pThis))
+	{
 		return;
 	}
 
 	// Remove drain animation
-	if (auto& pAnim =pThis->DrainAnim)
+	if (auto& pAnim = pThis->DrainAnim)
 	{
 		pAnim->UnInit();
 		pAnim = 0;
@@ -184,7 +208,8 @@ void FakeTechnoClass::__HandleDrainTarget(TechnoClass* pThis)
 
 	drainTarget->DrainingMe = 0;
 
-	if (HouseClass* targetHouse = drainTarget->Owner) {
+	if (HouseClass* targetHouse = drainTarget->Owner)
+	{
 		targetHouse->RecheckPower = 1;
 	}
 
@@ -200,8 +225,10 @@ void FakeTechnoClass::__HandleHiddenState(TechnoClass* pThis)
 	if (pType->IsDummy)
 		return;
 
-	if (const auto pBld = cast_to<BuildingClass*, false>(pThis)) {
-		if (BuildingExtContainer::Instance.Find(pBld)->LimboID != -1) {
+	if (const auto pBld = cast_to<BuildingClass*, false>(pThis))
+	{
+		if (BuildingExtContainer::Instance.Find(pBld)->LimboID != -1)
+		{
 			return;
 		}
 	}
@@ -216,8 +243,10 @@ void FakeTechnoClass::__HandleHiddenState(TechnoClass* pThis)
 		&& cell->IsCovered()
 		&& pThis->WhatAmI() != AircraftClass::AbsID;
 
-	if (!shouldBeHidden) {
-		if (auto& pHidden = pThis->BehindAnim) {
+	if (!shouldBeHidden)
+	{
+		if (auto& pHidden = pThis->BehindAnim)
+		{
 			pHidden->UnInit();
 			pHidden = 0;
 		}
@@ -240,8 +269,10 @@ void FakeTechnoClass::__ClearInvalidAllyTarget(TechnoClass* pThis)
 		return;
 	}
 
-	if (auto pObj = flag_cast_to<ObjectClass*>(pThis->Target)) {
-		if (!pObj->IsAlive) {
+	if (auto pObj = flag_cast_to<ObjectClass*>(pThis->Target))
+	{
+		if (!pObj->IsAlive)
+		{
 			pThis->SetTarget(0);
 			return;
 		}
@@ -251,12 +282,15 @@ void FakeTechnoClass::__ClearInvalidAllyTarget(TechnoClass* pThis)
 	bool isInOpenToppedTransport = false;
 
 	// Check if in open-topped transport with different owner
-	if (TechnoClass* transport = pThis->Transporter) {
+	if (TechnoClass* transport = pThis->Transporter)
+	{
 		TechnoTypeClass* transportType = transport->GetTechnoType();
 
-		if(TechnoTypeExtContainer::Instance.Find(pThis->Transporter->GetTechnoType())
-			->Passengers_SyncOwner.Get()){
-			if (transportType->OpenTopped && transport->MindControlledBy) {
+		if (TechnoTypeExtContainer::Instance.Find(pThis->Transporter->GetTechnoType())
+			->Passengers_SyncOwner.Get())
+		{
+			if (transportType->OpenTopped && transport->MindControlledBy)
+			{
 				controllingHouse = transport->MindControlledBy->Owner;
 				isInOpenToppedTransport = true;
 			}
@@ -266,14 +300,18 @@ void FakeTechnoClass::__ClearInvalidAllyTarget(TechnoClass* pThis)
 	const HouseClass* pOwner = !isInOpenToppedTransport ? pThis->Owner : controllingHouse;
 
 	// Check if player has control
-	if (pOwner->IsControlledByHuman()) {
+	if (pOwner->IsControlledByHuman())
+	{
 		return;
 	}
 
 	bool isTargetAlly = false;
-	if (const auto pTechTarget = flag_cast_to<ObjectClass*>(pThis->Target)) {
-		if (const auto pTargetHouse = pTechTarget->GetOwningHouse()) {
-			if (pOwner->IsAlliedWith(pTargetHouse)) {
+	if (const auto pTechTarget = flag_cast_to<ObjectClass*>(pThis->Target))
+	{
+		if (const auto pTargetHouse = pTechTarget->GetOwningHouse())
+		{
+			if (pOwner->IsAlliedWith(pTargetHouse))
+			{
 				isTargetAlly = true;
 			}
 		}
@@ -281,13 +319,15 @@ void FakeTechnoClass::__ClearInvalidAllyTarget(TechnoClass* pThis)
 
 	auto pType = pThis->GetTechnoType();
 
-	if (!pThis->Berzerk && pType->AttackFriendlies && isTargetAlly && TechnoTypeExtContainer::Instance.Find(pType)->AttackFriendlies_AutoAttack) {
+	if (!pThis->Berzerk && pType->AttackFriendlies && isTargetAlly && TechnoTypeExtContainer::Instance.Find(pType)->AttackFriendlies_AutoAttack)
+	{
 		return;
 	}
 
 	const bool IsNegDamage = (pThis->CombatDamage() < 0);
 
-	if(isTargetAlly != IsNegDamage) {
+	if (isTargetAlly != IsNegDamage)
+	{
 		// Check for special cases where ally targeting is allowed
 		const bool isInfantry = pThis->WhatAmI() == InfantryClass::AbsID;
 		const bool isTargetBuilding = pThis->Target->WhatAmI() == BuildingClass::AbsID;
@@ -297,12 +337,14 @@ void FakeTechnoClass::__ClearInvalidAllyTarget(TechnoClass* pThis)
 		// Check for electric assault weapon against powered buildings
 		bool canElectricAssault = false;
 		WeaponStruct* weapon = pThis->GetWeapon(1);
-		if (weapon->WeaponType && weapon->WeaponType->Warhead->ElectricAssault && isTargetBuilding) {
+		if (weapon->WeaponType && weapon->WeaponType->Warhead->ElectricAssault && isTargetBuilding)
+		{
 			canElectricAssault = ((BuildingClass*)pThis->Target)->Type->Overpowerable != 0;
 		}
 
 		// Clear target if not a valid ally target exception
-		if (!isEngineer && !canElectricAssault && !canOccupy && !pThis->Berzerk) {
+		if (!isEngineer && !canElectricAssault && !canOccupy && !pThis->Berzerk)
+		{
 			pThis->SetTarget(0);
 		}
 	}
@@ -310,11 +352,13 @@ void FakeTechnoClass::__ClearInvalidAllyTarget(TechnoClass* pThis)
 
 void FakeTechnoClass::__CheckTargetInRange(TechnoClass* pThis)
 {
-	if (!pThis->Target) {
+	if (!pThis->Target)
+	{
 		return;
 	}
 
-	if ((Unsorted::CurrentFrame() % 16) != 0) {
+	if ((Unsorted::CurrentFrame() % 16) != 0)
+	{
 		return;
 	}
 
@@ -324,14 +368,15 @@ void FakeTechnoClass::__CheckTargetInRange(TechnoClass* pThis)
 	RadioClass* radio = pThis->GetRadioContact();
 	const Mission mission = pThis->CurrentMission;
 
-	if (!radio || radio->WhatAmI() != BuildingClass::AbsID || radio->CurrentMission != Mission::Unload) {
-		if (mission != Mission::Capture && mission != Mission::Sabotage) {
+	if (!radio || radio->WhatAmI() != BuildingClass::AbsID || radio->CurrentMission != Mission::Unload)
+	{
+		if (mission != Mission::Capture && mission != Mission::Sabotage)
+		{
 			const int weaponIndex = pThis->SelectWeapon(pThis->Target);
 			const FireError threatResult = pThis->GetFireError(pThis->Target, weaponIndex, false);
 
-
-			if (threatResult == FireError::ILLEGAL || threatResult == FireError::CANT) {
-
+			if (threatResult == FireError::ILLEGAL || threatResult == FireError::CANT)
+			{
 				WeaponTypeClass* weapon = pThis->GetWeapon(weaponIndex)->WeaponType;
 				const bool is_firing_particles = weapon && (
 						(weapon->UseFireParticles && pThis->Sys.Fire)
@@ -339,18 +384,19 @@ void FakeTechnoClass::__CheckTargetInRange(TechnoClass* pThis)
 					|| (weapon->UseSparkParticles && pThis->Sys.Spark)
 					|| (weapon->IsSonic && pThis->Wave));
 
-				if (!is_firing_particles || threatResult == FireError::ILLEGAL || threatResult == FireError::CANT) {
+				if (!is_firing_particles || threatResult == FireError::ILLEGAL || threatResult == FireError::CANT)
+				{
 					pThis->SetTarget(nullptr);
 				}
 			}
 		}
 	}
-
 }
 
 void FakeTechnoClass::__HandleTurretRecoil(TechnoClass* pThis)
 {
-	if (pThis->InLimbo || !pThis->GetTechnoType()->TurretRecoil) {
+	if (pThis->InLimbo || !pThis->GetTechnoType()->TurretRecoil)
+	{
 		return;
 	}
 
@@ -362,15 +408,18 @@ void FakeTechnoClass::__HandleChargeTurret(TechnoClass* pThis)
 {
 	TechnoTypeClass* techType = pThis->GetTechnoType();
 
-	if (!techType->IsChargeTurret) {
+	if (!techType->IsChargeTurret)
+	{
 		return;
 	}
 
-	if (!techType->HasTurret() || techType->IsGattling) {
+	if (!techType->HasTurret() || techType->IsGattling)
+	{
 		return;
 	}
 
-	if (pThis->ROF <= 0) {
+	if (pThis->ROF <= 0)
+	{
 		pThis->CurrentTurretNumber = 0;
 		return;
 	}
@@ -396,18 +445,21 @@ void FakeTechnoClass::__HandleChargeTurret(TechnoClass* pThis)
 
 void FakeTechnoClass::__HandleDoorAndTimers(TechnoClass* pThis)
 {
-	if (pThis->UnloadTimer.HasFinished()) {
+	if (pThis->UnloadTimer.HasFinished())
+	{
 		pThis->UnloadTimer.Update();
 	}
 
-	if (pThis->unknown_bool_41E > 0) {
+	if (pThis->unknown_bool_41E > 0)
+	{
 		pThis->unknown_bool_41E--;
 	}
 }
 
 void FakeTechnoClass::__ClearTargetForInvalidMissions(TechnoClass* pThis)
 {
-	if (!pThis->Target || !pThis->ShouldLoseTargetNow) {
+	if (!pThis->Target || !pThis->ShouldLoseTargetNow)
+	{
 		return;
 	}
 
@@ -433,34 +485,40 @@ void FakeTechnoClass::__ClearTargetForInvalidMissions(TechnoClass* pThis)
 
 void FakeTechnoClass::__HandleTargetAcquisition(TechnoClass* pThis)
 {
-	if (!pThis->TargetingTimer.Expired()) {
+	if (!pThis->TargetingTimer.Expired())
+	{
 		return;
 	}
 	auto const
 		pRulesExt = RulesExtData::Instance();
 	auto const pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType());
 
-	if ((!pThis->Owner->IsControlledByHuman() || !pRulesExt->DistributeTargetingFrame_AIOnly) && pTypeExt->DistributeTargetingFrame.Get(pRulesExt->DistributeTargetingFrame)) {
+	if ((!pThis->Owner->IsControlledByHuman() || !pRulesExt->DistributeTargetingFrame_AIOnly) && pTypeExt->DistributeTargetingFrame.Get(pRulesExt->DistributeTargetingFrame))
+	{
 		auto const pExt = TechnoExtContainer::Instance.Find(pThis);
 
-		if (Unsorted::CurrentFrame % 16 != pExt->MyTargetingFrame) {
+		if (Unsorted::CurrentFrame % 16 != pExt->MyTargetingFrame)
+		{
 			return;
 		}
 	}
 
-	if (pThis->MegaMissionIsAttackMove()) {
+	if (pThis->MegaMissionIsAttackMove())
+	{
 		const bool skip = pRulesExt->ExpandAircraftMission
 			&& pThis->WhatAmI() == AbstractType::Aircraft
 			&& (!pThis->Ammo || !pThis->IsInAir());
 
-		if(!skip)
+		if (!skip)
 			pThis->UpdateAttackMove();
 
 		return;
 	}
 
-	if (auto pInf = cast_to<InfantryClass*, false>(pThis)) {
-		if (pInf->Type->Slaved && pInf->SlaveOwner) {
+	if (auto pInf = cast_to<InfantryClass*, false>(pThis))
+	{
+		if (pInf->Type->Slaved && pInf->SlaveOwner)
+		{
 			return;
 		}
 	}
@@ -470,15 +528,17 @@ void FakeTechnoClass::__HandleTargetAcquisition(TechnoClass* pThis)
 
 	Mission mission = pThis->CurrentMission;
 	if ((mission == Mission::Move || mission == Mission::Harvest || mission == Mission::Guard)
-		&& pThis->TechnoClass_709290()) {
-
+		&& pThis->TechnoClass_709290())
+	{
 		AbstractClass* oldTarget = pThis->Target;
 		pThis->__creationframe_4FC = Unsorted::CurrentFrame();
 
 		CoordStruct centerCoord = pThis->GetCoords();
 
-		if (pThis->TargetAndEstimateDamage(&centerCoord, ThreatType::Range)) {
-			if (pThis->Target != oldTarget) {
+		if (pThis->TargetAndEstimateDamage(&centerCoord, ThreatType::Range))
+		{
+			if (pThis->Target != oldTarget)
+			{
 				pThis->ShouldLoseTargetNow = 1;
 			}
 		}
@@ -489,18 +549,21 @@ void FakeTechnoClass::__HandleAttachedBomb(TechnoClass* pThis)
 {
 	BombClass* bomb = pThis->AttachedBomb;
 
-	if (!bomb || pThis->InLimbo) {
+	if (!bomb || pThis->InLimbo)
+	{
 		return;
 	}
 
-	if (bomb->TimeToExplode()) {
+	if (bomb->TimeToExplode())
+	{
 		bomb->Detonate();
 	}
 }
 
 void FakeTechnoClass::__HandleManagers(TechnoClass* pThis)
 {
-	if (auto pSlave  = pThis->SlaveManager) {
+	if (auto pSlave = pThis->SlaveManager)
+	{
 		pSlave->Update();
 	}
 
@@ -512,12 +575,14 @@ void FakeTechnoClass::__HandleSelfHealing(TechnoClass* pThis)
 	const auto pType = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType());
 
 	// prevent crashing and sinking technos from self-healing
-	if (pType->NoExtraSelfHealOrRepair || pThis->InLimbo || pThis->IsCrashing || pThis->IsSinking || TechnoExtContainer::Instance.Find(pThis)->Is_DriverKilled) {
+	if (pType->NoExtraSelfHealOrRepair || pThis->InLimbo || pThis->IsCrashing || pThis->IsSinking || TechnoExtContainer::Instance.Find(pThis)->Is_DriverKilled)
+	{
 		return;
 	}
 
 	const auto nUnit = cast_to<UnitClass*, false>(pThis);
-	if (nUnit && nUnit->DeathFrameCounter > 0) {
+	if (nUnit && nUnit->DeathFrameCounter > 0)
+	{
 		return;
 	}
 
@@ -532,14 +597,14 @@ void FakeTechnoClass::__HandleSelfHealing(TechnoClass* pThis)
 	//this one take care of the visual stuffs
 	//if the techno health back to normal
 	TechnoExtData::ApplyGainedSelfHeal(pThis, wasDamaged);
-
 }
 
 void FakeTechnoClass::__HandleCloaking(TechnoClass* pThis)
 {
 	pThis->UpdateCloak();
 
-	if (auto pSpawn = pThis->SpawnManager) {
+	if (auto pSpawn = pThis->SpawnManager)
+	{
 		pSpawn->Update();
 	}
 
@@ -547,15 +612,19 @@ void FakeTechnoClass::__HandleCloaking(TechnoClass* pThis)
 	CellClass* cell = MapClass::Instance->GetCellAt(centerCoord);
 
 	// Handle uncloaking in cloaked cells
-	if (pThis->CloakState == CloakState::Uncloaking) {
-		if (cell->CellClass_cloak_4870B0(pThis->Owner->ArrayIndex)) {
+	if (pThis->CloakState == CloakState::Uncloaking)
+	{
+		if (cell->CellClass_cloak_4870B0(pThis->Owner->ArrayIndex))
+		{
 			pThis->Sensed();
 		}
 	}
 
 	// Handle cloaking in non-cloaked cells
-	if (pThis->CloakState == CloakState::Cloaked) {
-		if (!cell->CellClass_cloak_4870B0(pThis->Owner->ArrayIndex)) {
+	if (pThis->CloakState == CloakState::Cloaked)
+	{
+		if (!cell->CellClass_cloak_4870B0(pThis->Owner->ArrayIndex))
+		{
 			pThis->Sensed();
 		}
 	}
@@ -563,7 +632,8 @@ void FakeTechnoClass::__HandleCloaking(TechnoClass* pThis)
 
 void FakeTechnoClass::__ClearTargetIfNoDamage(TechnoClass* pThis)
 {
-	if (!pThis->Target) {
+	if (!pThis->Target)
+	{
 		return;
 	}
 
@@ -582,8 +652,10 @@ void FakeTechnoClass::__ClearTargetIfNoDamage(TechnoClass* pThis)
 		||
 		// Multiplayer: Human player units clear target if no damage
 		(!IsCampaign && IsHumanControlled)
-		){
-		if (pThis->CombatDamage() < 0) {
+		)
+	{
+		if (pThis->CombatDamage() < 0)
+		{
 			pThis->SetTarget(0);
 			return;
 		}
@@ -595,26 +667,33 @@ void FakeTechnoClass::__ClearAircraftTarget(TechnoClass* pThis)
 	auto target = cast_to<AircraftClass*>(pThis->Target);
 
 	// Only units need special handling for aircraft targets
-	if (!target || pThis->WhatAmI() != UnitClass::AbsID) {
+	if (!target || pThis->WhatAmI() != UnitClass::AbsID)
+	{
 		return;
 	}
 
-	if (pThis->CombatDamage() > 0) {
+	if (pThis->CombatDamage() > 0)
+	{
 		return;
 	}
 
 	// Clear target if aircraft is in air or on a building
 	bool shouldClearTarget = false;
 
-	if (target->GetHeight() > 0) {
+	if (target->GetHeight() > 0)
+	{
 		shouldClearTarget = true;
-	} else {
-		if (target->GetCell()->GetBuilding()) {
+	}
+	else
+	{
+		if (target->GetCell()->GetBuilding())
+		{
 			shouldClearTarget = true;
 		}
 	}
 
-	if (shouldClearTarget) {
+	if (shouldClearTarget)
+	{
 		pThis->SetTarget(0);
 	}
 }
@@ -622,12 +701,14 @@ void FakeTechnoClass::__ClearAircraftTarget(TechnoClass* pThis)
 void FakeTechnoClass::__CheckTargetReachability(TechnoClass* pThis)
 {
 	// Aircraft can always reach their targets
-	if (pThis->WhatAmI() == AircraftClass::AbsID || !pThis->Target) {
+	if (pThis->WhatAmI() == AircraftClass::AbsID || !pThis->Target)
+	{
 		return;
 	}
 
 	// Units in teams have different targeting logic
-	if (pThis->BelongsToATeam()) {
+	if (pThis->BelongsToATeam())
+	{
 		return;
 	}
 
@@ -640,14 +721,16 @@ void FakeTechnoClass::__CheckTargetReachability(TechnoClass* pThis)
 	if (!pThis->IsInSameZoneAs(pThis->Target) || (pThis->InOpenToppedTransport && pThis->Transporter))
 	{
 		// Try to approach target if possible
-		if (foot) {
+		if (foot)
+		{
 			foot->ApproachTarget(0);
 		}
 
 		// If still can't navigate to target, check if in weapon range
-		if (!foot || !foot->Destination) {
-			if (!pThis->IsCloseEnough(pThis->Target, pThis->SelectWeapon(pThis->Target))) {
-
+		if (!foot || !foot->Destination)
+		{
+			if (!pThis->IsCloseEnough(pThis->Target, pThis->SelectWeapon(pThis->Target)))
+			{
 				pThis->SetTarget(0);
 			}
 		}
@@ -659,7 +742,8 @@ void FakeTechnoClass::__UpdateAnimationStage(TechnoClass* pThis)
 	auto const pExt = TechnoExtContainer::Instance.Find(pThis);
 
 	// Buildings don't use this animation system
-	if (pThis->WhatAmI() == BuildingClass::AbsID || pExt->DelayedFireSequencePaused) {
+	if (pThis->WhatAmI() == BuildingClass::AbsID || pExt->DelayedFireSequencePaused)
+	{
 		return;
 	}
 
@@ -672,7 +756,8 @@ void FakeTechnoClass::__HandleFlashing(TechnoClass* pThis)
 	bool wasFlashingVisible = (oldFlashCount & 2) == 2;
 
 	// Process flash state
-	if (pThis->Flashing.Update()) {
+	if (pThis->Flashing.Update())
+	{
 		pThis->Mark(MarkType::Change);
 	}
 
@@ -681,7 +766,6 @@ void FakeTechnoClass::__HandleFlashing(TechnoClass* pThis)
 		oldFlashCount != pThis->Flashing.DurationRemaining &&
 		pThis->WhatAmI() == BuildingClass::AbsID)
 	{
-
 		const bool isFlashingVisible = (pThis->Flashing.DurationRemaining & 2) == 2;
 
 		// Only redraw if visibility changed
@@ -703,13 +787,11 @@ void FakeTechnoClass::__HandleDamageSparks(TechnoClass* pThis)
 
 		if (!(_HPRatio >= RulesClass::Instance->ConditionYellow || pThis->GetHeight() <= -10))
 		{
-
 			auto pType = pThis->GetTechnoType();
 			const auto pExt = TechnoTypeExtContainer::Instance.Find(pType);
 
 			if (pExt->DamageSparks.Get(pType->DamageSparks))
 			{
-
 				StackVector<ParticleSystemTypeClass*, 0x25> Systems {};
 
 				if (auto it = pExt->ParticleSystems_DamageSparks.GetElements(pType->DamageParticleSystems))
@@ -727,7 +809,6 @@ void FakeTechnoClass::__HandleDamageSparks(TechnoClass* pThis)
 
 				if (!Systems->empty())
 				{
-
 					const double _probability = _HPRatio >= RulesClass::Instance->ConditionRed ?
 						RulesClass::Instance->ConditionYellowSparkingProbability : RulesClass::Instance->ConditionRedSparkingProbability;
 					const auto _rand = ScenarioClass::Instance->Random.RandomDouble();
@@ -774,7 +855,8 @@ void FakeTechnoClass::__HandleEMPEffect(TechnoClass* pThis)
 void __fastcall FakeTechnoClass::__AI(TechnoClass* pThis)
 {
 	// Clear moused-over flag
-	if (pThis->IsMouseHovering) {
+	if (pThis->IsMouseHovering)
+	{
 		pThis->IsMouseHovering = 0;
 	}
 
@@ -786,7 +868,8 @@ void __fastcall FakeTechnoClass::__AI(TechnoClass* pThis)
 	if (!pThis->IsAlive)
 		return;
 
-	if (!IsBuilding) {
+	if (!IsBuilding)
+	{
 		pExt->UpdateLaserTrails();
 		TrailsManager::AI((FootClass*)pThis);
 	}
@@ -801,7 +884,8 @@ void __fastcall FakeTechnoClass::__AI(TechnoClass* pThis)
 	auto const pType = pThis->GetTechnoType();
 	bool IsInLimboDelivered = false;
 
-	if (IsBuilding) {
+	if (IsBuilding)
+	{
 		IsInLimboDelivered = BuildingExtContainer::Instance.Find(static_cast<BuildingClass*>(pThis))->LimboID >= 0;
 	}
 
@@ -913,11 +997,13 @@ void __fastcall FakeTechnoClass::__AI(TechnoClass* pThis)
 		return true;
 	});
 
-	if (auto& pDSState = pExt->DamageSelfState) {
+	if (auto& pDSState = pExt->DamageSelfState)
+	{
 		pDSState->TechnoClass_Update_DamageSelf(pThis);
 	}
 
-	if (!pThis->IsAlive) {
+	if (!pThis->IsAlive)
+	{
 		return;
 	}
 
@@ -930,9 +1016,11 @@ void __fastcall FakeTechnoClass::__AI(TechnoClass* pThis)
 	__HandleDrainTarget(pThis);
 
 	// Handle voxel rocking for vehicles
-	if (!pThis->InLimbo && pThis->IsVoxel()) {
+	if (!pThis->InLimbo && pThis->IsVoxel())
+	{
 		pThis->RockingAI();
-		if (!pThis->IsAlive) {
+		if (!pThis->IsAlive)
+		{
 			return;
 		}
 	}
@@ -951,7 +1039,7 @@ void __fastcall FakeTechnoClass::__AI(TechnoClass* pThis)
 
 	// Mission and target management
 	__ClearTargetForInvalidMissions(pThis);
-	  
+
 	++pThis->MissionAccumulateTime;
 	pThis->MissionClass::Update();
 
@@ -959,14 +1047,16 @@ void __fastcall FakeTechnoClass::__AI(TechnoClass* pThis)
 	__HandleAttachedBomb(pThis);
 	__HandleManagers(pThis);
 
-	if (!pThis->IsAlive) {
+	if (!pThis->IsAlive)
+	{
 		return;
 	}
 
 	// Health and healing
 	__HandleSelfHealing(pThis);
 
-	if (!pThis->IsAlive) {
+	if (!pThis->IsAlive)
+	{
 		return;
 	}
 

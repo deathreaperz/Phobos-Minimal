@@ -32,7 +32,6 @@ const wchar_t* NextIdleHarvesterCommandClass::GetUIDescription() const
 
 void NextIdleHarvesterCommandClass::Execute(WWKey eInput) const
 {
-
 	MapClass::Instance->SetTogglePowerMode(0);
 	MapClass::Instance->SetWaypointMode(0, false);
 	MapClass::Instance->SetRepairMode(0);
@@ -68,7 +67,9 @@ void NextIdleHarvesterCommandClass::Execute(WWKey eInput) const
 		pObjectToSelect->Select();
 		MapClass::Instance->CenterMap();
 		MapClass::Instance->MarkNeedsRedraw(1);
-	} else {
+	}
+	else
+	{
 		GeneralUtils::PrintMessage(StringTable::FetchString("MSG:NothingSelected"));
 	}
 }

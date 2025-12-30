@@ -34,74 +34,74 @@
 
 #include <Zycore/Types.h>
 
-// TODO:
+ // TODO:
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* ============================================================================================== */
-/* Macros                                                                                         */
-/* ============================================================================================== */
+	/* ============================================================================================== */
+	/* Macros                                                                                         */
+	/* ============================================================================================== */
 
-/* ---------------------------------------------------------------------------------------------- */
-/* Constants                                                                                      */
-/* ---------------------------------------------------------------------------------------------- */
+	/* ---------------------------------------------------------------------------------------------- */
+	/* Constants                                                                                      */
+	/* ---------------------------------------------------------------------------------------------- */
 
-/**
- * A macro that defines the zycore version.
- */
+	/**
+	 * A macro that defines the zycore version.
+	 */
 #define ZYCORE_VERSION 0x0001000500020000ULL
 
-/* ---------------------------------------------------------------------------------------------- */
-/* Helper macros                                                                                  */
-/* ---------------------------------------------------------------------------------------------- */
+	 /* ---------------------------------------------------------------------------------------------- */
+	 /* Helper macros                                                                                  */
+	 /* ---------------------------------------------------------------------------------------------- */
 
-/**
- * Extracts the major-part of the zycore version.
- *
- * @param   version The zycore version value
- */
+	 /**
+	  * Extracts the major-part of the zycore version.
+	  *
+	  * @param   version The zycore version value
+	  */
 #define ZYCORE_VERSION_MAJOR(version) ((version & 0xFFFF000000000000) >> 48)
 
-/**
- * Extracts the minor-part of the zycore version.
- *
- * @param   version The zycore version value
- */
+	  /**
+	   * Extracts the minor-part of the zycore version.
+	   *
+	   * @param   version The zycore version value
+	   */
 #define ZYCORE_VERSION_MINOR(version) ((version & 0x0000FFFF00000000) >> 32)
 
-/**
- * Extracts the patch-part of the zycore version.
- *
- * @param   version The zycore version value
- */
+	   /**
+		* Extracts the patch-part of the zycore version.
+		*
+		* @param   version The zycore version value
+		*/
 #define ZYCORE_VERSION_PATCH(version) ((version & 0x00000000FFFF0000) >> 16)
 
-/**
- * Extracts the build-part of the zycore version.
- *
- * @param   version The zycore version value
- */
+		/**
+		 * Extracts the build-part of the zycore version.
+		 *
+		 * @param   version The zycore version value
+		 */
 #define ZYCORE_VERSION_BUILD(version) (version & 0x000000000000FFFF)
 
-/* ---------------------------------------------------------------------------------------------- */
+		 /* ---------------------------------------------------------------------------------------------- */
 
-/* ============================================================================================== */
-/* Exported functions                                                                             */
-/* ============================================================================================== */
+		 /* ============================================================================================== */
+		 /* Exported functions                                                                             */
+		 /* ============================================================================================== */
 
-/**
- * Returns the zycore version.
- *
- * @return  The zycore version.
- *
- * Use the macros provided in this file to extract the major, minor, patch and build part from the
- * returned version value.
- */
-ZYCORE_EXPORT ZyanU64 ZycoreGetVersion(void);
+		 /**
+		  * Returns the zycore version.
+		  *
+		  * @return  The zycore version.
+		  *
+		  * Use the macros provided in this file to extract the major, minor, patch and build part from the
+		  * returned version value.
+		  */
+	ZYCORE_EXPORT ZyanU64 ZycoreGetVersion(void);
 
-/* ============================================================================================== */
+	/* ============================================================================================== */
 
 #ifdef __cplusplus
 }

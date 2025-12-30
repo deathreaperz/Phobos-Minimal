@@ -9,7 +9,6 @@ class PhobosCommandClass : public CommandClass
 {
 protected:
 	bool CheckDebugDeactivated() const;
-
 };
 
 #define CATEGORY_TEAM StringTable::FetchString(GameStrings::TXT_TEAM())

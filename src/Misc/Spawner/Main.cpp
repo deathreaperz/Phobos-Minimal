@@ -133,8 +133,7 @@ SpawnerMain::GameConfigs::GameConfigs()
 	// Custom Mixes
 	, PreloadMixes {}
 	, PostloadMixes {}
-{
-}
+{ }
 
 #pragma endregion
 
@@ -147,7 +146,8 @@ FORCEDINLINE void ReadListFromSection(CCINIClass* pINI, const char* pSection, st
 	{
 		char buffer[0x80];
 
-		if (pINI->ReadString(pSection, pINI->GetKeyName(pSection, i), Phobos::readDefval, buffer) > 0) {
+		if (pINI->ReadString(pSection, pINI->GetKeyName(pSection, i), Phobos::readDefval, buffer) > 0)
+		{
 			strings.emplace_back(buffer);
 		}
 	}
@@ -169,15 +169,17 @@ void SpawnerMain::CmdLineParse(char* pArg)
 	}
 }
 
-void SpawnerMain::PrintInitializeLog() {
+void SpawnerMain::PrintInitializeLog()
+{
 	Debug::LogInfo("Initialized " SPAWNER_PRODUCT_NAME "");
 }
 
 void SpawnerMain::LoadConfigurations()
 {
-	if (auto pINI = &CCINIClass::INI_RA2MD) {
-
-		if (pINI->GetSection(GameStrings::Options())) {
+	if (auto pINI = &CCINIClass::INI_RA2MD)
+	{
+		if (pINI->GetSection(GameStrings::Options()))
+		{
 			auto pMainConfigs = SpawnerMain::GetMainConfigs();
 			pMainConfigs->MPDebug = pINI->ReadBool(GameStrings::Options(), "MPDEBUG", pMainConfigs->MPDebug);
 			pMainConfigs->SingleProcAffinity = pINI->ReadBool(GameStrings::Options(), "SingleProcAffinity", pMainConfigs->SingleProcAffinity);
@@ -188,10 +190,10 @@ void SpawnerMain::LoadConfigurations()
 			pMainConfigs->SpeedControl = pINI->ReadBool(GameStrings::Options(), "SpeedControl", pMainConfigs->SpeedControl);
 			pMainConfigs->AllowTaunts = pINI->ReadBool(GameStrings::Options(), "AllowTaunts", pMainConfigs->AllowTaunts);
 			pMainConfigs->AllowChat = pINI->ReadBool(GameStrings::Options(), "AllowChat", pMainConfigs->AllowChat);
-
 		}
 
-		if (pINI->GetSection(GameStrings::Video())) {
+		if (pINI->GetSection(GameStrings::Video()))
+		{
 			auto pMainConfigs = SpawnerMain::GetMainConfigs();
 			pMainConfigs->WindowedMode = pINI->ReadBool(GameStrings::Video(), "Video.Windowed", pMainConfigs->WindowedMode);
 			pMainConfigs->NoWindowFrame = pINI->ReadBool(GameStrings::Video(), "NoWindowFrame", pMainConfigs->NoWindowFrame);
@@ -222,7 +224,8 @@ void SpawnerMain::ApplyStaticOptions()
 		Patch::Apply_TYPED<DWORD>(0x542DC2, { 392 });
 	}
 
-	if (pMainConfigs->SingleProcAffinity) {
+	if (pMainConfigs->SingleProcAffinity)
+	{
 		DWORD_PTR const processAffinityMask = 1;
 		SetProcessAffinityMask(Patch::CurrentProcess, processAffinityMask);
 	}
@@ -231,7 +234,8 @@ void SpawnerMain::ApplyStaticOptions()
 	{
 		GameOptionsClass::WindowedMode = true;
 
-		if (pMainConfigs->NoWindowFrame) {
+		if (pMainConfigs->NoWindowFrame)
+		{
 			Patch::Apply_RAW(0x777CC0, // CreateMainWindow
 			{
 				0x68, 0x00, 0x00, 0x0A, 0x86 // push    0x860A0000; vs 0x02CA0000
@@ -244,14 +248,16 @@ void SpawnerMain::ApplyStaticOptions()
 		Game::SpeedControl = true;
 	}
 
-	if(SessionClass::Instance->GameMode == GameMode::LAN)
+	if (SessionClass::Instance->GameMode == GameMode::LAN)
 		Game::LANTaunts = pMainConfigs->AllowTaunts;
-	else if(SessionClass::Instance->GameMode == GameMode::Internet)
-		Game::WOLTaunts =  pMainConfigs->AllowTaunts;
+	else if (SessionClass::Instance->GameMode == GameMode::Internet)
+		Game::WOLTaunts = pMainConfigs->AllowTaunts;
 
 	// Set 3rd party ddraw.dll options
-	for (auto& dllData : Patch::ModuleDatas) {
-		if (IS_SAME_STR_I(dllData.ModuleName.c_str(), "ddraw.dll")) {
+	for (auto& dllData : Patch::ModuleDatas)
+	{
+		if (IS_SAME_STR_I(dllData.ModuleName.c_str(), "ddraw.dll"))
+		{
 			if (bool* gameHandlesClose = (bool*)GetProcAddress(dllData.Handle, "GameHandlesClose"))
 				*gameHandlesClose = !pMainConfigs->DDrawHandlesClose;
 
@@ -308,7 +314,8 @@ COMPILETIMEEVAL const char* AlliancesTagArray[8] = {
 	"HouseAllyEight"
 };
 
-class CCINIClassDummy : public CCINIClass {
+class CCINIClassDummy : public CCINIClass
+{
 public:
 
 	int NOINLINE ReadString_WithoutAresHook(const char* pSection, const char* pKey, const char* pDefault, char* pBuffer, size_t szBufferSize)
@@ -402,7 +409,8 @@ void SpawnerMain::GameConfigs::LoadFromINIFile(CCINIClass* pINI)
 		TunnelId = pINI->ReadInteger(GameStrings::Settings(), "Port", TunnelId);
 		ListenPort = pINI->ReadInteger(GameStrings::Settings(), "Port", ListenPort);
 
-		if (pINI->GetSection(GameStrings::Tunnel())) {
+		if (pINI->GetSection(GameStrings::Tunnel()))
+		{
 			pINI->ReadString(GameStrings::Tunnel(), "Ip", TunnelIp, TunnelIp, sizeof(TunnelIp));
 			TunnelPort = pINI->ReadInteger(GameStrings::Tunnel(), "Port", TunnelPort);
 		}
@@ -425,7 +433,7 @@ void SpawnerMain::GameConfigs::LoadFromINIFile(CCINIClass* pINI)
 	ContinueWithoutHumans = pINI->ReadBool(GameStrings::Settings(), "ContinueWithoutHumans", ContinueWithoutHumans);
 	DefeatedBecomesObserver = pINI->ReadBool(GameStrings::Settings(), "DefeatedBecomesObserver", DefeatedBecomesObserver);
 	Observer_ShowAIOnSidebar = pINI->ReadBool(GameStrings::Settings(), "Observer.ShowAIOnSidebar", Observer_ShowAIOnSidebar);
-	Observer_ShowMultiplayPassive = pINI->ReadBool(GameStrings::Settings(), "Observer.ShowMultiplayPassiveOnSidebar",  Phobos::Otamaa::IsAdmin  ? true : Observer_ShowMultiplayPassive);
+	Observer_ShowMultiplayPassive = pINI->ReadBool(GameStrings::Settings(), "Observer.ShowMultiplayPassiveOnSidebar", Phobos::Otamaa::IsAdmin ? true : Observer_ShowMultiplayPassive);
 	// Custom Mixes
 	ReadListFromSection(pINI, "PreloadMixes", PreloadMixes);
 	ReadListFromSection(pINI, "PostloadMixes", PostloadMixes);
@@ -482,17 +490,18 @@ void SpawnerMain::GameConfigs::HouseConfig::LoadFromINIFile(CCINIClass* pINI, in
 	}
 }
 
-void SpawnerMain::GameConfigs::Init() {
-
+void SpawnerMain::GameConfigs::Init()
+{
 	if (!SpawnerMain::Configs::Enabled)
 		return;
 
 	//SpawnerMain::GameConfigs::m_Ptr = std::make_unique<SpawnerMain::GameConfigs>();
 
 	GameConfig file { "SPAWN.INI" };
-	file.OpenINIAction([&file](CCINIClass* pFile) {
-		Debug::LogInfo("SpawnerMain::GameConfigs::Init Reading file {}", file.filename());
-		SpawnerMain::GameConfigs::m_Ptr.LoadFromINIFile(pFile);
+	file.OpenINIAction([&file](CCINIClass* pFile)
+ {
+	 Debug::LogInfo("SpawnerMain::GameConfigs::Init Reading file {}", file.filename());
+	 SpawnerMain::GameConfigs::m_Ptr.LoadFromINIFile(pFile);
 	});
 
 	Patch::Apply_CALL(0x48CDD3, SpawnerMain::GameConfigs::StartGame); // Main_Game
@@ -536,8 +545,8 @@ void SpawnerMain::GameConfigs::Init() {
 	Patch::Apply_LJMP(0x699AE0, 0x69A1B2); // SessionClass::Read_Scenario_Descriptions
 }
 
-bool SpawnerMain::GameConfigs::StartGame() {
-
+bool SpawnerMain::GameConfigs::StartGame()
+{
 	if (SpawnerMain::Configs::Active)
 		return 0;
 
@@ -574,7 +583,8 @@ bool SpawnerMain::GameConfigs::StartGame() {
 	return result;
 }
 
-void SpawnerMain::GameConfigs::AssignHouses() {
+void SpawnerMain::GameConfigs::AssignHouses()
+{
 	ScenarioClass::AssignHouses();
 
 	const int count = MinImpl(HouseClass::Array->Count, (int)std::size(SpawnerMain::GameConfigs::m_Ptr.Houses));
@@ -587,7 +597,7 @@ void SpawnerMain::GameConfigs::AssignHouses() {
 
 		const auto pHousesConfig = &SpawnerMain::GameConfigs::m_Ptr.Houses[indexOfHouseArray];
 		const int nSpawnLocations = pHousesConfig->SpawnLocations;
-		const bool isObserver =pHouse->IsHumanPlayer && pHousesConfig->IsObserver;
+		const bool isObserver = pHouse->IsHumanPlayer && pHousesConfig->IsObserver;
 
 		// Set Alliances
 		for (char i = 0; i < (char)std::size(pHousesConfig->Alliances); ++i)
@@ -624,7 +634,7 @@ void SpawnerMain::GameConfigs::AssignHouses() {
 		if (!isObserver)
 		{
 			pHouse->StartingPoint = (nSpawnLocations < 0)
-			? -2 : std::clamp(nSpawnLocations, 0, 7);
+				? -2 : std::clamp(nSpawnLocations, 0, 7);
 		}
 		else
 		{
@@ -653,7 +663,8 @@ void SpawnerMain::GameConfigs::AssignHouses() {
 	}
 }
 
-bool SpawnerMain::GameConfigs::Reconcile_Players() {
+bool SpawnerMain::GameConfigs::Reconcile_Players()
+{
 	int i {};
 	bool found {};
 	int house {};
@@ -738,22 +749,26 @@ bool SpawnerMain::GameConfigs::Reconcile_Players() {
 	return SessionClass::Instance->MPlayerCount == players.Count;
 }
 
-void SpawnerMain::GameConfigs::RespondToSaveGame(EventClass* event) {
+void SpawnerMain::GameConfigs::RespondToSaveGame(EventClass* event)
+{
 	SpawnerMain::Configs::DoSave = true;
 }
 
-void Print_Saving_Game_Message2() {
+void Print_Saving_Game_Message2()
+{
 	const int message_delay = (int)(RulesClass::Instance->MessageDelay * 900);
 	auto str = StringTable::TryFetchStringOrReturnDefaultIfMissing("TXT_AUTOSAVE_MESSAGE", L"Saving game...");
 	MessageListClass::Instance->AddMessage(nullptr, 0, str, 4, TextPrintType::Point6Grad | TextPrintType::UseGradPal | TextPrintType::FullShadow, message_delay, false);
 	// Force a redraw so that our message gets printed.
-	if (Game::SpecialDialog == 0) {
+	if (Game::SpecialDialog == 0)
+	{
 		MapClass::Instance->MarkNeedsRedraw(2);
 		MapClass::Instance->Render();
 	}
 }
 
-void SpawnerMain::GameConfigs::After_Main_Loop() {
+void SpawnerMain::GameConfigs::After_Main_Loop()
+{
 	auto pConfig = &GameConfigs::m_Ptr;
 
 	const bool doSaveCampaign = SessionClass::IsSingleplayer() && pConfig->AutoSaveCount > 0 && pConfig->AutoSaveInterval > 0;
@@ -767,29 +782,29 @@ void SpawnerMain::GameConfigs::After_Main_Loop() {
 	if (SpawnerMain::Configs::DoSave)
 	{
 		auto PrintMessage = [](const wchar_t* pMessage)
-		{
-			MessageListClass::Instance->PrintMessage(
-				pMessage,
-				RulesClass::Instance->MessageDelay,
-				HouseClass::CurrentPlayer->ColorSchemeIndex,
-				/* bSilent: */ true
-			);
-
-			// Force a redraw so that our message gets printed.
-			if (Game::SpecialDialog == 0)
 			{
-				MapClass::Instance->MarkNeedsRedraw(2);
-				MapClass::Instance->Render();
-			}
-		};
+				MessageListClass::Instance->PrintMessage(
+					pMessage,
+					RulesClass::Instance->MessageDelay,
+					HouseClass::CurrentPlayer->ColorSchemeIndex,
+					/* bSilent: */ true
+				);
+
+				// Force a redraw so that our message gets printed.
+				if (Game::SpecialDialog == 0)
+				{
+					MapClass::Instance->MarkNeedsRedraw(2);
+					MapClass::Instance->Render();
+				}
+			};
 
 		auto SaveGame = [PrintMessage](const char* fName, const wchar_t* description)
-		{
-			if (ScenarioClass::SaveGame(fName, description))
-				PrintMessage(StringTable::FetchString(GameStrings::TXT_GAME_WAS_SAVED));
-			else
-				PrintMessage(StringTable::FetchString(GameStrings::TXT_ERROR_SAVING_GAME));
-		};
+			{
+				if (ScenarioClass::SaveGame(fName, description))
+					PrintMessage(StringTable::FetchString(GameStrings::TXT_GAME_WAS_SAVED));
+				else
+					PrintMessage(StringTable::FetchString(GameStrings::TXT_ERROR_SAVING_GAME));
+			};
 
 		// Send the message.
 		PrintMessage(StringTable::FetchString(GameStrings::TXT_SAVING_GAME));
@@ -857,7 +872,8 @@ void SpawnerMain::GameConfigs::After_Main_Loop() {
 	}
 }
 
-bool SpawnerMain::GameConfigs::StartScenario(const char* pScenarioName) {
+bool SpawnerMain::GameConfigs::StartScenario(const char* pScenarioName)
+{
 	if (pScenarioName[0] == 0 && !SpawnerMain::GameConfigs::m_Ptr.LoadSaveGame)
 	{
 		Debug::LogInfo("[Spawner] Failed Read Scenario [{}]", pScenarioName);
@@ -974,7 +990,7 @@ bool SpawnerMain::GameConfigs::StartScenario(const char* pScenarioName) {
 	{ // Set SessionType
 		if (SpawnerMain::GameConfigs::m_Ptr.IsCampaign)
 			pSession->GameMode = GameMode::Campaign;
-		else if (Game::PlayerCount > 1|| SpawnerMain::GameConfigs::m_Ptr.ForceMultiplayer)
+		else if (Game::PlayerCount > 1 || SpawnerMain::GameConfigs::m_Ptr.ForceMultiplayer)
 			pSession->GameMode = GameMode::Internet; // HACK: will be set to LAN later
 		else
 			pSession->GameMode = GameMode::Skirmish;
@@ -1055,8 +1071,8 @@ bool SpawnerMain::GameConfigs::StartScenario(const char* pScenarioName) {
 
 //#pragma optimize("", on )
 
-bool SpawnerMain::GameConfigs::LoadSavedGame(const char* saveGameName) {
-
+bool SpawnerMain::GameConfigs::LoadSavedGame(const char* saveGameName)
+{
 	// for some reason beacons are only inited on scenario init, which doesn't happen on load
 	//BeaconManagerClass::Instance->LoadArt();
 
@@ -1075,7 +1091,8 @@ bool SpawnerMain::GameConfigs::LoadSavedGame(const char* saveGameName) {
 	return true;
 }
 
-void SpawnerMain::GameConfigs::InitNetwork() {
+void SpawnerMain::GameConfigs::InitNetwork()
+{
 	Tunnel::Id = htons((u_short)SpawnerMain::GameConfigs::m_Ptr.TunnelId);
 	Tunnel::Ip = inet_addr(SpawnerMain::GameConfigs::m_Ptr.TunnelIp);
 	Tunnel::Port = htons((u_short)SpawnerMain::GameConfigs::m_Ptr.TunnelPort);
@@ -1128,8 +1145,8 @@ void SpawnerMain::GameConfigs::InitNetwork() {
 
 	if (SpawnerMain::GameConfigs::m_Ptr.QuickMatch)
 	{
-		Game::EnableMPDebug     = false;
-		Game::DrawMPDebugStats  = false;
+		Game::EnableMPDebug = false;
+		Game::DrawMPDebugStats = false;
 		Game::EnableMPSyncDebug = false;
 	}
 
@@ -1148,14 +1165,16 @@ void SpawnerMain::GameConfigs::LoadSidesStuff()
 		pItem->LoadFromINI(pINI);
 }
 
-ASMJIT_PATCH(0x6BD7CB, WinMain_SpawnerInit, 0x5) {
+ASMJIT_PATCH(0x6BD7CB, WinMain_SpawnerInit, 0x5)
+{
 	SpawnerMain::GameConfigs::Init();
 	return 0x0;
 }
 
 // Display UIGameMode if is set
 // Otherwise use mode name from MPModesMD.ini
-ASMJIT_PATCH(0x65812E, RadarClass_DiplomacyDialog_UIGameMode, 0x6) {
+ASMJIT_PATCH(0x65812E, RadarClass_DiplomacyDialog_UIGameMode, 0x6)
+{
 	enum { Show = 0x65813E, DontShow = 0x65814D };
 
 	if (SpawnerMain::Configs::Enabled && SpawnerMain::GameConfigs::m_Ptr.UIGameMode[0])
@@ -1171,7 +1190,6 @@ ASMJIT_PATCH(0x65812E, RadarClass_DiplomacyDialog_UIGameMode, 0x6) {
 	return 0;
 }
 
-
 // ASMJIT_PATCH(0x689669, ScenarioClass_Load_Suffix_Spawner, 0x6) {
 // 	if (SpawnerMain::Configs::Enabled)
 // 		SpawnerMain::GameConfigs::m_Ptr.UIGameMode[0] = 0;
@@ -1185,7 +1203,8 @@ namespace MPlayerDefeated
 	HouseClass* pThis = nullptr;
 }
 
-ASMJIT_PATCH(0x4FC0B6, HouseClass_MPlayerDefeated_SaveArgument, 0x5) {
+ASMJIT_PATCH(0x4FC0B6, HouseClass_MPlayerDefeated_SaveArgument, 0x5)
+{
 	MPlayerDefeated::pThis = (SpawnerMain::Configs::Enabled && !SessionClass::IsCampaign())
 		? R->ECX<HouseClass*>()
 		: nullptr;
@@ -1194,7 +1213,8 @@ ASMJIT_PATCH(0x4FC0B6, HouseClass_MPlayerDefeated_SaveArgument, 0x5) {
 }
 
 // Skip match-end logic if MPlayerDefeated called for observer
-ASMJIT_PATCH(0x4FC262, HouseClass_MPlayerDefeated_SkipObserver, 0x6) {
+ASMJIT_PATCH(0x4FC262, HouseClass_MPlayerDefeated_SkipObserver, 0x6)
+{
 	enum { ProcEpilogue = 0x4FC6BC };
 
 	if (!MPlayerDefeated::pThis)
@@ -1205,8 +1225,8 @@ ASMJIT_PATCH(0x4FC262, HouseClass_MPlayerDefeated_SkipObserver, 0x6) {
 		: 0;
 }ASMJIT_PATCH_AGAIN(0x4FC332, HouseClass_MPlayerDefeated_SkipObserver, 0x5)
 
-
-ASMJIT_PATCH(0x4FC551, HouseClass_MPlayerDefeated_NoEnemies, 0x5) {
+ASMJIT_PATCH(0x4FC551, HouseClass_MPlayerDefeated_NoEnemies, 0x5)
+{
 	enum { ProcEpilogue = 0x4FC6BC };
 
 	if (!MPlayerDefeated::pThis)
@@ -1218,7 +1238,7 @@ ASMJIT_PATCH(0x4FC551, HouseClass_MPlayerDefeated_NoEnemies, 0x5) {
 			continue;
 
 		if ((pHouse->IsHumanPlayer || SpawnerMain::GameConfigs::m_Ptr.ContinueWithoutHumans)
-			&& HouseExtData::IsMutualAllies(pHouse , MPlayerDefeated::pThis))
+			&& HouseExtData::IsMutualAllies(pHouse, MPlayerDefeated::pThis))
 		{
 			Debug::LogInfo("[Spawner] MPlayer_Defeated() - Defeated player has a living ally");
 			if (SpawnerMain::GameConfigs::m_Ptr.DefeatedBecomesObserver)
@@ -1231,7 +1251,8 @@ ASMJIT_PATCH(0x4FC551, HouseClass_MPlayerDefeated_NoEnemies, 0x5) {
 	return 0;
 }
 
-ASMJIT_PATCH(0x4FC57C, HouseClass_MPlayerDefeated_CheckAliveAndHumans, 0x7) {
+ASMJIT_PATCH(0x4FC57C, HouseClass_MPlayerDefeated_CheckAliveAndHumans, 0x7)
+{
 	enum { ProcEpilogue = 0x4FC6BC, FinishMatch = 0x4FC591 };
 
 	if (!MPlayerDefeated::pThis)
@@ -1241,12 +1262,15 @@ ASMJIT_PATCH(0x4FC57C, HouseClass_MPlayerDefeated_CheckAliveAndHumans, 0x7) {
 	GET_STACK(int, numAlive, STACK_OFFSET(0xC0, -0xAC));
 
 	bool continueWithoutHumans = SpawnerMain::GameConfigs::m_Ptr.ContinueWithoutHumans
-			|| MPlayerDefeated::pThis->IsInitiallyObserver();
+		|| MPlayerDefeated::pThis->IsInitiallyObserver();
 
-	if (!continueWithoutHumans && !MPlayerDefeated::pThis->IsHumanPlayer) {
+	if (!continueWithoutHumans && !MPlayerDefeated::pThis->IsHumanPlayer)
+	{
 		bool isHasAliveHumanPlayers = false;
-		for (auto& pHouse : *HouseClass::Array) {
-			if (pHouse->IsHumanPlayer && !pHouse->Defeated) {
+		for (auto& pHouse : *HouseClass::Array)
+		{
+			if (pHouse->IsHumanPlayer && !pHouse->Defeated)
+			{
 				isHasAliveHumanPlayers = true;
 				break;
 			}
@@ -1273,7 +1297,8 @@ static bool MainLoop_replaceA()
 {
 	// Main loop.
 	bool result = Game::MainLoop();
-	if (!result){
+	if (!result)
+	{
 		SpawnerMain::GameConfigs::After_Main_Loop();
 	}
 	return result;
@@ -1342,8 +1367,10 @@ ASMJIT_PATCH(0x700594, TechnoClass_WhatAction_AllowAlliesRepair, 0x5)
 	GET(TechnoClass*, pThis, ESI);
 	GET(ObjectClass*, pObject, EDI);
 
-	if(auto const pBuilding = cast_to<BuildingClass* const, false>(pObject)){
-		if (((FakeBuildingClass*)pBuilding)->_GetTypeExtData()->AllowAlliesRepair) {
+	if (auto const pBuilding = cast_to<BuildingClass* const, false>(pObject))
+	{
+		if (((FakeBuildingClass*)pBuilding)->_GetTypeExtData()->AllowAlliesRepair)
+		{
 			return (pBuilding->Owner->IsAlliedWith(pThis))
 				? Allow
 				: DisAllow;
@@ -1378,11 +1405,13 @@ ASMJIT_PATCH(0x686A9E, ReadScenario_InitSomeThings_SpecialHouseIsAlly, 0x6)
 // Skirmish observers must always retain the slider regardless of config.
 ASMJIT_PATCH(0x4E20BA, GameControlsClass__SomeDialog_GameSpeedSlider, 0x5)
 {
-	if(Game::ObserverMode || (SessionClass::IsSkirmish() && HouseClass::CurrentPlayer && HouseClass::CurrentPlayer->IsObserver())) {
+	if (Game::ObserverMode || (SessionClass::IsSkirmish() && HouseClass::CurrentPlayer && HouseClass::CurrentPlayer->IsObserver()))
+	{
 		return 0x4E211A;
 	}
 
-	if (SpawnerMain::GameConfigs::m_Ptr.DisableGameSpeed) {
+	if (SpawnerMain::GameConfigs::m_Ptr.DisableGameSpeed)
+	{
 		using GetCtrlById_t = void* (__stdcall*)(void* hDlg, int id);
 		using ShowWindow_t = void(__stdcall*)(void* hWnd, int nCmdShow);
 
@@ -1390,7 +1419,8 @@ ASMJIT_PATCH(0x4E20BA, GameControlsClass__SomeDialog_GameSpeedSlider, 0x5)
 		GET(ShowWindow_t, showWnd, EBP);
 		GET(void*, hDlg, ESI);
 
-		if (getCtrl && showWnd) {
+		if (getCtrl && showWnd)
+		{
 			if (auto ctrl = getCtrl(hDlg, 0x529)) { showWnd(ctrl, 0); }
 			if (auto ctrl = getCtrl(hDlg, 0x714)) { showWnd(ctrl, 0); }
 			if (auto ctrl = getCtrl(hDlg, 0x671)) { showWnd(ctrl, 0); }

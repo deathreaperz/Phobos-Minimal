@@ -13,9 +13,10 @@
 // TODO : check
 ASMJIT_PATCH(0x6F3339, TechnoClass_WhatWeaponShouldIUse_Interceptor, 0x8)
 {
-	enum {
+	enum
+	{
 		ReturnGameCode = 0x6F3341,
-		ReturnHandled = 0x6F3406 ,
+		ReturnHandled = 0x6F3406,
 		CheckOccupy = 0x6F3379,
 		SetWeaponSlot = 0x6F3360
 	};
@@ -25,15 +26,19 @@ ASMJIT_PATCH(0x6F3339, TechnoClass_WhatWeaponShouldIUse_Interceptor, 0x8)
 
 	const auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType());
 
-	if (pTarget) {
-		if (TechnoExtContainer::Instance.Find(pThis)->IsInterceptor() && pTarget->WhatAmI() == BulletClass::AbsID) {
+	if (pTarget)
+	{
+		if (TechnoExtContainer::Instance.Find(pThis)->IsInterceptor() && pTarget->WhatAmI() == BulletClass::AbsID)
+		{
 			R->EAX(pTypeExt->Interceptor_Weapon.Get() == -1 ? 0 : pTypeExt->Interceptor_Weapon.Get());
 			return ReturnHandled;
 		}
 	}
 
-	if(pTypeExt->This()->TurretCount > 0 && !pTypeExt->This()->IsGattling) {
-		if (pTypeExt->MultiWeapon && (pThis->WhatAmI() != AbstractType::Unit || !pTypeExt->This()->Gunner)) {
+	if (pTypeExt->This()->TurretCount > 0 && !pTypeExt->This()->IsGattling)
+	{
+		if (pTypeExt->MultiWeapon && (pThis->WhatAmI() != AbstractType::Unit || !pTypeExt->This()->Gunner))
+		{
 			return CheckOccupy;
 		}
 
@@ -56,11 +61,11 @@ ASMJIT_PATCH(0x6F33CD, TechnoClass_WhatWeaponShouldIUse_ForceFire, 0x6)
 		auto const pWeaponSecondary = pThis->GetWeapon(1)->WeaponType;
 		const auto pPrimaryExt = WeaponTypeExtContainer::Instance.Find(pWeaponPrimary);
 
-		if (pWeaponSecondary && !pPrimaryExt->SkipWeaponPicking 
+		if (pWeaponSecondary && !pPrimaryExt->SkipWeaponPicking
 			&& (!EnumFunctions::IsCellEligible(pCell, pPrimaryExt->CanTarget, true, true)
-			|| (pPrimaryExt->AttachEffect_CheckOnFirer && !pPrimaryExt->HasRequiredAttachedEffects(pThis, pThis)))
+				|| (pPrimaryExt->AttachEffect_CheckOnFirer && !pPrimaryExt->HasRequiredAttachedEffects(pThis, pThis)))
 			&& (!TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType())->NoSecondaryWeaponFallback
-			|| TechnoExtData::CanFireNoAmmoWeapon(pThis, 1)))
+				|| TechnoExtData::CanFireNoAmmoWeapon(pThis, 1)))
 		{
 			R->EAX(1);
 			return UseWeaponIndex;
@@ -79,7 +84,6 @@ ASMJIT_PATCH(0x6F33CD, TechnoClass_WhatWeaponShouldIUse_ForceFire, 0x6)
 
 	return 0;
 }
-
 
 //this hook disregard everything and return weapon index
 ASMJIT_PATCH(0x6F3428, TechnoClass_WhatWeaponShouldIUse_ForceWeapon, 0x6)
@@ -101,13 +105,13 @@ ASMJIT_PATCH(0x6F3428, TechnoClass_WhatWeaponShouldIUse_ForceWeapon, 0x6)
 		return 0x6F37AF;
 	}
 
-	 const int multiWeaponIndex = pTechnoTypeExt->SelectMultiWeapon(pThis, pAbsTarget);
+	const int multiWeaponIndex = pTechnoTypeExt->SelectMultiWeapon(pThis, pAbsTarget);
 
-	 if (multiWeaponIndex >= 0)
-	 {
- 		R->EAX(multiWeaponIndex);
- 		return 0x6F37AF;
-	 }
+	if (multiWeaponIndex >= 0)
+	{
+		R->EAX(multiWeaponIndex);
+		return 0x6F37AF;
+	}
 
 	return 0;
 }
@@ -278,9 +282,9 @@ ASMJIT_PATCH(0x6F36DB, TechnoClass_WhatWeaponShouldIUse, 0x8)
 			const bool secondaryIsAA = pTargetTechno && pTargetTechno->IsInAir() && pSecondary && pSecondary->Projectile->AA;
 
 			if (pSecondary && (allowFallback || ((allowAAFallback && secondaryIsAA)
-											|| (pTargetTechno->InWhichLayer() == Layer::Underground && BulletTypeExtContainer::Instance.Find(pSecondary->Projectile)->AU))
+				|| (pTargetTechno->InWhichLayer() == Layer::Underground && BulletTypeExtContainer::Instance.Find(pSecondary->Projectile)->AU))
 
-											|| TechnoExtData::CanFireNoAmmoWeapon(pThis, 1)))
+				|| TechnoExtData::CanFireNoAmmoWeapon(pThis, 1)))
 			{
 				if (!pShield->CanBeTargeted(pPrimary))
 					return Secondary;
@@ -334,17 +338,19 @@ ASMJIT_PATCH(0x6F37EB, TechnoClass_WhatWeaponShouldIUse_AntiAir, 0x6)
 	GET_STACK(WeaponTypeClass*, pWeapon, STACK_OFFS(0x18, 0x4));
 	GET(WeaponTypeClass*, pSecWeapon, EAX);
 
-	if(pTargetTechno){
-
+	if (pTargetTechno)
+	{
 		const auto pPrimaryProj = pWeapon->Projectile;
 		const auto pSecondaryProj = pSecWeapon->Projectile;
 
-		if (!pPrimaryProj->AA && pSecondaryProj->AA) {
+		if (!pPrimaryProj->AA && pSecondaryProj->AA)
+		{
 			if (pTargetTechno->IsInAir())
 				return Secondary;
 		}
 
-		if (BulletTypeExtContainer::Instance.Find(pSecondaryProj)->AU && !BulletTypeExtContainer::Instance.Find(pPrimaryProj)->AU) {
+		if (BulletTypeExtContainer::Instance.Find(pSecondaryProj)->AU && !BulletTypeExtContainer::Instance.Find(pPrimaryProj)->AU)
+		{
 			if (pTargetTechno->InWhichLayer() == Layer::Underground)
 				return Secondary;
 		}
@@ -364,7 +370,7 @@ ASMJIT_PATCH(0x6F3432, TechnoClass_WhatWeaponShouldIUse_Gattling, 0xA)
 	int oddWeaponIndex = 2 * pThis->CurrentGattlingStage;
 	int evenWeaponIndex = oddWeaponIndex + 1;
 	int chosenWeaponIndex = oddWeaponIndex;
-	int eligibleWeaponIndex = TechnoExtData::PickWeaponIndex(pThis, pTargetTechno, pTarget, oddWeaponIndex, evenWeaponIndex, true,true);
+	int eligibleWeaponIndex = TechnoExtData::PickWeaponIndex(pThis, pTargetTechno, pTarget, oddWeaponIndex, evenWeaponIndex, true, true);
 
 	if (eligibleWeaponIndex != -1)
 	{
@@ -387,7 +393,6 @@ ASMJIT_PATCH(0x6F3432, TechnoClass_WhatWeaponShouldIUse_Gattling, 0xA)
 
 		if (!skipRemainingChecks)
 		{
-
 			if (Math::abs(
 				//GeneralUtils::GetWarheadVersusArmor(pWeaponOdd->Warhead , pTargetTechno->GetTechnoType()->Armor)
 				WarheadTypeExtContainer::Instance.Find(pWeaponOdd->Warhead)->GetVerses(
@@ -395,7 +400,8 @@ ASMJIT_PATCH(0x6F3432, TechnoClass_WhatWeaponShouldIUse_Gattling, 0xA)
 			) == 0.0)
 			{
 				chosenWeaponIndex = evenWeaponIndex;
-			}else if (pTargetTechno->InWhichLayer() == Layer::Underground)
+			}
+			else if (pTargetTechno->InWhichLayer() == Layer::Underground)
 			{
 				if (BulletTypeExtContainer::Instance.Find(pWeaponEven->Projectile)->AU && !BulletTypeExtContainer::Instance.Find(pWeaponOdd->Projectile)->AU)
 					chosenWeaponIndex = evenWeaponIndex;
@@ -457,16 +463,17 @@ ASMJIT_PATCH(0x6F3432, TechnoClass_WhatWeaponShouldIUse_Gattling, 0xA)
 ASMJIT_PATCH(0x70E1A0, TechnoClass_GetTurretWeapon_LaserWeapon, 0x5)
 {
 	GET(TechnoClass* const, pThis, ECX);
-	GET_STACK(DWORD , caller , 0x0);
+	GET_STACK(DWORD, caller, 0x0);
 
-	if(!pThis)
-		Debug::FatalError("Caller %u " , caller);
+	if (!pThis)
+		Debug::FatalError("Caller %u ", caller);
 
 	if (pThis->WhatAmI() == BuildingClass::AbsID)
 	{
 		auto const pExt = TechnoExtContainer::Instance.Find(pThis);
 
-		if (!pExt->CurrentLaserWeaponIndex.empty()) {
+		if (!pExt->CurrentLaserWeaponIndex.empty())
+		{
 			R->EAX(pThis->GetWeapon(pExt->CurrentLaserWeaponIndex));
 			return 0x70E1C8;
 		}
@@ -494,7 +501,6 @@ ASMJIT_PATCH(0x6FC749, TechnoClass_GetFireError_AntiUnderground, 0x5)
 
 	return GoOtherChecks;
 }
-
 
 #pragma region AttackUnderGround
 

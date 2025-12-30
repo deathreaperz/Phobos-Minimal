@@ -19,7 +19,7 @@ enum class MissionState
 int constexpr RocketSpeed = 416;
 class RocketTypeClass;
 
-DEFINE_LOCO(CustomRocket,4AD76F43-090A-44BF-BB1A-5BFDE52BC842)
+DEFINE_LOCO(CustomRocket, 4AD76F43 - 090A - 44BF - BB1A - 5BFDE52BC842)
 {
 public:
 
@@ -33,9 +33,8 @@ public:
 	virtual ULONG __stdcall Release() override { return LocomotionClass::Release(); }
 
 	//IPersist
-	virtual HRESULT __stdcall GetClassID(CLSID * pClassID) override 
+	virtual HRESULT __stdcall GetClassID(CLSID * pClassID) override
 	{
-
 		if (pClassID == nullptr)
 		{
 			return E_POINTER;
@@ -48,9 +47,8 @@ public:
 	/**
 	 *  IPersistStream
 	 */
-	virtual HRESULT __stdcall Load(IStream* pStm) override
+	virtual HRESULT __stdcall Load(IStream * pStm) override
 	{
-
 		HRESULT hr = LocomotionClass::Internal_Load(this, pStm);
 		if (FAILED(hr))
 		{
@@ -63,7 +61,7 @@ public:
 		return hr;
 	}
 
-	virtual HRESULT __stdcall Save(IStream* pStm, BOOL fClearDirty) override
+	virtual HRESULT __stdcall Save(IStream * pStm, BOOL fClearDirty) override
 	{
 		return this->LocomotionClass::Internal_Save(this, pStm, fClearDirty);
 	}
@@ -79,7 +77,7 @@ public:
 		return DestinationCoord;
 	}
 
-	Matrix3D* __stdcall Draw_Matrix(Matrix3D* pMatrix, VoxelIndexKey* key) override
+	Matrix3D* __stdcall Draw_Matrix(Matrix3D * pMatrix, VoxelIndexKey * key) override
 	{
 		return pMatrix;
 	}
@@ -95,8 +93,7 @@ public:
 	}
 
 	virtual void __stdcall Move_To(CoordStruct to) override
-	{
-	}
+	{ }
 
 	virtual void __stdcall Stop_Moving() override { }
 
@@ -128,7 +125,7 @@ public:
 	virtual int Size() override { return sizeof(*this); }
 
 private:
-	 //TODO
+	//TODO
 public:
 	CustomRocketLocomotionClass(const CustomRocketLocomotionClass&) = delete;
 	CustomRocketLocomotionClass(noinit_t) : LocomotionClass { noinit_t() } { }

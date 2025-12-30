@@ -73,7 +73,8 @@ void DumperTypesCommandClass::Execute(WWKey dwUnk) const
 	Debug::LogInfo("Dumping Art Types");
 	Debug::LogInfo("[Movies]");
 
-	for (int i = 0; i < MovieInfoArray->Count; ++i) {
+	for (int i = 0; i < MovieInfoArray->Count; ++i)
+	{
 		Debug::LogInfo("{} = {}", i, MovieInfoArray->Items[i].Name);
 	}
 
@@ -99,7 +100,8 @@ void DumperTypesCommandClass::Execute(WWKey dwUnk) const
 	// yes , iam sorry
 	// sometime i need the rules that you lock behind the mix
 	// so i can validate and fix the stuffs , enable it with your own risk ! -Otamaa
-	if(Phobos::Otamaa::IsAdmin) {
+	if (Phobos::Otamaa::IsAdmin)
+	{
 		GenericNode* sectionNode = CCINIClass::INI_Rules()->Sections.First();
 		while (sectionNode)
 		{

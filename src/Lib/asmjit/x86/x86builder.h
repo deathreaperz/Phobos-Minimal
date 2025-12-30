@@ -16,7 +16,6 @@ ASMJIT_BEGIN_SUB_NAMESPACE(x86)
 
 //! \addtogroup asmjit_x86
 //! \{
-
 //! X86/X64 builder implementation.
 //!
 //! The code representation used by \ref BaseBuilder is compatible with everything AsmJit provides. Each instruction
@@ -316,34 +315,32 @@ ASMJIT_BEGIN_SUB_NAMESPACE(x86)
 //! shr rax, 3   ; [3] Follows [2].
 //! ```
 class ASMJIT_VIRTAPI Builder
-  : public BaseBuilder,
-    public EmitterImplicitT<Builder> {
+	: public BaseBuilder,
+	public EmitterImplicitT<Builder>
+{
 public:
-  ASMJIT_NONCOPYABLE(Builder)
-  using Base = BaseBuilder;
+	ASMJIT_NONCOPYABLE(Builder)
+		using Base = BaseBuilder;
 
-  //! \name Construction & Destruction
-  //! \{
+	//! \name Construction & Destruction
+	//! \{
+	ASMJIT_API explicit Builder(CodeHolder* code = nullptr) noexcept;
+	ASMJIT_API ~Builder() noexcept override;
 
-  ASMJIT_API explicit Builder(CodeHolder* code = nullptr) noexcept;
-  ASMJIT_API ~Builder() noexcept override;
+	//! \}
 
-  //! \}
+	//! \name Events
+	//! \{
+	ASMJIT_API Error on_attach(CodeHolder& code) noexcept override;
+	ASMJIT_API Error on_detach(CodeHolder& code) noexcept override;
 
-  //! \name Events
-  //! \{
+	//! \}
 
-  ASMJIT_API Error on_attach(CodeHolder& code) noexcept override;
-  ASMJIT_API Error on_detach(CodeHolder& code) noexcept override;
+	//! \name Finalize
+	//! \{
+	ASMJIT_API Error finalize() override;
 
-  //! \}
-
-  //! \name Finalize
-  //! \{
-
-  ASMJIT_API Error finalize() override;
-
-  //! \}
+	//! \}
 };
 
 //! \}

@@ -15,15 +15,18 @@ public:
 
 	virtual ~MissionExtData() = default;
 
-	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override {
+	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override
+	{
 		this->ObjectExtData::InvalidatePointer(ptr, bRemoved);
 	}
 
-	virtual void LoadFromStream(PhobosStreamReader& Stm) override {
+	virtual void LoadFromStream(PhobosStreamReader& Stm) override
+	{
 		this->ObjectExtData::LoadFromStream(Stm);
 	}
 
-	virtual void SaveToStream(PhobosStreamWriter& Stm) override {
+	virtual void SaveToStream(PhobosStreamWriter& Stm) override
+	{
 		this->ObjectExtData::SaveToStream(Stm);
 	}
 
@@ -32,7 +35,8 @@ public:
 	MissionClass* This() const { return reinterpret_cast<MissionClass*>(AttachedToObject); }
 	const MissionClass* This_Const() const { return reinterpret_cast<const MissionClass*>(AttachedToObject); }
 
-	virtual void CalculateCRC(CRCEngine& crc) const override {
+	virtual void CalculateCRC(CRCEngine& crc) const override
+	{
 		this->ObjectExtData::CalculateCRC(crc);
 	}
 };

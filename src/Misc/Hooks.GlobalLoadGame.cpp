@@ -267,7 +267,8 @@ HRESULT Decode_All_Pointers(LPSTREAM stream)
 	hr = MapClass::Logics->Load(stream);
 	if (!SUCCEEDED(hr)) return hr;
 
-	if (auto pInstance = TacticalClass::Instance()) {
+	if (auto pInstance = TacticalClass::Instance())
+	{
 		pInstance->ClearPtr();
 	}
 
@@ -434,10 +435,10 @@ HRESULT Decode_All_Pointers(LPSTREAM stream)
 	if (!SUCCEEDED(hr)) return hr;
 
 	bool success = VeinholeMonsterClass::LoadVector(stream);
-	if(!success) return E_FAIL;;
+	if (!success) return E_FAIL;;
 
 	success = RadarEventClass::LoadVector(stream);
-	if(!success) return E_FAIL;;
+	if (!success) return E_FAIL;;
 
 	hr = LoadObjectVector(stream, *CaptureManagerClass::Array);
 	if (!SUCCEEDED(hr)) return hr;
@@ -479,10 +480,12 @@ HRESULT Decode_All_Pointers(LPSTREAM stream)
 	if (!SUCCEEDED(hr)) return hr;
 
 	// Game options section (known problematic area)
-	if (SessionClass::Instance->GameMode == GameMode::Skirmish) {
+	if (SessionClass::Instance->GameMode == GameMode::Skirmish)
+	{
 		Debug::Log("Reading Skirmish Session.Options\n");
 		const bool save_GameOptionsType = GameOptionsType::Instance->Load(stream);
-		if (!save_GameOptionsType) {
+		if (!save_GameOptionsType)
+		{
 			Debug::Log("\t***** GameOptionsType LOAD FAILED!\n");
 			return E_FAIL;
 		}
@@ -537,15 +540,19 @@ bool __fastcall Load_Saved_Game(const char* file_name)
 {
 	WCHAR wide_file_name[PATH_MAX];
 
-	if (SpawnerMain::Configs::Enabled) {
+	if (SpawnerMain::Configs::Enabled)
+	{
 		MultiByteToWideChar(CP_ACP, 0, SavedGames::FormatPath(file_name), -1, wide_file_name, std::size(wide_file_name));
-	} else {
+	}
+	else
+	{
 		MultiByteToWideChar(CP_ACP, 0, file_name, -1, wide_file_name, std::size(wide_file_name));
 	}
 
 	Debug::Log("\nLOADING GAME [%s]\n", file_name);
 
-	if (!ExtensionSaveJson::Load(wide_file_name)) {
+	if (!ExtensionSaveJson::Load(wide_file_name))
+	{
 		Debug::FatalError("Cannot Load dll datas !");
 		return false;
 	}
@@ -556,7 +563,8 @@ bool __fastcall Load_Saved_Game(const char* file_name)
 	Debug::Log("Opening DocFile\n");
 	ATL::CComPtr<IStorage> storage;
 	HRESULT hr = StgOpenStorage(wide_file_name, nullptr, STGM_READWRITE | STGM_SHARE_EXCLUSIVE, nullptr, 0, &storage);
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		Debug::FatalError("Failed to open storage.\n");
 		return false;
 	}
@@ -566,7 +574,8 @@ bool __fastcall Load_Saved_Game(const char* file_name)
 	 */
 	SavegameInformation saveversion;
 	hr = saveversion.Read(storage);
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		Debug::FatalError("Failed to read version information.\n");
 		return false;
 	}
@@ -577,7 +586,8 @@ bool __fastcall Load_Saved_Game(const char* file_name)
 
 	Debug::Log("Opening DocFile\n");
 	hr = StgOpenStorage(wide_file_name, nullptr, STGM_SHARE_DENY_WRITE, nullptr, 0, &storage);
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		Debug::FatalError("Failed to open storage.\n");
 		return false;
 	}
@@ -585,14 +595,16 @@ bool __fastcall Load_Saved_Game(const char* file_name)
 	Debug::Log("Opening content stream.\n");
 	ATL::CComPtr<IStream> docfile;
 	hr = storage->OpenStream(L"CONTENTS", nullptr, STGM_READ | STGM_SHARE_EXCLUSIVE, 0, &docfile);
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		Debug::FatalError("Failed to open content stream.\n");
 		return false;
 	}
 
 	LARGE_INTEGER li = {};
 	hr = docfile->Seek(li, STREAM_SEEK_SET, nullptr);
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		Debug::FatalError("Failed to seek CONTENTS stream to beginning.\n");
 		return false;
 	}
@@ -601,16 +613,19 @@ bool __fastcall Load_Saved_Game(const char* file_name)
 	IUnknown* pUnknown = nullptr;
 	ATL::CComPtr<ILinkStream> linkstream;
 	hr = CoCreateInstance(__uuidof(CStreamClass), nullptr, CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER | CLSCTX_LOCAL_SERVER, IID_IUnknown, (void**)&pUnknown);
-	if (SUCCEEDED(hr)) {
+	if (SUCCEEDED(hr))
+	{
 		hr = OleRun(pUnknown);
-		if (SUCCEEDED(hr)) {
+		if (SUCCEEDED(hr))
+		{
 			pUnknown->QueryInterface(__uuidof(ILinkStream), (void**)&linkstream);
 		}
 		pUnknown->Release();
 	}
 
 	hr = linkstream->Link_Stream(docfile);
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		Debug::FatalError("Failed to link stream to decompressor.\n");
 		return false;
 	}
@@ -621,14 +636,16 @@ bool __fastcall Load_Saved_Game(const char* file_name)
 
 	Debug::Log("Calling Decode_All_Pointers().\n");
 
-	if (FAILED(Decode_All_Pointers(stream))) {
+	if (FAILED(Decode_All_Pointers(stream)))
+	{
 		Debug::FatalErrorAndExit("Error loading save game \"%s\"!\n", file_name);
 		return false;
 	}
 
 	Debug::Log("Unlinking content stream from decompressor.\n");
 	hr = linkstream->Unlink_Stream(nullptr);
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		Debug::FatalError("Unlinking content stream from decompressor.\n");
 		return false;
 	}

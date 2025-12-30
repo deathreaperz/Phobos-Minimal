@@ -74,9 +74,10 @@ ASMJIT_PATCH(0x6EBEDB, TeamClass_MoveToFocus_BalloonHover, 0xA)
 ASMJIT_PATCH(0x509E00, HouseClass_LS_RemoveTargetLimitIfAvaible, 0x6)
 {
 	//GET(HouseClass*, pThis, ESI);
-	GET_STACK(FakeSuperClass*, pSuper , 0x4); // we know that this is LS ?
+	GET_STACK(FakeSuperClass*, pSuper, 0x4); // we know that this is LS ?
 
-	if (pSuper->Type->Type == SuperWeaponType::LightningStorm && pSuper->_GetTypeExtData()->Weather_UseSeparateState) {
+	if (pSuper->Type->Type == SuperWeaponType::LightningStorm && pSuper->_GetTypeExtData()->Weather_UseSeparateState)
+	{
 		return 0x509E13;
 	}
 
@@ -159,14 +160,14 @@ ASMJIT_PATCH(0x5003BA, HouseClass_FindJuicyTarget, 0x6)
 // 	return 0x4F9A8C;
 // }
 
- ASMJIT_PATCH(0x4F9B0A, HouseClass_IsAlly_AbstractClass, 0x6)
- {
- 	GET(HouseClass*, pThis, ESI);
- 	GET(HouseClass*, pThat, EAX);
+ASMJIT_PATCH(0x4F9B0A, HouseClass_IsAlly_AbstractClass, 0x6)
+{
+	GET(HouseClass*, pThis, ESI);
+	GET(HouseClass*, pThat, EAX);
 
- 	R->AL(pThis->IsAlliedWith(pThat));
- 	return 0x4F9B43;
- }
+	R->AL(pThis->IsAlliedWith(pThat));
+	return 0x4F9B43;
+}
 
 ASMJIT_PATCH(0x501548, HouseClass_IsAllowedToAlly_1, 0x6)
 {
@@ -190,8 +191,8 @@ ASMJIT_PATCH(0x4F9E10, HouseClass_MakeAlly_4, 0x8)
 
 ASMJIT_PATCH(0x4F9E56, HouseClass_MakeAlly_5, 0x9)
 {
-	GET(HouseClass* , pHouse , EBP);
-	GET(HouseClass* , pHouse_2 , ESI);
+	GET(HouseClass*, pHouse, EBP);
+	GET(HouseClass*, pHouse_2, ESI);
 
 	if (!pHouse_2->IsAlliedWith(HouseClass::CurrentPlayer()))
 		return 0x4F9EBD;
@@ -210,7 +211,8 @@ BuildingClass* __fastcall Find_Enemy_Building(
 		int find_type,
 		bool OnlyTargetHouseEnemy)
 {
-	if (BuildingClass::Array->Count <= 0) {
+	if (BuildingClass::Array->Count <= 0)
+	{
 		return nullptr;
 	}
 
@@ -220,12 +222,14 @@ BuildingClass* __fastcall Find_Enemy_Building(
 	BuildingClass* last = nullptr;
 	BuildingClass* last2 = nullptr;
 
-	for (auto pBld : *BuildingClass::Array) {
+	for (auto pBld : *BuildingClass::Array)
+	{
 		if (pBld->Type != type)
 			continue;
 
 		bool IsSameHouse = pBld->Owner == house;
-		if (pBld->Owner != house && !pBld->Owner->Type->MultiplayPassive && attacker->Owner->IsAlliedWith(pBld)) {
+		if (pBld->Owner != house && !pBld->Owner->Type->MultiplayPassive && attacker->Owner->IsAlliedWith(pBld))
+		{
 			continue;
 		}
 
@@ -264,19 +268,23 @@ BuildingClass* __fastcall Find_Enemy_Building(
 			break;
 		}
 
-		if (v10 > v29 && IsSameHouse) {
+		if (v10 > v29 && IsSameHouse)
+		{
 			last = pBld;
 			v29 = v10;
 		}
 
-		if (v10 > v30) {
+		if (v10 > v30)
+		{
 			last2 = pBld;
 			v30 = v10;
 		}
 	}
 
-	if (!last || v29 <= v30) {
-		if (!OnlyTargetHouseEnemy) {
+	if (!last || v29 <= v30)
+	{
+		if (!OnlyTargetHouseEnemy)
+		{
 			return last2;
 		}
 	}
@@ -290,7 +298,7 @@ BuildingClass* __fastcall Find_Own_Building(
 		TechnoClass* attacker,
 		int find_type)
 {
-	if (!attacker || attacker->Owner->Buildings.Count <= 0 )
+	if (!attacker || attacker->Owner->Buildings.Count <= 0)
 	{
 		return nullptr;
 	}
@@ -302,8 +310,10 @@ BuildingClass* __fastcall Find_Own_Building(
 	{
 		int v10 = -1;
 
-		if (pBld->Type == type){
-			if (!pBld->InLimbo && BuildingExtContainer::Instance.Find(pBld)->LimboID <= -1) {
+		if (pBld->Type == type)
+		{
+			if (!pBld->InLimbo && BuildingExtContainer::Instance.Find(pBld)->LimboID <= -1)
+			{
 				switch (find_type)
 				{
 				case 0:
@@ -336,7 +346,8 @@ BuildingClass* __fastcall Find_Own_Building(
 			}
 		}
 
-		if (v10 > v30) {
+		if (v10 > v30)
+		{
 			v30 = v10;
 			last = pBld;
 		}
@@ -362,7 +373,6 @@ ASMJIT_PATCH(0x6EEC6D, FindTargetBuilding_LimboDelivered, 0x6)
 	return BuildingExtContainer::Instance.Find(pBuilding)->LimboID != -1 ?
 		advance : ret;
 }
-
 
 ASMJIT_PATCH(0x6EEEF2, FindOwnBuilding_LimboDelivered, 0xA)
 {

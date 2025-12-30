@@ -49,9 +49,9 @@ public:
 		IsometricTileTypeExtension(),
 		BuildingTypeExtension(),
 		FallbackTheaterExtension()
-	{}
+	{ }
 
-	TheaterTypeClass(const char* const pTitle, const Theater* theater ,bool IsArtic , bool AllowMapGen , bool islunar) : Enumerable<TheaterTypeClass>(pTitle),
+	TheaterTypeClass(const char* const pTitle, const Theater* theater, bool IsArtic, bool AllowMapGen, bool islunar) : Enumerable<TheaterTypeClass>(pTitle),
 		UIName(),
 		ControlFileName(theater->ControlFileName),
 		ArtFileName(theater->ArtFileName),
@@ -92,24 +92,29 @@ public:
 
 	static void AddDefaults();
 	static void LoadAllTheatersToArray();
-	static TheaterTypeClass* FindFromTheaterType(TheaterType nType) {
+	static TheaterTypeClass* FindFromTheaterType(TheaterType nType)
+	{
 		return (nType != TheaterType::None && (size_t)nType < Array.size() ?
 			 Array[(int)nType] : Array[0]).get();
 	}
 
-	static FORCEDINLINE TheaterTypeClass* FindFromTheaterType_NoCheck(TheaterType nType) {
+	static FORCEDINLINE TheaterTypeClass* FindFromTheaterType_NoCheck(TheaterType nType)
+	{
 		return Array[(int)nType].get();
 	}
 
-	static OPTIONALINLINE void AllocateWithDefault(const char* Title, const Theater& theater, bool IsArtic, bool AllowMapGen, bool islunar) {
-		Array.emplace_back((std::make_unique<TheaterTypeClass>(Title, &theater , IsArtic , AllowMapGen , islunar)));
+	static OPTIONALINLINE void AllocateWithDefault(const char* Title, const Theater& theater, bool IsArtic, bool AllowMapGen, bool islunar)
+	{
+		Array.emplace_back((std::make_unique<TheaterTypeClass>(Title, &theater, IsArtic, AllowMapGen, islunar)));
 	}
 
-	void LoadFromStream(PhobosStreamReader& Stm) {
+	void LoadFromStream(PhobosStreamReader& Stm)
+	{
 		this->Serialize(Stm);
 	}
 
-	void SaveToStream(PhobosStreamWriter& Stm) {
+	void SaveToStream(PhobosStreamWriter& Stm)
+	{
 		this->Serialize(Stm);
 	}
 
@@ -202,5 +207,4 @@ public:
 	PhobosFixedString<4> BuildingTypeExtension;
 
 	PhobosFixedString<4> FallbackTheaterExtension;
-
 };

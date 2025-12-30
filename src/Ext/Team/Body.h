@@ -145,7 +145,6 @@ public:
 
 	virtual bool LoadAll(const json& root);
 	virtual bool SaveAll(json& root);
-
 };
 
 class NOVTABLE FakeTeamClass : public TeamClass
@@ -185,7 +184,7 @@ public:
 	static void _fastcall _Suspend_Teams(int priority, HouseClass* house);
 	//
 
-	void _Coordinate_Do(ScriptActionNode* pNode ,CellStruct unused);
+	void _Coordinate_Do(ScriptActionNode* pNode, CellStruct unused);
 
 	void _TMission_Unload(ScriptActionNode* nNode, bool arg3);
 	void _TMission_Load(ScriptActionNode* nNode, bool arg3);
@@ -215,10 +214,10 @@ public:
 
 	//
 
-	TeamExtData* _GetExtData() {
+	TeamExtData* _GetExtData()
+	{
 		return *reinterpret_cast<TeamExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
-
 };
 
 static_assert(sizeof(FakeTeamClass) == sizeof(TeamClass), "Invalid Size !");

@@ -13,8 +13,7 @@ public:
 
 	COMPILETIMEEVAL TheaterSpecificSHP(SHPStruct* pSHP)
 		: value { pSHP }
-	{
-	}
+	{ }
 
 	COMPILETIMEEVAL operator SHPStruct* ()
 	{

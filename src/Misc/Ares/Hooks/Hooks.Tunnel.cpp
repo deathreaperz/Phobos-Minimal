@@ -155,7 +155,8 @@ ASMJIT_PATCH(0x44D880, BuildingClass_Mi_Unload_Tunnel, 5)
 	// seems strange
 	// method used below is one that working for the thing
 
-	if (!nTunnelVec->Vector.empty()) {
+	if (!nTunnelVec->Vector.empty())
+	{
 		TunnelFuncs::HandleUnload(&nTunnelVec->Vector, pThis);
 
 		if (nTunnelVec->Vector.empty())
@@ -278,7 +279,8 @@ ASMJIT_PATCH(0x51ED8E, InfantryClass_GetActionOnObject_Tunnel, 6)
 		return CanEnter;
 
 	bool Enterable = false;
-	if (const auto pBuildingTarget = cast_to<BuildingClass*>(pTarget)) {
+	if (const auto pBuildingTarget = cast_to<BuildingClass*>(pTarget))
+	{
 		Enterable = BuildingTypeExtContainer::Instance.Find(pBuildingTarget->Type)->TunnelType >= 0;
 	}
 
@@ -293,7 +295,8 @@ ASMJIT_PATCH(0x51A2AD, InfantryClass_UpdatePosition_Tunnel, 9)
 	GET(InfantryClass*, pThis, ESI);
 	GET(BuildingClass*, pBld, EDI);
 
-	if (!RulesExtData::Instance()->Infantry_IgnoreBuildingSizeLimit) {
+	if (!RulesExtData::Instance()->Infantry_IgnoreBuildingSizeLimit)
+	{
 		return pBld->Passengers.NumPassengers + 1 <= pBld->Type->Passengers
 			&& static_cast<int>(pThis->GetTechnoType()->Size) <= pBld->Type->SizeLimit
 			? 0 : 0x51A4BF;

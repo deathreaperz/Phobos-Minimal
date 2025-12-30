@@ -326,13 +326,11 @@ void PhobosWindowClass::Loop()
 #if 0
 	if (ImGui::BeginMainMenuBar())
 	{
-
 		/**
 		 *  x
 		 */
 		if (ImGui::BeginMenu("Tools"))
 		{
-
 			//if (ImGui::MenuItem("Save", "Ctrl+S", false, MapClass::InMap())) {
 			//    //menu_action = "FileSave";
 			//}
@@ -360,7 +358,6 @@ void PhobosWindowClass::Loop()
 	TeamList();
 
 #if 0
-
 
 	// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
 	static bool show_demo_window = true;
@@ -572,23 +569,27 @@ bool PhobosWindowClass::TeamList()
 
 		const auto& [cur, act] = team->CurrentScript->GetCurrentAction();
 
-		auto DrawColored = [&]() {
-			const ImU32 color = (int)cur == -1 ? IM_COL32(255, 0, 0, 255) : IM_COL32(0, 255, 0, 255);
-			ImGui::PushStyleColor(ImGuiCol_Text, color);
-			bool imguiresult = ImGui::TreeNode((void*)(intptr_t)index, team->Type->ID);
-			ImGui::PopStyleColor();
-			return imguiresult;
-		};
+		auto DrawColored = [&]()
+			{
+				const ImU32 color = (int)cur == -1 ? IM_COL32(255, 0, 0, 255) : IM_COL32(0, 255, 0, 255);
+				ImGui::PushStyleColor(ImGuiCol_Text, color);
+				bool imguiresult = ImGui::TreeNode((void*)(intptr_t)index, team->Type->ID);
+				ImGui::PopStyleColor();
+				return imguiresult;
+			};
 
 		if (DrawColored())
 		{
-			if(ImGui::TreeNode((void*)(intptr_t)1,"Taskforces [%s[0x%x]", team->Type->TaskForce ? team->Type->TaskForce->ID : GameStrings::NoneStr(), team->Type->TaskForce)){
-				if (team->Type->TaskForce) {
+			if (ImGui::TreeNode((void*)(intptr_t)1, "Taskforces [%s[0x%x]", team->Type->TaskForce ? team->Type->TaskForce->ID : GameStrings::NoneStr(), team->Type->TaskForce))
+			{
+				if (team->Type->TaskForce)
+				{
 					ImGui::Text("CountEntries %d", team->Type->TaskForce->CountEntries);
 
-					for (int i = 0; i < std::size(team->Type->TaskForce->Entries); ++i) {
-						ImGui::Text("Entry[%d] 0x%x(%s - %s) - %d", i ,
-							team->Type->TaskForce->Entries[i].Type ,
+					for (int i = 0; i < std::size(team->Type->TaskForce->Entries); ++i)
+					{
+						ImGui::Text("Entry[%d] 0x%x(%s - %s) - %d", i,
+							team->Type->TaskForce->Entries[i].Type,
 							team->Type->TaskForce->Entries[i].Type ? team->Type->TaskForce->Entries[i].Type->ID : GameStrings::NoneStr(),
 							team->Type->TaskForce->Entries[i].Type ? team->Type->TaskForce->Entries[i].Type->GetThisClassName() : GameStrings::NoneStr(),
 							team->Type->TaskForce->Entries[i].Amount
@@ -618,7 +619,6 @@ bool PhobosWindowClass::TeamList()
 						pNext = pNext->NextTeamMember;
 
 					pFirst = pCur;
-
 				}
 				while (pCur);
 			}
@@ -661,9 +661,9 @@ bool PhobosWindowClass::TeamList()
 			ImGui::Text("IsLeavingMap %d", team->IsLeavingMap);
 			ImGui::Text("IsSuspended %d", team->IsSuspended);
 			ImGui::Text("AchievedGreatSuccess %d", team->AchievedGreatSuccess);
-			ImGui::Text("QueuedFocus [0x%x(%s)]", team->QueuedFocus , team->QueuedFocus ? team->QueuedFocus->GetThisClassName() : GameStrings::NoneStr());
+			ImGui::Text("QueuedFocus [0x%x(%s)]", team->QueuedFocus, team->QueuedFocus ? team->QueuedFocus->GetThisClassName() : GameStrings::NoneStr());
 			ImGui::Text("ArchiveTarget [0x%x(%s)]", team->ArchiveTarget, team->ArchiveTarget ? team->ArchiveTarget->GetThisClassName() : GameStrings::NoneStr());
-			ImGui::Text("SpawnCell [0x%x(%d , %d)]", team->SpawnCell, team->SpawnCell ? team->SpawnCell->MapCoords.X : 0 , team->SpawnCell ? team->SpawnCell->MapCoords.Y : 0);
+			ImGui::Text("SpawnCell [0x%x(%d , %d)]", team->SpawnCell, team->SpawnCell ? team->SpawnCell->MapCoords.X : 0, team->SpawnCell ? team->SpawnCell->MapCoords.Y : 0);
 
 			ImGui::TreePop();
 		}
@@ -724,7 +724,6 @@ bool PhobosWindowClass::TriggerList()
 	{
 		for (int index = 0; index < TriggerClass::Array->Count; ++index)
 		{
-
 			TriggerClass* trigger = TriggerClass::Array->Items[index];
 			if (!trigger) continue;
 
@@ -744,7 +743,6 @@ bool PhobosWindowClass::TriggerList()
 				}
 				ImGui::TreePop();
 			}
-
 		}
 
 		ImGui::TreePop();

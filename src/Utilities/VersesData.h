@@ -10,7 +10,7 @@ struct VersesData
 	bool LastParseIsValid;
 
 	VersesData() : Verses { 1.0 }
-		, Flags { true, true, true } , LastParseIsValid { false }
+		, Flags { true, true, true }, LastParseIsValid { false }
 	{ };
 
 	VersesData(double VS, bool FF, bool Retal, bool Acquire) : Verses { VS }

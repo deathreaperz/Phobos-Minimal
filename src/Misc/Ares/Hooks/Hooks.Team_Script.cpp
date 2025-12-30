@@ -294,4 +294,3 @@ ASMJIT_PATCH(0x65D8FB, TeamTypeClass_ValidateHouse, 6)
 	// no.
 	return (R->Origin() == 0x65D8FB) ? 0x65DD1B : 0x65F301;
 }ASMJIT_PATCH_AGAIN(0x65EC4A, TeamTypeClass_ValidateHouse, 6)
-

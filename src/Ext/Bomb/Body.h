@@ -19,7 +19,8 @@ public:
 
 public:
 
-	BombExtData(BombClass* pObj) : AbstractExtended(pObj) , Weapon(nullptr) {
+	BombExtData(BombClass* pObj) : AbstractExtended(pObj), Weapon(nullptr)
+	{
 		this->AbsType = BombClass::AbsID;
 	}
 
@@ -27,16 +28,18 @@ public:
 
 	virtual ~BombExtData() = default;
 
-	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override {
-
+	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override
+	{
 	}
 
-	virtual void LoadFromStream(PhobosStreamReader& Stm) override {
+	virtual void LoadFromStream(PhobosStreamReader& Stm) override
+	{
 		this->Internal_LoadFromStream(Stm);
 		this->Serialize(Stm);
 	}
 
-	virtual void SaveToStream(PhobosStreamWriter& Stm) {
+	virtual void SaveToStream(PhobosStreamWriter& Stm)
+	{
 		this->Internal_SaveToStream(Stm);
 		const_cast<BombExtData*>(this)->Serialize(Stm);
 	}
@@ -71,7 +74,8 @@ class NOVTABLE FakeBombClass : public BombClass
 {
 public:
 
-	HouseClass* _GetOwningHouse() {
+	HouseClass* _GetOwningHouse()
+	{
 		return this->OwnerHouse;
 	}
 
@@ -79,9 +83,9 @@ public:
 	void __Detonate();
 	int __GetBombFrame();
 
-	BombExtData* _GetExtData() {
+	BombExtData* _GetExtData()
+	{
 		return *reinterpret_cast<BombExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
-
 };
 static_assert(sizeof(FakeBombClass) == sizeof(BombClass), "Invalid Size !");

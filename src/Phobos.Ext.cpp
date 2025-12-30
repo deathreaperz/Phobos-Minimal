@@ -122,8 +122,10 @@ HRESULT Phobos::LoadGameDataAfter(IStream* pStm)
 	//clear the loadgame flag
 	Phobos::Otamaa::DoingLoadGame = false;
 
-	if (auto pPlayerSide = SideClass::Array->get_or_default(ScenarioClass::Instance->PlayerSideIndex)) {
-		if (auto pSideMouse = SideExtContainer::Instance.Find(pPlayerSide)->MouseShape) {
+	if (auto pPlayerSide = SideClass::Array->get_or_default(ScenarioClass::Instance->PlayerSideIndex))
+	{
+		if (auto pSideMouse = SideExtContainer::Instance.Find(pPlayerSide)->MouseShape)
+		{
 			GameDelete<true, true>(std::exchange(MouseClass::ShapeData(), pSideMouse));
 		}
 	}
@@ -133,12 +135,11 @@ HRESULT Phobos::LoadGameDataAfter(IStream* pStm)
 	return S_OK;
 }
 
-
 ASMJIT_PATCH(0x7258DE, AnnounceInvalidPointer_PhobosGlobal, 0x7)
 {
 	GET(AbstractClass* const, pInvalid, ECX);
 	GET(bool const, removed, EDX);
-	GET(AbstractType , type, EAX);
+	GET(AbstractType, type, EAX);
 
 	if (Phobos::Otamaa::ExeTerminated)
 		return 0;
@@ -158,22 +159,26 @@ ASMJIT_PATCH(0x7258DE, AnnounceInvalidPointer_PhobosGlobal, 0x7)
 	AnnounceInvalidPointer(SWTypeExtData::TempSuper, pInvalid);
 	AnnounceInvalidPointer(SWTypeExtData::LauchData, pInvalid);
 
-	if (removed) {
+	if (removed)
+	{
 		ScenarioExtData::Instance()->UndergroundTracker.erase((TechnoClass*)pInvalid);
 		ScenarioExtData::Instance()->FallingDownTracker.erase((TechnoClass*)pInvalid);
 
-		HouseExtContainer::Instance.AutoDeathObjects.erase_all_if([pInvalid](std::pair<TechnoClass*, KillMethod>& item) {
-			return item.first == pInvalid;
+		HouseExtContainer::Instance.AutoDeathObjects.erase_all_if([pInvalid](std::pair<TechnoClass*, KillMethod>& item)
+ {
+	 return item.first == pInvalid;
 		});
 
 		HouseExtContainer::Instance.LimboTechno.remove((TechnoClass*)pInvalid);
 
-		if (type == AnimClass::AbsID) {
-
-			ShieldClass::Array.for_each([pInvalid](ShieldClass* pShield) {
-				if (pShield->IdleAnim.get() == pInvalid) {
-					pShield->IdleAnim.release();
-				}
+		if (type == AnimClass::AbsID)
+		{
+			ShieldClass::Array.for_each([pInvalid](ShieldClass* pShield)
+ {
+	 if (pShield->IdleAnim.get() == pInvalid)
+	 {
+		 pShield->IdleAnim.release();
+	 }
 			});
 
 			LightningStorm::CloudsPresent->erase((AnimClass*)pInvalid);
@@ -191,7 +196,8 @@ ASMJIT_PATCH(0x7258DE, AnnounceInvalidPointer_PhobosGlobal, 0x7)
 #include <New/Interfaces/LevitateLocomotionClass.h>
 #include <New/Interfaces/CustomRocketLocomotionClass.h>
 
-unsigned Phobos::GetVersionNumber() {
+unsigned Phobos::GetVersionNumber()
+{
 	unsigned version = AresGlobalData::InternalVersion + PHOBOSSAVEGAME_ID;
 
 	version += sizeof(AnimExtData);
@@ -266,7 +272,7 @@ unsigned Phobos::GetVersionNumber() {
 	version += sizeof(FlyingStrings::ItemSize);
 
 #define AddTypeOf(cccc) version += sizeof(cccc##TypeClass);
-		AddTypeOf(Armor)
+	AddTypeOf(Armor)
 		AddTypeOf(Banner)
 		AddTypeOf(Bar)
 		AddTypeOf(Color)
@@ -288,7 +294,7 @@ unsigned Phobos::GetVersionNumber() {
 		AddTypeOf(Tunnel)
 #undef AddTypeOf
 
-	return version;
+		return version;
 }
 
 #include <Ext/AircraftType/Body.h>
@@ -308,7 +314,8 @@ unsigned Phobos::GetVersionNumber() {
 // this function is executed after all game classes already cleared
 ASMJIT_PATCH(0x685659, Scenario_ClearClasses_PhobosGlobal, 0xA)
 {
-	for (auto& hand : Handles::Array) {
+	for (auto& hand : Handles::Array)
+	{
 		hand->detachptr();
 	}
 
@@ -383,7 +390,6 @@ ASMJIT_PATCH(0x685659, Scenario_ClearClasses_PhobosGlobal, 0xA)
 
 	MouseClassExt::ClearCameos();
 	MouseClassExt::ClearMappedAction();
-
 
 	return 0;
 }

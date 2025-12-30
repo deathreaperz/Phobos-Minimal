@@ -847,7 +847,6 @@ DamageAreaResult __fastcall DamageArea::Apply(CoordStruct* pCoord,
 		bool affectTiberium,
 		HouseClass* pHouse)
 {
-
 	JMP_FAST(0x489280);
 #ifdef _aaa
 	if (!pWarhead)
@@ -863,7 +862,6 @@ DamageAreaResult __fastcall DamageArea::Apply(CoordStruct* pCoord,
 
 	if (!pWHExt->ShakeIsLocal || TacticalClass::Instance->IsCoordsToClientVisible(*pCoord))
 	{
-
 		if (pWarhead->ShakeXhi || pWarhead->ShakeXlo)
 			GeneralUtils::CalculateShakeVal(
 			GScreenClass::Instance->ScreenShakeX,
@@ -975,7 +973,6 @@ DamageAreaResult __fastcall DamageArea::Apply(CoordStruct* pCoord,
 			{
 				if (MapClass::Instance->CoordinatesLegal(cellhere))
 				{
-
 					auto cur_cellCoord = pCurCell->GetCoords();
 					auto spawn_distance = cellhere.DistanceFrom(cell);
 					Damage_Overlay(pCurCell, cell, pWarhead, spawn_distance, damage, pSource, pHouse, affectTiberium);
@@ -1008,7 +1005,6 @@ DamageAreaResult __fastcall DamageArea::Apply(CoordStruct* pCoord,
 
 						if (what == BuildingClass::AbsID)
 						{
-
 							if (IsCenter && !(pCoord->Z - cur_cellCoord.Z <= Unsorted::CellHeight))
 							{
 								cur_Group->Distance = (int)(cur_cellCoord.operator-(*pCoord).Length()) - Unsorted::CellHeight;
@@ -1034,7 +1030,6 @@ DamageAreaResult __fastcall DamageArea::Apply(CoordStruct* pCoord,
 							}
 						}
 					}
-
 				}
 			}
 		}
@@ -1049,13 +1044,11 @@ DamageAreaResult __fastcall DamageArea::Apply(CoordStruct* pCoord,
 
 		for (auto g_begin = groupvec.begin(); g_begin != g_end; ++g_begin)
 		{
-
 			DamageGroup* group = *g_begin;
 			// group could have been cleared by previous iteration.
 			// only handle if has not been handled already.
 			if (group && Targets.AddUnique(group->Target))
 			{
-
 				Handled.Clear();
 
 				// collect all slots containing damage groups for this target
@@ -1120,7 +1113,6 @@ DamageAreaResult __fastcall DamageArea::Apply(CoordStruct* pCoord,
 
 	for (size_t i = 0; i < groupvec.size(); ++i)
 	{
-
 		auto pGroup = groupvec[i];
 		if (!pGroup || !pGroup->Target)
 			continue;
@@ -1266,7 +1258,6 @@ DamageAreaResult __fastcall DamageArea::Apply(CoordStruct* pCoord,
 			->SpawnHeldParticle(pCoord, pCoord);
 	}
 
-
 	return DamageAreaResult(AnythingHit == 0);
 #endif
 }
@@ -1410,7 +1401,8 @@ ASMJIT_PATCH(0x489286, DamageArea, 0x6)
 		GET_BASE(TechnoClass*, pOwner, 0x08);
 		GET_BASE(HouseClass*, pHouse, 0x14);
 
-		if (!Phobos::Config::HideShakeEffects) {
+		if (!Phobos::Config::HideShakeEffects)
+		{
 			if (!pWHExt->ShakeIsLocal || TacticalClass::Instance->IsCoordsToClientVisible(*pCoords))
 			{
 				if (pWH->ShakeXhi || pWH->ShakeXlo)
@@ -1477,11 +1469,13 @@ ASMJIT_PATCH(0x4899DA, DamageArea_Damage_MaxAffect, 7)
 	GET_STACK(int, damage, STACK_OFFSET(0xE0, -0xBC));
 
 	auto pWHExt = pWarhead->_GetExtData();
-	if (!isNullified && pWHExt->AffectsUnderground) {
+	if (!isNullified && pWHExt->AffectsUnderground)
+	{
 		const bool cylinder = pWHExt->CellSpread_Cylinder;
 		const float spread = pWarhead->CellSpread * (float)Unsorted::LeptonsPerCell;
 
-		for (auto const& pTechno : ScenarioExtData::Instance()->UndergroundTracker) {
+		for (auto const& pTechno : ScenarioExtData::Instance()->UndergroundTracker)
+		{
 			if (pTechno->InWhichLayer() == Layer::Underground // Layer.
 				&& pTechno->IsAlive && !pTechno->IsIronCurtained()
 				&& !pTechno->IsOnMap // Underground is not on map.
@@ -1515,7 +1509,6 @@ ASMJIT_PATCH(0x4899DA, DamageArea_Damage_MaxAffect, 7)
 		}
 	}
 
-
 	const int MaxAffect = pWHExt->CellSpread_MaxAffect;
 
 	if (MaxAffect > 0)
@@ -1524,13 +1517,11 @@ ASMJIT_PATCH(0x4899DA, DamageArea_Damage_MaxAffect, 7)
 
 		for (auto g_begin = groupvec.Items; g_begin != g_end; ++g_begin)
 		{
-
 			DamageGroup* group = *g_begin;
 			// group could have been cleared by previous iteration.
 			// only handle if has not been handled already.
 			if (group && Targets.insert_unique(group->Target))
 			{
-
 				Handled.reset();
 
 				// collect all slots containing damage groups for this target
@@ -1563,7 +1554,8 @@ ASMJIT_PATCH(0x4899DA, DamageArea_Damage_MaxAffect, 7)
 		// move all the empty ones to the back, then remove them
 		groupvec.erase_if([](DamageGroup* pGroup)
  {
-	 if (!pGroup->Target || !pGroup->Target->IsAlive) {
+	 if (!pGroup->Target || !pGroup->Target->IsAlive)
+	 {
 		 GameDelete<false, false>(pGroup);
 		 return true;
 	 }
@@ -1575,7 +1567,8 @@ ASMJIT_PATCH(0x4899DA, DamageArea_Damage_MaxAffect, 7)
 		Handled.reset();
 	}
 
-	if (pWHExt->MergeBuildingDamage.Get(RulesExtData::Instance()->MergeBuildingDamage)) {
+	if (pWHExt->MergeBuildingDamage.Get(RulesExtData::Instance()->MergeBuildingDamage))
+	{
 		// Because during the process of causing damage, fragments may be generated that need to continue causing damage, resulting in nested calls
 		// to this function. Therefore, a single global variable cannot be used to store this data.
 		std::unordered_map<BuildingClass*, double> MapBuildings;
@@ -1584,8 +1577,10 @@ ASMJIT_PATCH(0x4899DA, DamageArea_Damage_MaxAffect, 7)
 			const auto cellSpread = int(pWarhead->CellSpread * Unsorted::LeptonsPerCell);
 			const auto percentDifference = 1.0 - pWarhead->PercentAtMax; // Vanilla will first multiply the damage and round it up, but we don't need to.
 
-			for (const auto& group : groupvec) {
-				if (const auto pBuilding = cast_to<BuildingClass*, true>(group->Target)) {
+			for (const auto& group : groupvec)
+			{
+				if (const auto pBuilding = cast_to<BuildingClass*, true>(group->Target))
+				{
 					if (group->Distance > cellSpread)
 						continue;
 
@@ -1598,7 +1593,8 @@ ASMJIT_PATCH(0x4899DA, DamageArea_Damage_MaxAffect, 7)
 
 		for (const auto& group : groupvec) // Causing damage to the building alone and avoiding repeated injuries later.
 		{
-			if (const auto pBuilding = cast_to<BuildingClass*, true>(group->Target)) {
+			if (const auto pBuilding = cast_to<BuildingClass*, true>(group->Target))
+			{
 				if (pBuilding->IsAlive
 					&& !pBuilding->Type->InvisibleInGame
 					&& (!isNullified || pBuilding->IsIronCurtained())
@@ -1631,7 +1627,6 @@ ASMJIT_PATCH(0x4899DA, DamageArea_Damage_MaxAffect, 7)
 				groupvec.erase_at(i);
 		}
 	}
-
 
 	if (hitted)
 		R->Stack8(STACK_OFFSET(0xE0, -0xC1), true);
@@ -1842,7 +1837,6 @@ ASMJIT_PATCH(0x4899BE, DamageArea_CellSpread3, 0x8)
 	REF_STACK(CellSpreadEnumerator<std::numeric_limits<short>::max()>*, pIter, STACK_OFFS(0xE0, 0xB4));
 	REF_STACK(int, index, STACK_OFFS(0xE0, 0xD0));
 
-
 	// reproduce skipped instruction
 	index++;
 
@@ -2024,7 +2018,8 @@ ASMJIT_PATCH(0x4898BF, MapClass_DamageArea_Cylinder_6, 0x5)
 	GET_BASE(FakeWarheadTypeClass* const, pWH, 0x0C);
 	GET(int, nVictimCrdZ, ECX);
 
-	if (pWH->_GetExtData()->CellSpread_Cylinder) {
+	if (pWH->_GetExtData()->CellSpread_Cylinder)
+	{
 		R->EDX(nVictimCrdZ);
 	}
 

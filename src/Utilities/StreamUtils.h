@@ -249,7 +249,7 @@ public:
 				  actualBytes,
 				  expectedBytes,
 				  op.startPos.QuadPart,
-				  op.endPos.QuadPart , op.endPos.QuadPart - op.startPos.QuadPart);
+				  op.endPos.QuadPart, op.endPos.QuadPart - op.startPos.QuadPart);
 
 		if (!operationSuccess)
 		{

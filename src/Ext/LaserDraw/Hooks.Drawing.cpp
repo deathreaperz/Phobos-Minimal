@@ -126,7 +126,8 @@ static DrawColorInfo Prepare_Draw_Color(const LaserDrawClass* laser)
 {
 	DrawColorInfo info;
 
-	if (laser->IsSupported) {
+	if (laser->IsSupported)
+	{
 		unsigned int r = static_cast<unsigned int>(laser->InnerColor.R) * 2;
 		unsigned int g = static_cast<unsigned int>(laser->InnerColor.G) * 2;
 		unsigned int b = static_cast<unsigned int>(laser->InnerColor.B) * 2;
@@ -134,7 +135,9 @@ static DrawColorInfo Prepare_Draw_Color(const LaserDrawClass* laser)
 		info.color.R = static_cast<unsigned char>(std::min(r, 255u));
 		info.color.G = static_cast<unsigned char>(std::min(g, 255u));
 		info.color.B = static_cast<unsigned char>(std::min(b, 255u));
-	} else {
+	}
+	else
+	{
 		info.color.R = laser->InnerColor.R >> 1;
 		info.color.G = laser->InnerColor.G >> 1;
 		info.color.B = laser->InnerColor.B >> 1;
@@ -238,7 +241,8 @@ static bool Is_Color_Below_Threshold(const unsigned char* color, bool use_high_q
 #include <Ext/Rules/Body.h>
 #include <Surface.h>
 
-class NOVTABLE FakeLaserDrawClaass : public LaserDrawClass {
+class NOVTABLE FakeLaserDrawClaass : public LaserDrawClass
+{
 public:
 	void __DrawInHouseColor();
 };

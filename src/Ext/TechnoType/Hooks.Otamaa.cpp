@@ -32,9 +32,9 @@ ASMJIT_PATCH(0x443C0D, BuildingClass_AssignTarget_Jugger, 0x6) //8
 {
 	GET(BuildingTypeClass*, pThis, EAX);
 
-	if(pThis->TickTank || BuildingTypeExtContainer::Instance.Find(pThis)->IsJuggernaut || pThis->Artillary) {
-
-		if(!pThis->UndeploysInto)
+	if (pThis->TickTank || BuildingTypeExtContainer::Instance.Find(pThis)->IsJuggernaut || pThis->Artillary)
+	{
+		if (!pThis->UndeploysInto)
 			return 0x443BB3;
 
 		return 0x443C21;

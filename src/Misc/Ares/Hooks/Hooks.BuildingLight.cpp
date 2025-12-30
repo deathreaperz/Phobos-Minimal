@@ -48,7 +48,7 @@ ASMJIT_PATCH(0x4370c0, BuildingLightClass_SDDTOR, 0xA)
 
 ASMJIT_PATCH(0x435820, BuildingLightClass_CTOR, 6)
 {
-	GET_STACK(TechnoClass*, pTech , 0x4);
+	GET_STACK(TechnoClass*, pTech, 0x4);
 	GET(BuildingLightClass*, pThis, ECX);
 
 	if (pTech)
@@ -56,7 +56,6 @@ ASMJIT_PATCH(0x435820, BuildingLightClass_CTOR, 6)
 
 	return 0;
 }
-
 
 static int Height;
 
@@ -67,12 +66,15 @@ static int Height;
 class NOVTABLE FakeBuildingLightClass : public BuildingLightClass
 {
 public:
-	void _Draw(Point2D* pLocation, RectangleStruct* pBounds) {
-		if (this->BehaviourMode != SpotlightBehaviour::None) {
-			if (auto pBld = cast_to<BuildingClass*>(this->OwnerObject)) {
+	void _Draw(Point2D* pLocation, RectangleStruct* pBounds)
+	{
+		if (this->BehaviourMode != SpotlightBehaviour::None)
+		{
+			if (auto pBld = cast_to<BuildingClass*>(this->OwnerObject))
+			{
 				if (pBld->IsAlive && pBld->IsPowerOnline() && !pBld->IsFogged &&
-					((ScenarioClass::Instance->SpecialFlags.RawFlags & 0x1000) == 0 || !MapClass::Instance->IsLocationFogged(pBld->Location))) {
-
+					((ScenarioClass::Instance->SpecialFlags.RawFlags & 0x1000) == 0 || !MapClass::Instance->IsLocationFogged(pBld->Location)))
+				{
 					auto pSpot = GameCreate<SpotlightClass>(pBld->Location, 16);
 					auto caster_center = pBld->GetCoords();
 					auto this_center = this->GetCoords();
@@ -80,14 +82,17 @@ public:
 					auto difference_sqrt = (int)difference.Length();
 					int radius = RulesClass::Instance->SpotlightLocationRadius;
 					int LocRad = 0;
-					if (difference_sqrt >= radius) {
+					if (difference_sqrt >= radius)
+					{
 						LocRad = (difference_sqrt - radius) / ((RulesClass::Instance->SpotlightMovementRadius - radius) / 10);
 					}
 
 					int spot_movement_rad = 89;
-					if (difference_sqrt > radius && this->BehaviourMode == SpotlightBehaviour::Follow) {
+					if (difference_sqrt > radius && this->BehaviourMode == SpotlightBehaviour::Follow)
+					{
 						spot_movement_rad = LocRad + 80 <= 0 ? 0 : LocRad + 80;
-						if (spot_movement_rad > 89) {
+						if (spot_movement_rad > 89)
+						{
 							spot_movement_rad = 89;
 						}
 					}
@@ -110,8 +115,8 @@ public:
 						const auto difference_here = this_center - caster_center;
 						Vector3D<float> mult {};
 						Vector3D<float> vec { (float)difference_here.X , (float)difference_here.Y , (float)difference_here.Z };
-						Matrix3D::MatrixMultiply(&mult , &mtx, &vec);
-						auto a_coord = difference + CoordStruct{ (int)mult.X, (int)mult.Y, (int)mult.Z };
+						Matrix3D::MatrixMultiply(&mult, &mtx, &vec);
+						auto a_coord = difference + CoordStruct { (int)mult.X, (int)mult.Y, (int)mult.Z };
 						mtx.MakeIdentity();
 						mtx.RotateZ(asin);
 						auto a = TacticalClass::Instance->CoordsToClient(a_coord);
@@ -125,7 +130,6 @@ public:
 						c += XY;
 
 						auto height = Game::AdjustHeight(caster_center.Z + 400);
-						
 					}
 				}
 			}
@@ -194,10 +198,12 @@ ASMJIT_PATCH(0x435cd3, BuildingLightClass_Draw_Spotlight, 6)
 	TechnoTypeExtData* pTypeData = TechnoTypeExtContainer::Instance.Find(Owner->GetTechnoType());
 
 	SpotlightFlags Flags = SpotlightFlags::None;
-	if (pTypeData->Spot_DisableColor) {
+	if (pTypeData->Spot_DisableColor)
+	{
 		Flags |= SpotlightFlags::NoColor;
-
-	} else {
+	}
+	else
+	{
 		if (pTypeData->Spot_DisableR)
 		{
 			Flags |= SpotlightFlags::NoRed;
@@ -227,11 +233,13 @@ ASMJIT_PATCH(0x4368C9, BuildingLightClass_Update_Trigger, 0x5)
 {
 	GET(TechnoClass*, pTechno, EAX);
 
-	if (pTechno->AttachedTag) {
+	if (pTechno->AttachedTag)
+	{
 		pTechno->AttachedTag->RaiseEvent(TriggerEvent::EnemyInSpotlight, pTechno, CellStruct::Empty, 0, 0);
 	}
 
-	if (pTechno->IsAlive && pTechno->AttachedTag) {
+	if (pTechno->IsAlive && pTechno->AttachedTag)
+	{
 		//66
 		pTechno->AttachedTag->RaiseEvent((TriggerEvent)AresTriggerEvents::EnemyInSpotlightNow, pTechno, CellStruct::Empty, 0, 0);
 	}

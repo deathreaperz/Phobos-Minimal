@@ -1,4 +1,3 @@
-
 #include <Utilities/Macro.h>
 
 #include <Ext/Techno/Body.h>
@@ -10,10 +9,8 @@
 #include <InfantryClass.h>
 #include <TacticalClass.h>
 
-
-bool HideBar(TechnoClass* pTechno, TechnoTypeClass* pType,  bool isAllied)
+bool HideBar(TechnoClass* pTechno, TechnoTypeClass* pType, bool isAllied)
 {
-
 	const auto what = pTechno->WhatAmI();
 
 	if (auto pFoot = flag_cast_to<FootClass*, false>(pTechno))
@@ -390,7 +387,6 @@ namespace DrawHeathData
 		//auto imax = pThis->TemporalTargetingMe->GetWarpPerStep();
 		//draw it here ? 0x71A88D
 	}
-
 }
 
 //ASMJIT_PATCH(0x6F65D1, TechnoClass_DrawdBar_Building, 0x6)
@@ -468,7 +464,6 @@ namespace DrawHeathData
 //	return !showPipScale && !pThis->IsMouseHovering && !pThis->IsSelected ? Permanent : 0;
 //}ASMJIT_PATCH_AGAIN(0x6F6A58, TechnoClass_DrawHealthBar_PermanentPipScale, 0x6)	// DrawOther
 
-
 //TODO :Draw all the pip
 //TODO : handle Healthdrawing
 
@@ -545,10 +540,8 @@ void DrawHealthbar(TechnoClass* pTechno, Point2D* pLocation, RectangleStruct* pB
 	}
 	else
 	{
-
 	}
 }
-
 
 // destroying a building (no health left) resulted in a single green pip shown
 // in the health bar for a split second. this makes the last pip red.
@@ -595,7 +588,6 @@ ASMJIT_PATCH(0x6F64A0, TechnoClass_DrawHealthBar_Hide, 0x5)
 	return Draw;
 }
 #endif
-
 
 #else
 

@@ -79,8 +79,10 @@ ASMJIT_PATCH(0x760F50, WaveClass_Update, 0x6)
 
 	const auto pData = WaveExtContainer::Instance.Find(pThis);
 
-	if (pData->Weapon && pData->Weapon->AmbientDamage) {
-		for (auto const& pCell : pThis->Cells) {
+	if (pData->Weapon && pData->Weapon->AmbientDamage)
+	{
+		for (auto const& pCell : pThis->Cells)
+		{
 			pThis->DamageArea(pCell->Cell2Coord());
 		}
 	}
@@ -100,7 +102,9 @@ ASMJIT_PATCH(0x760F50, WaveClass_Update, 0x6)
 		{
 			//GameDelete<true,false>(pThis);
 			pThis->UnInit();
-		} else {
+		}
+		else
+		{
 			pThis->ObjectClass::Update();
 		}
 	}
@@ -170,10 +174,10 @@ ASMJIT_PATCH(0x7601FB, WaveClass_Draw_Magnetron2, 0xB)
 		;
 }
 
- /*
- *	YES , this fuckery is removing WaveClass::WaveAI function call for later , replace it with boolean ,
-	so it can be done after all data set is completed !
- */
+/*
+*	YES , this fuckery is removing WaveClass::WaveAI function call for later , replace it with boolean ,
+   so it can be done after all data set is completed !
+*/
 ASMJIT_PATCH(0x75EBC5, WaveClass_CTOR_AllowWaveUpdate, 0x7)
 {
 	GET(WaveClass*, Wave, ESI);
@@ -186,7 +190,7 @@ ASMJIT_PATCH(0x75EBC5, WaveClass_CTOR_AllowWaveUpdate, 0x7)
 	that mean some Ext variable not yer executed , and when i try to use the data it wont work
 	need to move those to separate function after data set done ,..
 */
-ASMJIT_PATCH(0x762B62, WaveClass_WaveAI , 0x6)
+ASMJIT_PATCH(0x762B62, WaveClass_WaveAI, 0x6)
 {
 	GET(WaveClass*, Wave, ESI);
 
@@ -195,7 +199,8 @@ ASMJIT_PATCH(0x762B62, WaveClass_WaveAI , 0x6)
 
 	const bool eligible = Target && Firer && Wave->WaveIntensity != 19 && Firer->Target == Target;
 
-	if (!eligible) {
+	if (!eligible)
+	{
 		return 0x762C40;
 	}
 
@@ -214,19 +219,18 @@ ASMJIT_PATCH(0x762B62, WaveClass_WaveAI , 0x6)
 		{
 			auto nFirerCoord = pData->SourceCoord;
 			auto nTargetCoord = Target->GetCoords();
-			int range = WeaponTypeExtData::GetRangeWithModifiers(pData->Weapon, Firer , Firer->GetTechnoType()->GuardRange);
+			int range = WeaponTypeExtData::GetRangeWithModifiers(pData->Weapon, Firer, Firer->GetTechnoType()->GuardRange);
 			if (range < (int)(nFirerCoord.DistanceFrom(nTargetCoord) / Math::SQRT_TWO))
 			{
 				return 0x762C40;
 			}
 		}
-
 	}
 	else
 	{
 		auto nFirerCoord = pData->WeaponIdx != -1 ? Firer->GetCoords() : pData->SourceCoord;
 		auto nTargetCoord = Target->GetCoords();
-		int range = WeaponTypeExtData::GetRangeWithModifiers(pData->Weapon, Firer , Firer->GetTechnoType()->GuardRange);
+		int range = WeaponTypeExtData::GetRangeWithModifiers(pData->Weapon, Firer, Firer->GetTechnoType()->GuardRange);
 		if (range < (int)(nFirerCoord.DistanceFrom(nTargetCoord) / Math::SQRT_TWO))
 		{
 			return 0x762C40;
@@ -237,8 +241,8 @@ ASMJIT_PATCH(0x762B62, WaveClass_WaveAI , 0x6)
 		return 0x762D57;
 
 	CoordStruct FLH = pData->SourceCoord;
-	if(pData->WeaponIdx != -1)
-		Firer->GetFLH(&FLH , pData->WeaponIdx, CoordStruct::Empty);
+	if (pData->WeaponIdx != -1)
+		Firer->GetFLH(&FLH, pData->WeaponIdx, CoordStruct::Empty);
 
 	const CoordStruct xyzTgt = Target->GetCenterCoords(); // not GetCoords() !
 
@@ -284,11 +288,11 @@ ASMJIT_PATCH(0x7601C7, WaveClass_Draw_Magnetron, 0x8)
 //DEFINE_PATCH_TYPED(BYTE, 0x7609EB, 0x90, 0x90, 0x90 );
 //DEFINE_PATCH_TYPED(BYTE, 0x7609F3, 0x90, 0x90, 0x90, 0x90, 0x00, 0x00);
 
- ASMJIT_PATCH(0x7609E3, WaveClass_Draw_NodLaser_Details, 0x5)
- {
- 	R->EAX(2);
- 	return 0x7609E8;
- }
+ASMJIT_PATCH(0x7609E3, WaveClass_Draw_NodLaser_Details, 0x5)
+{
+	R->EAX(2);
+	return 0x7609E8;
+}
 
 //WaveClass_Draw_Magnetron3
 DEFINE_JUMP(LJMP, 0x760286, 0x7602D3);

@@ -21,12 +21,14 @@ public:
 
 	VectorSet() = default;
 
-	VectorSet(std::initializer_list<T> init) {
+	VectorSet(std::initializer_list<T> init)
+	{
 		for (auto& v : init) insert(v);
 	}
 
 	template <typename InputIt>
-	VectorSet(InputIt first, InputIt last) {
+	VectorSet(InputIt first, InputIt last)
+	{
 		for (; first != last; ++first) insert(*first);
 	}
 
@@ -44,7 +46,8 @@ public:
 	const_iterator cend() const noexcept { return data_.cend(); }
 
 	// modifiers
-	std::pair<iterator, bool> insert(const T& value) {
+	std::pair<iterator, bool> insert(const T& value)
+	{
 		auto it = std::ranges::lower_bound(data_, value, comp_);
 		if (it != data_.end() && !comp_(value, *it))
 			return { it, false }; // already exists
@@ -52,7 +55,8 @@ public:
 		return { it, true };
 	}
 
-	std::pair<iterator, bool> insert(T&& value) {
+	std::pair<iterator, bool> insert(T&& value)
+	{
 		auto it = std::ranges::lower_bound(data_, value, comp_);
 		if (it != data_.end() && !comp_(value, *it))
 			return { it, false }; // already exists
@@ -75,7 +79,7 @@ public:
 		auto it = std::ranges::lower_bound(data_, value, comp_);
 		if (it != data_.end() && !comp_(value, *it))
 			return { it, false };
-		it = data_.insert(it , std::move(value));
+		it = data_.insert(it, std::move(value));
 		return { it, true };
 	}
 
@@ -89,7 +93,8 @@ public:
 	}
 
 	template <typename... Args>
-	std::pair<iterator, bool> emplace_hint(iterator /*hint*/, Args&&... args) {
+	std::pair<iterator, bool> emplace_hint(iterator /*hint*/, Args&&... args)
+	{
 		T value(std::forward<Args>(args)...);
 		auto it = std::ranges::lower_bound(data_, value, comp_);
 		if (it != data_.end() && !comp_(value, *it)) { return { it, false }; }
@@ -98,7 +103,8 @@ public:
 	}
 
 	template <typename... Args>
-	std::pair<iterator, bool> emplace(Args&&... args) {
+	std::pair<iterator, bool> emplace(Args&&... args)
+	{
 		T value(std::forward<Args>(args)...);
 		auto it = std::ranges::lower_bound(data_, value, comp_);
 		if (it != data_.end() && !comp_(value, *it)) { return { it, false }; }
@@ -106,7 +112,8 @@ public:
 		return { it, true };
 	}
 
-	size_type erase(const T& value) {
+	size_type erase(const T& value)
+	{
 		auto it = find(value);
 		if (it == data_.end())
 			return 0;
@@ -114,23 +121,27 @@ public:
 		return 1;
 	}
 
-	void erase(iterator pos) {
+	void erase(iterator pos)
+	{
 		data_.erase(pos);
 	}
 
 	// lookup
-	size_type count(const T& value) const {
+	size_type count(const T& value) const
+	{
 		return contains(value) ? 1 : 0;
 	}
 
-	iterator find(const T& value) {
+	iterator find(const T& value)
+	{
 		auto it = std::ranges::lower_bound(data_, value, comp_);
 		if (it != data_.end() && !comp_(value, *it))
 			return it;
 		return data_.end();
 	}
 
-	const_iterator find(const T& value) const{
+	const_iterator find(const T& value) const
+	{
 		auto it = std::ranges::lower_bound(data_, value, comp_);
 		if (it != data_.end() && !comp_(value, *it))
 			return it;
@@ -138,7 +149,8 @@ public:
 	}
 
 	template <typename Func>
-	bool remove_all_if(Func&& act) {
+	bool remove_all_if(Func&& act)
+	{
 		auto new_end = std::ranges::remove_if(data_, act);
 
 		// Count how many items are removed
@@ -150,47 +162,59 @@ public:
 		return removed_count;
 	}
 
-	bool contains(const T& value) const {
+	bool contains(const T& value) const
+	{
 		return find(value) != data_.end();
 	}
 
-	iterator lower_bound(const T& value) {
+	iterator lower_bound(const T& value)
+	{
 		return std::ranges::lower_bound(data_, value, comp_);
 	}
 
-	const_iterator lower_bound(const T& value) const {
+	const_iterator lower_bound(const T& value) const
+	{
 		return std::ranges::lower_bound(data_, value, comp_);
 	}
 
-	iterator upper_bound(const T& value) {
+	iterator upper_bound(const T& value)
+	{
 		return std::ranges::upper_bound(data_, value, comp_);
 	}
 
-	const_iterator upper_bound(const T& value) const {
+	const_iterator upper_bound(const T& value) const
+	{
 		return std::ranges::upper_bound(data_, value, comp_);
 	}
 
-	std::pair<iterator, iterator> equal_range(const T& value) {
+	std::pair<iterator, iterator> equal_range(const T& value)
+	{
 		return std::ranges::equal_range(data_, value, comp_);
 	}
 
-	std::pair<const_iterator, const_iterator> equal_range(const T& value) const {
+	std::pair<const_iterator, const_iterator> equal_range(const T& value) const
+	{
 		return std::ranges::equal_range(data_, value, comp_);
 	}
 
-	void InvalidatePointer(void* ptr, bool removed) {
-		if (std::is_pointer<T>::value) {
-			if (removed) {
+	void InvalidatePointer(void* ptr, bool removed)
+	{
+		if (std::is_pointer<T>::value)
+		{
+			if (removed)
+			{
 				this->erase((T)ptr);
 			}
 		}
 	}
 
-	bool load(PhobosStreamReader& Stm, bool RegisterForChange) {
+	bool load(PhobosStreamReader& Stm, bool RegisterForChange)
+	{
 		return Stm.Process(this->data_, RegisterForChange);
 	}
 
-	bool save(PhobosStreamWriter& Stm) const {
+	bool save(PhobosStreamWriter& Stm) const
+	{
 		return Stm.Process(this->data_);
 	}
 

@@ -1,6 +1,5 @@
 #pragma once
 
-
 struct SavedGames
 {
 	static int HowManyTimesISavedForThisScenario;

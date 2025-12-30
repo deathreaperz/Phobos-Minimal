@@ -9,14 +9,16 @@
 
 #include <Phobos.SaveGame.h>
 
-BulletTypeClass* BulletTypeExtData::GetDefaultBulletType() {
-	if(!RulesExtData::Instance()->DefautBulletType)
+BulletTypeClass* BulletTypeExtData::GetDefaultBulletType()
+{
+	if (!RulesExtData::Instance()->DefautBulletType)
 		RulesExtData::Instance()->DefautBulletType = BulletTypeClass::Find(DEFAULT_STR2);
 
 	return RulesExtData::Instance()->DefautBulletType;
 }
 
-CoordStruct BulletTypeExtData::CalculateInaccurate(BulletTypeClass* pBulletType) {
+CoordStruct BulletTypeExtData::CalculateInaccurate(BulletTypeClass* pBulletType)
+{
 	if (pBulletType->Inaccurate)
 	{
 		const auto pTypeExt = BulletTypeExtContainer::Instance.Find(pBulletType);
@@ -40,13 +42,15 @@ CoordStruct BulletTypeExtData::CalculateInaccurate(BulletTypeClass* pBulletType)
 
 const ConvertClass* BulletTypeExtData::GetBulletConvert()
 {
-	if(!this->ImageConvert.empty())
+	if (!this->ImageConvert.empty())
 		return this->ImageConvert;
 	else
 	{
 		ConvertClass* pConvert = nullptr;
-		if (const auto pAnimType = AnimTypeClass::Find(This()->ImageFile)) {
-			if(const auto pConvertData = AnimTypeExtContainer::Instance.Find(pAnimType)->Palette.GetConvert()){
+		if (const auto pAnimType = AnimTypeClass::Find(This()->ImageFile))
+		{
+			if (const auto pConvertData = AnimTypeExtContainer::Instance.Find(pAnimType)->Palette.GetConvert())
+			{
 				pConvert = pConvertData;
 			}
 		}
@@ -69,7 +73,7 @@ BulletClass* BulletTypeExtData::CreateBullet(AbstractClass* pTarget, TechnoClass
 	if (auto pBullet = this->CreateBullet(pTarget, pOwner, pWeapon->Damage, pWeapon->Warhead,
 		pWeapon->Speed, WeaponTypeExtContainer::Instance.Find(pWeapon)->GetProjectileRange(), pWeapon->Bright || pWeapon->Warhead->Bright, addDamage))
 	{
-		if(SetWeaponType)
+		if (SetWeaponType)
 			pBullet->SetWeaponType(pWeapon);
 
 		return pBullet;
@@ -93,7 +97,7 @@ BulletClass* BulletTypeExtData::CreateBullet(AbstractClass* pTarget, TechnoClass
 BulletClass* BulletTypeExtData::CreateBullet(AbstractClass* pTarget, TechnoClass* pOwner,
 	int damage, WarheadTypeClass* pWarhead, int speed, int range, bool bright, bool addDamage) const
 {
-	damage = (int)(TechnoExtData::GetDamageMult(pOwner , damage , !addDamage));
+	damage = (int)(TechnoExtData::GetDamageMult(pOwner, damage, !addDamage));
 
 	auto pBullet = This()->CreateBullet(pTarget, pOwner, damage, pWarhead, speed, bright);
 
@@ -181,7 +185,7 @@ bool BulletTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		this->Cluster_Scatter_Max.Read(exINI, pSection, "ClusterScatter.Max");
 
 		this->Interceptable_DeleteOnIntercept.Read(exINI, pSection, "Interceptable.DeleteOnIntercept");
-		this->Interceptable_WeaponOverride.Read(exINI, pSection, "Interceptable.WeaponOverride" , true);
+		this->Interceptable_WeaponOverride.Read(exINI, pSection, "Interceptable.WeaponOverride", true);
 
 		this->BallisticScatterMin.Read(exINI, pSection, "BallisticScatter.Min");
 		this->BallisticScatterMax.Read(exINI, pSection, "BallisticScatter.Max");
@@ -208,7 +212,7 @@ bool BulletTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		this->AnimLength.Read(exINI, pThis->ID, "AnimLength");
 		this->Arcing_AllowElevationInaccuracy.Read(exINI, pSection, "Arcing.AllowElevationInaccuracy");
 		this->AttachedSystem.Read(exINI, pSection, "AttachedSystem");
-		this->ReturnWeapon.Read(exINI, pSection, "ReturnWeapon" , true);
+		this->ReturnWeapon.Read(exINI, pSection, "ReturnWeapon", true);
 		this->ReturnWeapon_ApplyFirepowerMult.Read(exINI, pSection, "ReturnWeapon.ApplyFirepowerMult");
 		this->SubjectToGround.Read(exINI, pSection, "SubjectToGround");
 
@@ -219,19 +223,22 @@ bool BulletTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 		this->EMPulseCannon_InaccurateRadius.Read(exINI, pSection, "EMPulseCannon.InaccurateRadius");
 
-		if (pThis->Inviso) {
+		if (pThis->Inviso)
+		{
 			trailReaded = true;
 			this->LaserTrail_Types.Read(exINI, pSection, "LaserTrail.Types");
 			this->Trails.Read(exINI, pSection, false);
 		}
 	}
 
-	if (pArtInI && pArtInI->GetSection(pArtSection)){
+	if (pArtInI && pArtInI->GetSection(pArtSection))
+	{
 		INI_EX exArtINI(pArtInI);
 
 		//LineTrailData::LoadFromINI(this->LineTrailData, exArtINI, pArtSection);
 		this->Parachute.Read(exArtINI, pArtSection, GameStrings::Parachute());
-		if(!trailReaded) {
+		if (!trailReaded)
+		{
 			this->LaserTrail_Types.Read(exArtINI, pArtSection, "LaserTrail.Types");
 			this->Trails.Read(exArtINI, pArtSection, false);
 		}
@@ -369,7 +376,6 @@ bool BulletTypeExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool BulletTypeExtContainer::SaveAll(json& root)
@@ -410,12 +416,10 @@ void BulletTypeExtContainer::LoadFromINI(BulletTypeClass* key, CCINIClass* pINI,
 		//this function can be called again multiple time but without need to re-init the data
 		ptr->SetInitState(InitState::Ruled);
 	}
-
 }
 
 void BulletTypeExtContainer::WriteToINI(BulletTypeClass* key, CCINIClass* pINI)
 {
-
 	if (auto ptr = this->TryFind(key))
 	{
 		if (!pINI)

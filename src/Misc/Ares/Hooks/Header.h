@@ -82,14 +82,14 @@ struct ShakeScreenHandle
 	}
 };
 
-struct AresGlobalData {
-
+struct AresGlobalData
+{
 	static DWORD InternalVersion;
 	static char ModName[0x40];
 	static char ModVersion[0x40];
 	static int ModIdentifier;
 	static CSFText ModNote;
-	static byte GFX_DX_Force ;
+	static byte GFX_DX_Force;
 	static int colorCount;
 	static int version;
 
@@ -137,7 +137,7 @@ struct AresGlobalData {
 
 struct TechnoExt_ExtData
 {
-	static void AddPassengers(BuildingClass* const Grinder, FootClass* Vic , bool ParentReversed);
+	static void AddPassengers(BuildingClass* const Grinder, FootClass* Vic, bool ParentReversed);
 
 	static bool IsSabotagable(BuildingClass const* const pThis);
 	static Action GetiInfiltrateActionResult(InfantryClass* pInf, BuildingClass* pBuilding);
@@ -160,7 +160,7 @@ struct TechnoExt_ExtData
 	static bool IsBaseNormal(BuildingClass* pBuilding);
 
 	static int GetVictimBountyValue(TechnoClass* pVictim, TechnoClass* pKiller);
-	static bool KillerAllowedToEarnBounty(TechnoClass* pKiller , TechnoClass* pVictim);
+	static bool KillerAllowedToEarnBounty(TechnoClass* pKiller, TechnoClass* pVictim);
 	static void GiveBounty(TechnoClass* pVictim, TechnoClass* pKiller);
 
 	static AresHijackActionResult GetActionHijack(InfantryClass* pThis, TechnoClass* const pTarget);
@@ -195,9 +195,9 @@ struct TechnoExt_ExtData
 	);
 
 	static int GetWarpPerStep(TemporalClass* pThis, int nStep);
-	static bool Warpable(TemporalClass* pTemp , TechnoClass* pTarget);
+	static bool Warpable(TemporalClass* pTemp, TechnoClass* pTarget);
 
-	static void DepositTiberium(TechnoClass* pThis , HouseClass* pHouse, float const amount, float const bonus, int const idxType);
+	static void DepositTiberium(TechnoClass* pThis, HouseClass* pHouse, float const amount, float const bonus, int const idxType);
 	static void RefineTiberium(TechnoClass* pThis, HouseClass* pHouse, float const amount, int const idxType);
 
 	static bool FiringAllowed(TechnoClass* pThis, TechnoClass* pTarget, WeaponTypeClass* pWeapon);
@@ -240,7 +240,7 @@ struct TechnoExt_ExtData
 		OwnerHouseKind owner,
 		int strength,
 		AnimTypeClass* pAnimType
-		);
+	);
 
 	static void Destroy(TechnoClass* pTechno, TechnoClass* pKiller, HouseClass* pKillerHouse, WarheadTypeClass* pWarhead);
 	static bool IsDriverKillable(TechnoClass* pThis, double KillBelowPercent);
@@ -248,7 +248,7 @@ struct TechnoExt_ExtData
 	static bool ConvertToType(TechnoClass* pThis, TechnoTypeClass* pToType, bool AdjustHealth = true, bool IsChangeOwnership = false);
 
 	static int GetSelfHealAmount(TechnoClass* pThis);
-	static void SpawnVisceroid(CoordStruct& crd, UnitTypeClass* pType, int chance, bool ignoreTibDeathToVisc , HouseClass* Owner);
+	static void SpawnVisceroid(CoordStruct& crd, UnitTypeClass* pType, int chance, bool ignoreTibDeathToVisc, HouseClass* Owner);
 
 	static void TransferOriginalOwner(TechnoClass* pFrom, TechnoClass* pTo);
 	static void TransferIvanBomb(TechnoClass* From, TechnoClass* To);
@@ -267,7 +267,6 @@ struct TechnoTypeExt_ExtData
 	static int* GetTurretWeaponIndex(TechnoTypeClass* pType, size_t idx);
 	static WeaponStruct* GetWeapon(TechnoTypeClass* pType, int const idx, bool elite);
 	static void ReadWeaponStructDatas(TechnoTypeClass* pType, CCINIClass* pRules);
-
 };
 
 struct TechnoExperienceData
@@ -315,7 +314,7 @@ public:
 	static void UpdateSparkleAnim(TechnoClass* pFrom, TechnoClass* pTo);
 	static void UpdateSparkleAnim(TechnoClass* pWho, AnimTypeClass* pAnim = nullptr);
 	static bool thresholdExceeded(TechnoClass* Victim);
-	static bool isEligibleEMPTarget(TechnoClass* const pTarget, HouseClass* const pSourceHouse,WarheadTypeClass* pWarhead);
+	static bool isEligibleEMPTarget(TechnoClass* const pTarget, HouseClass* const pSourceHouse, WarheadTypeClass* pWarhead);
 	static void deliverEMPDamage(TechnoClass* const pTechno, TechnoClass* const pFirer, WarheadTypeClass* pWarhead);
 	static bool EnableEMPEffect(TechnoClass* const pVictim, ObjectClass* const pSource);
 	static void DisableEMPEffect(TechnoClass* const pVictim);
@@ -333,7 +332,6 @@ public:
 	virtual void Blit_Copy_Tinted(void* dst, void* src, int len, int zval, T* zbuf, T* abuf, int alvl, int warp, T tint) = 0;
 	virtual void Blit_Move(void* dst, void* src, int len, int zval, T* zbuf, T* abuf, int alvl, int warp) = 0;
 	virtual void Blit_Move_Tinted(void* dst, void* src, int len, int zval, T* zbuf, T* abuf, int alvl, int warp, T tint) = 0;
-
 };
 
 template <typename T>
@@ -342,7 +340,6 @@ class AresPcxBlit final : public AresBlitter<T>
 public:
 	OPTIONALINLINE explicit AresPcxBlit(T mask, int imageWidth, int imageHeight, int cornerSize = 2) noexcept
 		: Mask(mask), Width(imageWidth), Height(imageHeight), CornerSize(cornerSize) { }
-
 
 	virtual ~AresPcxBlit() override final = default;
 
@@ -363,7 +360,8 @@ public:
 			bool inBottomRight = (x >= Width - CornerSize && y >= Height - CornerSize);
 			bool isCorner = inTopLeft || inTopRight || inBottomLeft || inBottomRight;
 
-			if (pixel != Mask || !isCorner) {
+			if (pixel != Mask || !isCorner)
+			{
 				*pDst = pixel;
 			}
 			++pDst;
@@ -412,7 +410,6 @@ struct OwnFunc
 struct AresScriptExt
 {
 	static bool Handle(TeamClass* pTeam, ScriptActionNode* pTeamMission, bool bThirdArd);
-
 };
 
 struct AresWPWHExt
@@ -425,7 +422,7 @@ struct AresWPWHExt
 	);
 
 	static bool applyOccupantDamage(BulletClass* pThis);
-	static void applyKillDriver(WarheadTypeClass* pWH , TechnoClass* pKiller, TechnoClass* pVictim);
+	static void applyKillDriver(WarheadTypeClass* pWH, TechnoClass* pKiller, TechnoClass* pVictim);
 	static void applyKillDriver(WarheadTypeClass* pWH, HouseClass* pKillerOwner, TechnoClass* pVictim);
 };
 
@@ -469,7 +466,7 @@ struct AresTEventExt
 	// why these were 256 257 ? , something not right ,..
 	static std::pair<bool, bool> GetPersistableFlag(AresTriggerEvents nAction);
 	static std::pair<LogicNeedType, bool >  GetLogicNeed(AresTriggerEvents nAction);
-	static std::pair<TriggerAttachType , bool> GetAttachFlags(AresTriggerEvents nEvent);
+	static std::pair<TriggerAttachType, bool> GetAttachFlags(AresTriggerEvents nEvent);
 
 	static bool FindTechnoType(TEventClass* pThis, int args, HouseClass* pWho);
 
@@ -485,7 +482,7 @@ struct TunnelFuncs
 	static void DestroyTunnel(std::vector<FootClass*>* pTunnelData, BuildingClass* pTunnel, TechnoClass* pKiller);
 	static void EnterTunnel(std::vector<FootClass*>* pTunnelData, BuildingClass* pTunnel, FootClass* pFoot);
 	static bool CanEnterTunnel(std::vector<FootClass*>* pTunnelData, BuildingClass* pTunnel, FootClass* pEnterer);
-	static bool PopulatePassangerPIPData(TechnoClass* pThis, TechnoTypeClass* pType,int pipMax);
+	static bool PopulatePassangerPIPData(TechnoClass* pThis, TechnoTypeClass* pType, int pipMax);
 	static std::pair<bool, FootClass*> UnlimboOne(std::vector<FootClass*>* pVector, BuildingClass* pTunnel, DWORD Where);
 	static bool UnloadOnce(FootClass* pFoot, BuildingClass* pTunnel, bool silent = false);
 	static void HandleUnload(std::vector<FootClass*>* pTunnelData, BuildingClass* pTunnel);
@@ -600,7 +597,6 @@ struct MouseCursorFuncs
 	{
 		MouseClassExt::InsertSWMappedAction((MouseCursorType)CursorIdx, nAction, bShrouded);
 	}
-
 };
 
 struct StaticVars
@@ -619,5 +615,4 @@ struct StaticVars
 	static void LoadGlobalsConfig();
 
 	static void Clear();
-
 };

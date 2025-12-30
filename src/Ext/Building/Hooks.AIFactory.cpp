@@ -122,7 +122,6 @@ std::tuple<BuildingClass**, bool, AbstractType> GetFactory(AbstractType AbsType,
 //	return 0x7C8B47;
 //}
 
-
 //ASMJIT_PATCH(0x7258D0, AnnounceInvalidPointer_PhobosGlobal_Mapped, 0x6)
 //{
 //	GET(AbstractClass* const, pInvalid, ECX);
@@ -331,7 +330,8 @@ ASMJIT_PATCH(0x4FEEE0, HouseClass_AI_InfantryProduction, 6)
 {
 	GET(FakeHouseClass*, pThis, ECX);
 
-	if (pThis->ProducingInfantryTypeIndex < 0) {
+	if (pThis->ProducingInfantryTypeIndex < 0)
+	{
 		const int result = pThis->_GetExtData()->GetInfantryTypeToProduce();
 		if (result >= 0)
 			pThis->ProducingInfantryTypeIndex = result;
@@ -345,8 +345,8 @@ ASMJIT_PATCH(0x4FF210, HouseClass_AI_AircraftProduction, 6)
 {
 	GET(FakeHouseClass*, pThis, ECX);
 
-	if (pThis->ProducingAircraftTypeIndex < 0) {
-
+	if (pThis->ProducingAircraftTypeIndex < 0)
+	{
 		const int result = pThis->_GetExtData()->GetAircraftTypeToProduce();
 		if (result >= 0)
 			pThis->ProducingAircraftTypeIndex = result;

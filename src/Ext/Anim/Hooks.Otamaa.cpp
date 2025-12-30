@@ -21,7 +21,6 @@
 
 #include <Memory.h>
 
-
 ASMJIT_PATCH(0x685078, Generate_OreTwinkle_Anims, 0x7)
 {
 	GET(FakeCellClass* const, location, ESI);
@@ -116,7 +115,8 @@ void NOINLINE FakeAnimClass::_Start()
 	if (!this->IsPlaying && this->Type->TiberiumChainReaction)
 	{
 		auto gCoords = this->GetCoords();
-		if(CellClass* cptr = MapClass::Instance->TryGetCellAt(gCoords)){
+		if (CellClass* cptr = MapClass::Instance->TryGetCellAt(gCoords))
+		{
 			int tib = cptr->GetContainedTiberiumIndex();
 
 			if (tib != -1)
@@ -256,24 +256,28 @@ void NOINLINE FakeAnimClass::_ApplyVeinsDamage()
 
 void FakeAnimClass::_ApplyDeformTerrrain()
 {
-
 }
 
 void NOINLINE FakeAnimClass::_SpreadTiberium(CoordStruct& coords, bool isOnbridge)
 {
 	RectangleStruct updaterect(0, 0, 0, 0);
 
-	if (this->Type->IsTiberium && !isOnbridge && this->Type->TiberiumSpawnType) {
+	if (this->Type->IsTiberium && !isOnbridge && this->Type->TiberiumSpawnType)
+	{
 		const int _radius = this->Type->TiberiumSpreadRadius;
 
-		for (int x = -_radius; x <= _radius; ++x) {
-			for (int y = -_radius; y <= _radius; y++) {
-				if ((int)Math::sqrt((double)x * (double)x + (double)y * (double)y) <= _radius) {
+		for (int x = -_radius; x <= _radius; ++x)
+		{
+			for (int y = -_radius; y <= _radius; y++)
+			{
+				if ((int)Math::sqrt((double)x * (double)x + (double)y * (double)y) <= _radius)
+				{
 					CellClass* cellptr = MapClass::Instance->GetCellAt(CellClass::Coord2Cell(coords) + CellSpread::AdjacentCell[(int)x & 7]);
 
-					if (cellptr->CanTiberiumGerminate(nullptr)) {
-						if (auto pType = OverlayTypeClass::Array->get_or_default(this->Type->TiberiumSpawnType->ArrayIndex + ScenarioClass::Instance->Random.RandomFromMax(3))) {
-
+					if (cellptr->CanTiberiumGerminate(nullptr))
+					{
+						if (auto pType = OverlayTypeClass::Array->get_or_default(this->Type->TiberiumSpawnType->ArrayIndex + ScenarioClass::Instance->Random.RandomFromMax(3)))
+						{
 							if (!pType->Tiberium)
 								return; // not valid
 
@@ -287,7 +291,8 @@ void NOINLINE FakeAnimClass::_SpreadTiberium(CoordStruct& coords, bool isOnbridg
 							overlayrect.Y -= TacticalClass::view_bound->Y;
 							updaterect = RectangleStruct::Union(updaterect, overlayrect);
 						}
-						else {
+						else
+						{
 							return; // not valid
 						}
 					}
@@ -352,9 +357,10 @@ void NOINLINE FakeAnimClass::_PlayExtraAnims(bool onWater, bool onBridge)
 	}
 }
 
-void NOINLINE FakeAnimClass::_DrawTrailerAnim() {
-	if (this->Type->TrailerAnim && this->Type->TrailerSeperation >= 1) {
-
+void NOINLINE FakeAnimClass::_DrawTrailerAnim()
+{
+	if (this->Type->TrailerAnim && this->Type->TrailerSeperation >= 1)
+	{
 		CoordStruct _coord = this->GetCoords();
 		if (!_coord.IsValid()) //yeah , fuck , lagging the game
 			return;
@@ -362,46 +368,51 @@ void NOINLINE FakeAnimClass::_DrawTrailerAnim() {
 		TechnoClass* const pTech = AnimExtData::GetTechnoInvoker(this);
 		HouseClass* const pOwner = !this->Owner && pTech ? this->Owner : this->Owner;
 
-		if(this->Type->TrailerSeperation == 1 || !(Unsorted::CurrentFrame() % this->Type->TrailerSeperation)) {
-
+		if (this->Type->TrailerSeperation == 1 || !(Unsorted::CurrentFrame() % this->Type->TrailerSeperation))
+		{
 			AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(this->Type->TrailerAnim, _coord, 1, 1, AnimFlag::AnimFlag_600, 0, 0), pOwner, nullptr, pTech, false, false);
 		}
 	}
 }
 
-CoordStruct* FakeAnimClass::__GetCenterCoords(CoordStruct* pBuffer) {
-
-	if (auto pObj = this->OwnerObject) {
+CoordStruct* FakeAnimClass::__GetCenterCoords(CoordStruct* pBuffer)
+{
+	if (auto pObj = this->OwnerObject)
+	{
 		pObj->GetRenderCoords(pBuffer);
 		*pBuffer = pBuffer->operator+(this->Location);
 
-		if (this->Type) {
-
+		if (this->Type)
+		{
 			auto pTypeExt = this->_GetTypeExtData();
 
-			if (pTypeExt->AttachedAnimPosition != AttachedAnimPosition::Default) {
-
+			if (pTypeExt->AttachedAnimPosition != AttachedAnimPosition::Default)
+			{
 				//save original coords because centering it broke damage
 				//pThis->_GetExtData()->BackupCoords = pCoords->operator+(pThis->Location);
 
-				if (pTypeExt->AttachedAnimPosition & AttachedAnimPosition::Ground) {
+				if (pTypeExt->AttachedAnimPosition & AttachedAnimPosition::Ground)
+				{
 					pBuffer->Z = MapClass::Instance->GetCellFloorHeight(pBuffer);
 				}
 
-				if (pTypeExt->AttachedAnimPosition & AttachedAnimPosition::Center) {
+				if (pTypeExt->AttachedAnimPosition & AttachedAnimPosition::Center)
+				{
 					pBuffer->X += 128;
 					pBuffer->Y += 128;
 				}
 			}
 		}
-	} else {
+	}
+	else
+	{
 		*pBuffer = this->Location;
 	}
 
 	return pBuffer;
 }
 
-DEFINE_FUNCTION_JUMP(VTABLE , 0x7E339C , FakeAnimClass::__GetCenterCoords)
+DEFINE_FUNCTION_JUMP(VTABLE, 0x7E339C, FakeAnimClass::__GetCenterCoords)
 
 void NOINLINE FakeAnimClass::_ApplyHideIfNoOre()
 {
@@ -418,8 +429,8 @@ void NOINLINE FakeAnimClass::_CreateFootApplyOccupyBits()
 	if (!this->Location.IsValid())
 		return;
 
-	if (this->Type->MakeInfantry != -1) {
-
+	if (this->Type->MakeInfantry != -1)
+	{
 		this->MarkAllOccupationBits(this->Location);
 		this->_GetExtData()->CreateUnitLocation = this->Location;
 	}
@@ -443,12 +454,11 @@ void NOINLINE FakeAnimClass::_CreateFoot()
 
 		const auto& toInf = RulesClass::Instance->AnimToInfantry;
 
-		if ((size_t)this->Type->MakeInfantry < toInf.size()) {
-
-
+		if ((size_t)this->Type->MakeInfantry < toInf.size())
+		{
 			if (HouseClass* pInfOwner = !this->Owner || this->Owner->Defeated ?
-				HouseExtData::FindFirstCivilianHouse() : this->Owner) {
-
+				HouseExtData::FindFirstCivilianHouse() : this->Owner)
+			{
 				auto pInf = (InfantryClass*)toInf.Items[this->Type->MakeInfantry]->CreateObject(pInfOwner);
 
 				if (!pInf->Unlimbo(this->Location, DirType::SouthEast))
@@ -461,8 +471,10 @@ void NOINLINE FakeAnimClass::_CreateFoot()
 				auto pAnimCoords = this->GetCoords();
 				auto pCell = MapClass::Instance->GetCellAt(pAnimCoords);
 
-				if(pCell->ContainsBridge()) {
-					if (this->Location.Z > pAnimCoords.Z + Unsorted::BridgeHeight) {
+				if (pCell->ContainsBridge())
+				{
+					if (this->Location.Z > pAnimCoords.Z + Unsorted::BridgeHeight)
+					{
 						pInf->Mark(MarkType::Remove);
 						pInf->OnBridge = true;
 						pInf->Mark(MarkType::Put);
@@ -487,7 +499,8 @@ void NOINLINE FakeAnimClass::_CreateFoot()
 	}
 }
 
-bool NOINLINE PingPong(FakeAnimClass* pThis) {
+bool NOINLINE PingPong(FakeAnimClass* pThis)
+{
 	if (pThis->Type->PingPong)
 	{
 		if ((pThis->RemainingIterations <= 1 && (pThis->Animation.Stage >= pThis->Type->End || pThis->Animation.Stage == 0))
@@ -514,25 +527,28 @@ bool NOINLINE StageLoops(FakeAnimClass* pThis)
 	return true;
 }
 
-bool NOINLINE ReverseAndShadow(FakeAnimClass* pThis) {
-
+bool NOINLINE ReverseAndShadow(FakeAnimClass* pThis)
+{
 	if ((!pThis->Type->Shadow && (!pThis->Type->Reverse && !pThis->Reverse || pThis->Animation.Stage > 0))
 		|| (pThis->Type->Reverse && pThis->Animation.Stage > 0)
 		|| (pThis->Reverse || pThis->Animation.Stage < pThis->Type->LoopEnd - pThis->Type->Start) && (
 			!pThis->Type->Reverse && !pThis->Reverse || pThis->Animation.Stage > 0))
 	{
-			return true;
+		return true;
 	}
 
 	return false;
 }
 
-void NOINLINE SwapType(FakeAnimClass* pThis, AnimTypeClass* pNewType) {
+void NOINLINE SwapType(FakeAnimClass* pThis, AnimTypeClass* pNewType)
+{
 	pThis->Type = pNewType;
 }
 
-bool NOINLINE UpdateLoopDelay(FakeAnimClass* pThis) {
-	if (pThis->LoopDelay > 0) {
+bool NOINLINE UpdateLoopDelay(FakeAnimClass* pThis)
+{
+	if (pThis->LoopDelay > 0)
+	{
 		const int delay = pThis->LoopDelay - 1;
 		pThis->LoopDelay = delay;
 		if (delay == 0)
@@ -546,43 +562,52 @@ bool NOINLINE UpdateLoopDelay(FakeAnimClass* pThis) {
 
 void FakeAnimClass::_AI()
 {
-	if (this->IsAlive) {
-
-		if (!this->GetCoords().IsValid() || !MapClass::Instance->IsValid(this->GetCoords())) {
+	if (this->IsAlive)
+	{
+		if (!this->GetCoords().IsValid() || !MapClass::Instance->IsValid(this->GetCoords()))
+		{
 			this->__ToDelete_197 = true;
 			this->TimeToDie = true;
 			this->UnInit();
 			return;
 		}
 
-		if (!this->IsPlaying) {
+		if (!this->IsPlaying)
+		{
 			auto coord = this->GetCoords();
 			VocClass::SafeImmedietelyPlayAt(this->Type->Report, &coord, &this->Audio3);
 		}
 
-		if (this->Type->IsFlamingGuy) {
+		if (this->Type->IsFlamingGuy)
+		{
 			this->FlamingGuy_AI();
 			this->ObjectClass::Update();
-		} else {
+		}
+		else
+		{
 			TechnoExt_ExtData::UpdateAlphaShape(this);
 		}
 
-		if (this->Type->PsiWarning) {
+		if (this->Type->PsiWarning)
+		{
 			this->Invisible = !Is_Visible_To_Psychic(this->Owner, MapClass::Instance->GetCellAt(this->GetCoords()));
 		}
 
-		if (this->Type == RulesClass::Instance->Behind) {
+		if (this->Type == RulesClass::Instance->Behind)
+		{
 			this->Invisible = !GameOptionsClass::Instance->ShowHidden;
 		}
 
 		this->_ApplyHideIfNoOre();
 		this->_CreateFootApplyOccupyBits();
 
-		if (this->Unpaused && this->PausedAnimFrame == this->Animation.Stage) {
+		if (this->Unpaused && this->PausedAnimFrame == this->Animation.Stage)
+		{
 			this->Unpaused = false;
 		}
 
-		if (this->HasExtras) {
+		if (this->HasExtras)
+		{
 			const auto bounceStatus = this->AnimExtras();
 
 			if (bounceStatus == BounceClass::Status::Impact || bounceStatus == BounceClass::Status::Bounce)
@@ -608,47 +633,55 @@ void FakeAnimClass::_AI()
 			}
 		}
 
-		if (this->IsAlive && !this->__ToDelete_197) {
+		if (this->IsAlive && !this->__ToDelete_197)
+		{
 			this->_DrawTrailerAnim();
 		}
 
-		if (this->Type == RulesClass::Instance->DropZoneAnim) {
+		if (this->Type == RulesClass::Instance->DropZoneAnim)
+		{
 			this->__ToDelete_197 = MapClass::Instance->GetCellAt(this->GetCoords())->GetBuilding() != nullptr;
 		}
 
-		if (this->__ToDelete_197) {
+		if (this->__ToDelete_197)
+		{
 			this->TimeToDie = true;
 			this->UnInit();
 			return;
 		}
 
-		if (this->SkipProcessOnce) {
+		if (this->SkipProcessOnce)
+		{
 			this->SkipProcessOnce = false;
 			return;
 		}
 
-		if (UpdateLoopDelay(this)) {
+		if (UpdateLoopDelay(this))
+		{
 			return;
 		}
 
 		if (this->IsAlive)
 		{
-			if (this->Type->IsVeins) {
+			if (this->Type->IsVeins)
+			{
 				this->_ApplyVeinsDamage();
 			}
 
-			if (this->Type->IsAnimatedTiberium) {
+			if (this->Type->IsAnimatedTiberium)
+			{
 				auto _animated_coords = this->GetCoords() - CoordStruct(384, 384, 0);
 				auto pCell = MapClass::Instance->GetCellAt(_animated_coords);
 
-				if (pCell->OverlayTypeIndex == -1 || OverlayTypeClass::Array->Items[pCell->OverlayTypeIndex]->CellAnim != this->Type) {
+				if (pCell->OverlayTypeIndex == -1 || OverlayTypeClass::Array->Items[pCell->OverlayTypeIndex]->CellAnim != this->Type)
+				{
 					this->__ToDelete_197 = true;
 				}
 			}
 
 			if (this->Type->End == -1)
 			{
-				if(auto pImage = this->Type->GetImage())
+				if (auto pImage = this->Type->GetImage())
 					this->Type->End = pImage->Frames;
 
 				if (this->Type->Shadow)
@@ -667,7 +700,8 @@ void FakeAnimClass::_AI()
 				if (!this->Animation.Update())
 					return;
 
-				if (this->Type->Damage > 0.0 && !this->HasExtras && !this->InLimbo) {
+				if (this->Type->Damage > 0.0 && !this->HasExtras && !this->InLimbo)
+				{
 					AnimExtData::DealDamageDelay(this);
 					if (!this->IsAlive)
 						return;
@@ -675,16 +709,20 @@ void FakeAnimClass::_AI()
 
 				if (this->Type->MiddleFrameIndex
 					&& this->Animation.Stage + this->Type->Start == this->Type->MiddleFrameIndex
-					&& !this->HasExtras) {
+					&& !this->HasExtras)
+				{
 					this->_Middle();
 				}
 
-				if (PingPong(this)) {
+				if (PingPong(this))
+				{
 					return;
 				}
 
-				if (StageLoops(this)){
-					if (ReverseAndShadow(this)) {
+				if (StageLoops(this))
+				{
+					if (ReverseAndShadow(this))
+					{
 						return;
 					}
 				}
@@ -747,7 +785,8 @@ void FakeAnimClass::_AI()
 
 					this->Animation.Start(delay);
 					this->Animation.Stage = this->Type->Start;
-					if(this->_GetTypeExtData()->Damaging_UseSeparateState){
+					if (this->_GetTypeExtData()->Damaging_UseSeparateState)
+					{
 						int damagedelay = this->_GetTypeExtData()->Damaging_Rate == -1 ? this->Animation.Step : this->_GetTypeExtData()->Damaging_Rate;
 						this->_GetExtData()->DamagingState.Start(damagedelay);
 					}
@@ -769,9 +808,10 @@ int FakeAnimClass::_BounceAI()
 	BounceClass* pBounce = &this->Bounce;
 	this->_GetExtData()->CreateAttachedSystem();
 
-	const BounceClass::Status status  = pBounce->Update();
+	const BounceClass::Status status = pBounce->Update();
 
-	if (this->Type->IsMeteor) {
+	if (this->Type->IsMeteor)
+	{
 		pBounce->Velocity.Z += (int)pBounce->Gravity;
 	}
 
@@ -792,25 +832,29 @@ int FakeAnimClass::_BounceAI()
 			);
 		}
 
-		if (this->Type->DamageRadius < 0 || CLOSE_ENOUGH(this->Type->Damage, 0.0) || !this->Type->Warhead) {
+		if (this->Type->DamageRadius < 0 || CLOSE_ENOUGH(this->Type->Damage, 0.0) || !this->Type->Warhead)
+		{
 			this->SetLocation(_coord);
 			return (int)status;
 		}
 
 		const auto pCell = MapClass::Instance->GetCellAt(_coord);
 
-		for (auto pObject = pCell->FirstObject; pObject; pObject = pObject->NextObject) {
+		for (auto pObject = pCell->FirstObject; pObject; pObject = pObject->NextObject)
+		{
 			auto _objCoord = pObject->GetCoords();
 			const int nDist = Math::abs(_coord.Y - _objCoord.Y) + Math::abs(_coord.X - _objCoord.X);
 
-			if (nDist <= this->Type->DamageRadius) {
+			if (nDist <= this->Type->DamageRadius)
+			{
 				auto nDamage = (int)this->Type->Damage;
 				pObject->ReceiveDamage(&nDamage, Game::AdjustHeight(nDist), this->Type->Warhead,
 							  pTechnoInvoker, false, false, pTechnoInvoker ? pTechnoInvoker->Owner : this->Owner);
 			}
 		}
 	}
-	else if (status == BounceClass::Status::Impact) {
+	else if (status == BounceClass::Status::Impact)
+	{
 		this->UnInit();
 	}
 

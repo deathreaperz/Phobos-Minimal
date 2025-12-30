@@ -202,12 +202,13 @@ ASMJIT_PATCH(0x69A310, SessionClass_GetPlayerColorScheme, 7)
 	// if spawner feeds us a number, it will be used to look up color scheme directly
 	// Original Author : Morton
 
-	if (SpawnerMain::Configs::Enabled && Phobos::UI::UnlimitedColor && idx != PlayerColorSlot::Random) {
+	if (SpawnerMain::Configs::Enabled && Phobos::UI::UnlimitedColor && idx != PlayerColorSlot::Random)
+	{
 		ret = Math::abs((int)idx) << 1;
-	} else {
-
+	}
+	else
+	{
 		{
-
 			// get the slot
 			AresGlobalData::ColorData* slot = nullptr;
 			if (idx == PlayerColorSlot::Random || idx == AresGlobalData::colorCount)

@@ -1,6 +1,5 @@
 #include "BuildingFoundations.h"
 
-
 // FoundationCells - Interior cell coordinates (which tiles are occupied)
 // Array starts at address: 0089C900
 
@@ -386,7 +385,6 @@ std::array<FoundationStruct, 22> FoundationDataStruct::Cells = { {
 	FoundationCells_18, FoundationCells_19, FoundationCells_20,
 	FoundationCells_21
 } };
-
 
 //====================================================================
 // FoundationOutlines - Border/perimeter coordinates for rendering
@@ -788,7 +786,6 @@ static COMPILETIMEEVAL FoundationStruct FoundationOutlines_21 = { {
 	{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
 	{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}
 } };
-
 
 //===========================================================
 //

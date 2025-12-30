@@ -40,7 +40,7 @@ void SW_MeteorShower::LoadFromINI(SWTypeExtData* pData, CCINIClass* pINI)
 	const auto pSection = pData->This()->ID;
 	INI_EX exINI(pINI);
 
-	pData->MeteorCounts.Read(exINI ,pSection,"Meteor.Count");
+	pData->MeteorCounts.Read(exINI, pSection, "Meteor.Count");
 	pData->MeteorImactCounts.Read(exINI, pSection, "Meteor.ImpactCount");
 	pData->MeteorAddImpactChance.Read(exINI, pSection, "Meteor.AddImpactChance");
 	pData->MeteorKindChance.Read(exINI, pSection, "Meteor.KindChance");

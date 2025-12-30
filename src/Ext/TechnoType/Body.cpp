@@ -85,7 +85,6 @@ bool TechnoTypeExtData::IsSecondary(int nWeaponIndex)
 		return this->MultiWeapon_IsSecondary[nWeaponIndex];
 	}
 
-
 	return nWeaponIndex != 0;
 }
 
@@ -184,8 +183,10 @@ int TechnoTypeExtData::SelectForceWeapon(TechnoClass* pThis, AbstractClass* pTar
 		{
 			forceWeaponIndex = this->ForceWeapon_UnderEMP;
 		}
-		else if (this->ForceWeapon_Capture >= 0) {
-			if (const auto pBuilding = cast_to<BuildingClass*, false>(pTarget)) {
+		else if (this->ForceWeapon_Capture >= 0)
+		{
+			if (const auto pBuilding = cast_to<BuildingClass*, false>(pTarget))
+			{
 				if ((pBuilding->Type->Capturable || pBuilding->Type->NeedsEngineer)
 					&& !pThis->Owner->IsAlliedWith(pBuilding->Owner))
 					forceWeaponIndex = this->ForceWeapon_Capture;
@@ -198,7 +199,7 @@ int TechnoTypeExtData::SelectForceWeapon(TechnoClass* pThis, AbstractClass* pTar
 		&& (!this->ForceWeapon_InRange.empty() || !this->ForceAAWeapon_InRange.empty()))
 	{
 		TechnoTypeExtData::SelectWeaponMutex = true;
-		forceWeaponIndex = ApplyForceWeaponInRange(pThis , pTarget);
+		forceWeaponIndex = ApplyForceWeaponInRange(pThis, pTarget);
 		TechnoTypeExtData::SelectWeaponMutex = false;
 	}
 
@@ -258,7 +259,7 @@ int TechnoTypeExtData::SelectMultiWeapon(TechnoClass* const pThis, AbstractClass
 	if (pType->IsGattling || (pType->HasMultipleTurrets() && pType->Gunner))
 		return -1;
 
-	const int weaponCount =  MinImpl(pType->WeaponCount, this->MultiWeapon_SelectCount.Get());
+	const int weaponCount = MinImpl(pType->WeaponCount, this->MultiWeapon_SelectCount.Get());
 	const bool noSecondary = this->NoSecondaryWeaponFallback;
 
 	if (weaponCount < 2)
@@ -376,7 +377,7 @@ void TechnoTypeExtData::Initialize()
 
 	this->SellSound = RulesClass::Instance->SellSound;
 	auto Eva_ready = GameStrings::EVA_ConstructionComplete();
-	auto Eva_sold = GameStrings::EVA_StructureSold() ;
+	auto Eva_sold = GameStrings::EVA_StructureSold();
 
 	if (this->AbsType != BuildingTypeClass::AbsID)
 	{
@@ -412,9 +413,10 @@ void TechnoTypeExtData::CalculateSpawnerRange()
 		};
 
 	const int wpCount = pTechnoType->IsGattling ? pTechnoType->WeaponCount : 2;
-	for (int i = 0; i < wpCount ; i++) {
-			setWeaponRange(this->SpawnerRange, FakeTechnoTypeClass::__GetWeapon(pTechnoType, discard_t(), i)->WeaponType);
-			setWeaponRange(this->EliteSpawnerRange, FakeTechnoTypeClass::__GetEliteWeapon(pTechnoType, discard_t(),i)->WeaponType);
+	for (int i = 0; i < wpCount; i++)
+	{
+		setWeaponRange(this->SpawnerRange, FakeTechnoTypeClass::__GetWeapon(pTechnoType, discard_t(), i)->WeaponType);
+		setWeaponRange(this->EliteSpawnerRange, FakeTechnoTypeClass::__GetEliteWeapon(pTechnoType, discard_t(), i)->WeaponType);
 	}
 
 	this->SpawnerRange += weaponRangeExtra;
@@ -480,7 +482,7 @@ VoxelStruct* TechnoTypeExtData::GetTurretsVoxel(TechnoTypeClass* const pThis, in
 
 VoxelStruct* TechnoTypeExtData::GetBarrelsVoxelFixedUp(TechnoTypeClass* const pThis, int const nIdx)
 {
-	if(!pThis->HasMultipleTurrets() || pThis->IsGattling || nIdx == -1)
+	if (!pThis->HasMultipleTurrets() || pThis->IsGattling || nIdx == -1)
 		return &pThis->BarrelVoxel;
 
 	if (nIdx < TechnoTypeClass::MaxWeapons)
@@ -498,7 +500,7 @@ VoxelStruct* TechnoTypeExtData::GetBarrelsVoxelFixedUp(TechnoTypeClass* const pT
 
 VoxelStruct* TechnoTypeExtData::GetTurretsVoxelFixedUp(TechnoTypeClass* const pThis, int const nIdx)
 {
-	if(!pThis->HasMultipleTurrets() || pThis->IsGattling || nIdx == -1)
+	if (!pThis->HasMultipleTurrets() || pThis->IsGattling || nIdx == -1)
 		return &pThis->TurretVoxel;
 
 	if (nIdx < TechnoTypeClass::MaxWeapons)
@@ -520,17 +522,21 @@ const char* TechnoTypeExtData::GetSelectionGroupID() const
 
 bool TechnoTypeExtData::IsGenericPrerequisite() const
 {
-	if(this->GenericPrerequisite.empty()) {
+	if (this->GenericPrerequisite.empty())
+	{
 		auto pThis = This();
 
-		for(const auto& prerequisite : GenericPrerequisite::Array){
+		for (const auto& prerequisite : GenericPrerequisite::Array)
+		{
 			const auto& alternates = prerequisite->Alternates;
 
-			if (alternates.empty()) {
+			if (alternates.empty())
+			{
 				continue;
 			}
 
-			if (std::ranges::find(alternates, pThis) != alternates.end()) {
+			if (std::ranges::find(alternates, pThis) != alternates.end())
+			{
 				this->GenericPrerequisite = true;
 				return true;
 			}
@@ -582,7 +588,6 @@ void TechnoTypeExtData::GetBurstFLHs(TechnoTypeClass* pThis,
 		for (int j = 0; j < INT_MAX; j++)
 		{
 			for(size_t k = 0; k < nFLH.size(); ++k){
-
 				const auto pPrefixTagRes = *(pPrefixTag + k);
 
 				IMPL_SNPRNINTF(tempBuffer, sizeof(tempBuffer), "%sWeapon%d", pPrefixTagRes, i + 1);
@@ -680,10 +685,13 @@ void TechnoTypeExtData::ParseVoiceWeaponAttacks(INI_EX& exINI, const char* pSect
 		IMPL_SNPRNINTF(tempBuff, sizeof(tempBuff), "VoiceEliteWeapon%dAttack", index + 1);
 		VoiceAttack.Read(exINI, pSection, tempBuff);
 
-		if (int(n.size()) > index) {
+		if (int(n.size()) > index)
+		{
 			n[index] = VoiceAttack.Get(n[index]);
 			nE[index] = VoiceEliteAttack.Get(nE[index]);
-		} else {
+		}
+		else
+		{
 			int voiceattack = VoiceAttack.Get(-1);
 
 			n.push_back(voiceattack);
@@ -706,7 +714,7 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	{
 		INI_EX exINI(pINI);
 		// survivors
-		this->Survivors_Pilots.resize(SideClass::Array->Count , nullptr);
+		this->Survivors_Pilots.resize(SideClass::Array->Count, nullptr);
 		this->Survivors_PassengerChance.Read(exINI, pSection, "Survivor.%sPassengerChance");
 		this->HealthBar_Hide.Read(exINI, pSection, "HealthBar.Hide");
 		this->HealthBar_HidePips.Read(exINI, pSection, "HealthBar.HidePips");
@@ -769,7 +777,7 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		this->Death_Method.Read(exINI, pSection, "AutoDeath.Behavior");
 
 		bool Death_Peaceful;
-		if(detail::read(Death_Peaceful , exINI, pSection, "Death.Peaceful"))
+		if (detail::read(Death_Peaceful, exINI, pSection, "Death.Peaceful"))
 			this->Death_Method = Death_Peaceful ? KillMethod::Vanish : this->Death_Method;
 
 		this->AutoDeath_Nonexist.Read(exINI, pSection, "AutoDeath.Nonexist");
@@ -835,9 +843,11 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		ValueableVector<WarheadTypeClass*> DestroyAnimSpecificList {};
 		DestroyAnimSpecificList.Read(exINI, pSection, "DestroyAnims.LinkedWarhead");
 
-		if(!DestroyAnimSpecificList.empty()) {
+		if (!DestroyAnimSpecificList.empty())
+		{
 			this->DestroyAnimSpecific.reserve(DestroyAnimSpecificList.size());
-			for (size_t i = 0; i < DestroyAnimSpecificList.size(); ++i) {
+			for (size_t i = 0; i < DestroyAnimSpecificList.size(); ++i)
+			{
 				std::string _key = "DestroyAnims";
 				_key += std::to_string(i);
 				_key += ".Types";
@@ -1035,9 +1045,12 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 		this->Eva_Complete.Read(exINI, pSection, "EVA.Complete");
 
-		if (exINI.ReadString(pSection, "VoiceCreated") > 0) {
+		if (exINI.ReadString(pSection, "VoiceCreated") > 0)
+		{
 			this->VoiceCreate = VocClass::FindIndexById(exINI.c_str());
-		} else {
+		}
+		else
+		{
 			this->VoiceCreate.Read(exINI, pSection, "VoiceCreate");
 		}
 
@@ -1046,7 +1059,7 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		this->SlaveFreeSound_Enable.Read(exINI, pSection, "SlaveFreeSound.Enable");
 		this->SlaveFreeSound.Read(exINI, pSection, "SlaveFreeSound");
 
-		if(Phobos::Otamaa::CompatibilityMode)
+		if (Phobos::Otamaa::CompatibilityMode)
 			this->SinkAnim.Read(exINI, pSection, "Wake.Sink");
 
 		this->SinkAnim.Read(exINI, pSection, "Sink.Anim");
@@ -1078,7 +1091,6 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 			this->FireSelf_ROF_YellowHeath.Read(exINI, pSection, "FireSelf.ROF.YellowHealth");
 			this->FireSelf_Weapon_RedHeath.Read(exINI, pSection, "FireSelf.Weapon.RedHealth");
 			this->FireSelf_ROF_RedHeath.Read(exINI, pSection, "FireSelf.ROF.RedHealth");
-
 		}
 
 		this->AllowFire_IroncurtainedTarget.Read(exINI, pSection, "Firing.AllowICedTargetForAI");
@@ -1139,38 +1151,43 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		this->Infantry_DimWhenDisabled.Read(exINI, pSection, "Infantry.DimWhenDisabled");
 #pragma region Prereq
 
-	std::string _Prerequisite_key = "Prerequisite";
-	std::string _Prerequisite_ReqTheater_key = (_Prerequisite_key + ".RequiredTheaters");
+		std::string _Prerequisite_key = "Prerequisite";
+		std::string _Prerequisite_ReqTheater_key = (_Prerequisite_key + ".RequiredTheaters");
 
-	if(pINI->ReadString(pSection, _Prerequisite_ReqTheater_key.c_str(), "", Phobos::readBuffer) > 0) {
-		this->Prerequisite_RequiredTheaters = 0;
-
-		char* context = nullptr;
-		for(char *cur = strtok_s(Phobos::readBuffer, Phobos::readDelims, &context);
-			cur;
-			cur = strtok_s(nullptr, Phobos::readDelims, &context))
+		if (pINI->ReadString(pSection, _Prerequisite_ReqTheater_key.c_str(), "", Phobos::readBuffer) > 0)
 		{
-			signed int idx = TheaterTypeClass::FindIndexById(cur);
-			if(idx != -1) {
-				this->Prerequisite_RequiredTheaters |= (1 << idx);
-			} else if (!GameStrings::IsBlank(cur)) {
-				Debug::INIParseFailed(pSection, _Prerequisite_ReqTheater_key.c_str(), cur);
+			this->Prerequisite_RequiredTheaters = 0;
+
+			char* context = nullptr;
+			for (char* cur = strtok_s(Phobos::readBuffer, Phobos::readDelims, &context);
+				cur;
+				cur = strtok_s(nullptr, Phobos::readDelims, &context))
+			{
+				signed int idx = TheaterTypeClass::FindIndexById(cur);
+				if (idx != -1)
+				{
+					this->Prerequisite_RequiredTheaters |= (1 << idx);
+				}
+				else if (!GameStrings::IsBlank(cur))
+				{
+					Debug::INIParseFailed(pSection, _Prerequisite_ReqTheater_key.c_str(), cur);
+				}
 			}
 		}
-	}
 
-	// subtract the default list, get tag (not less than 0), add one back
-	const auto nRead = pINI->ReadInteger(pSection, (_Prerequisite_key + ".Lists").c_str(), static_cast<int>(this->Prerequisites.size()) - 1);
-	this->Prerequisites.resize(static_cast<size_t>(MaxImpl(nRead, 0) + 1));
-	GenericPrerequisite::Parse(pINI, pSection, _Prerequisite_key.c_str(), this->Prerequisites[0]);
+		// subtract the default list, get tag (not less than 0), add one back
+		const auto nRead = pINI->ReadInteger(pSection, (_Prerequisite_key + ".Lists").c_str(), static_cast<int>(this->Prerequisites.size()) - 1);
+		this->Prerequisites.resize(static_cast<size_t>(MaxImpl(nRead, 0) + 1));
+		GenericPrerequisite::Parse(pINI, pSection, _Prerequisite_key.c_str(), this->Prerequisites[0]);
 
-	for (size_t i = 0u; i < this->Prerequisites.size(); ++i) {
-		GenericPrerequisite::Parse(pINI,
-		pSection,
-		(_Prerequisite_key + std::string(".List") + std::to_string(i)).c_str(),
-		this->Prerequisites[i]
-		);
-	}
+		for (size_t i = 0u; i < this->Prerequisites.size(); ++i)
+		{
+			GenericPrerequisite::Parse(pINI,
+			pSection,
+			(_Prerequisite_key + std::string(".List") + std::to_string(i)).c_str(),
+			this->Prerequisites[i]
+			);
+		}
 
 		// Prerequisite.Negative with Generic Prerequistes support
 		GenericPrerequisite::Parse(pINI, pSection, (_Prerequisite_key + ".Negative").c_str(), this->Prerequisite_Negative);
@@ -1183,7 +1200,7 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		GenericPrerequisite::Parse(pINI, pSection, (std::string("Convert.Script.") + _Prerequisite_key).c_str(), this->Convert_Scipt_Prereq);
 
 		this->Prerequisite_Power.Read(exINI, pSection, (_Prerequisite_key + ".Power").c_str());
-		std::string _Prerequisite_StolenTechs_key = _Prerequisite_key+ ".StolenTechs";
+		std::string _Prerequisite_StolenTechs_key = _Prerequisite_key + ".StolenTechs";
 
 		if (pINI->ReadString(pSection, _Prerequisite_StolenTechs_key.c_str(), Phobos::readDefval, Phobos::readBuffer) > 0)
 		{
@@ -1213,7 +1230,8 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 #else
 		int _AE_Dur { 0 };
 		this->AttachEffect_AttachTypes.clear();
-		if (detail::read(_AE_Dur, exINI, pSection, "AttachEffect.Duration") && _AE_Dur != 0) {
+		if (detail::read(_AE_Dur, exINI, pSection, "AttachEffect.Duration") && _AE_Dur != 0)
+		{
 			auto& back = this->AttachEffect_AttachTypes.emplace_back(PhobosAttachEffectTypeClass::FindOrAllocate(pSection));
 			back->Duration = _AE_Dur;
 			back->Cumulative.Read(exINI, pSection, "AttachEffect.Cumulative");
@@ -1230,7 +1248,7 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 			back->ForceDecloak.Read(exINI, pSection, "AttachEffect.ForceDecloak");
 
 			bool AE_DiscardOnEntry {};
-			if(detail::read(AE_DiscardOnEntry, exINI, pSection, "AttachEffect.DiscardOnEntry") && AE_DiscardOnEntry)
+			if (detail::read(AE_DiscardOnEntry, exINI, pSection, "AttachEffect.DiscardOnEntry") && AE_DiscardOnEntry)
 				back->DiscardOn = DiscardCondition::Entry;
 
 			back->FirepowerMultiplier.Read(exINI, pSection, "AttachEffect.FirepowerMultiplier");
@@ -1240,7 +1258,7 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 			back->ReceiveRelativeDamageMult.Read(exINI, pSection, "AttachEffect.ReceiveRelativeDamageMultiplier");
 			back->Cloakable.Read(exINI, pSection, "AttachEffect.Cloakable");
 			int AE_Delay {};
-			detail::read(AE_Delay , exINI, pSection, "AttachEffect.Delay");
+			detail::read(AE_Delay, exINI, pSection, "AttachEffect.Delay");
 			this->AttachEffect_Delays.emplace_back(AE_Delay);
 
 			int AE_IinitialDelay {};
@@ -1286,7 +1304,6 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		this->Promote_Elite_Eva.Read(exINI, pSection, "EVA.ElitePromoted");
 		this->Promote_Vet_Eva.Read(exINI, pSection, "EVA.VeteranPromoted");
 
-
 		this->Promote_Elite_Flash.Read(exINI, pSection, "Promote.EliteFlash");
 		this->Promote_Vet_Flash.Read(exINI, pSection, "Promote.VeteranFlash");
 
@@ -1304,7 +1321,7 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		this->Promote_Elite_Anim.Read(exINI, pSection, "Promote.EliteAnimation");
 
 		this->Promote_Vet_PlaySpotlight.Read(exINI, pSection, "Promote.VeteranPlaySpotLight");
-		this->Promote_Elite_PlaySpotlight .Read(exINI, pSection, "Promote.ElitePlaySpotLight");
+		this->Promote_Elite_PlaySpotlight.Read(exINI, pSection, "Promote.ElitePlaySpotLight");
 
 		this->Promote_Vet_Exp.Read(exINI, pSection, "Promote.VeteranExperience");
 		this->Promote_Elite_Exp.Read(exINI, pSection, "Promote.EliteExperience");
@@ -1522,7 +1539,7 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		// victim tags
 		this->Bounty_Value_Option.Read(exINI, pSection, "Bounty.RewardOption");
 
-		if(	this->Bounty_Value_Option ==  BountyValueOption::ValuePercentOfConst || this->Bounty_Value_Option == BountyValueOption::ValuePercentOfSoylent)
+		if (this->Bounty_Value_Option == BountyValueOption::ValuePercentOfConst || this->Bounty_Value_Option == BountyValueOption::ValuePercentOfSoylent)
 			this->Bounty_Value_PercentOf.Read(exINI, pSection, "Bounty.%sValue");
 		else
 			this->Bounty_Value.Read(exINI, pSection, "Bounty.%sValue");
@@ -1566,7 +1583,7 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 		this->DropCrate.Read(exINI, pSection, "DropCrate");
 
-		this->WhenCrushed_Warhead.Read(exINI, pSection, "WhenCrushed.Warhead.%s", nullptr,  true);
+		this->WhenCrushed_Warhead.Read(exINI, pSection, "WhenCrushed.Warhead.%s", nullptr, true);
 		this->WhenCrushed_Weapon.Read(exINI, pSection, "WhenCrushed.Weapon.%s", nullptr, true);
 		this->WhenCrushed_Damage.Read(exINI, pSection, "WhenCrushed.Damage.%s");
 		this->WhenCrushed_Warhead_Full.Read(exINI, pSection, "WhenCrushed.Warhead.Full");
@@ -1593,14 +1610,19 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 		if (pINI->ReadString(pSection, "EMP.Threshold", Phobos::readDefval, Phobos::readBuffer) > 0)
 		{
-			if (IS_SAME_STR_(Phobos::readBuffer, "inair")) {
+			if (IS_SAME_STR_(Phobos::readBuffer, "inair"))
+			{
 				this->EMP_Threshold = -1;
-			} else {
-
+			}
+			else
+			{
 				bool ret;
-				if (Parser<bool, 1>::Parse(Phobos::readBuffer, &ret)) {
+				if (Parser<bool, 1>::Parse(Phobos::readBuffer, &ret))
+				{
 					this->EMP_Threshold = (int)ret;
-				} else if(!Parser<int, 1>::Parse(Phobos::readBuffer , &this->EMP_Threshold)) {
+				}
+				else if (!Parser<int, 1>::Parse(Phobos::readBuffer, &this->EMP_Threshold))
+				{
 					Debug::INIParseFailed(pSection, "EMP.Treshold", Phobos::readBuffer, "[Phobos] Invalid value");
 				}
 			}
@@ -1608,7 +1630,8 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 		this->PoweredBy.Read(exINI, pSection, "PoweredBy");
 
-		for (int i = 0; i < SideClass::Array->Count; ++i) {
+		for (int i = 0; i < SideClass::Array->Count; ++i)
+		{
 			detail::read(this->Survivors_Pilots[i],
 			exINI,
 			pSection,
@@ -1689,7 +1712,6 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		this->ChronoSphereDelay.Read(exINI, pSection, "ChronoSphereDelay");
 		this->PassengerWeapon.Read(exINI, pSection, "PassengerWeapon");
 
-
 		this->IsSimpleDeployer_ConsiderPathfinding.Read(exINI, pSection, "IsSimpleDeployer.ConsiderPathfinding");
 		this->IsSimpleDeployer_DisallowedLandTypes.Read(exINI, pSection, "IsSimpleDeployer.DisallowedLandTypes");
 
@@ -1709,8 +1731,10 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 		this->ShadowSizeCharacteristicHeight.Read(exINI, pSection, "ShadowSizeCharacteristicHeight");
 
-		if(auto pTalkBuble = FileSystem::TALKBUBL_SHP()){
-			for (int i = 0; i < pTalkBuble->Frames; ++i) {
+		if (auto pTalkBuble = FileSystem::TALKBUBL_SHP())
+		{
+			for (int i = 0; i < pTalkBuble->Frames; ++i)
+			{
 				std::string base = "TalkbubbleFrame";
 				base += std::to_string(i);
 				this->TalkbubbleVoices.emplace_back().Read(exINI, pSection, (base + ".Voices").c_str());
@@ -1761,19 +1785,23 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		this->ForceAAWeapon_InRange_ApplyRangeModifiers.Read(exINI, pSection, "ForceAAWeapon.InRange.ApplyRangeModifiers");
 		this->ForceWeapon_InRange_TechnoOnly.Read(exINI, pSection, "ForceWeapon.InRange.TechnoOnly");
 
-		if (!RefinerySmokeParticleSystemOne.isset()) {
+		if (!RefinerySmokeParticleSystemOne.isset())
+		{
 			RefinerySmokeParticleSystemOne = This()->RefinerySmokeParticleSystem;
 		}
 
-		if (!RefinerySmokeParticleSystemTwo.isset()) {
+		if (!RefinerySmokeParticleSystemTwo.isset())
+		{
 			RefinerySmokeParticleSystemTwo = This()->RefinerySmokeParticleSystem;
 		}
 
-		if (!RefinerySmokeParticleSystemThree.isset()) {
+		if (!RefinerySmokeParticleSystemThree.isset())
+		{
 			RefinerySmokeParticleSystemThree = This()->RefinerySmokeParticleSystem;
 		}
 
-		if (!RefinerySmokeParticleSystemFour.isset()) {
+		if (!RefinerySmokeParticleSystemFour.isset())
+		{
 			RefinerySmokeParticleSystemFour = This()->RefinerySmokeParticleSystem;
 		}
 
@@ -1784,19 +1812,23 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		// put all sides into the map
 		this->Convert_ToHouseOrCountry.reserve(SideClass::Array->Count + HouseTypeClass::Array->Count);
 
-		for (auto const& pSide : *SideClass::Array) {
+		for (auto const& pSide : *SideClass::Array)
+		{
 			IMPL_SNPRNINTF(tempBuffer, sizeof(tempBuffer), "Convert.To%s", pSide->ID);
 			technoType.Read(exINI, pSection, tempBuffer);
-			if (technoType.isset()) {
+			if (technoType.isset())
+			{
 				this->Convert_ToHouseOrCountry.insert(pSide, technoType.Get());
 			}
 		}
 
 		// put all countries into the map
-		for (auto const& pTHouse : *HouseTypeClass::Array) {
+		for (auto const& pTHouse : *HouseTypeClass::Array)
+		{
 			IMPL_SNPRNINTF(tempBuffer, sizeof(tempBuffer), "Convert.To%s", pTHouse->ID);
 			technoType.Read(exINI, pSection, tempBuffer);
-			if (technoType.isset()) {
+			if (technoType.isset())
+			{
 				this->Convert_ToHouseOrCountry.insert(pTHouse, technoType.Get());
 			}
 		}
@@ -1869,16 +1901,15 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		this->AdvancedDrive_Hover_Bob.Read(exINI, pSection, "AdvancedDrive.Hover.Bob");
 		this->Harvester_CanGuardArea.Read(exINI, pSection, "Harvester.CanGuardArea");
 		this->Harvester_CanGuardArea_RequireTarget.Read(exINI, pSection, "Harvester.CanGuardArea.RequireTarget");
-	
+
 		Nullable<int> transDelay {};
 		transDelay.Read(exINI, pSection, "TiberiumEater.TransDelay");
 
 		if (transDelay.isset() && transDelay >= 0 && !this->TiberiumEaterType)
 			this->TiberiumEaterType = std::make_unique<TiberiumEaterTypeClass>();
 
-
-		if (this->TiberiumEaterType) {
-
+		if (this->TiberiumEaterType)
+		{
 			if (transDelay.isset() && transDelay.Get() < 0)
 				this->TiberiumEaterType.reset();
 			else
@@ -1940,21 +1971,21 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		this->AIGuardStationaryStray.Read(exINI, pSection, "AIGuardStationaryStray");
 
 		this->ForceWeapon_Check = (
-			this->ForceWeapon_Naval_Decloaked >= 0	||
-			this->ForceWeapon_Cloaked >= 0			||
-			this->ForceWeapon_Disguised >= 0		||
-			this->ForceWeapon_UnderEMP >= 0			||
-			!this->ForceWeapon_InRange.empty()		||
-			!this->ForceAAWeapon_InRange.empty()	||
-			this->ForceWeapon_Buildings >= 0		||
-			this->ForceWeapon_Defenses >= 0			||
-			this->ForceWeapon_Infantry >= 0			||
-			this->ForceWeapon_Naval_Units >= 0		||
-			this->ForceWeapon_Units >= 0			||
-			this->ForceWeapon_Aircraft >= 0			||
-			this->ForceAAWeapon_Infantry >= 0		||
-			this->ForceAAWeapon_Units >= 0			||
-			this->ForceAAWeapon_Aircraft >= 0		||
+			this->ForceWeapon_Naval_Decloaked >= 0 ||
+			this->ForceWeapon_Cloaked >= 0 ||
+			this->ForceWeapon_Disguised >= 0 ||
+			this->ForceWeapon_UnderEMP >= 0 ||
+			!this->ForceWeapon_InRange.empty() ||
+			!this->ForceAAWeapon_InRange.empty() ||
+			this->ForceWeapon_Buildings >= 0 ||
+			this->ForceWeapon_Defenses >= 0 ||
+			this->ForceWeapon_Infantry >= 0 ||
+			this->ForceWeapon_Naval_Units >= 0 ||
+			this->ForceWeapon_Units >= 0 ||
+			this->ForceWeapon_Aircraft >= 0 ||
+			this->ForceAAWeapon_Infantry >= 0 ||
+			this->ForceAAWeapon_Units >= 0 ||
+			this->ForceAAWeapon_Aircraft >= 0 ||
 			this->ForceWeapon_Capture >= 0
 		);
 
@@ -2004,7 +2035,8 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		this->CanGoAboveTarget.Read(exINI, pSection, "CanGoAboveTarget");
 		this->OpenTransport_RangeBonus.Read(exINI, pSection, "OpenTransport.RangeBonus");
 		this->OpenTransport_DamageMultiplier.Read(exINI, pSection, "OpenTransport.DamageMultiplier");
-		for (int idx = 0; idx < pThis->WeaponCount; ++idx) {
+		for (int idx = 0; idx < pThis->WeaponCount; ++idx)
+		{
 			_snprintf_s(tempBuffer, sizeof(tempBuffer), "WeaponGroupAs%d", idx + 1);
 			this->WeaponGroupAs[idx].Read(pINI, pSection, tempBuffer);
 		}
@@ -2028,11 +2060,10 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 		if (!this->TurretOffset.isset())
 		{
 			//put ddedfault single value inside
-			this->TurretOffset = PartialVector3D<int>{ pThis->TurretOffset , 0 ,0 , 1 };
+			this->TurretOffset = PartialVector3D<int> { pThis->TurretOffset , 0 ,0 , 1 };
 		}
 
 		this->TurretShadow.Read(exArtINI, pArtSection, "TurretShadow");
-
 
 		static COMPILETIMEEVAL std::array<CoordStruct, 8> defaultSprayOffsets = { {
 			{  256,   0,   0 },
@@ -2047,11 +2078,13 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 		this->SprayOffsets.resize(defaultSprayOffsets.size());
 
-		for (size_t i = 0; i < defaultSprayOffsets.size(); ++i) {
+		for (size_t i = 0; i < defaultSprayOffsets.size(); ++i)
+		{
 			this->SprayOffsets[i] = defaultSprayOffsets[i];
 		}
 
-		for (size_t c = 0; ; ++c) {
+		for (size_t c = 0; ; ++c)
+		{
 			std::string __base_key = "SprayOffsets";
 			__base_key += std::to_string(c);
 			CoordStruct val {};
@@ -2097,14 +2130,14 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 				break;
 
 			int def;
-			if (!Parser<LaserTrailTypeClass,1>::TryParseIndex(Phobos::readBuffer, &def))
+			if (!Parser<LaserTrailTypeClass, 1>::TryParseIndex(Phobos::readBuffer, &def))
 				break;
 
 			auto data = &this->LaserTrailData.emplace_back();
 			data->idxType = def;
 
-			detail::read(data->FLH , exArtINI, pArtSection,  (_base_key + ".FLH").c_str());
-			detail::read(data->IsOnTurret , exArtINI, pArtSection,  (_base_key + ".IsOnTurret").c_str());
+			detail::read(data->FLH, exArtINI, pArtSection, (_base_key + ".FLH").c_str());
+			detail::read(data->IsOnTurret, exArtINI, pArtSection, (_base_key + ".IsOnTurret").c_str());
 		}
 
 		this->AlternateFLHs.clear();
@@ -2114,8 +2147,10 @@ bool TechnoTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 			Nullable<CoordStruct> alternateFLH;
 			alternateFLH.Read(exArtINI, pArtSection, (std::string("AlternateFLH") + std::to_string(i)).c_str());
 
-			if (!alternateFLH.isset()) {
-				if( i < 5){
+			if (!alternateFLH.isset())
+			{
+				if (i < 5)
+				{
 					this->AlternateFLHs.emplace_back();
 					continue;
 				}
@@ -2185,7 +2220,6 @@ void TechnoTypeExtData::LoadFromINIFile_EvaluateSomeVariables(CCINIClass* pINI)
 	//auto pThis = Get();
 	//const char* pSection = pThis->ID;
 	//INI_EX exINI(pINI);
-
 }
 
 void TechnoTypeExtData::InitializeConstant()
@@ -2210,7 +2244,8 @@ ImageStatusses ImageStatusses::ReadVoxel(const char* const nKey)
 		_buffer[key_len + 3] = 'A';
 		CCFileClass  CCFileH { _buffer.c_str() };
 
-		if (CCFileH.Open(FileAccessMode::Read)) {
+		if (CCFileH.Open(FileAccessMode::Read))
+		{
 			pLoadedHVA = GameCreate<MotLib>(&CCFileH);
 		}
 
@@ -2315,14 +2350,14 @@ WeaponStruct* TechnoTypeExtData::GetWeaponStruct(TechnoTypeClass* pThis, int nWe
 void TechnoTypeExtData::Serialize(PhobosStreamWriter& Stm)
 {
 	auto debugProcess = [&Stm](auto& field, const char* fieldName) -> auto&
-	{
+		{
 			size_t beforeSize = Stm.Getstream()->Size();
 			auto& result = Stm.Process(field);
 			size_t afterSize = Stm.Getstream()->Size();
 			GameDebugLog::Log("[TechnoTypeExtData] SAVE %s: size %zu -> %zu (+%zu)\n",
 					fieldName, beforeSize, afterSize, afterSize - beforeSize);
 			return result;
-	};
+		};
 
 	// Convert your original .Process() calls to debugProcess() calls
 	debugProcess(this->AttachtoType, "AttachtoType");
@@ -2562,8 +2597,9 @@ void TechnoTypeExtData::Serialize(PhobosStreamWriter& Stm)
 
 void TechnoTypeExtData::Serialize(PhobosStreamReader& Stm)
 {
-	auto debugProcess = [&Stm](auto& field, const char* fieldName) -> auto& {
+	auto debugProcess = [&Stm](auto& field, const char* fieldName) -> auto&
 		{
+			{
 				size_t beforeOffset = Stm.Getstream()->Offset();
 				bool beforeSuccess = Stm.Success();
 				auto& result = Stm.Process(field);
@@ -2579,9 +2615,8 @@ void TechnoTypeExtData::Serialize(PhobosStreamReader& Stm)
 					GameDebugLog::Log("[TechnoTypeExtData] ERROR: %s caused stream failure!\n", fieldName);
 				}
 				return result;
-		}
-	};
-
+			}
+		};
 
 	// Convert your original .Process() calls to debugProcess() calls
 	debugProcess(this->AttachtoType, "AttachtoType");
@@ -2844,7 +2879,6 @@ TechnoTypeExtContainer TechnoTypeExtContainer::Instance;
 //	TechnoTypeExtContainer::Instance.AllocateNoInit(pItem);
 //	return 0;
 //}
-
 
 //ASMJIT_PATCH(0x711AE0, TechnoTypeClass_DTOR, 0x5)
 //{

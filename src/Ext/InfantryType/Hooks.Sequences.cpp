@@ -127,9 +127,12 @@ ASMJIT_PATCH(0x51D9CF, InfantryClass_DoType_ReplaceMasterControl_Rates, 0x9)
 	const auto pExt = pThis->_GetTypeExtData();
 	pThis->SequenceAnim = todo; //oof;
 
-	if (pExt->AllSequnceEqualRates || !normalize) {
+	if (pExt->AllSequnceEqualRates || !normalize)
+	{
 		pThis->Animation.Start(pExt->SquenceRates[(int)todo]);
-	} else {
+	}
+	else
+	{
 		pThis->Animation.Start(GameOptionsClass::Instance->GetAnimSpeed(pExt->SquenceRates[(int)todo]));
 	}
 

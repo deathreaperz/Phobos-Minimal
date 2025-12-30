@@ -9,7 +9,7 @@ public:
 	Valueable<bool> DistanceToHeight { true };
 	Valueable<double> DistanceToHeight_Multiplier { 0.2 };
 
-	ArtilleryTrajectoryType() : PhobosTrajectoryType(TrajectoryFlag::Artillery){ }
+	ArtilleryTrajectoryType() : PhobosTrajectoryType(TrajectoryFlag::Artillery) { }
 	virtual ~ArtilleryTrajectoryType() = default;
 
 	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override { }
@@ -30,13 +30,13 @@ public:
 	double Height { 0 };
 	bool Init { false };
 
-	ArtilleryTrajectory() : PhobosTrajectory { TrajectoryFlag::Artillery } {}
-	ArtilleryTrajectory(BulletClass* pBullet , PhobosTrajectoryType* pType) :
+	ArtilleryTrajectory() : PhobosTrajectory { TrajectoryFlag::Artillery } { }
+	ArtilleryTrajectory(BulletClass* pBullet, PhobosTrajectoryType* pType) :
 		PhobosTrajectory { TrajectoryFlag::Artillery, pBullet ,pType }
-	{}
+	{ }
 	virtual ~ArtilleryTrajectory() = default;
 
-	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) {}
+	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) { }
 	virtual bool Load(PhobosStreamReader& Stm, bool RegisterForChange) override;
 	virtual bool Save(PhobosStreamWriter& Stm) const override;
 

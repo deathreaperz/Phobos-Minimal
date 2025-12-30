@@ -55,7 +55,7 @@ bool TracingTrajectoryType::Load(PhobosStreamReader& Stm, bool RegisterForChange
 bool TracingTrajectoryType::Save(PhobosStreamWriter& Stm) const
 {
 	return this->PhobosTrajectoryType::Save(Stm) &&
-	const_cast<TracingTrajectoryType*>(this)->Serialize(Stm);
+		const_cast<TracingTrajectoryType*>(this)->Serialize(Stm);
 }
 
 bool TracingTrajectoryType::Read(CCINIClass* const pINI, const char* pSection)
@@ -587,7 +587,7 @@ AbstractClass* TracingTrajectory::GetBulletTarget(TechnoClass* pTechno, HouseCla
 	if (pType->Synchronize)
 		return pBullet->Target;
 	auto pWHExt = pWeapon->Warhead ? WarheadTypeExtContainer::Instance.Find(pWeapon->Warhead) : nullptr;
- 
+
 	const auto vec = Helpers::Alex::getCellSpreadItems(pBullet->Location, (pWeapon->Range / 256.0),
 		true,
 		pWHExt ? pWHExt->CellSpread_Cylinder : false,
@@ -659,7 +659,7 @@ CoordStruct TracingTrajectory::GetWeaponFireCoord(TechnoClass* pTechno)
 
 			if (pTechno->HasTurret())
 			{
-				TechnoTypeExtContainer::Instance.Find(pBuilding->Type)->ApplyTurretOffset(&mtx , 1.0);
+				TechnoTypeExtContainer::Instance.Find(pBuilding->Type)->ApplyTurretOffset(&mtx, 1.0);
 				mtx.RotateZ(static_cast<float>(pTechno->TurretFacing().GetRadian<32>()));
 			}
 
@@ -753,7 +753,6 @@ void TracingTrajectory::CreateTracingBullets(WeaponTypeClass* pWeapon)
 	const auto targetCoords = pTarget->GetCoords();
 	const auto finalDamage = static_cast<int>(pWeapon->Damage * this->FirepowerMult);
 
-
 	if (const auto pCreateBullet = pWeapon->Projectile->CreateBullet(pTarget, pTechno, finalDamage, pWeapon->Warhead, pWeapon->Speed, pWeapon->Bright))
 	{
 		BulletExt::SimulatedFiringUnlimbo(pCreateBullet, pOwner, pWeapon, fireCoord, false);
@@ -790,5 +789,4 @@ void TracingTrajectory::CreateTracingBullets(WeaponTypeClass* pWeapon)
 		BulletExt::SimulatedFiringEffects(pCreateBullet, pOwner, pAttach, true, true);
 	}
 #endif
-
 }

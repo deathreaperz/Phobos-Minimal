@@ -300,7 +300,8 @@ public:
 	template<typename Out>
 	[[nodiscard]] constexpr operator Iterator<Out>() const noexcept
 	{
-		if constexpr(std::is_pointer<Out>::value && std::is_pointer<T>::value) {
+		if constexpr (std::is_pointer<Out>::value && std::is_pointer<T>::value)
+		{
 			using typeOut = std::remove_pointer_t<Out>;
 			using typeT = std::remove_pointer_t<T>;
 
@@ -311,7 +312,9 @@ public:
 			"Types must be related by inheritance");
 
 			return Iterator<Out>(reinterpret_cast<const Out*>(items), count);
-		} else {
+		}
+		else
+		{
 			// Note: this only works if pointer-to-derived equals pointer-to-base.
 			// Safe for simple inheritance, unsafe with multiple/virtual inheritance.
 			static_assert(sizeof(T*) == sizeof(Out*),

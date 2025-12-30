@@ -7,12 +7,15 @@
 void DebrisSpawners::SpawnSecondary(int total, CoordStruct& coord, Iterator<AnimTypeClass*> iter,
 				TechnoClass* pTechno, HouseClass* pOwner, HouseClass* pVictim)
 {
-	if (!iter.empty()) {
+	if (!iter.empty())
+	{
 		CoordStruct _coord = coord;
 		_coord.Z += 20;
 
-		for (int i = 0; i < total; ++i) {
-			if (auto const pAnimType = iter[ScenarioClass::Instance->Random.RandomFromMax(iter.size() - 1)]) {
+		for (int i = 0; i < total; ++i)
+		{
+			if (auto const pAnimType = iter[ScenarioClass::Instance->Random.RandomFromMax(iter.size() - 1)])
+			{
 				AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pAnimType, _coord),
 					pOwner,
 					pVictim,
@@ -64,9 +67,10 @@ void DebrisSpawners::Spawn(int MinDeb, int MaxDeb, CoordStruct& coord, Iterator<
 
 				currentIndex = 0;
 			}
-		} else {
-
-			DebrisSpawners::SpawnSecondary(totalSpawnAmount , coord, typeb, pTechno, pOwner, pVictim);
+		}
+		else
+		{
+			DebrisSpawners::SpawnSecondary(totalSpawnAmount, coord, typeb, pTechno, pOwner, pVictim);
 		}
 	}
 }

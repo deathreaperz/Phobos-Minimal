@@ -30,9 +30,10 @@ bool SW_NuclearMissile::Activate(SuperClass* const pThis, const CellStruct& Coor
 		// collected from crates. second, the normal way firing from a silo.
 		BuildingClass* pSilo = nullptr;
 
-		if ((!pThis->Granted || !pThis->OneTime) && pData->Nuke_SiloLaunch) {
+		if ((!pThis->Granted || !pThis->OneTime) && pData->Nuke_SiloLaunch)
+		{
 			// find a building owned by the player that can fire this SWType
-			 pSilo = cast_to<BuildingClass*>(this->GetFirer(pThis, Coords, false));
+			pSilo = cast_to<BuildingClass*>(this->GetFirer(pThis, Coords, false));
 		}
 
 		// via silo
@@ -52,7 +53,8 @@ bool SW_NuclearMissile::Activate(SuperClass* const pThis, const CellStruct& Coor
 		if (!fired)
 		{
 			// if we reached this, there is no silo launch. still launch a missile.
-			if (auto const pWeapon = pData->Nuke_Payload) {
+			if (auto const pWeapon = pData->Nuke_Payload)
+			{
 				fired = SW_NuclearMissile::DropNukeAt(pType, target, this->GetAlternateLauchSite(pData, pThis), pThis->Owner, pWeapon);
 			}
 		}
@@ -106,16 +108,15 @@ void SW_NuclearMissile::LoadFromINI(SWTypeExtData* pData, CCINIClass* pINI)
 	pData->Nuke_TakeOff.Read(exINI, section, "Nuke.TakeOff");
 	pData->Nuke_PsiWarning.Read(exINI, section, "Nuke.PsiWarning");
 	pData->Nuke_SiloLaunch.Read(exINI, section, "Nuke.SiloLaunch");
-
 }
 
 bool SW_NuclearMissile::IsLaunchSite(const SWTypeExtData* pData, BuildingClass* pBuilding) const
 {
 	const auto pBldExt = BuildingExtContainer::Instance.Find(pBuilding);
-	if(pBldExt->LimboID != -1)
+	if (pBldExt->LimboID != -1)
 		return false;
 
-	if(!this->IsLaunchsiteAlive(pBuilding))
+	if (!this->IsLaunchsiteAlive(pBuilding))
 		return false;
 
 	return pBuilding->Type->NukeSilo && this->IsSWTypeAttachedToThis(pData, pBuilding);
@@ -126,7 +127,8 @@ WarheadTypeClass* SW_NuclearMissile::GetWarhead(const SWTypeExtData* pData) cons
 	if (pData->SW_Warhead.Get(nullptr))
 		return pData->SW_Warhead;
 
-	if (auto pPayload = pData->Nuke_Payload) {
+	if (auto pPayload = pData->Nuke_Payload)
+	{
 		return pPayload->Warhead;
 	}
 
@@ -136,7 +138,8 @@ WarheadTypeClass* SW_NuclearMissile::GetWarhead(const SWTypeExtData* pData) cons
 int SW_NuclearMissile::GetDamage(const SWTypeExtData* pData) const
 {
 	auto damage = pData->SW_Damage.Get(-1);
-	if (damage < 0) {
+	if (damage < 0)
+	{
 		damage = pData->Nuke_Payload ? pData->Nuke_Payload->Damage : 0;
 	}
 	return damage;
@@ -144,7 +147,8 @@ int SW_NuclearMissile::GetDamage(const SWTypeExtData* pData) const
 
 BuildingClass* SW_NuclearMissile::GetAlternateLauchSite(const SWTypeExtData* pData, SuperClass* pThis) const
 {
-	for (auto& pBuilding : pThis->Owner->Buildings) {
+	for (auto& pBuilding : pThis->Owner->Buildings)
+	{
 		if (!this->IsLaunchsiteAlive(pBuilding))
 			continue;
 
@@ -161,13 +165,14 @@ bool SW_NuclearMissile::DropNukeAt(SuperWeaponTypeClass* pSuper, CoordStruct con
 		return false;
 
 	const auto pCell = MapClass::Instance->GetCellAt(to);
-	auto const pBullet = pPayload->Projectile->CreateBullet(nullptr,nullptr , 0 , nullptr , 0 , false);
+	auto const pBullet = pPayload->Projectile->CreateBullet(nullptr, nullptr, 0, nullptr, 0, false);
 	pBullet->Construct(pPayload->Projectile, pCell, Owner, 0, nullptr, pPayload->Speed, false);
 	pBullet->SetWeaponType(pPayload);
 	int Damage = pPayload->Damage;
 	WarheadTypeClass* pWarhead = pPayload->Warhead;
 
-	if(pSuper){
+	if (pSuper)
+	{
 		auto const pData = SWTypeExtContainer::Instance.Find(pSuper);
 		BulletClass::CreateDamagingBulletAnim(OwnerHouse,
 			pCell,
@@ -188,7 +193,7 @@ bool SW_NuclearMissile::DropNukeAt(SuperWeaponTypeClass* pSuper, CoordStruct con
 	pBullet->Bright = pPayload->Bright || pWarhead->Bright;
 	pBullet->Range = WeaponTypeExtContainer::Instance.Find(pPayload)->GetProjectileRange();
 
-	if(!Owner)
+	if (!Owner)
 		BulletExtContainer::Instance.Find(pBullet)->Owner = OwnerHouse;
 
 #ifndef vanilla
@@ -205,16 +210,16 @@ bool SW_NuclearMissile::DropNukeAt(SuperWeaponTypeClass* pSuper, CoordStruct con
 
 #else
 
-		CoordStruct nOffs { 0 , 0, pPayload->Projectile->DetonationAltitude };
-		CoordStruct dest = to + nOffs;
+	CoordStruct nOffs { 0 , 0, pPayload->Projectile->DetonationAltitude };
+	CoordStruct dest = to + nOffs;
 
-		double nSin = Math::SIN_PI_BY_TWO_ACCURATE;
-		double nCos = Math::COS_PI_BY_TWO_ACCURATE;
+	double nSin = Math::SIN_PI_BY_TWO_ACCURATE;
+	double nCos = Math::COS_PI_BY_TWO_ACCURATE;
 
-		double nX = nCos * nCos * -1.0;
-		double nY = nCos * nSin * -1.0;
-		double nZ = nSin * -1.0;
+	double nX = nCos * nCos * -1.0;
+	double nY = nCos * nSin * -1.0;
+	double nZ = nSin * -1.0;
 
-		return pBullet->MoveTo(dest, { nX , nY , nZ });
+	return pBullet->MoveTo(dest, { nX , nY , nZ });
 #endif
 }

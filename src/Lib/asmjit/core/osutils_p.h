@@ -14,7 +14,6 @@ ASMJIT_BEGIN_NAMESPACE
 //! \cond INTERNAL
 //! \addtogroup asmjit_utilities
 //! \{
-
 #if defined(_WIN32)
 
 // Windows implementation.
@@ -30,7 +29,7 @@ ASMJIT_INLINE_NODEBUG void Lock::unlock() noexcept { LeaveCriticalSection(reinte
 
 // PThread implementation.
 #ifdef PTHREAD_MUTEX_INITIALIZER
-ASMJIT_INLINE_NODEBUG Lock::Lock() noexcept : _handle(PTHREAD_MUTEX_INITIALIZER) {}
+ASMJIT_INLINE_NODEBUG Lock::Lock() noexcept : _handle(PTHREAD_MUTEX_INITIALIZER) { }
 #else
 ASMJIT_INLINE_NODEBUG Lock::Lock() noexcept { pthread_mutex_init(&_handle, nullptr); }
 #endif
@@ -41,31 +40,31 @@ ASMJIT_INLINE_NODEBUG void Lock::unlock() noexcept { pthread_mutex_unlock(&_hand
 #else
 
 // Dummy implementation - Emscripten or other unsupported platform.
-ASMJIT_INLINE_NODEBUG Lock::Lock() noexcept {}
-ASMJIT_INLINE_NODEBUG Lock::~Lock() noexcept {}
-ASMJIT_INLINE_NODEBUG void Lock::lock() noexcept {}
-ASMJIT_INLINE_NODEBUG void Lock::unlock() noexcept {}
+ASMJIT_INLINE_NODEBUG Lock::Lock() noexcept { }
+ASMJIT_INLINE_NODEBUG Lock::~Lock() noexcept { }
+ASMJIT_INLINE_NODEBUG void Lock::lock() noexcept { }
+ASMJIT_INLINE_NODEBUG void Lock::unlock() noexcept { }
 
 #endif
 
 //! Scoped lock.
-class LockGuard {
+class LockGuard
+{
 public:
-  ASMJIT_NONCOPYABLE(LockGuard)
+	ASMJIT_NONCOPYABLE(LockGuard)
 
-  Lock& _target;
+		Lock& _target;
 
-  ASMJIT_INLINE_NODEBUG LockGuard(Lock& target) noexcept
-    : _target(target) { _target.lock(); }
-  ASMJIT_INLINE_NODEBUG ~LockGuard() noexcept { _target.unlock(); }
+	ASMJIT_INLINE_NODEBUG LockGuard(Lock& target) noexcept
+		: _target(target) { _target.lock(); }
+	ASMJIT_INLINE_NODEBUG ~LockGuard() noexcept { _target.unlock(); }
 };
 
 #if !defined(_WIN32)
-namespace OSUtils {
-
-//! Reads a file, only used on non-Windows platforms to access /sys or other files when necessary.
-Error read_file(const char* name, String& dst, size_t max_size) noexcept;
-
+namespace OSUtils
+{
+	//! Reads a file, only used on non-Windows platforms to access /sys or other files when necessary.
+	Error read_file(const char* name, String& dst, size_t max_size) noexcept;
 } // {OSUtils}
 #endif
 
@@ -75,4 +74,3 @@ Error read_file(const char* name, String& dst, size_t max_size) noexcept;
 ASMJIT_END_NAMESPACE
 
 #endif // ASMJIT_CORE_OSUTILS_P_H_INCLUDED
-

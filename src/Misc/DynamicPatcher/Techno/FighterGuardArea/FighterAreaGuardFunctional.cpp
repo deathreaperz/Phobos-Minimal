@@ -1,6 +1,6 @@
 #include "FighterAreaGuardFunctional.h"
 
-#ifdef _aaaaaaa 
+#ifdef _aaaaaaa
 #include <Misc/DynamicPatcher/Helpers/Helpers.h>
 
 #include <Ext/Building/Body.h>

@@ -10,10 +10,14 @@ ASMJIT_PATCH(0x5223B3, InfantryClass_Approach_Target_DeployFireWeapon, 0x6)
 	GET(InfantryClass*, pThis, ESI);
 
 	int weapon = pThis->Type->DeployFireWeapon;
-	if (pThis->Type->DeployFireWeapon == -1) {
-		if (pThis->Target && (pThis->Target->WhatAmI() == CellClass::AbsID || pThis->Target->AbstractFlags & AbstractFlags::Techno && ((TechnoClass*)pThis->Target)->IsAlive)) {
+	if (pThis->Type->DeployFireWeapon == -1)
+	{
+		if (pThis->Target && (pThis->Target->WhatAmI() == CellClass::AbsID || pThis->Target->AbstractFlags & AbstractFlags::Techno && ((TechnoClass*)pThis->Target)->IsAlive))
+		{
 			weapon = pThis->SelectWeapon(pThis->Target);
-		} else {
+		}
+		else
+		{
 			weapon = 0;
 		}
 	}
@@ -34,7 +38,7 @@ ASMJIT_PATCH(0x5218F3, InfantryClass_WhatWeaponShouldIUse_DeployFireWeapon, 0x6)
 	if (pThis->Type->IsGattling || TechnoTypeExtContainer::Instance.Find(pThis->Type)->MultiWeapon.Get())
 		return !pThis->IsDeployed() ? 0x52194E : 0x52190D;
 
-	if(pThis->IsDeployed())
+	if (pThis->IsDeployed())
 		return 0x52190D;
 
 	return 0x521917;
@@ -51,7 +55,8 @@ ASMJIT_PATCH(0x6FF923, TechnoClass_FireaAt_FireOnce, 0x6)
 	GET(WeaponTypeClass*, pWeapon, EBX);
 
 	pThis->SetTarget(nullptr);
-	if (auto pUnit = cast_to<UnitClass*, false>(pThis)) {
+	if (auto pUnit = cast_to<UnitClass*, false>(pThis))
+	{
 		if (pUnit->Type->DeployFire
 			&& !pUnit->Type->IsSimpleDeployer
 			&& !pUnit->Deployed
@@ -85,7 +90,8 @@ ASMJIT_PATCH(0x73DCEF, UnitClass_Mission_Unload_DeployFire, 0x6)
 
 			pThis->Fire(pThis->GetCell(), nWeapIdx);
 
-			if (pWeapon->WeaponType->FireOnce) {
+			if (pWeapon->WeaponType->FireOnce)
+			{
 				R->EBX(0);
 				return SetMissionGuard;
 			}
@@ -165,8 +171,10 @@ ASMJIT_PATCH(0x746CD0, UnitClass_SelectWeapon_Replacements, 0x6)
 	GET_STACK(AbstractClass*, pTarget, 0x4);
 	//GET_STACK(uintptr_t, callerAddress, 0x0);
 
-	if (pThis->Deployed && pThis->Type->DeployFire) {
-		if (pThis->Type->DeployFireWeapon != -1) {
+	if (pThis->Deployed && pThis->Type->DeployFire)
+	{
+		if (pThis->Type->DeployFireWeapon != -1)
+		{
 			R->EAX(pThis->Type->DeployFireWeapon);
 			return 0x746CFD;
 		}

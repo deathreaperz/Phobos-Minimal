@@ -38,8 +38,10 @@ public:
 	{
 		for (auto pos = Array.begin();
 			pos != Array.end();
-			++pos) {
-			if (IS_SAME_STR_(pos->get()->Name.c_str(), Title)) {
+			++pos)
+		{
+			if (IS_SAME_STR_(pos->get()->Name.c_str(), Title))
+			{
 				return std::distance(Array.begin(), pos);
 			}
 		}
@@ -59,8 +61,10 @@ public:
 
 	static OPTIONALINLINE COMPILETIMEEVAL int FindIndexFromType(T* pType)
 	{
-		if (pType) {
-			for (size_t i = 0; i < Array.size(); ++i) {
+		if (pType)
+		{
+			for (size_t i = 0; i < Array.size(); ++i)
+			{
 				if (Array[i].get() == pType)
 					return i;
 			}
@@ -69,8 +73,8 @@ public:
 		return -1;
 	}
 
-	static OPTIONALINLINE COMPILETIMEEVAL T* TryFindFromIndex(int Idx) {
-
+	static OPTIONALINLINE COMPILETIMEEVAL T* TryFindFromIndex(int Idx)
+	{
 		if (size_t(Idx) > Array.size())
 			return nullptr;
 
@@ -98,7 +102,8 @@ public:
 		return Array.back().get();
 	}
 
-	static OPTIONALINLINE COMPILETIMEEVAL void AllocateNoCheck(const char* Title) {
+	static OPTIONALINLINE COMPILETIMEEVAL void AllocateNoCheck(const char* Title)
+	{
 		Array.emplace_back((std::make_unique<T>(Title)));
 	}
 
@@ -188,8 +193,8 @@ public:
 			if (pINI->ReadString(section, pINI->GetKeyName(section, i),
 				Phobos::readDefval, Phobos::readBuffer) > 0)
 			{
-
-				if (auto const pFind = FindOrAllocate(Phobos::readBuffer)) {
+				if (auto const pFind = FindOrAllocate(Phobos::readBuffer))
+				{
 					pFind->LoadFromINI(pINI);
 				}
 			}
@@ -201,10 +206,13 @@ public:
 		Clear();
 
 		int Count = 0;
-		if (Stm.Load(Count)) {
-			if (Count > 0) {
+		if (Stm.Load(Count))
+		{
+			if (Count > 0)
+			{
 				Array.reserve(Count);
-				for (int i = 0; i < Count; ++i) {
+				for (int i = 0; i < Count; ++i)
+				{
 					long oldPtr = 0l;
 
 					if (!Stm.Load(oldPtr))
@@ -216,7 +224,7 @@ public:
 
 					auto newPtr = FindOrAllocate(name.data());
 					PHOBOS_SWIZZLE_REGISTER_POINTER(oldPtr, newPtr, T::ClassName)
-					newPtr->LoadFromStream(Stm);
+						newPtr->LoadFromStream(Stm);
 				}
 			}
 
@@ -226,13 +234,14 @@ public:
 		return false;
 	}
 
-	static bool SaveGlobals(PhobosStreamWriter& Stm) {
-
+	static bool SaveGlobals(PhobosStreamWriter& Stm)
+	{
 		//save it as int instead of size_t
 		const int Count = (int)Array.size();
 		Stm.Save(Count);
 
-		for (int i = 0; i < Count; ++i) {
+		for (int i = 0; i < Count; ++i)
+		{
 			Debug::Log("Saving %s [%s - %x] to stream\n", T::ClassName, Array[i]->Name.data(), (long)Array[i].get());
 			Stm.Save((long)Array[i].get());
 			Stm.Process(Array[i]->Name);
@@ -244,7 +253,7 @@ public:
 
 	PhobosFixedString<0x18> Name {};
 
-	COMPILETIMEEVAL Enumerable(const char* name) : Name { name } {}
+	COMPILETIMEEVAL Enumerable(const char* name) : Name { name } { }
 
 	virtual ~Enumerable() = default;
 };

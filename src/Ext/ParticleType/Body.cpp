@@ -4,9 +4,12 @@
 
 #include <Phobos.SaveGame.h>
 
-void ReadWinDirMult(std::array<Point2D, (size_t)FacingType::Count>& arr, INI_EX& exINI, const char* pID, const int* beginX , const int* beginY) {
-	for (size_t i = 0; i < arr.size(); ++i) {
-		if(!detail::read(arr[i], exINI, pID, (std::string("WindDirectionMult") + std::to_string(i)).c_str())) {
+void ReadWinDirMult(std::array<Point2D, (size_t)FacingType::Count>& arr, INI_EX& exINI, const char* pID, const int* beginX, const int* beginY)
+{
+	for (size_t i = 0; i < arr.size(); ++i)
+	{
+		if (!detail::read(arr[i], exINI, pID, (std::string("WindDirectionMult") + std::to_string(i)).c_str()))
+		{
 			arr[i].X = *(beginX + i);
 			arr[i].Y = *(beginY + i);
 		}
@@ -25,7 +28,8 @@ bool ParticleTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 	switch (pThis->BehavesLike)
 	{
-	case ParticleTypeBehavesLike::Smoke: {
+	case ParticleTypeBehavesLike::Smoke:
+	{
 		/*
 			WindFacingMult Smoke[at 0 - value(x:0, y : -2)]
 			WindFacingMult Smoke[at 1 - value(x:2, y : -2)]
@@ -37,20 +41,23 @@ bool ParticleTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 			WindFacingMult Smoke[at 7 - value(x:-2, y : -2)]
 		*/
 		this->DeleteWhenReachWater.Read(exINI, pID, "Smoke.DeleteWhenReachWater");
-		ReadWinDirMult(this->WindMult, exINI , pID, ParticleClass::SmokeWind_X.begin(), ParticleClass::SmokeWind_Y.begin());
+		ReadWinDirMult(this->WindMult, exINI, pID, ParticleClass::SmokeWind_X.begin(), ParticleClass::SmokeWind_Y.begin());
 	}
 	break;
-	case ParticleTypeBehavesLike::Fire: {
-	//	this->ExpireAfterDamaging.Read(exINI, pID, "Fire.ExpireAfterDamaging");
+	case ParticleTypeBehavesLike::Fire:
+	{
+		//	this->ExpireAfterDamaging.Read(exINI, pID, "Fire.ExpireAfterDamaging");
 		this->Fire_DamagingAnim.Read(exINI, pID, "Fire.DamagingAnim");
-		this->ReadjustZ.Read(exINI, pID , "ReadjustZCoord");
+		this->ReadjustZ.Read(exINI, pID, "ReadjustZCoord");
 	}
 	break;
-	case ParticleTypeBehavesLike::Railgun: {
-		this->ReadjustZ.Read(exINI, pID , "ReadjustZCoord");
+	case ParticleTypeBehavesLike::Railgun:
+	{
+		this->ReadjustZ.Read(exINI, pID, "ReadjustZCoord");
 		break;
 	}
-	case ParticleTypeBehavesLike::Gas: {
+	case ParticleTypeBehavesLike::Gas:
+	{
 		/*
 			[at 0 - value(x:0, y : -2)]
 			[at 1 - value(x:2, y : -2)]
@@ -64,7 +71,8 @@ bool ParticleTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 		ReadWinDirMult(this->WindMult, exINI, pID, ParticleClass::GasWind_X.begin(), ParticleClass::GasWind_Y.begin());
 
-		if(Phobos::Otamaa::CompatibilityMode){
+		if (Phobos::Otamaa::CompatibilityMode)
+		{
 			int Max_driftX = 2;
 			detail::read(Max_driftX, exINI, pID, "Gas.MaxDriftSpeed");
 
@@ -93,7 +101,8 @@ bool ParticleTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	///if (IS_SAME_STR_(pID, "SuperNapalmCloudPart"))
 	//	Debug::LogInfo("AlphaImageNAme [%s] ", this->This()->AlphaImageFile);
 
-	if (pThis->StateAIAdvance == 0 && pThis->StartStateAI < pThis->EndStateAI) {
+	if (pThis->StateAIAdvance == 0 && pThis->StartStateAI < pThis->EndStateAI)
+	{
 		Debug::RegisterParserError();
 		Debug::LogInfo("[Developer warning] [{}] has StateAIAdvance=0 in conjunction with StartStateAI value less than EndStateAI. StateAIAdvance set to 1 to prevent crashes from occuring.",
 			pID);
@@ -124,8 +133,6 @@ void ParticleTypeExtData::Serialize(T& Stm)
 		.Process(this->Fire_DamagingAnim)
 		.Process(this->Trails)
 		;
-
-
 }
 
 // =============================
@@ -166,7 +173,6 @@ bool ParticleTypeExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool ParticleTypeExtContainer::SaveAll(json& root)
@@ -207,12 +213,10 @@ void ParticleTypeExtContainer::LoadFromINI(ext_t::base_type* key, CCINIClass* pI
 		//this function can be called again multiple time but without need to re-init the data
 		ptr->SetInitState(InitState::Ruled);
 	}
-
 }
 
 void ParticleTypeExtContainer::WriteToINI(ext_t::base_type* key, CCINIClass* pINI)
 {
-
 	if (auto ptr = this->TryFind(key))
 	{
 		if (!pINI)

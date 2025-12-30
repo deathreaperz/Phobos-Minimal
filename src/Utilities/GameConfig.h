@@ -6,7 +6,6 @@
 
 struct GameConfig
 {
-
 	GameConfig(const char* pFilename) noexcept : File { nullptr }
 		, Ini { nullptr }
 	{
@@ -20,10 +19,11 @@ struct GameConfig
 	template <typename Func>
 	void OpenINIAction(Func&& action, FileAccessMode mode = FileAccessMode::Read) noexcept
 	{
-		if (this->OpenINI(mode)) {
-			if COMPILETIMEEVAL (lambda_details<decltype(action)>::argument_count == 1)
+		if (this->OpenINI(mode))
+		{
+			if COMPILETIMEEVAL(lambda_details<decltype(action)>::argument_count == 1)
 				action(Ini.get());
-			else if COMPILETIMEEVAL (lambda_details<decltype(action)>::argument_count == 2)
+			else if COMPILETIMEEVAL(lambda_details<decltype(action)>::argument_count == 2)
 				action(Ini.get(), File.get());
 			else
 				static_assert(true, "fail!");
@@ -33,10 +33,11 @@ struct GameConfig
 	template <typename Func>
 	void OpenOrCreateAction(Func&& action, FileAccessMode mode = FileAccessMode::ReadWrite) noexcept
 	{
-		if(this->OpenOrCreate(mode)){
-			if COMPILETIMEEVAL (lambda_details<decltype(action)>::argument_count == 1)
+		if (this->OpenOrCreate(mode))
+		{
+			if COMPILETIMEEVAL(lambda_details<decltype(action)>::argument_count == 1)
 				action(Ini.get());
-			else if COMPILETIMEEVAL (lambda_details<decltype(action)>::argument_count == 2)
+			else if COMPILETIMEEVAL(lambda_details<decltype(action)>::argument_count == 2)
 				action(Ini.get(), File.get());
 			else
 				static_assert(true, "fail!");

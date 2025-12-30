@@ -9,15 +9,16 @@ class WeaponTypeClass;
 class TemporalExtData final : public AbstractExtended
 {
 public:
-	 using base_type = TemporalClass;
-	 static COMPILETIMEEVAL const char* ClassName = "TemporalExtData";
-	 static COMPILETIMEEVAL const char* BaseClassName = "TemporalClass";
-	 static COMPILETIMEEVAL unsigned Marker = UuidFirstPart<base_type>::value;
-	 static COMPILETIMEEVAL auto Marker_str = to_hex_string<Marker>();
+	using base_type = TemporalClass;
+	static COMPILETIMEEVAL const char* ClassName = "TemporalExtData";
+	static COMPILETIMEEVAL const char* BaseClassName = "TemporalClass";
+	static COMPILETIMEEVAL unsigned Marker = UuidFirstPart<base_type>::value;
+	static COMPILETIMEEVAL auto Marker_str = to_hex_string<Marker>();
 
 public:
 
-	TemporalExtData(TemporalClass* pObj) : AbstractExtended(pObj) {
+	TemporalExtData(TemporalClass* pObj) : AbstractExtended(pObj)
+	{
 		this->AbsType = TemporalClass::AbsID;
 	}
 
@@ -70,7 +71,8 @@ public:
 
 	void CreateWarpAwayAnimation(WeaponTypeClass* pWeapon);
 
-	void ResetTemporalState() {
+	void ResetTemporalState()
+	{
 		this->Target = 0;
 		this->PrevTemporal = 0;
 		this->NextTemporal = 0;
@@ -81,11 +83,13 @@ public:
 	void _Update();
 	void _Detonate(TechnoClass* pTarget);
 
-	FORCEDINLINE TemporalClass* _AsTemporal() const {
+	FORCEDINLINE TemporalClass* _AsTemporal() const
+	{
 		return (TemporalClass*)this;
 	}
 
-	FORCEDINLINE TemporalExtData* _GetExtData() {
+	FORCEDINLINE TemporalExtData* _GetExtData()
+	{
 		return *reinterpret_cast<TemporalExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 };

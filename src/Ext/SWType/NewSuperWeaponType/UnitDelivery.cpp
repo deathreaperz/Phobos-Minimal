@@ -27,7 +27,7 @@ void SW_UnitDelivery::LoadFromINI(SWTypeExtData* pData, CCINIClass* pINI)
 	const char* section = pData->get_ID();
 
 	INI_EX exINI(pINI);
-	pData->SW_Deliverables.Read(exINI, section, "Deliver.Types" , true);
+	pData->SW_Deliverables.Read(exINI, section, "Deliver.Types", true);
 	pData->SW_DeliverableCounts.Read(exINI, section, "Deliver.Counts", true);
 	pData->SW_Deliverables_Facing.Read(exINI, section, "Deliver.TypesFacing");
 	pData->SW_BaseNormal.Read(exINI, section, "Deliver.BaseNormal");
@@ -76,11 +76,12 @@ void UnitDeliveryStateMachine::PlaceUnits()
 
 	// get the house the units will belong to
 	const auto pOwner = HouseExtData::GetHouseKind(pData->SW_OwnerHouse, false, this->Super->Owner);
-	if (!pOwner) {
+	if (!pOwner)
+	{
 		Debug::FatalErrorAndExit("nullptr house for SW [%s] , with OwnerKind [%s] , superOwner [%s - %x]",
-			this->Super->Type->ID ,
+			this->Super->Type->ID,
 			EnumFunctions::OwnerHouseKind_ToStrings[(int)pData->SW_OwnerHouse.Get()].second.data(),
-			this->Super->Owner->Type->ID ,
+			this->Super->Owner->Type->ID,
 			this->Super->Owner
 		);
 	}
@@ -104,8 +105,8 @@ void UnitDeliveryStateMachine::PlaceUnits()
 		if (howMuch < 0)
 			continue;
 
-		for(size_t c = 0; c < howMuch; c++){
-
+		for (size_t c = 0; c < howMuch; c++)
+		{
 			auto Item = static_cast<TechnoClass*>(pType->CreateObject(pOwner));
 
 			if (!Item)
@@ -150,7 +151,7 @@ void UnitDeliveryStateMachine::PlaceUnits()
 			}
 
 			// move the target cell so this object is centered on the actual location
-			PlaceCoords = this->Coords - CellStruct{short(extentX / 2), short(extentY / 2)};
+			PlaceCoords = this->Coords - CellStruct { short(extentX / 2), short(extentY / 2) };
 
 			// find a place to put this
 			if (!anywhere)
@@ -171,7 +172,7 @@ void UnitDeliveryStateMachine::PlaceUnits()
 					if (!bBaseNormal)
 						BuildingExtContainer::Instance.Find(ItemBuilding)->IsFromSW = true;
 
-					if(bDeliverBuildup)
+					if (bDeliverBuildup)
 						ItemBuilding->QueueMission(Mission::Construction, false);
 				}
 				else

@@ -14,7 +14,8 @@ CustomPalette SideExtData::s_DialogBackgroundConvert;
 
 int SideExtData::CurrentLoadTextColor = -1;
 
-void SideExtData::Initialize() {
+void SideExtData::Initialize()
+{
 	const char* pID = This()->ID;
 
 	if (IS_SAME_STR_(pID, "Nod"))
@@ -91,7 +92,7 @@ const char* SideExtData::GetMultiplayerScoreBarFilename(unsigned int index) cons
 	{
 		static fmt::basic_memory_buffer<char, 3> buffer {};
 		buffer.clear();
-		fmt::format_to(std::back_inserter(buffer), "{:02}" ,index + 1);
+		fmt::format_to(std::back_inserter(buffer), "{:02}", index + 1);
 		pMarker[0] = buffer[0];
 		pMarker[1] = buffer[1];
 		buffer.push_back('\0');
@@ -103,14 +104,16 @@ const char* SideExtData::GetMultiplayerScoreBarFilename(unsigned int index) cons
 bool SideExtData::isNODSidebar()
 {
 	auto const PlayerSideIndex = ScenarioClass::Instance->PlayerSideIndex;
-	if (const auto pSide = SideClass::Array->get_or_default(PlayerSideIndex)) {
+	if (const auto pSide = SideClass::Array->get_or_default(PlayerSideIndex))
+	{
 		return !SideExtContainer::Instance.Find(pSide)->Sidebar_GDIPositions.Get(PlayerSideIndex == 0);
 	}
 
 	return PlayerSideIndex == 0;
 }
 
-int SideExtData::GetSurvivorDivisor() const {
+int SideExtData::GetSurvivorDivisor() const
+{
 	return this->SurvivorDivisor.Get(this->GetDefaultSurvivorDivisor());
 }
 
@@ -175,7 +178,6 @@ Iterator<TechnoTypeClass*> SideExtData::GetParaDropTypes() const
 
 Iterator<InfantryTypeClass*> SideExtData::GetDefaultParaDropTypes() const
 {
-
 	switch (this->ArrayIndex)
 	{
 	case 1:
@@ -204,7 +206,8 @@ Iterator<int> SideExtData::GetDefaultParaDropNum() const
 
 Iterator<int> SideExtData::GetParaDropNum() const
 {
-	if (this->ParaDropTypes.HasValue() && this->ParaDropNum.HasValue()) {
+	if (this->ParaDropTypes.HasValue() && this->ParaDropNum.HasValue())
+	{
 		return this->ParaDropNum;
 	}
 
@@ -213,7 +216,8 @@ Iterator<int> SideExtData::GetParaDropNum() const
 
 Iterator<int> SideExtData::GetBaseDefenseCounts() const
 {
-	if (this->BaseDefenseCounts.HasValue()) {
+	if (this->BaseDefenseCounts.HasValue())
+	{
 		return this->BaseDefenseCounts;
 	}
 
@@ -238,7 +242,8 @@ Iterator<int> SideExtData::GetDefaultBaseDefenseCounts() const
 
 Iterator<BuildingTypeClass*> SideExtData::GetBaseDefenses() const
 {
-	if (this->BaseDefenses.HasValue()) {
+	if (this->BaseDefenses.HasValue())
+	{
 		return this->BaseDefenses;
 	}
 
@@ -263,7 +268,8 @@ Iterator<BuildingTypeClass*> SideExtData::GetDefaultBaseDefenses() const
 
 InfantryTypeClass* SideExtData::GetDisguise() const
 {
-	if (this->Disguise.isset()) {
+	if (this->Disguise.isset())
+	{
 		return this->Disguise;
 	}
 
@@ -322,10 +328,10 @@ bool SideExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	this->Engineer.Read(exINI, pSection, "Engineer", true);
 	this->Technician.Read(exINI, pSection, "Technician", true);
 	this->ParaDropPlane.Read(exINI, pSection, "ParaDrop.Aircraft");
-	this->SpyPlane.Read(exINI, pSection, "SpyPlane.Aircraft" , true);
+	this->SpyPlane.Read(exINI, pSection, "SpyPlane.Aircraft", true);
 	this->HunterSeeker.Read(exINI, pSection, "HunterSeeker", true);
 
-	this->ParaDropTypes.Read(exINI, pSection, "ParaDrop.Types" , true);
+	this->ParaDropTypes.Read(exINI, pSection, "ParaDrop.Types", true);
 	this->ParaDropNum.Read(exINI, pSection, "ParaDrop.Num");
 
 	this->MessageTextColorIndex.Read(exINI, pSection, "MessageTextColor");
@@ -360,9 +366,11 @@ bool SideExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	this->ScoreMultiplayPalette.Read(pINI, pSection, "MultiplayerScore.Palette");
 	this->ScoreMultiplayBars.Read(pINI, pSection, "MultiplayerScore.Bars");
 
-	for (unsigned int i = 0; i < 10; ++i) {
+	for (unsigned int i = 0; i < 10; ++i)
+	{
 		auto pFilename = this->GetMultiplayerScoreBarFilename(i);
-		if (!PCX::Instance->GetSurface(pFilename)) {
+		if (!PCX::Instance->GetSurface(pFilename))
+		{
 			PCX::Instance->LoadFile(pFilename);
 		}
 	}
@@ -400,29 +408,34 @@ void SideExtData::UpdateGlobalFiles()
 
 	int idxSide = ScenarioClass::Instance->PlayerSideIndex;
 	auto pSide = SideClass::Array->get_or_default(idxSide);
-	if (!pSide) {
+	if (!pSide)
+	{
 		return;
 	}
 
 	auto pExt = SideExtContainer::Instance.Find(pSide);
 
 	// load graphical text shp
-	if (pExt->GraphicalTextImage) {
+	if (pExt->GraphicalTextImage)
+	{
 		SideExtData::s_GraphicalTextImage = (FileSystem::AllocateFile<SHPStruct>(pExt->GraphicalTextImage));
 	}
 
 	// load graphical text palette and create convert
-	if (pExt->GraphicalTextPalette) {
+	if (pExt->GraphicalTextPalette)
+	{
 		SideExtData::s_GraphicalTextConvert.Allocate(pExt->GraphicalTextPalette.data());
 	}
 
 	// load dialog background shp
-	if (pExt->DialogBackgroundImage) {
+	if (pExt->DialogBackgroundImage)
+	{
 		SideExtData::s_DialogBackgroundImage = (FileSystem::AllocateFile<SHPStruct>(pExt->DialogBackgroundImage));
 	}
 
 	// load dialog background palette and create convert
-	if (pExt->DialogBackgroundPalette) {
+	if (pExt->DialogBackgroundPalette)
+	{
 		SideExtData::s_DialogBackgroundConvert.Allocate(pExt->DialogBackgroundPalette.data());
 	}
 }
@@ -459,7 +472,6 @@ void SideExtData::Serialize(T& Stm)
 		.Process(this->GClock_Shape)
 		.Process(this->GClock_Transculency)
 		.Process(this->GClock_Palette)
-
 
 		.Process(this->SurvivorDivisor)
 		.Process(this->Crew)
@@ -520,7 +532,6 @@ void SideExtData::Serialize(T& Stm)
 		;
 }
 
-
 // =============================
 // container
 SideExtContainer SideExtContainer::Instance;
@@ -571,7 +582,6 @@ bool SideExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool SideExtContainer::SaveAll(json& root)
@@ -620,12 +630,10 @@ void SideExtContainer::LoadFromINI(ext_t::base_type* key, CCINIClass* pINI, bool
 		//this function can be called again multiple time but without need to re-init the data
 		ptr->SetInitState(InitState::Ruled);
 	}
-
 }
 
 void SideExtContainer::WriteToINI(ext_t::base_type* key, CCINIClass* pINI)
 {
-
 	if (auto ptr = this->TryFind(key))
 	{
 		if (!pINI)
@@ -644,7 +652,7 @@ ASMJIT_PATCH(0x6A4600, SideClass_CTOR, 0x6)
 	GET(SideClass*, pItem, ESI);
 	GET(int, nIdx, EAX);
 
-	if(auto pExt = SideExtContainer::Instance.Allocate(pItem))
+	if (auto pExt = SideExtContainer::Instance.Allocate(pItem))
 		pExt->ArrayIndex = nIdx;
 
 	return 0;

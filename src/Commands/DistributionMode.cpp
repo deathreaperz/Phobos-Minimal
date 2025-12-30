@@ -255,7 +255,7 @@ ASMJIT_PATCH(0x4AE7B3, DisplayClass_ActiveClickWith_Iterate, 0x0)
 				const auto pType = pTechno->GetTechnoType();
 				const int range = (2 << spreadMode);
 				const auto center = pTechno->GetCoords();
-				const auto pItems = Helpers::Alex::getCellSpreadItems(center, range, false, false , false , true , false);
+				const auto pItems = Helpers::Alex::getCellSpreadItems(center, range, false, false, false, true, false);
 
 				std::vector<std::pair<TechnoClass*, int>> record;
 				const size_t maxSize = pItems.size();
@@ -424,6 +424,6 @@ void DistributionModeHoldDownCommandClass::DrawRadialIndicator()
 			? ((filterMode == 3) ? ColorStruct { 255, 0, 0 } : ColorStruct { 200, 200, 0 })
 			: ((filterMode == 1) ? ColorStruct { 0, 100, 255 } : ColorStruct { 0, 255, 50 });
 
-		FakeTacticalClass::__DrawRadialIndicator(false , true , pCell->GetCoords(), color , static_cast<float>(spreadMode ? (2 << spreadMode) : 0.5), false , true);
+		FakeTacticalClass::__DrawRadialIndicator(false, true, pCell->GetCoords(), color, static_cast<float>(spreadMode ? (2 << spreadMode) : 0.5), false, true);
 	}
 }

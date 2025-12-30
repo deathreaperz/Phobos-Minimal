@@ -19,9 +19,10 @@ bool SW_EMPulse::Activate(SuperClass* pThis, const CellStruct& Coords, bool IsPl
 	// if linked, only one needs to be in range (and CanFireAt checked that already).
 	const bool ignoreRange = pData->EMPulse_Linked || pData->EMPulse_TargetSelf;
 
-	auto IsEligible = [=](BuildingClass* pBld) {
-		return this->IsLaunchSiteEligible(pData, Coords, pBld, ignoreRange);
-	};
+	auto IsEligible = [=](BuildingClass* pBld)
+		{
+			return this->IsLaunchSiteEligible(pData, Coords, pBld, ignoreRange);
+		};
 
 	//why this fuckery even exist ,..
 	//the SW can be state can be exploited at some point , smh
@@ -37,10 +38,12 @@ bool SW_EMPulse::Activate(SuperClass* pThis, const CellStruct& Coords, bool IsPl
 			bool suspend = false;
 			auto pSuper_pData = SWTypeExtContainer::Instance.Find(pSuper->Type);
 
-			if (pSuper_pData->EMPulse_Cannons.empty() && pData->EMPulse_Cannons.empty()) {
+			if (pSuper_pData->EMPulse_Cannons.empty() && pData->EMPulse_Cannons.empty())
+			{
 				suspend = true;
 			}
-			else {
+			else
+			{
 				// Suspend if the two cannon lists share common items.
 				suspend = std::ranges::find_first_of(pData->EMPulse_Cannons, pSuper_pData->EMPulse_Cannons) != pData->EMPulse_Cannons.end();
 			}
@@ -50,10 +53,13 @@ bool SW_EMPulse::Activate(SuperClass* pThis, const CellStruct& Coords, bool IsPl
 				pSuper->IsOnHold = true;
 				auto iter = pHouseExt->SuspendedEMPulseSWs.get_key_iterator(pThis);
 
-				if (iter == pHouseExt->SuspendedEMPulseSWs.end()) {
+				if (iter == pHouseExt->SuspendedEMPulseSWs.end())
+				{
 					pHouseExt->SuspendedEMPulseSWs.insert(pThis, std::vector<SuperClass*>{});
 					pHouseExt->SuspendedEMPulseSWs.back().second.emplace_back(pSuper);
-				} else {
+				}
+				else
+				{
 					iter->second.emplace_back(pSuper);
 				}
 			}
@@ -68,8 +74,10 @@ bool SW_EMPulse::Activate(SuperClass* pThis, const CellStruct& Coords, bool IsPl
 		{
 			// set extended properties
 			// need to validate this before set
-			if (auto pWNStruct = pBld->GetWeapon(pData->EMPulse_WeaponIndex)) {
-				if (auto pWeapon = pWNStruct->WeaponType) {
+			if (auto pWNStruct = pBld->GetWeapon(pData->EMPulse_WeaponIndex))
+			{
+				if (auto pWeapon = pWNStruct->WeaponType)
+				{
 					TechnoExtContainer::Instance.Find(pBld)->idxSlot_EMPulse = pData->EMPulse_WeaponIndex;
 				}
 			}
@@ -83,9 +91,11 @@ bool SW_EMPulse::Activate(SuperClass* pThis, const CellStruct& Coords, bool IsPl
 		else
 		{
 			// create a bullet and detonate immediately
-			if(auto pWNStruct = pBld->GetWeapon(pData->EMPulse_WeaponIndex)){
-				if (auto pWeapon = pWNStruct->WeaponType) {
-					if (auto pBullet = BulletTypeExtContainer::Instance.Find(pWeapon->Projectile)->CreateBullet(pBld, pBld, pWeapon , false , true))
+			if (auto pWNStruct = pBld->GetWeapon(pData->EMPulse_WeaponIndex))
+			{
+				if (auto pWeapon = pWNStruct->WeaponType)
+				{
+					if (auto pBullet = BulletTypeExtContainer::Instance.Find(pWeapon->Projectile)->CreateBullet(pBld, pBld, pWeapon, false, true))
 					{
 						pBullet->Limbo();
 						pBullet->Detonate(BuildingExtData::GetCenterCoords(pBld));
@@ -130,21 +140,22 @@ void SW_EMPulse::LoadFromINI(SWTypeExtData* pData, CCINIClass* pINI)
 
 	pData->This()->Action = pData->EMPulse_TargetSelf ? Action::None : (Action)PhobosNewActionType::SuperWeaponAllowed;
 
-	if(!pData->EMPulse_PulseBall.isset())
+	if (!pData->EMPulse_PulseBall.isset())
 		pData->EMPulse_PulseBall = AnimTypeClass::Find(GameStrings::PULSBALL);
 }
 
 bool SW_EMPulse::IsLaunchSite(const SWTypeExtData* pData, BuildingClass* pBuilding) const
 {
 	const auto pBldExt = BuildingExtContainer::Instance.Find(pBuilding);
-	if(pBldExt->LimboID != -1)
+	if (pBldExt->LimboID != -1)
 		return false;
 
-	if(!this->IsLaunchsiteAlive(pBuilding))
+	if (!this->IsLaunchsiteAlive(pBuilding))
 		return false;
 
 	// don't further question the types in this list
-	if (!pData->EMPulse_Cannons.empty() && pData->EMPulse_Cannons.Contains(pBuilding->Type)) {
+	if (!pData->EMPulse_Cannons.empty() && pData->EMPulse_Cannons.Contains(pBuilding->Type))
+	{
 		return true; //quick exit
 	}
 

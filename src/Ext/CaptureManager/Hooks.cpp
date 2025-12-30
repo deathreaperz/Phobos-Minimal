@@ -1,4 +1,3 @@
-
 #include "Body.h"
 #include <Ext/Techno/Body.h>
 #include <Ext/TechnoType/Body.h>
@@ -13,11 +12,12 @@ ASMJIT_PATCH(0x4721E6, CaptureManagerClass_DrawLinkToVictim, 0x6) //C
 
 	const auto pAttacker = pThis->Owner;
 	const auto pAttackerType = pAttacker->GetTechnoType();
-	if (CaptureExtData::AllowDrawLink(pAttacker, pAttackerType)) {
+	if (CaptureExtData::AllowDrawLink(pAttacker, pAttackerType))
+	{
 		CoordStruct nVictimCoord = pVictim->Location;
 		nVictimCoord.Z += pAttackerType->LeptonMindControlOffset;
 		CoordStruct nFLH {};
-		pAttacker->GetFLH(&nFLH ,-1 - nNodeCount % 5, CoordStruct::Empty);
+		pAttacker->GetFLH(&nFLH, -1 - nNodeCount % 5, CoordStruct::Empty);
 		Drawing::DrawLinesTo(nFLH, nVictimCoord, pAttacker->Owner->Color);
 	}
 
@@ -30,7 +30,7 @@ ASMJIT_PATCH(0x471D40, CaptureManagerClass_CaptureUnit_ReplaceVanillaFunc, 0x7)
 	GET(CaptureManagerClass*, pThis, ECX);
 	GET_STACK(AbstractClass*, pTechno, 0x4);
 
-	R->AL(CaptureExtData::CaptureUnit(pThis, flag_cast_to<TechnoClass*>(pTechno), false , 0));
+	R->AL(CaptureExtData::CaptureUnit(pThis, flag_cast_to<TechnoClass*>(pTechno), false, 0));
 
 	return 0x471D5A;
 }

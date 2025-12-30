@@ -216,7 +216,7 @@ public:
 	const BulletTypeClass* This_Const() const { return reinterpret_cast<const BulletTypeClass*>(this->AttachedToObject); }
 
 	virtual bool LoadFromINI(CCINIClass* pINI, bool parseFailAddr);
-	virtual bool WriteToINI(CCINIClass* pINI) const { return true;  }
+	virtual bool WriteToINI(CCINIClass* pINI) const { return true; }
 
 public:
 
@@ -248,15 +248,13 @@ public:
 		return This()->Floater ? nGravity * 0.5 : nGravity;
 	}
 
-	BulletClass* CreateBullet(AbstractClass* pTarget, TechnoClass* pOwner, HouseClass* pHouse , WeaponTypeClass* pWeapon, bool addDamage, bool SetWeaponType) const;
+	BulletClass* CreateBullet(AbstractClass* pTarget, TechnoClass* pOwner, HouseClass* pHouse, WeaponTypeClass* pWeapon, bool addDamage, bool SetWeaponType) const;
 	BulletClass* CreateBullet(AbstractClass* pTarget, TechnoClass* pOwner, WeaponTypeClass* pWeapon, bool addDamage, bool SetWeaponType) const;
 	BulletClass* CreateBullet(AbstractClass* pTarget, TechnoClass* pOwner, WeaponTypeClass* pWeapon) const;
 	BulletClass* CreateBullet(AbstractClass* pTarget, TechnoClass* pOwner, int damage, WarheadTypeClass* pWarhead, int speed, int range, bool bright, bool addDamage) const;
 
-
 	const ConvertClass* GetBulletConvert();
 public:
-
 
 	static FORCEDINLINE double GetAdjustedGravity(BulletTypeClass* pType);
 
@@ -273,7 +271,6 @@ public:
 	static COMPILETIMEEVAL Leptons DefaultBulletScatterMax { 512 };
 	//static COMPILETIMEEVAL int _base_1 = (Unsorted::LevelHeight * Unsorted::LevelHeight + Unsorted::LeptonsPerCell * Unsorted::LeptonsPerCell);
 	//static COMPILETIMEEVAL int _base_2 = (Unsorted::CellHeight * Unsorted::CellHeight + Unsorted::LeptonsPerCell * Unsorted::LeptonsPerCell);
-
 };
 
 class BulletTypeExtContainer final : public Container<BulletTypeExtData>
@@ -300,13 +297,14 @@ double BulletTypeExtData::GetAdjustedGravity(BulletTypeClass* pType)
 class NOVTABLE FakeBulletTypeClass : public BulletTypeClass
 {
 public:
-		static COMPILETIMEEVAL const char* ClassName = "FakeBulletTypeClass";
+	static COMPILETIMEEVAL const char* ClassName = "FakeBulletTypeClass";
 
 public:
 
 	bool _ReadFromINI(CCINIClass* pINI);
 
-	BulletTypeExtData* _GetExtData() {
+	BulletTypeExtData* _GetExtData()
+	{
 		return *reinterpret_cast<BulletTypeExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 };

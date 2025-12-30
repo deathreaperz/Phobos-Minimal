@@ -85,7 +85,7 @@ enum class PhobosTriggerAction : unsigned int
 	RandomTriggerEnable = 12002,
 	ScoreCampaignText = 19000,
 	ScoreCampaignTheme = 19001,
-	SetNextMission = 19002 ,
+	SetNextMission = 19002,
 
 	//DrawLaserBetweenWeaypoints = 9940,
 	//AdjustLighting = 505,
@@ -98,7 +98,7 @@ class TActionExtData
 public:
 
 	static void RecreateLightSources();
-	static bool Occured(TActionClass* pThis, ActionArgs const& args , bool& bHandled);
+	static bool Occured(TActionClass* pThis, ActionArgs const& args, bool& bHandled);
 	static bool RunSuperWeaponAt(TActionClass* pThis, int X, int Y);
 
 #define ACTION_FUNC(name) \
@@ -180,34 +180,38 @@ public:
 
 	static PhobosMap<int, std::vector<TriggerClass*>> RandomTriggerPool;
 
-	static void Clear() {
+	static void Clear()
+	{
 		RandomTriggerPool.clear();
 	}
 
-	static void InvalidatePointer(AbstractClass* ptr, bool bRemoved) {
-		for (auto& nMap : RandomTriggerPool) {
-			if (bRemoved) {
+	static void InvalidatePointer(AbstractClass* ptr, bool bRemoved)
+	{
+		for (auto& nMap : RandomTriggerPool)
+		{
+			if (bRemoved)
+			{
 				fast_remove_if(nMap.second, [ptr](auto _el) { return  ptr == _el; });
 			}
 		}
 	}
 
-	static bool LoadGlobals(PhobosStreamReader& Stm) {
+	static bool LoadGlobals(PhobosStreamReader& Stm)
+	{
 		Stm.Process(RandomTriggerPool);
 		return Stm.Success();
 	}
 
-	static bool SaveGlobals(PhobosStreamWriter& Stm){
+	static bool SaveGlobals(PhobosStreamWriter& Stm)
+	{
 		Stm.Process(RandomTriggerPool);
 		return Stm.Success();
 	}
 };
-
 
 class NOVTABLE FakeTActionClass : public TActionClass
 {
 public:
 
 	bool _OperatorBracket(HouseClass* pTargetHouse, ObjectClass* pSourceObject, TriggerClass* pTrigger, CellStruct* plocation);
-
 }; static_assert(sizeof(FakeTActionClass) == 0x94, "Invalid Size !");

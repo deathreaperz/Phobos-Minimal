@@ -34,8 +34,10 @@ ASMJIT_PATCH(0x4232CE, AnimClass_Draw_SetPalette, 6)
 
 	const auto pData = AnimTypeExtContainer::Instance.TryFind(pThis->Type);
 
-	if (pData ) {
-		if(const auto pConvert = pData->Palette.GetConvert()) {
+	if (pData)
+	{
+		if (const auto pConvert = pData->Palette.GetConvert())
+		{
 			R->ECX<ConvertClass*>(pConvert);
 			return 0x4232D4;
 		}
@@ -73,7 +75,6 @@ ASMJIT_PATCH(0x42513F, AnimClass_Expired_ScorchFlamer, 0x7)
 			if (auto const pAnim3 = TechnoExt_ExtData::SpawnAnim(crd, RulesClass::Instance->LargeFire, 112))
 				AnimExtData::SetAnimOwnerHouseKind(pAnim3, pAnim3->Owner, nullptr);
 		}
-
 	}
 	else if (pType->Scorch)
 	{

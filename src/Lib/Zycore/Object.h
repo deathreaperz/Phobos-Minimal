@@ -39,43 +39,43 @@
 extern "C" {
 #endif
 
-/* ============================================================================================== */
-/* Enums and types                                                                                */
-/* ============================================================================================== */
+	/* ============================================================================================== */
+	/* Enums and types                                                                                */
+	/* ============================================================================================== */
 
-/**
- * Defines the `ZyanMemberProcedure` function prototype.
- *
- * @param   object  A pointer to the object.
- */
-typedef void (*ZyanMemberProcedure)(void* object);
+	/**
+	 * Defines the `ZyanMemberProcedure` function prototype.
+	 *
+	 * @param   object  A pointer to the object.
+	 */
+	typedef void (*ZyanMemberProcedure)(void* object);
 
-/**
- * Defines the `ZyanConstMemberProcedure` function prototype.
- *
- * @param   object  A pointer to the object.
- */
-typedef void (*ZyanConstMemberProcedure)(const void* object);
+	/**
+	 * Defines the `ZyanConstMemberProcedure` function prototype.
+	 *
+	 * @param   object  A pointer to the object.
+	 */
+	typedef void (*ZyanConstMemberProcedure)(const void* object);
 
-/**
- * Defines the `ZyanMemberFunction` function prototype.
- *
- * @param   object  A pointer to the object.
- *
- * @return  A zyan status code.
- */
-typedef ZyanStatus (*ZyanMemberFunction)(void* object);
+	/**
+	 * Defines the `ZyanMemberFunction` function prototype.
+	 *
+	 * @param   object  A pointer to the object.
+	 *
+	 * @return  A zyan status code.
+	 */
+	typedef ZyanStatus(*ZyanMemberFunction)(void* object);
 
-/**
- * Defines the `ZyanConstMemberFunction` function prototype.
- *
- * @param   object  A pointer to the object.
- *
- * @return  A zyan status code.
- */
-typedef ZyanStatus (*ZyanConstMemberFunction)(const void* object);
+	/**
+	 * Defines the `ZyanConstMemberFunction` function prototype.
+	 *
+	 * @param   object  A pointer to the object.
+	 *
+	 * @return  A zyan status code.
+	 */
+	typedef ZyanStatus(*ZyanConstMemberFunction)(const void* object);
 
-/* ============================================================================================== */
+	/* ============================================================================================== */
 
 #ifdef __cplusplus
 }

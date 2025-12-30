@@ -62,7 +62,7 @@ bool MessageLabelClass::Draw(bool forced)
 			VocClass::PlayGlobal(RulesClass::Instance->MessageCharTyped, Panning::Center, 1.0f);
 	}
 
-	Animated_Text_Print_623880(DSurface::Temp(),  & rect, text, textLen, pBit, MessageColumnClass::Instance.GetTextColor(), &this->DrawPos, this->IsFocused(), false, true, this->AnimPos);
+	Animated_Text_Print_623880(DSurface::Temp(), &rect, text, textLen, pBit, MessageColumnClass::Instance.GetTextColor(), &this->DrawPos, this->IsFocused(), false, true, this->AnimPos);
 
 	return true;
 }

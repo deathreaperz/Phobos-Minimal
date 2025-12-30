@@ -18,7 +18,6 @@ public:
 
 	virtual bool Read(CCINIClass* const pINI, const char* pSection) override;
 	virtual const char* Name() { return "MeteorTrajectoryType"; }
-
 };
 
 class MeteorTrajectory final : public PhobosTrajectory
@@ -37,7 +36,6 @@ public:
 	virtual bool Save(PhobosStreamWriter& Stm) const override;
 
 	virtual MeteorTrajectoryType* GetTrajectoryType() const { return reinterpret_cast<MeteorTrajectoryType*>(PhobosTrajectory::GetTrajectoryType()); }
-
 
 	virtual void OnUnlimbo(CoordStruct* pCoord, VelocityClass* pVelocity) override;
 	virtual bool OnAI() override;

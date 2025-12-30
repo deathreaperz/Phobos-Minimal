@@ -65,7 +65,7 @@ bool SW_SonarPulse::IsLaunchSite(const SWTypeExtData* pData, BuildingClass* pBui
 
 SWRange SW_SonarPulse::GetRange(const SWTypeExtData* pData) const
 {
-	return pData->SW_Range->empty() ? SWRange{ 10 } :pData->SW_Range.Get();
+	return pData->SW_Range->empty() ? SWRange { 10 } : pData->SW_Range.Get();
 }
 
 void SonarPulseStateMachine::Update()
@@ -81,7 +81,8 @@ void SonarPulseStateMachine::SendSonarPulse(SuperClass* pSuper, SWTypeExtData* p
 	pData->PrintMessage(pData->Message_Activate, pSuper->Owner);
 
 	auto const sound = pData->SW_ActivationSound.Get(-1);
-	if (sound != -1) {
+	if (sound != -1)
+	{
 		VocClass::PlayGlobal(sound, Panning::Center, 1.0);
 	}
 
@@ -119,8 +120,7 @@ void SonarPulseStateMachine::ApplySonarPulse(SuperClass* pSuper, const CellStruc
 			}
 
 			return true;
-	};
-
+		};
 
 	if (range.WidthOrRange < 0)
 	{
@@ -138,7 +138,8 @@ void SonarPulseStateMachine::ApplySonarPulse(SuperClass* pSuper, const CellStruc
 		items.apply_function_for_each(Detect);
 
 		// radar event only if this isn't full map sonar
-		if (pData->SW_RadarEvent) {
+		if (pData->SW_RadarEvent)
+		{
 			RadarEventClass::Create(RadarEventType::SuperweaponActivated, Coords);
 		}
 	}

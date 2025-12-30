@@ -40,16 +40,20 @@ bool SW_ChronoSphere::Activate(SuperClass* const pThis, const CellStruct& Coords
 			// fallback to use the first warp if there is no specific one
 			auto const& Types = *SuperWeaponTypeClass::Array;
 
-			if (!Types.valid_index(idxWarp) || Types[idxWarp]->Type != SuperWeaponType::ChronoWarp) {
-				for (int aI = 0; aI < Types.Count; ++aI) {
-					if (Types[aI]->Type == SuperWeaponType::ChronoWarp) {
+			if (!Types.valid_index(idxWarp) || Types[idxWarp]->Type != SuperWeaponType::ChronoWarp)
+			{
+				for (int aI = 0; aI < Types.Count; ++aI)
+				{
+					if (Types[aI]->Type == SuperWeaponType::ChronoWarp)
+					{
 						idxWarp = aI;
 						break;
 					}
 				}
 			}
 
-			if (idxWarp == -1) {
+			if (idxWarp == -1)
+			{
 				Debug::LogInfo("[ChronoSphere::Activate] There is no SuperWeaponType with Type=ChronoWarp. Aborted.");
 			}
 
@@ -94,7 +98,8 @@ void SW_ChronoSphere::LoadFromINI(SWTypeExtData* pData, CCINIClass* pINI)
 	pData->Chronosphere_KillCargo.Read(exINI, section, "Chronosphere.KillCargo");
 	// reconstruct the original value, then re-read (otherwise buildings will be affected if
 	// the SW section is defined in game mode inis or maps without restating SW.AffectsTarget)
-	if (!pData->Chronosphere_AffectBuildings) {
+	if (!pData->Chronosphere_AffectBuildings)
+	{
 		pData->SW_AffectsTarget = (pData->SW_AffectsTarget & ~SuperWeaponTarget::Building);
 	}
 
@@ -112,7 +117,7 @@ AnimTypeClass* SW_ChronoSphere::GetAnim(const SWTypeExtData* pData) const
 
 SWRange SW_ChronoSphere::GetRange(const SWTypeExtData* pData) const
 {
-	return pData->SW_Range->empty() ? SWRange{3, 3} : pData->SW_Range;
+	return pData->SW_Range->empty() ? SWRange { 3, 3 } : pData->SW_Range;
 }
 
 bool SW_ChronoSphere::IsLaunchSite(const SWTypeExtData* pData, BuildingClass* pBuilding) const

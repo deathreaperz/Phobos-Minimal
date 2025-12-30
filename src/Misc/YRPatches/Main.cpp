@@ -1,4 +1,3 @@
-
 #include <Utilities/Patch.h>
 #include <Syringe.h>
 #include <CCINIClass.h>
@@ -10,18 +9,19 @@ ASMJIT_PATCH(0x686C2A, ScenarioClass_ReadTutorialFromMap, 0x6)
 {
 	GET(CCINIClass*, pINI, EBP);
 
-	if(pINI->GetSection("Tutorial")) {
+	if (pINI->GetSection("Tutorial"))
+	{
 		const int tut_count = pINI->GetKeyCount("Tutorial");
 		Debug::Log("Reading Tutorial  from MAP , entry count = %d\n", tut_count);
 
-		for (int i = 0; i < tut_count; ++i) {
+		for (int i = 0; i < tut_count; ++i)
+		{
 			if (pINI->ReadString("Tutorial", pINI->GetKeyName("Tutorial", i),
 				Phobos::readDefval, Phobos::readBuffer) > 0)
 			{
 				Debug::LogInfo("Value {} , at Idx {}", Phobos::readBuffer, i);
 			}
 		}
-
 	}
 
 	return 0x0;
@@ -44,7 +44,6 @@ read_tut_from_map(INIClass* scenario, char* section, char* entry, int fallback)
 	if (i > 100)
 		i = 100;
 
-
 	while (i-- > 0)
 	{
 		entryName = INIClass__GetEntry(scenario, "Tutorial", i);
@@ -53,7 +52,6 @@ read_tut_from_map(INIClass* scenario, char* section, char* entry, int fallback)
 		CSF_Label_Array_Count++;
 
 		memcpy(labelEntry->label, entryName, 31);
-
 
 		csf = new(sizeof(csfString));
 		len = INIClass__GetString(scenario, "Tutorial", entryName, 0, buf, 0x200);

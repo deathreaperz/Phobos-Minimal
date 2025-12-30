@@ -34,7 +34,8 @@ bool ToggleSWButtonClass::Draw(bool forced)
 	RectangleStruct destRect { this->Rect.X, this->Rect.Y, this->Rect.Width, this->Rect.Height };
 	PCX::Instance->BlitToSurface(&destRect, DSurface::Composite, pTogglePCX);
 
-	if (this->IsHovering) {
+	if (this->IsHovering)
+	{
 		DSurface::Composite->Draw_Rect(destRect, Drawing::TooltipColor->ToInit());
 	}
 
@@ -134,5 +135,5 @@ bool ToggleSWButtonClass::SwitchSidebar()
 	if (const auto toggleButton = SWSidebarClass::Global()->ToggleButton)
 		toggleButton->UpdatePosition();
 
-		return !disabled;
+	return !disabled;
 }

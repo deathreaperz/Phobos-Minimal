@@ -185,8 +185,7 @@ public:
 	virtual ~SideExtData() = default;
 
 	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override
-	{
-	}
+	{ }
 
 	virtual void LoadFromStream(PhobosStreamReader& Stm) override
 	{
@@ -257,14 +256,16 @@ public:
 	static bool LoadGlobals(PhobosStreamReader& Stm);
 	static bool SaveGlobals(PhobosStreamWriter& Stm);
 
-	static COMPILETIMEEVAL SHPStruct* GetGraphicalTextImage() {
+	static COMPILETIMEEVAL SHPStruct* GetGraphicalTextImage()
+	{
 		return SideExtData::s_GraphicalTextImage ?
-		 SideExtData::s_GraphicalTextImage : FileSystem::GRFXTXT_SHP();
+			SideExtData::s_GraphicalTextImage : FileSystem::GRFXTXT_SHP();
 	}
 
-	static COMPILETIMEEVAL ConvertClass* GetGraphicalTextConvert() {
+	static COMPILETIMEEVAL ConvertClass* GetGraphicalTextConvert()
+	{
 		return SideExtData::s_GraphicalTextConvert.GetConvert() ?
-		 SideExtData::s_GraphicalTextConvert.GetConvert() : FileSystem::GRFXTXT_Convert();
+			SideExtData::s_GraphicalTextConvert.GetConvert() : FileSystem::GRFXTXT_Convert();
 	}
 
 private:
@@ -294,7 +295,6 @@ class FakeSideClass final : public SideClass
 public:
 	HRESULT __stdcall _Load(IStream* pStm);
 	HRESULT __stdcall _Save(IStream* pStm, BOOL clearDirty);
-
 };
 
 static_assert(sizeof(FakeSideClass) == sizeof(SideClass), "Invalid Size !");

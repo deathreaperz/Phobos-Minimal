@@ -17,12 +17,12 @@ WeaponStruct* FakeInfantryClass::_GetDeployWeapon()
 #include <Ext/Anim/Body.h>
 
 // Handle infantry that survives damage
-void HandleInfantryDamaged(FakeInfantryClass* pThis, TechnoClass* source, HouseClass* sourceHouse) {
-
+void HandleInfantryDamaged(FakeInfantryClass* pThis, TechnoClass* source, HouseClass* sourceHouse)
+{
 	if (!pThis->Owner->IsControlledByHuman()
 		&& pThis->Type->Engineer
 		&& (pThis->GetCurrentMission() == Mission::Guard
-		|| pThis->GetCurrentMission() == Mission::Area_Guard))
+			|| pThis->GetCurrentMission() == Mission::Area_Guard))
 	{
 		pThis->QueueMission(Mission::Hunt, false);
 	}
@@ -32,7 +32,6 @@ void HandleInfantryDamaged(FakeInfantryClass* pThis, TechnoClass* source, HouseC
 
 	if (source && pThis->PanicDurationLeft < 100)
 	{
-
 		if (pThis->Type->Fraidycat)
 		{
 			pThis->PanicDurationLeft = 300;
@@ -50,7 +49,6 @@ void HandleInfantryDamaged(FakeInfantryClass* pThis, TechnoClass* source, HouseC
 	}
 	else if (!pThis->Type->Fearless && !pThis->HasAbility(AbilityType::Fearless))
 	{
-
 		int morefear = 50;
 		auto _HPPercent = pThis->GetHealthPercentage();
 
@@ -68,7 +66,8 @@ void HandleInfantryDamaged(FakeInfantryClass* pThis, TechnoClass* source, HouseC
 	}
 }
 
-void FinalizeInfantryDeath(FakeInfantryClass* pThis, TechnoClass* pKiller) {
+void FinalizeInfantryDeath(FakeInfantryClass* pThis, TechnoClass* pKiller)
+{
 	if (pThis->Type->Crashable && pThis->Crash(pKiller))
 		return;
 
@@ -76,11 +75,13 @@ void FinalizeInfantryDeath(FakeInfantryClass* pThis, TechnoClass* pKiller) {
 }
 
 void ProcessStandardDeathType(FakeInfantryClass* pThis, WarheadTypeClass* warhead,
-	TechnoClass* source, HouseClass* sourceHouse, bool isCyborgDeath , InfDeath infDeath) {
+	TechnoClass* source, HouseClass* sourceHouse, bool isCyborgDeath, InfDeath infDeath)
+{
 	bool Succeeded = false;
 	auto pWarheadExt = WarheadTypeExtContainer::Instance.Find(warhead);
 
-	if(pThis->Type->NotHuman){
+	if (pThis->Type->NotHuman)
+	{
 		if (auto pDeathAnim = pWarheadExt->NotHuman_DeathAnim.Get(nullptr))
 		{
 			auto pAnim = GameCreate<AnimClass>(pDeathAnim, pThis->Location);
@@ -131,7 +132,8 @@ void ProcessStandardDeathType(FakeInfantryClass* pThis, WarheadTypeClass* warhea
 				}
 			}
 
-			if (!isCyborgDeath) {
+			if (!isCyborgDeath)
+			{
 				return; // Don't finalize - cyborg stays as debris
 			}
 		}
@@ -140,7 +142,9 @@ void ProcessStandardDeathType(FakeInfantryClass* pThis, WarheadTypeClass* warhea
 			pThis->UnInit();
 			return;
 		}
-	} else {
+	}
+	else
+	{
 		AnimTypeClass* pTypeAnim = pWarheadExt->InfDeathAnim;
 		for (auto begin = pWarheadExt->InfDeathAnims.begin(); begin != pWarheadExt->InfDeathAnims.end(); ++begin)
 		{
@@ -169,7 +173,8 @@ void ProcessStandardDeathType(FakeInfantryClass* pThis, WarheadTypeClass* warhea
 			case InfDeath::Die1:
 				if (pThis->PlayAnim(DoType::Die1, true, false))
 				{
-					if (!isCyborgDeath) {
+					if (!isCyborgDeath)
+					{
 						return;
 					}
 				}
@@ -178,7 +183,8 @@ void ProcessStandardDeathType(FakeInfantryClass* pThis, WarheadTypeClass* warhea
 			case InfDeath::Die2:
 				if (pThis->PlayAnim(DoType::Die2, true, false))
 				{
-					if (!isCyborgDeath) {
+					if (!isCyborgDeath)
+					{
 						return;
 					}
 				}
@@ -200,7 +206,6 @@ void ProcessStandardDeathType(FakeInfantryClass* pThis, WarheadTypeClass* warhea
 				}
 
 				pAnim = GameCreate<AnimClass>(El, pThis->Location, 0, 1, AnimFlag::AnimFlag_600, 0, 0);
-
 			}
 			break;
 			case InfDeath::HeadPop:
@@ -224,29 +229,33 @@ void ProcessStandardDeathType(FakeInfantryClass* pThis, WarheadTypeClass* warhea
 				if (GroundType::Get(pCell->LandType)->Cost[0] == 0.0 && !pThis->OnBridge)
 				{
 					bool fail = false;
-					if (!pThis->PlayAnim(DoType::Die2, true, false)) {
+					if (!pThis->PlayAnim(DoType::Die2, true, false))
+					{
 						pThis->UnInit();//fail
 						fail = true;
 					}
 
-					if (!isCyborgDeath || fail) {
+					if (!isCyborgDeath || fail)
+					{
 						return;
 					}
 					else break;
 				}
 
-				CoordStruct closest{};
+				CoordStruct closest {};
 				pCell->FindInfantrySubposition(&closest, curLoc, false, false, false);
 
 				if (!closest.IsValid())
 				{
 					bool fail = false;
-					if (!pThis->PlayAnim(DoType::Die2, true, false)) {
+					if (!pThis->PlayAnim(DoType::Die2, true, false))
+					{
 						pThis->UnInit();//fail
 						fail = true;
 					}
 
-					if (!isCyborgDeath || fail) {
+					if (!isCyborgDeath || fail)
+					{
 						return;
 					}
 					else break;
@@ -256,16 +265,17 @@ void ProcessStandardDeathType(FakeInfantryClass* pThis, WarheadTypeClass* warhea
 				{
 					bool fail = false;
 
-					if (!pThis->PlayAnim(DoType::Die2, true, false)) {
+					if (!pThis->PlayAnim(DoType::Die2, true, false))
+					{
 						pThis->UnInit();//fail
 						fail = true;
 					}
 
-					if (!isCyborgDeath || fail) {
+					if (!isCyborgDeath || fail)
+					{
 						return;
 					}
 					else break;
-
 				}
 
 				pThis->MarkAllOccupationBits(curLoc);
@@ -301,16 +311,14 @@ void ProcessStandardDeathType(FakeInfantryClass* pThis, WarheadTypeClass* warhea
 				}
 			}
 		}
-
 	}
-
 
 	FinalizeInfantryDeath(pThis, source);
 }
 
 void ProcessInfantryDeathAnimation(FakeInfantryClass* pThis, WarheadTypeClass* warhead,
-	TechnoClass* source, HouseClass* sourceHouse, bool isCyborgDeath) {
-
+	TechnoClass* source, HouseClass* sourceHouse, bool isCyborgDeath)
+{
 	CoordStruct location = pThis->Location;
 
 	// Check if near ground and in water
@@ -325,11 +333,10 @@ void ProcessInfantryDeathAnimation(FakeInfantryClass* pThis, WarheadTypeClass* w
 				// Water splash effects
 				GameCreate<AnimClass>(RulesClass::Instance->Wake, pThis->Location, 0, 1, AnimFlag::AnimFlag_600, 0, 0);
 
-				auto splash_loc = pThis->Location + CoordStruct{ 0, 0, 3 };
+				auto splash_loc = pThis->Location + CoordStruct { 0, 0, 3 };
 				GameCreate<AnimClass>(RulesClass::Instance->SplashList[0], splash_loc, 0, 1, AnimFlag::AnimFlag_600, 0, 0);
 
-
-				FinalizeInfantryDeath(pThis , source);
+				FinalizeInfantryDeath(pThis, source);
 				return;
 			}
 		}
@@ -404,7 +411,6 @@ void ProcessInfantryDeathAnimation(FakeInfantryClass* pThis, WarheadTypeClass* w
 				;
 
 			AnimExtData::SetAnimOwnerHouseKind(pAnim, Invoker, pThis->Owner, source, false, true);
-
 		}
 
 		FinalizeInfantryDeath(pThis, source);
@@ -418,8 +424,8 @@ void ProcessInfantryDeathAnimation(FakeInfantryClass* pThis, WarheadTypeClass* w
 #include <SlaveManagerClass.h>
 
 void HandleInfantryDeath(FakeInfantryClass* pThis, WarheadTypeClass* warhead,
-	TechnoClass* source, HouseClass* sourceHouse, bool forced) {
-
+	TechnoClass* source, HouseClass* sourceHouse, bool forced)
+{
 	// Handle slave manager cleanup
 	if (auto pEnslave = pThis->SlaveOwner)
 	{
@@ -449,15 +455,17 @@ void HandleInfantryDeath(FakeInfantryClass* pThis, WarheadTypeClass* warhead,
 	pThis->NextMission();
 	pThis->KillPassengers(source);
 
-	if (!pThis->_GetExtData()->GarrisonedIn) {
-
+	if (!pThis->_GetExtData()->GarrisonedIn)
+	{
 		// Check if special cyborg death
 		bool isCyborgDeath = false;
-		if (forced && pThis->Type->Cyborg) {
+		if (forced && pThis->Type->Cyborg)
+		{
 			isCyborgDeath = true;
 
 			// Cyborg bomb explosion
-			if (pThis->IsABomb) {
+			if (pThis->IsABomb)
+			{
 				GameCreate<AnimClass>(RulesClass::Instance->InfantryExplode, pThis->Location, 0, 1, AnimFlag::AnimFlag_600, 0, 0);
 			}
 		}
@@ -468,29 +476,31 @@ void HandleInfantryDeath(FakeInfantryClass* pThis, WarheadTypeClass* warhead,
 }
 #include <Misc/Hooks.Otamaa.h>
 
-DamageState FakeInfantryClass::_Take_Damage(int* damage, int distance, WarheadTypeClass* warhead, TechnoClass* source, bool ignoreDefenses, bool PreventsPassengerEscape, HouseClass* sourceHouse) {
-
+DamageState FakeInfantryClass::_Take_Damage(int* damage, int distance, WarheadTypeClass* warhead, TechnoClass* source, bool ignoreDefenses, bool PreventsPassengerEscape, HouseClass* sourceHouse)
+{
 	if (!warhead)
 		return DamageState::Unaffected;
 
 	auto pWarheadExt = WarheadTypeExtContainer::Instance.Find(warhead);
 
 	// Apply prone damage modifier
-	if (this->IsDeployed() && ignoreDefenses) {
+	if (this->IsDeployed() && ignoreDefenses)
+	{
 		*damage = static_cast<int>(*damage * pWarheadExt->DeployedDamage.Get(this));
 	}
-	else if (this->Crawling && *damage > 0 && !ignoreDefenses) {
+	else if (this->Crawling && *damage > 0 && !ignoreDefenses)
+	{
 		*damage = (int)MaxImpl(((double)*damage * warhead->ProneDamage), 1);
 	}
 
-
 	// Airborne units immune to certain death types (electrocution)
-	if (warhead->InfDeath == InfDeath::Mutate && this->GetHeight() > 0) {
+	if (warhead->InfDeath == InfDeath::Mutate && this->GetHeight() > 0)
+	{
 		*damage = 0;
 	}
 
 	// Call parent damage handler
-	DamageState result = FakeFootClass::__Take_Damage(this, discard_t(), 
+	DamageState result = FakeFootClass::__Take_Damage(this, discard_t(),
 		damage,
 		distance,
 		warhead,
@@ -503,7 +513,8 @@ DamageState FakeInfantryClass::_Take_Damage(int* damage, int distance, WarheadTy
 	if (result == DamageState::PostMortem || result == DamageState::Unaffected)
 		return result;
 
-	if (result == DamageState::NowDead) {
+	if (result == DamageState::NowDead)
+	{
 		HandleInfantryDeath(this, warhead, source, sourceHouse, ignoreDefenses);
 		return result;
 	}
@@ -591,7 +602,6 @@ bool InfantryExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool InfantryExtContainer::SaveAll(json& root)
@@ -626,7 +636,7 @@ ASMJIT_PATCH(0x517AEB, InfantryClass_CTOR, 0x5)
 {
 	GET(InfantryClass*, pItem, ESI);
 
-	if(pItem->Type)
+	if (pItem->Type)
 		InfantryExtContainer::Instance.Allocate(pItem);
 
 	return 0;
@@ -641,7 +651,7 @@ ASMJIT_PATCH(0x517F83, InfantryClass_DTOR, 0x6)
 
 void FakeInfantryClass::_Detach(AbstractClass* target, bool all)
 {
-	if(auto pExt = this->_GetExtData())
+	if (auto pExt = this->_GetExtData())
 		pExt->InvalidatePointer(target, all);
 	this->InfantryClass::PointerExpired(target, all);
 }

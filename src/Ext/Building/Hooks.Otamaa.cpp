@@ -38,8 +38,8 @@ ASMJIT_PATCH(0x44E85F, BuildingClass_Power_UntieStregth, 0x7)
 
 	R->EAX((int)(!pThis->_GetTypeExtData()->Power_DegradeWithHealth.Get()
 		? (nPowMult) :
-		 MaxImpl(
-			 ((nPowMult * pThis->_GetTypeExtData()->PowerPlant_DamageFactor) * pThis->GetHealthPercentage_()), 0)));
+		MaxImpl(
+			((nPowMult * pThis->_GetTypeExtData()->PowerPlant_DamageFactor) * pThis->GetHealthPercentage_()), 0)));
 
 	return 0x44E86F;
 }
@@ -69,7 +69,8 @@ ASMJIT_PATCH(0x43F000, BuildingClass_GetStaticImage_Sell, 0x6)
 
 ASMJIT_PATCH(0x47EF52, BuildingClass_PlaceCementGrid_Shape, 0x6)
 {
-	if (auto const pBuilding = cast_to<BuildingClass*>(DisplayClass::Instance->CurrentBuilding)) {
+	if (auto const pBuilding = cast_to<BuildingClass*>(DisplayClass::Instance->CurrentBuilding))
+	{
 		R->EDX(BuildingTypeExtContainer::Instance.Find(pBuilding->Type)->BuildingPlacementGrid_Shape.Get(FileSystem::PLACE_SHP()));
 		return R->Origin() + 0x6;
 	}
@@ -96,7 +97,8 @@ ASMJIT_PATCH(0x47EF52, BuildingClass_PlaceCementGrid_Shape, 0x6)
 
 // 	return 0x0;
 // }
-bool FakeBuildingClass::_IsFactory() {
+bool FakeBuildingClass::_IsFactory()
+{
 	return this->Type->Factory == AbstractType::AircraftType || this->IsFactory();
 }
 
@@ -132,4 +134,4 @@ ASMJIT_PATCH(0x443FF9,BuildingClass_ExitObject_Aircraft,0xA)
 
 // use GetCenterCoords instead of GetCoords for
 // TechnoClass::FireLaser
-DEFINE_PATCH(0x6FD338 ,0x58);
+DEFINE_PATCH(0x6FD338, 0x58);

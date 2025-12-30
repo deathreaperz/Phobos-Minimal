@@ -1,4 +1,3 @@
-
 #include <Ext/Anim/Body.h>
 #include <Ext/Aircraft/Body.h>
 #include <Ext/Techno/Body.h>
@@ -49,8 +48,9 @@ ASMJIT_PATCH(0x728F74, TunnelLocomotionClass_Process_KillAnims, 0x5)
 		pShieldData->SetAnimationVisibility(false);
 	}
 
-	for (auto& attachEffect : pExt->PhobosAE){
-		if(attachEffect)
+	for (auto& attachEffect : pExt->PhobosAE)
+	{
+		if (attachEffect)
 			attachEffect->SetAnimationTunnelState(false);
 	}
 
@@ -71,8 +71,9 @@ ASMJIT_PATCH(0x728E5F, TunnelLocomotionClass_Process_RestoreAnims, 0x7)
 		if (const auto pShieldData = TechnoExtContainer::Instance.Find(pLoco->LinkedTo)->GetShield())
 			pShieldData->SetAnimationVisibility(true);
 
-		for (auto& attachEffect : pExt->PhobosAE) {
-			if(attachEffect)
+		for (auto& attachEffect : pExt->PhobosAE)
+		{
+			if (attachEffect)
 				attachEffect->SetAnimationTunnelState(true);
 		}
 	}
@@ -87,12 +88,14 @@ void UpdateWebbed(FootClass* pThis)
 	if (!pExt->IsWebbed)
 		return;
 
-	if (auto pInf = cast_to<InfantryClass*, false>(pThis)){
-		if (pInf->ParalysisTimer.Completed()) {
-
+	if (auto pInf = cast_to<InfantryClass*, false>(pThis))
+	{
+		if (pInf->ParalysisTimer.Completed())
+		{
 			pExt->IsWebbed = false;
 
-			if (pExt->WebbedAnim) {
+			if (pExt->WebbedAnim)
+			{
 				pExt->WebbedAnim.reset();
 			}
 
@@ -115,14 +118,12 @@ ASMJIT_PATCH(0x703789, TechnoClass_Cloak_BeforeDetach, 0x6)        // TechnoClas
 	return 0;
 }ASMJIT_PATCH_AGAIN(0x6FBBC3, TechnoClass_Cloak_BeforeDetach, 0x5)  // TechnoClass_Cloaking_AI
 
-
 ASMJIT_PATCH(0x703799, TechnoClass_Cloak_AfterDetach, 0xA)        // TechnoClass_Do_Cloak
 {
 	GET(TechnoClass*, pThis, ESI);
 	TechnoExtContainer::Instance.Find(pThis)->IsDetachingForCloak = false;
 	return 0;
 }ASMJIT_PATCH_AGAIN(0x6FBBCE, TechnoClass_Cloak_AfterDetach, 0x7)  // TechnoClass_Cloaking_AI
-
 
 ASMJIT_PATCH(0x6FB9D7, TechnoClass_Cloak_RestoreMCAnim, 0x6)
 {
@@ -210,7 +211,6 @@ bool Spawned_Check_Destruction(AircraftClass* aircraft)
 	 */
 	if (aircraft->Target == nullptr || aircraft->Ammo == 0)
 	{
-
 		if (aircraft->Destination != aircraft->SpawnOwner)
 		{
 			aircraft->SetDestination(aircraft->SpawnOwner, true);
@@ -227,21 +227,22 @@ bool Spawned_Check_Destruction(AircraftClass* aircraft)
 	return false;
 }
 
-DEFINE_FUNCTION_JUMP(CALL , 0x414DA3  , FakeAircraftClass::_FootClass_Update_Wrapper);
+DEFINE_FUNCTION_JUMP(CALL, 0x414DA3, FakeAircraftClass::_FootClass_Update_Wrapper);
 
 ASMJIT_PATCH(0x4DA63B, FootClass_AI_IsMovingNow, 0x6)
 {
 	GET(FootClass*, pThis, ESI);
 
-	if(!pThis->IsOnMap && pThis->GetTechnoType()->BalloonHover){
-		if(MapClass::Instance->IsWithinUsableArea(pThis->GetCell(), true))
+	if (!pThis->IsOnMap && pThis->GetTechnoType()->BalloonHover)
+	{
+		if (MapClass::Instance->IsWithinUsableArea(pThis->GetCell(), true))
 			pThis->IsOnMap = true;
 	}
 
 	auto pExt = TechnoExtContainer::Instance.Find(pThis);
 
 	DriveDataFunctional::AI(pExt);
-	 //UpdateWebbed(pThis);
+	//UpdateWebbed(pThis);
 
 	return pThis->Locomotor.GetInterfacePtr() ? 0x4DA689 : 0x4DA67F;
 }
@@ -264,7 +265,6 @@ ASMJIT_PATCH(0x4DA63B, FootClass_AI_IsMovingNow, 0x6)
 //	GET(TechnoClass*, pThis, ESI);
 //	return 0;
 //}
-
 
 //ASMJIT_PATCH(0x736479, UnitClass_AI_FootClass_AI, 0x7)
 //{

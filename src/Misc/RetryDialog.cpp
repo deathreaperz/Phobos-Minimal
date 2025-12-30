@@ -36,7 +36,6 @@ ASMJIT_PATCH(0x686092, DoLose_RetryDialogForCampaigns, 0x7)
 			StringTable::FetchString(GameStrings::TXT_CANCEL()),
 			StringTable::FetchString(GameStrings::TXT_OK())))
 		{
-
 		case WWMessageBox::Result::Button3:
 			return OK;
 
@@ -44,7 +43,8 @@ ASMJIT_PATCH(0x686092, DoLose_RetryDialogForCampaigns, 0x7)
 			return Cancel;
 
 		default:
-		case WWMessageBox::Result::Button1: {
+		case WWMessageBox::Result::Button1:
+		{
 			auto pDialog = GameCreate<LoadOptionsClass>();
 			RetryDialogFlag::IsCalledFromRetryDialog = true;
 			const bool bIsAboutToLoad = pDialog->LoadDialog();

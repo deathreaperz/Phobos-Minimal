@@ -47,7 +47,8 @@ ASMJIT_PATCH(0x5885D1, MapClass_BuildingToFirestormWall_SkipExtraWalls, 0x6)
 	const auto index = pType->ArrayIndex;
 	const auto& nodes = pHouse->Base.BaseNodes;
 
-	for (const auto& pNode : nodes) {
+	for (const auto& pNode : nodes)
+	{
 		if (pNode.MapCoords == cell && pNode.BuildingTypeIndex == index)
 			return 0;
 	}
@@ -72,7 +73,8 @@ ASMJIT_PATCH(0x5887C1, MapClass_BuildingToWall_SkipExtraWalls, 0x6)
 	const auto index = pType->ArrayIndex;
 	const auto& nodes = pHouse->Base.BaseNodes;
 
-	for (const auto& pNode : nodes) {
+	for (const auto& pNode : nodes)
+	{
 		if (pNode.MapCoords == cell && pNode.BuildingTypeIndex == index)
 			return 0;
 	}

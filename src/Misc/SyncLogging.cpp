@@ -18,9 +18,9 @@ SyncLogEventBuffer<MissionOverrideSyncLogEvent, MissionOverrides_Size> SyncLogge
 SyncLogEventBuffer<AnimCreationSyncLogEvent, AnimCreations_Size> SyncLogger::AnimCreations;
 
 bool SyncLogger::HooksDisabled = false;
-int SyncLogger::AnimCreations_HighestX= 0;
-int SyncLogger::AnimCreations_HighestY= 0;
-int SyncLogger::AnimCreations_HighestZ= 0;
+int SyncLogger::AnimCreations_HighestX = 0;
+int SyncLogger::AnimCreations_HighestY = 0;
+int SyncLogger::AnimCreations_HighestZ = 0;
 int SyncLogger::TeamTypeClass_MaxIDLength = 0;
 int SyncLogger::ScriptTypeClass_MaxIDLength = 0;
 int SyncLogger::HouseTypeClass_MaxIDLength = 0;
@@ -118,7 +118,8 @@ void SyncLogger::WriteSyncLog(const std::string& logFilename)
 {
 	auto const pLogFile = fopen(logFilename.c_str(), "at");
 
-	if (pLogFile) {
+	if (pLogFile)
+	{
 		Debug::LogInfo("Writing to sync log file '{}'.", logFilename);
 
 		fprintf(pLogFile, "\nPhobos synchronization log:\n\n");
@@ -133,7 +134,9 @@ void SyncLogger::WriteSyncLog(const std::string& logFilename)
 		WriteTeams(pLogFile);
 
 		fclose(pLogFile);
-	} else {
+	}
+	else
+	{
 		Debug::FatalError("Failed to open sync log file '%s'.", logFilename.c_str());
 	}
 }
@@ -271,34 +274,39 @@ void SyncLogger::WriteTeams(FILE* const pLogFile)
 	size_t count = 0;
 
 	// Set padding for values.
-	for (auto const& pTeam : *TeamClass::Array) {
+	for (auto const& pTeam : *TeamClass::Array)
+	{
 		SyncLogger::SetTeamLoggingPadding(pTeam);
 		count++;
 	}
 
-	for (size_t i = 0; i < count; i++) {
-
+	for (size_t i = 0; i < count; i++)
+	{
 		auto const pTeam = TeamClass::Array->Items[i];
 
 		fprintf(pLogFile, "#%05d: Type: %*s",
 		i, SyncLogger::TeamTypeClass_MaxIDLength, pTeam->Type->get_ID());
 
-		if (pTeam->CurrentScript && pTeam->CurrentScript->Type) {
+		if (pTeam->CurrentScript && pTeam->CurrentScript->Type)
+		{
 			sprintf_s(buffer, sizeof(buffer), "%d", pTeam->CurrentScript->CurrentMission);
 			fprintf(pLogFile, " | Script: %*s | Line: %2s", SyncLogger::ScriptTypeClass_MaxIDLength, pTeam->CurrentScript->Type->get_ID(), buffer);
 		}
 
-		if (auto pOwner = pTeam->OwnerHouse) {
+		if (auto pOwner = pTeam->OwnerHouse)
+		{
 			sprintf_s(buffer, sizeof(buffer), "(%s)", pOwner->PlainName);
 			fprintf(pLogFile, " | Owner: %d %*s | OwnerHouse: %*s", pOwner->ArrayIndex,
-				SyncLogger::HouseName_MaxIDLength, buffer,SyncLogger::HouseTypeClass_MaxIDLength, pOwner->Type->get_ID());
+				SyncLogger::HouseName_MaxIDLength, buffer, SyncLogger::HouseTypeClass_MaxIDLength, pOwner->Type->get_ID());
 		}
 
-		if (auto pFocus = pTeam->ArchiveTarget) {
+		if (auto pFocus = pTeam->ArchiveTarget)
+		{
 			fprintf(pLogFile, " | TargetRTTI: %d (%s) | TargetID: %08d", pFocus->WhatAmI(), pFocus->GetThisClassName(), pFocus->UniqueID);
 		}
 
-		if (auto pQueueedFocus = pTeam->QueuedFocus) {
+		if (auto pQueueedFocus = pTeam->QueuedFocus)
+		{
 			fprintf(pLogFile, " | MissionTargetRTTI: %d (%s) | MissionTargetID: %08d", pQueueedFocus->WhatAmI(), pQueueedFocus->GetThisClassName(),
 				pQueueedFocus->UniqueID);
 		}
@@ -488,7 +496,8 @@ ASMJIT_PATCH(0x7013A0, TechnoClass_OverrideMission_SyncLog, 0x5)
 // Disable sync logging hooks in non-MP games
 ASMJIT_PATCH(0x683AB0, ScenarioClass_Start_DisableSyncLog, 0x6)
 {
-	if (SessionClass::IsMultiplayer() || SyncLogger::HooksDisabled) {
+	if (SessionClass::IsMultiplayer() || SyncLogger::HooksDisabled)
+	{
 		return 0;
 	}
 

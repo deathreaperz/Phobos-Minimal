@@ -34,8 +34,8 @@
 
 #ifndef ZYAN_CUSTOM_LIBC
 
-// Include a custom LibC header and define `ZYAN_CUSTOM_LIBC` to provide your own LibC
-// replacement functions
+ // Include a custom LibC header and define `ZYAN_CUSTOM_LIBC` to provide your own LibC
+ // replacement functions
 
 #ifndef ZYAN_NO_LIBC
 
@@ -147,9 +147,9 @@ typedef FILE ZyanFile;
  * but towards providing a last resort fallback for environments without a working libc.
  */
 
-/* ---------------------------------------------------------------------------------------------- */
-/* stdarg.h                                                                                       */
-/* ---------------------------------------------------------------------------------------------- */
+ /* ---------------------------------------------------------------------------------------------- */
+ /* stdarg.h                                                                                       */
+ /* ---------------------------------------------------------------------------------------------- */
 
 #if defined(ZYAN_MSVC) || defined(ZYAN_ICC)
 
@@ -233,272 +233,277 @@ typedef __builtin_va_list  ZyanVAList;
 
 ZYAN_INLINE void* ZYAN_MEMCHR(const void* str, int c, ZyanUSize n)
 {
-    const ZyanU8* p = (ZyanU8*)str;
-    while (n--)
-    {
-        if (*p != (ZyanU8)c)
-        {
-            p++;
-        } else
-        {
-            return (void*)p;
-        }
-    }
-    return 0;
+	const ZyanU8* p = (ZyanU8*)str;
+	while (n--)
+	{
+		if (*p != (ZyanU8)c)
+		{
+			p++;
+		}
+		else
+		{
+			return (void*)p;
+		}
+	}
+	return 0;
 }
 
 ZYAN_INLINE int ZYAN_MEMCMP(const void* s1, const void* s2, ZyanUSize n)
 {
-    const ZyanU8* p1 = s1, *p2 = s2;
-    while (n--)
-    {
-        if (*p1 != *p2)
-        {
-            return *p1 - *p2;
-        }
-        p1++, p2++;
-    }
-    return 0;
+	const ZyanU8* p1 = s1, * p2 = s2;
+	while (n--)
+	{
+		if (*p1 != *p2)
+		{
+			return *p1 - *p2;
+		}
+		p1++, p2++;
+	}
+	return 0;
 }
 
 ZYAN_INLINE void* ZYAN_MEMCPY(void* dst, const void* src, ZyanUSize n)
 {
-    volatile ZyanU8* dp = dst;
-    const ZyanU8* sp = src;
-    while (n--)
-    {
-        *dp++ = *sp++;
-    }
-    return dst;
+	volatile ZyanU8* dp = dst;
+	const ZyanU8* sp = src;
+	while (n--)
+	{
+		*dp++ = *sp++;
+	}
+	return dst;
 }
 
 ZYAN_INLINE void* ZYAN_MEMMOVE(void* dst, const void* src, ZyanUSize n)
 {
-    volatile ZyanU8* pd = dst;
-    const ZyanU8* ps = src;
-    if (ps < pd)
-    {
-        for (pd += n, ps += n; n--;)
-        {
-            *--pd = *--ps;
-        }
-    } else
-    {
-        while (n--)
-        {
-            *pd++ = *ps++;
-        }
-    }
-    return dst;
+	volatile ZyanU8* pd = dst;
+	const ZyanU8* ps = src;
+	if (ps < pd)
+	{
+		for (pd += n, ps += n; n--;)
+		{
+			*--pd = *--ps;
+		}
+	}
+	else
+	{
+		while (n--)
+		{
+			*pd++ = *ps++;
+		}
+	}
+	return dst;
 }
 
 ZYAN_INLINE void* ZYAN_MEMSET(void* dst, int val, ZyanUSize n)
 {
-    volatile ZyanU8* p = dst;
-    while (n--)
-    {
-        *p++ = (unsigned char)val;
-    }
-    return dst;
+	volatile ZyanU8* p = dst;
+	while (n--)
+	{
+		*p++ = (unsigned char)val;
+	}
+	return dst;
 }
 
 ZYAN_INLINE char* ZYAN_STRCAT(char* dest, const char* src)
 {
-    char* ret = dest;
-    while (*dest)
-    {
-        dest++;
-    }
-    while ((*dest++ = *src++));
-    return ret;
+	char* ret = dest;
+	while (*dest)
+	{
+		dest++;
+	}
+	while ((*dest++ = *src++));
+	return ret;
 }
 
 ZYAN_INLINE char* ZYAN_STRCHR(const char* s, int c)
 {
-    while (*s != (char)c)
-    {
-        if (!*s++)
-        {
-            return 0;
-        }
-    }
-    return (char*)s;
+	while (*s != (char)c)
+	{
+		if (!*s++)
+		{
+			return 0;
+		}
+	}
+	return (char*)s;
 }
 
 ZYAN_INLINE int ZYAN_STRCMP(const char* s1, const char* s2)
 {
-    while (*s1 && (*s1 == *s2))
-    {
-        s1++, s2++;
-    }
-    return *(const ZyanU8*)s1 - *(const ZyanU8*)s2;
+	while (*s1 && (*s1 == *s2))
+	{
+		s1++, s2++;
+	}
+	return *(const ZyanU8*)s1 - *(const ZyanU8*)s2;
 }
 
-ZYAN_INLINE int ZYAN_STRCOLL(const char *s1, const char *s2)
+ZYAN_INLINE int ZYAN_STRCOLL(const char* s1, const char* s2)
 {
-    // TODO: Implement
+	// TODO: Implement
 
-    ZYAN_UNUSED(s1);
-    ZYAN_UNUSED(s2);
+	ZYAN_UNUSED(s1);
+	ZYAN_UNUSED(s2);
 
-    return 0;
+	return 0;
 }
 
 ZYAN_INLINE char* ZYAN_STRCPY(char* dest, const char* src)
 {
-    char* ret = dest;
-    while ((*dest++ = *src++));
-    return ret;
+	char* ret = dest;
+	while ((*dest++ = *src++));
+	return ret;
 }
 
-ZYAN_INLINE ZyanUSize ZYAN_STRCSPN(const char *s1, const char *s2)
+ZYAN_INLINE ZyanUSize ZYAN_STRCSPN(const char* s1, const char* s2)
 {
-    ZyanUSize ret = 0;
-    while (*s1)
-    {
-        if (ZYAN_STRCHR(s2, *s1))
-        {
-            return ret;
-        }
-        s1++, ret++;
-    }
-    return ret;
+	ZyanUSize ret = 0;
+	while (*s1)
+	{
+		if (ZYAN_STRCHR(s2, *s1))
+		{
+			return ret;
+		}
+		s1++, ret++;
+	}
+	return ret;
 }
 
 ZYAN_INLINE ZyanUSize ZYAN_STRLEN(const char* str)
 {
-    const char* p = str;
-    while (*str)
-    {
-        ++str;
-    }
-    return str - p;
+	const char* p = str;
+	while (*str)
+	{
+		++str;
+	}
+	return str - p;
 }
 
 ZYAN_INLINE char* ZYAN_STRNCAT(char* dest, const char* src, ZyanUSize n)
 {
-    char* ret = dest;
-    while (*dest)
-    {
-        dest++;
-    }
-    while (n--)
-    {
-        if (!(*dest++ = *src++))
-        {
-            return ret;
-        }
-    }
-    *dest = 0;
-    return ret;
+	char* ret = dest;
+	while (*dest)
+	{
+		dest++;
+	}
+	while (n--)
+	{
+		if (!(*dest++ = *src++))
+		{
+			return ret;
+		}
+	}
+	*dest = 0;
+	return ret;
 }
 
 ZYAN_INLINE int ZYAN_STRNCMP(const char* s1, const char* s2, ZyanUSize n)
 {
-    while (n--)
-    {
-        if (*s1++ != *s2++)
-        {
-            return *(unsigned char*)(s1 - 1) - *(unsigned char*)(s2 - 1);
-        }
-    }
-    return 0;
+	while (n--)
+	{
+		if (*s1++ != *s2++)
+		{
+			return *(unsigned char*)(s1 - 1) - *(unsigned char*)(s2 - 1);
+		}
+	}
+	return 0;
 }
 
 ZYAN_INLINE char* ZYAN_STRNCPY(char* dest, const char* src, ZyanUSize n)
 {
-    char* ret = dest;
-    do
-    {
-        if (!n--)
-        {
-            return ret;
-        }
-    } while ((*dest++ = *src++));
-    while (n--)
-    {
-        *dest++ = 0;
-    }
-    return ret;
+	char* ret = dest;
+	do
+	{
+		if (!n--)
+		{
+			return ret;
+		}
+	}
+	while ((*dest++ = *src++));
+	while (n--)
+	{
+		*dest++ = 0;
+	}
+	return ret;
 }
 
 ZYAN_INLINE char* ZYAN_STRPBRK(const char* s1, const char* s2)
 {
-    while (*s1)
-    {
-        if(ZYAN_STRCHR(s2, *s1++))
-        {
-            return (char*)--s1;
-        }
-    }
-    return 0;
+	while (*s1)
+	{
+		if (ZYAN_STRCHR(s2, *s1++))
+		{
+			return (char*)--s1;
+		}
+	}
+	return 0;
 }
 
 ZYAN_INLINE char* ZYAN_STRRCHR(const char* s, int c)
 {
-    char* ret = 0;
-    do
-    {
-        if (*s == (char)c)
-        {
-            ret = (char*)s;
-        }
-    } while (*s++);
-    return ret;
+	char* ret = 0;
+	do
+	{
+		if (*s == (char)c)
+		{
+			ret = (char*)s;
+		}
+	}
+	while (*s++);
+	return ret;
 }
 
 ZYAN_INLINE ZyanUSize ZYAN_STRSPN(const char* s1, const char* s2)
 {
-    ZyanUSize ret = 0;
-    while (*s1 && ZYAN_STRCHR(s2, *s1++))
-    {
-        ret++;
-    }
-    return ret;
+	ZyanUSize ret = 0;
+	while (*s1 && ZYAN_STRCHR(s2, *s1++))
+	{
+		ret++;
+	}
+	return ret;
 }
 
 ZYAN_INLINE char* ZYAN_STRSTR(const char* s1, const char* s2)
 {
-    const ZyanUSize n = ZYAN_STRLEN(s2);
-    while (*s1)
-    {
-        if (!ZYAN_MEMCMP(s1++, s2, n))
-        {
-            return (char*)(s1 - 1);
-        }
-    }
-    return 0;
+	const ZyanUSize n = ZYAN_STRLEN(s2);
+	while (*s1)
+	{
+		if (!ZYAN_MEMCMP(s1++, s2, n))
+		{
+			return (char*)(s1 - 1);
+		}
+	}
+	return 0;
 }
 
 ZYAN_INLINE char* ZYAN_STRTOK(char* str, const char* delim)
 {
-    static char* p = 0;
-    if (str)
-    {
-        p = str;
-    } else
-    if (!p)
-    {
-        return 0;
-    }
-    str = p + ZYAN_STRSPN(p, delim);
-    p = str + ZYAN_STRCSPN(str, delim);
-    if (p == str)
-    {
-        return p = 0;
-    }
-    p = *p ? *p = 0, p + 1 : 0;
-    return str;
+	static char* p = 0;
+	if (str)
+	{
+		p = str;
+	}
+	else
+		if (!p)
+		{
+			return 0;
+		}
+	str = p + ZYAN_STRSPN(p, delim);
+	p = str + ZYAN_STRCSPN(str, delim);
+	if (p == str)
+	{
+		return p = 0;
+	}
+	p = *p ? *p = 0, p + 1 : 0;
+	return str;
 }
 
 ZYAN_INLINE ZyanUSize ZYAN_STRXFRM(char* dest, const char* src, ZyanUSize n)
 {
-    const ZyanUSize n2 = ZYAN_STRLEN(src);
-    if (n > n2)
-    {
-        ZYAN_STRCPY(dest, src);
-    }
-    return n2;
+	const ZyanUSize n2 = ZYAN_STRLEN(src);
+	if (n > n2)
+	{
+		ZYAN_STRCPY(dest, src);
+	}
+	return n2;
 }
 
 /* ---------------------------------------------------------------------------------------------- */

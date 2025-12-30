@@ -8,7 +8,6 @@
 
 #include <Locomotor/Cast.h>
 
-
 ASMJIT_PATCH(0x4DE839, FootClass_AddSensorsAt_Record, 0x6)
 {
 	GET(FootClass*, pThis, ESI);
@@ -18,7 +17,6 @@ ASMJIT_PATCH(0x4DE839, FootClass_AddSensorsAt_Record, 0x6)
 
 	return 0;
 }
-
 
 ASMJIT_PATCH(0x4DB36C, FootClass_Limbo_RemoveSensorsAt, 0x5)
 {
@@ -85,7 +83,7 @@ static void __stdcall JumpjetLocomotionClass_DoTurn(ILocomotion* iloco, DirStruc
 	pThisLoco->Facing.Set_Desired(dir);
 }
 
-DEFINE_FUNCTION_JUMP(VTABLE, 0x7ECDB4 , JumpjetLocomotionClass_DoTurn)
+DEFINE_FUNCTION_JUMP(VTABLE, 0x7ECDB4, JumpjetLocomotionClass_DoTurn)
 
 // Bugfix: Align jumpjet turret's facing with body's
 ASMJIT_PATCH(0x736BA3, UnitClass_UpdateRotation_TurretFacing_Jumpjet, 0x6)
@@ -193,13 +191,16 @@ ASMJIT_PATCH(0x54C036, JumpjetLocomotionClass_State3_UpdateSensors, 0x7)
 
 	const auto pType = pLinkedTo->GetTechnoType();
 
-	if (pType->Sensors && pType->SensorsSight > 0){
+	if (pType->Sensors && pType->SensorsSight > 0)
+	{
 		const auto pExt = TechnoExtContainer::Instance.Find(pLinkedTo);
 		CellStruct const lastCell = pExt->LastSensorsMapCoords;
-		if(lastCell != currentCell) {
+		if (lastCell != currentCell)
+		{
 			pLinkedTo->RemoveSensorsAt(lastCell);
 
-			if(pLinkedTo->IsAlive) {
+			if (pLinkedTo->IsAlive)
+			{
 				pLinkedTo->RemoveSensorsAt(lastCell);
 				pLinkedTo->AddSensorsAt(currentCell);
 			}
@@ -226,7 +227,7 @@ ASMJIT_PATCH(0x54D06F, JumpjetLocomotionClass_ProcessCrashing_RemoveSensors, 0x5
 
 #include <AircraftTrackerClass.h>
 
-ASMJIT_PATCH(0x4CD64E , FlyLocomotionClass_MovementAI_UpdateSensors, 0xA)
+ASMJIT_PATCH(0x4CD64E, FlyLocomotionClass_MovementAI_UpdateSensors, 0xA)
 {
 	GET(FlyLocomotionClass* const, pThis, ESI);
 	GET(CellStruct, currentCell, EDI);
@@ -234,10 +235,11 @@ ASMJIT_PATCH(0x4CD64E , FlyLocomotionClass_MovementAI_UpdateSensors, 0xA)
 	const auto pLinkedTo = pThis->LinkedTo;
 	const auto pType = pLinkedTo->GetTechnoType();
 
-	if (pType->Sensors && pType->SensorsSight > 0) {
+	if (pType->Sensors && pType->SensorsSight > 0)
+	{
 		pLinkedTo->RemoveSensorsAt(pLinkedTo->LastFlightMapCoords);
 
-		if(pLinkedTo->IsAlive)
+		if (pLinkedTo->IsAlive)
 			pLinkedTo->AddSensorsAt(currentCell);
 	}
 
@@ -267,8 +269,10 @@ ASMJIT_PATCH(0x54D138, JumpjetLocomotionClass_Movement_AI_SpeedModifiers, 0x6)
 {
 	GET(JumpjetLocomotionClass*, pThis, ESI);
 
-	if (auto const pLinked = pThis->LinkedTo ? pThis->LinkedTo : pThis->Owner) {
-		if (TechnoExtData::IsReallyTechno(pLinked) && pLinked->IsAlive) {
+	if (auto const pLinked = pThis->LinkedTo ? pThis->LinkedTo : pThis->Owner)
+	{
+		if (TechnoExtData::IsReallyTechno(pLinked) && pLinked->IsAlive)
+		{
 			const double multiplier = TechnoExtData::GetCurrentSpeedMultiplier(pLinked);
 			pThis->Speed = int(pLinked->GetTechnoType()->JumpJetData.Speed * multiplier);
 		}
@@ -283,12 +287,12 @@ ASMJIT_PATCH(0x54CB0E, JumpjetLocomotionClass_State5_CrashRotation, 0x7)
 
 	bool bRotate = RulesExtData::Instance()->JumpjetCrash_Rotate;
 
-	if (const auto pOwner = pLoco->LinkedTo ? pLoco->LinkedTo : pLoco->Owner) {
+	if (const auto pOwner = pLoco->LinkedTo ? pLoco->LinkedTo : pLoco->Owner)
+	{
 		bRotate = TechnoTypeExtContainer::Instance.Find(pOwner->GetTechnoType())->JumpjetCrash_Rotate.Get(bRotate);
 	}
 
 	return bRotate ? 0 : 0x54CB3E;
-
 }
 
 //DEFINE_JUMP(LJMP, 0x54DCCF, 0x54DCE8);//JumpjetLocomotionClass_DrawMatrix_NoTiltCrashJumpjetHereBlyat
@@ -377,17 +381,16 @@ Matrix3D* __stdcall JumpjetLocomotionClass_Draw_Matrix(ILocomotion* iloco, Matri
 
 		if (pThis->__currentSpeed > 0.0)
 		{
-
 			constexpr auto forwardBaseTilt = baseTilt / baseSpeed;
 			const auto forwardSpeedFactor = pThis->Speed * pTypeExt->JumpjetTilt_ForwardSpeedFactor;
 			const auto forwardAccelFactor = pThis->Acceleration * pTypeExt->JumpjetTilt_ForwardAccelFactor;
 			arf = std::clamp(static_cast<float>((forwardAccelFactor + forwardSpeedFactor)
-			* forwardBaseTilt), -maxTilt, maxTilt);
-
+				* forwardBaseTilt), -maxTilt, maxTilt);
 
 			const auto& locoFace = pThis->Facing;
 
-			if (locoFace.Is_Rotating()) {
+			if (locoFace.Is_Rotating())
+			{
 				const float sidewaysSpeedFactor = static_cast<float>(pThis->Speed * pTypeExt->JumpjetTilt_SidewaysSpeedFactor);
 				const float sidewaysRotationFactor = static_cast<float>(static_cast<short>(locoFace.Difference().Raw)
 					* pTypeExt->JumpjetTilt_SidewaysRotationFactor);
@@ -400,20 +403,19 @@ Matrix3D* __stdcall JumpjetLocomotionClass_Draw_Matrix(ILocomotion* iloco, Matri
 				// To ensure that 0 is still 0, it needs to be rotated back
 				arsFace = arsDir.GetFacing<128>(96);
 
-
 				if (arsFace)
 					ret->RotateX(static_cast<float>(arsDir.GetRadian<128>()));
-				}
 			}
-
-			const auto arfDir = DirStruct(arf);
-
-			// Similarly, turn it back
-			arfFace = arfDir.GetFacing<128>(96);
-
-			if (arfFace)
-				ret->RotateY(static_cast<float>(arfDir.GetRadian<128>()));
 		}
+
+		const auto arfDir = DirStruct(arf);
+
+		// Similarly, turn it back
+		arfFace = arfDir.GetFacing<128>(96);
+
+		if (arfFace)
+			ret->RotateY(static_cast<float>(arfDir.GetRadian<128>()));
+	}
 
 	if (pIndex && pIndex->Base.Is_Valid_Key())
 	{
@@ -484,15 +486,18 @@ ASMJIT_PATCH(0x54D208, JumpjetLocomotionClass_MovementAI_Wobbles, 0x5)
 	GET(JumpjetLocomotionClass* const, pThis, ESI);
 
 	//prevent float zero division error
-	if (pThis->LinkedTo->Deactivated || pThis->LinkedTo->IsUnderEMP() || Math::abs(pThis->Wobbles) < 0.001f || isnan(pThis->Wobbles)) {
+	if (pThis->LinkedTo->Deactivated || pThis->LinkedTo->IsUnderEMP() || Math::abs(pThis->Wobbles) < 0.001f || isnan(pThis->Wobbles))
+	{
 		return NoWobble;
 	}
 
 	if (pThis->NoWobbles)
 		return NoWobble;
 
-	if (const auto pUnit = cast_to<UnitClass*, false>(pThis->LinkedTo ? pThis->LinkedTo : pThis->Owner)){
-		if(pUnit->IsAlive) {
+	if (const auto pUnit = cast_to<UnitClass*, false>(pThis->LinkedTo ? pThis->LinkedTo : pThis->Owner))
+	{
+		if (pUnit->IsAlive)
+		{
 			return pUnit->IsDeactivated() ? NoWobble : SetWobble;
 		}
 	}
@@ -608,13 +613,13 @@ int JumpjetRushHelpers::JumpjetLocomotionPredictHeight(JumpjetLocomotionClass* p
 
 	constexpr int shift = 8; // >> shift -> / Unsorted::LeptonsPerCell
 	constexpr auto point2Cell = [](const Point2D& point) -> CellStruct
-	{
-		return CellStruct { static_cast<short>(point.X >> shift), static_cast<short>(point.Y >> shift) };
-	};
+		{
+			return CellStruct { static_cast<short>(point.X >> shift), static_cast<short>(point.Y >> shift) };
+		};
 	auto getJumpjetHeight = [](const CellClass* const pCell, const Point2D& point) -> int
-	{
-		return pCell->GetFloorHeight(Point2D { point.X, point.Y }) + JumpjetRushHelpers::GetJumpjetHeightWithOccupyTechno(pCell);
-	};
+		{
+			return pCell->GetFloorHeight(Point2D { point.X, point.Y }) + JumpjetRushHelpers::GetJumpjetHeightWithOccupyTechno(pCell);
+		};
 
 	// Initialize
 	auto curCoord = Point2D { pLocation->X, pLocation->Y };
@@ -636,58 +641,58 @@ int JumpjetRushHelpers::JumpjetLocomotionPredictHeight(JumpjetLocomotionClass* p
 		const auto stepCoord = Point2D { (checkCoord.X / checkSteps), (checkCoord.Y / checkSteps) };
 
 		auto getSideHeight = [](const CellClass* const pCell) -> int
-		{
-			return (pCell->Level * Unsorted::LevelHeight) + JumpjetRushHelpers::GetJumpjetHeightWithOccupyTechno(pCell);
-		};
+			{
+				return (pCell->Level * Unsorted::LevelHeight) + JumpjetRushHelpers::GetJumpjetHeightWithOccupyTechno(pCell);
+			};
 		auto getAntiAliasingCell = [&stepCoord, &checkCoord](const Point2D& curCoord, const Point2D& lastCoord) -> CellClass*
-		{
-			// Check if it is a diagonal relationship
-			if ((curCoord.X >> shift) == (lastCoord.X >> shift) || (curCoord.Y >> shift) == (lastCoord.Y >> shift))
-				return nullptr;
-
-			constexpr int mask = 0xFF; // & mask -> % Unsorted::LeptonsPerCell
-			bool lastX = false;
-
-			// Calculate the bias of the previous cell
-			if (Math::abs(stepCoord.X) > Math::abs(stepCoord.Y))
 			{
-				const int offsetX = curCoord.X & mask;
-				const int deltaX = (stepCoord.X > 0) ? offsetX : (offsetX - Unsorted::LeptonsPerCell);
-				const int projectedY = curCoord.Y - deltaX * checkCoord.Y / checkCoord.X;
-				lastX = (projectedY ^ curCoord.Y) >> shift == 0;
-			}
-			else
-			{
-				const int offsetY = curCoord.Y & mask;
-				const int deltaY = (stepCoord.Y > 0) ? offsetY : (offsetY - Unsorted::LeptonsPerCell);
-				const int projectedX = curCoord.X - deltaY * checkCoord.X / checkCoord.Y;
-				lastX = (projectedX ^ curCoord.X) >> shift != 0;
-			}
+				// Check if it is a diagonal relationship
+				if ((curCoord.X >> shift) == (lastCoord.X >> shift) || (curCoord.Y >> shift) == (lastCoord.Y >> shift))
+					return nullptr;
 
-			// Get cell
-			return MapClass::Instance->TryGetCellAt(lastX
-				? CellStruct { static_cast<short>(lastCoord.X >> shift), static_cast<short>(curCoord.Y >> shift) }
+				constexpr int mask = 0xFF; // & mask -> % Unsorted::LeptonsPerCell
+				bool lastX = false;
+
+				// Calculate the bias of the previous cell
+				if (Math::abs(stepCoord.X) > Math::abs(stepCoord.Y))
+				{
+					const int offsetX = curCoord.X & mask;
+					const int deltaX = (stepCoord.X > 0) ? offsetX : (offsetX - Unsorted::LeptonsPerCell);
+					const int projectedY = curCoord.Y - deltaX * checkCoord.Y / checkCoord.X;
+					lastX = (projectedY ^ curCoord.Y) >> shift == 0;
+				}
+				else
+				{
+					const int offsetY = curCoord.Y & mask;
+					const int deltaY = (stepCoord.Y > 0) ? offsetY : (offsetY - Unsorted::LeptonsPerCell);
+					const int projectedX = curCoord.X - deltaY * checkCoord.X / checkCoord.Y;
+					lastX = (projectedX ^ curCoord.X) >> shift != 0;
+				}
+
+				// Get cell
+				return MapClass::Instance->TryGetCellAt(lastX
+					? CellStruct { static_cast<short>(lastCoord.X >> shift), static_cast<short>(curCoord.Y >> shift) }
 				: CellStruct { static_cast<short>(curCoord.X >> shift), static_cast<short>(lastCoord.Y >> shift) });
-		};
+			};
 		auto checkStepHeight = [&maxHeight, &curCoord, &lastCoord, &pCurCell, &stepCoord,
 			&getJumpjetHeight, &getAntiAliasingCell, &getSideHeight]() -> bool
-		{
-			// Check forward
-			lastCoord = curCoord;
-			curCoord += stepCoord;
-			pCurCell = MapClass::Instance->TryGetCellAt(point2Cell(curCoord));
+			{
+				// Check forward
+				lastCoord = curCoord;
+				curCoord += stepCoord;
+				pCurCell = MapClass::Instance->TryGetCellAt(point2Cell(curCoord));
 
-			if (!pCurCell)
-				return false;
+				if (!pCurCell)
+					return false;
 
-			maxHeight = MaxImpl(maxHeight, getJumpjetHeight(pCurCell, curCoord));
+				maxHeight = MaxImpl(maxHeight, getJumpjetHeight(pCurCell, curCoord));
 
-			// "Anti-Aliasing"
-			if (const auto pCheckCell = getAntiAliasingCell(curCoord, lastCoord))
-				maxHeight = MaxImpl(maxHeight, getSideHeight(pCheckCell));
+				// "Anti-Aliasing"
+				if (const auto pCheckCell = getAntiAliasingCell(curCoord, lastCoord))
+					maxHeight = MaxImpl(maxHeight, getSideHeight(pCheckCell));
 
-			return true;
-		};
+				return true;
+			};
 
 		// Predict height
 		if (checkStepHeight())

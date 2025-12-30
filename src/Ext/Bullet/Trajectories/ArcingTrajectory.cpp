@@ -15,7 +15,6 @@ bool ArcingTrajectoryType::Load(PhobosStreamReader& Stm, bool RegisterForChange)
 
 bool ArcingTrajectoryType::Save(PhobosStreamWriter& Stm) const
 {
-
 	return this->PhobosTrajectoryType::Save(Stm) && Stm
 		.Process(this->Elevation)
 		.Process(this->Lobber)
@@ -66,7 +65,6 @@ void ArcingTrajectory::CalculateVelocity(BulletClass* pBullet, double elevation,
 	if (elevation > DBL_EPSILON)
 	{
 		double LifeTime = Math::sqrt(2 / g * (elevation * FullDistance - Z));
-
 
 		double Velocity_XY = FullDistance / LifeTime;
 		double ratio = Velocity_XY / FullDistance;
@@ -134,12 +132,10 @@ bool ArcingTrajectory::OnAI()
 }
 
 void ArcingTrajectory::OnAIPreDetonate()
-{
-}
+{ }
 
 void ArcingTrajectory::OnAIVelocity(VelocityClass* pSpeed, VelocityClass* pPosition)
-{
-}
+{ }
 
 TrajectoryCheckReturnType ArcingTrajectory::OnAITargetCoordCheck(CoordStruct& coords)
 {

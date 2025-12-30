@@ -24,9 +24,10 @@
 ASMJIT_PATCH(0x653CA6, RadarClass_GetMouseAction_AllowMinimap, 5)
 {
 	GET(int, nAction, EAX);
-	enum { AllowMini = 0x653CC0  , DisAllowMini = 0x653CBA , ReConsiderAllowMini = 0x653CAB };
+	enum { AllowMini = 0x653CC0, DisAllowMini = 0x653CBA, ReConsiderAllowMini = 0x653CAB };
 	// + 1 because it get negative one and leaed
-	if (const MouseCursor* pCursor = MouseClassExt::GetCursorDataFromRawAction(Action(nAction + 1))) {
+	if (const MouseCursor* pCursor = MouseClassExt::GetCursorDataFromRawAction(Action(nAction + 1)))
+	{
 		return pCursor->SmallFrame >= 0 ? AllowMini : DisAllowMini;
 	}
 
@@ -69,23 +70,29 @@ ASMJIT_PATCH(0x4AB35A, DisplayClass_SetAction_CustomCursor, 0x6)
 	GET_STACK(AbstractClass*, pTarget, STACK_OFFS(0x20, 0x8)); //0x18
 	GET_STACK(bool, bIsShrouded, 0x28);
 
-	if (bIsShrouded) {
+	if (bIsShrouded)
+	{
 		nAction = MouseClassExt::ValidateShroudedAction(nAction);
 	}
 
-	if (nAction == Action::Attack) {
+	if (nAction == Action::Attack)
+	{
 		// WeaponCursor
 		// doesnt work with `Deployed` techno
 		auto const& nObjectVect = ObjectClass::CurrentObjects();
 
-		if (pTarget && nObjectVect.Count == 1 && (nObjectVect.Items[0]->AbstractFlags & AbstractFlags::Techno)) {
+		if (pTarget && nObjectVect.Count == 1 && (nObjectVect.Items[0]->AbstractFlags & AbstractFlags::Techno))
+		{
 			const auto pTechno = static_cast<TechnoClass*>(nObjectVect[0]);
 			const auto weaponidx = pTechno->SelectWeapon(pTarget);
-			if(!pTechno->IsCloseEnough(pTarget, weaponidx)) {
+			if (!pTechno->IsCloseEnough(pTarget, weaponidx))
+			{
 				MouseCursorFuncs::SetMouseCursorAction(MouseClassExt::ByWeapon(pTechno, weaponidx, true), Action::Attack, false);
 			}
-		} else {
-				nAction = Action::Harvest;
+		}
+		else
+		{
+			nAction = Action::Harvest;
 		}
 	}
 
@@ -661,7 +668,7 @@ ASMJIT_PATCH(0x70055D, TechnoClass_GetActionOnObject_AttackCursor, 8)
 	return 0;
 }
 
- //WeaponCursor
+//WeaponCursor
 ASMJIT_PATCH(0x700AA8, TechnoClass_GetActionOnCell_AttackCursor, 8)
 {
 	GET(TechnoClass*, pThis, ESI);
@@ -706,7 +713,8 @@ ASMJIT_PATCH(0x7400F0, UnitClass_GetActionOnObject_SelfDeployCursor_Bunker, 6)
 	GET(UnitClass*, pThis, ESI);
 	const auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->Type);
 
-	if (pThis->BunkerLinkedItem) {
+	if (pThis->BunkerLinkedItem)
+	{
 		//Cursor Deploy
 		MouseCursorFuncs::SetMouseCursorAction(pTypeExt->Cursor_Deploy.Get(), Action::Self_Deploy, false);
 		return 0x73FFE6;

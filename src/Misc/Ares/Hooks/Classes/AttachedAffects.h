@@ -22,13 +22,15 @@ public:
 	AresAE(const AresAE& that) : Type(that.Type)
 		, Anim { nullptr }
 		, Duration { that.Duration }
-		, Invoker { that.Invoker } {
+		, Invoker { that.Invoker }
+	{
 		//oogly
 		auto c_remove = const_cast<AresAE*>(&that);
 		this->Anim.swap(c_remove->Anim);
 	}
 
-	AresAE& operator=(const AresAE& other) {
+	AresAE& operator=(const AresAE& other)
+	{
 		this->Type = other.Type;
 		this->Duration = other.Duration;
 		this->Invoker = other.Invoker;
@@ -40,8 +42,10 @@ public:
 
 	~AresAE() = default;
 
-	void OPTIONALINLINE InvalidateAnimPointer(AnimClass* ptr) {
-		if (this->Anim && ptr == this->Anim.get()) {
+	void OPTIONALINLINE InvalidateAnimPointer(AnimClass* ptr)
+	{
+		if (this->Anim && ptr == this->Anim.get())
+		{
 			this->Anim.release();
 		}
 	}
@@ -83,7 +87,6 @@ private:
 			&& Stm.RegisterChange(this) // announce this type
 			;
 	}
-
 };
 
 struct AresAEData
@@ -113,9 +116,9 @@ struct AresAEData
 	}
 
 private:
-	AresAEData(const AresAEData& other)=delete;
-	AresAEData&operator=(const AresAEData& other)=delete;
-	AresAEData&operator=(AresAEData&&)=delete;
+	AresAEData(const AresAEData& other) = delete;
+	AresAEData& operator=(const AresAEData& other) = delete;
+	AresAEData& operator=(AresAEData&&) = delete;
 
 	template <typename T>
 	bool Serialize(T& Stm)

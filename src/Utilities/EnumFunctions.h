@@ -48,9 +48,9 @@ public:
 
 	static std::array<std::pair<const char*, const char*>, 11u> LocomotorPairs_ToStrings;
 	static std::array<std::pair<const wchar_t*, const wchar_t*>, 11u> LocomotorPairs_ToWideStrings;
-	
+
 	static std::array<const char*, (size_t)PhobosAbilityType::count> PhobosAbilityType_ToStrings;
-	
+
 	static std::array<const char*, 6u>  DisplayShowType_ToStrings;
 	static std::array<const char*, 6u> MouseCursorData_ToStrings;
 	static std::array<const char*, 21u> TileType_ToStrings;
@@ -64,7 +64,7 @@ public:
 	static std::array<std::pair<const char*, AffectedTarget>, 15u> AffectedTarget_ToStrings;
 	static std::array<std::pair<const char*, SpotlightFlags>, 5u> SpotlightFlags_ToStrings;
 	static std::array<std::pair<const char*, ChronoSparkleDisplayPosition>, 5u> ChronoSparkleDisplayPosition_ToStrings;
-	static std::array<std::pair<const char* , TargetingConstraints> , 10u> TargetingConstraints_ToStrings;
+	static std::array<std::pair<const char*, TargetingConstraints>, 10u> TargetingConstraints_ToStrings;
 	static std::array<std::pair<const char*, AffectPlayerType>, 5u> AffectPlayerType_ToStrings;
 	static std::array<std::pair<const char*, MouseHotSpotX>, 3u> MouseHotSpotX_ToStrings;
 	static std::array<std::pair<const char*, MouseHotSpotY>, 3u> MouseHotSpotY_ToStrings;
@@ -72,11 +72,10 @@ public:
 	static std::array<const char*, (size_t)TrajectoryCheckReturnType::count> TrajectoryCheckReturnType_to_strings;
 	static std::array<const char*, (size_t)DiscardCondition::count> DiscardCondition_to_strings;
 
-
 public:
 
-	static bool CanTargetHouse(AffectedHouse const &flags, HouseClass* ownerHouse, HouseClass* targetHouse);
-	static bool IsCellEligible(CellClass* const pCell, AffectedTarget const&  allowed, bool explicitEmptyCells = false, bool considerBridgesLand = false);
+	static bool CanTargetHouse(AffectedHouse const& flags, HouseClass* ownerHouse, HouseClass* targetHouse);
+	static bool IsCellEligible(CellClass* const pCell, AffectedTarget const& allowed, bool explicitEmptyCells = false, bool considerBridgesLand = false);
 	static bool IsTechnoEligible(TechnoClass* const pTechno, AffectedTarget  const& allowed, bool considerAircraftSeparately = false);
 	static bool IsTechnoEligibleB(TechnoClass* const pTechno, AffectedTarget const& allowed);
 	static bool CanAffectTechnoResult(AbstractType type, AffectedTechno allowed);
@@ -87,7 +86,8 @@ public:
 	static std::pair<const char*, const char*>* locomotion_toSring(LocomotionClass* ptr);
 	static bool IsPlayerTypeEligible(AffectPlayerType flags, HouseClass* pFor);
 
-	COMPILETIMEEVAL OPTIONALINLINE bool IsLandTypeInFlags(LandTypeFlags flags, LandType type) {
+	COMPILETIMEEVAL OPTIONALINLINE bool IsLandTypeInFlags(LandTypeFlags flags, LandType type)
+	{
 		return (bool)((LandTypeFlags)(1 << (char)type) & flags);
 	}
 };
@@ -108,7 +108,8 @@ public:
 				}
 			}
 
-			if (IS_SAME_STR_(key, "centre")) {
+			if (IS_SAME_STR_(key, "centre"))
+			{
 				*value = MouseHotSpotX::Center;
 				return true;
 			}

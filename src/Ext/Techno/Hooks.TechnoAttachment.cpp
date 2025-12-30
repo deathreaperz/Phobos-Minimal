@@ -130,7 +130,8 @@ ASMJIT_PATCH(0x73F528, UnitClass_CanEnterCell_SkipChildren, 0x0)
 
 void AccountForMovingInto(CellClass* into, bool isAlt, TechnoClass* pThis, byte& occupyFlags, bool& isVehicleFlagSet)
 {
-	if(auto const pCellExt = CellExtContainer::Instance.TryFind(into)) {
+	if (auto const pCellExt = CellExtContainer::Instance.TryFind(into))
+	{
 		auto const pIncoming = isAlt ? pCellExt->IncomingUnitAlt : pCellExt->IncomingUnit;
 
 		// Non-occupiers shouldn't be inserted as incoming units anyways so don't check that
@@ -607,7 +608,6 @@ ASMJIT_PATCH(0x730D55, DeployCommand_Context_Unset, 0x7)
 	return 0;
 }
 
-
 #pragma endregion
 
 ASMJIT_PATCH(0x469672, BulletClass_Logics_Locomotor_CheckIfAttached, 0x6)
@@ -644,7 +644,6 @@ ASMJIT_PATCH(0x6FC3F4, TechnoClass_CanFire_HandleAttachmentLogics, 0x6)
 
 // TODO WhatWeaponShouldIUse
 
-
 ASMJIT_PATCH(0x4817A8, CellClass_Incoming_CheckIfTechnoOccupies, 0x6)
 {
 	enum { ConditionIsTrue = 0x4817C3, ContinueCheck = 0x0 };
@@ -671,7 +670,6 @@ ASMJIT_PATCH(0x4817C3, CellClass_Incoming_HandleScatterWithAttachments, 0x0)
 
 	return 0x4817D9;
 }
-
 
 ASMJIT_PATCH(0x736FB6, UnitClass_FiringAI_ForbidAttachmentRotation, 0x6)
 {

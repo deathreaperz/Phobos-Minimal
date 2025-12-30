@@ -33,9 +33,7 @@ struct _LJMP
 		_LJMP(DWORD offset, DWORD pointer) :
 		command(LJMP_LETTER),
 		pointer(pointer - offset - addressoffset)
-	{
-	};
-
+	{ };
 
 	COMPILETIMEEVAL
 		_LJMP(DWORD ptr) :
@@ -43,8 +41,8 @@ struct _LJMP
 		pointer(ptr)
 	{ };
 
-
-	COMPILETIMEEVAL FORCEDINLINE size_t size() const{
+	COMPILETIMEEVAL FORCEDINLINE size_t size() const
+	{
 		return sizeof(*this);
 	}
 };
@@ -59,10 +57,10 @@ struct _CALL
 		_CALL(DWORD offset, DWORD pointer) :
 		command(CALL_LETTER),
 		pointer(pointer - offset - addressoffset)
-	{
-	};
+	{ };
 
-	COMPILETIMEEVAL FORCEDINLINE size_t size() const {
+	COMPILETIMEEVAL FORCEDINLINE size_t size() const
+	{
 		return sizeof(*this);
 	}
 };
@@ -79,10 +77,10 @@ struct _CALL6
 		command(CALL_LETTER),
 		pointer(pointer - offset - addressoffset),
 		nop(NOP_LETTER)
-	{
-	};
+	{ };
 
-	COMPILETIMEEVAL FORCEDINLINE size_t size() const {
+	COMPILETIMEEVAL FORCEDINLINE size_t size() const
+	{
 		return sizeof(*this);
 	}
 };
@@ -95,10 +93,10 @@ struct _VTABLE
 	COMPILETIMEEVAL
 		_VTABLE(DWORD offset, DWORD pointer) :
 		pointer(pointer)
-	{
-	};
+	{ };
 
-	COMPILETIMEEVAL FORCEDINLINE size_t size() const {
+	COMPILETIMEEVAL FORCEDINLINE size_t size() const
+	{
 		return sizeof(*this);
 	}
 };
@@ -160,7 +158,6 @@ struct _VTABLE
 		{ _asm mov addr, eax }                                    \
 		return addr;                                              \
 	}
-
 
 //this doesnt work with CTOR and DTOR
 #define DEFINE_FUNCTION_JUMP(jumpType, offset, function)		  \

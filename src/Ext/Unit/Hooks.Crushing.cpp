@@ -44,8 +44,9 @@ ASMJIT_PATCH(0x0741941, UnitClass_OverrunSquare_TiltWhenCrushes, 0x6)
 	if (!pTypeExt->TiltsWhenCrushes_Vehicles.Get(pThis->Type->TiltsWhenCrushes))
 		return SkipGameCode;
 
-	if (pTypeExt->CrushForwardTiltPerFrame.isset()) {
-		if(pThis->RockingForwardsPerFrame == 0.0)
+	if (pTypeExt->CrushForwardTiltPerFrame.isset())
+	{
+		if (pThis->RockingForwardsPerFrame == 0.0)
 			pThis->RockingForwardsPerFrame = static_cast<float>(pTypeExt->CrushForwardTiltPerFrame);
 	}
 
@@ -53,7 +54,6 @@ ASMJIT_PATCH(0x0741941, UnitClass_OverrunSquare_TiltWhenCrushes, 0x6)
 		pThis->RockingForwardsPerFrame -= static_cast<float>(pTypeExt->CrushForwardTiltPerFrame.Get(-0.05));
 	else
 		pThis->RockingForwardsPerFrame += static_cast<float>(pTypeExt->CrushForwardTiltPerFrame.Get(-0.05));
-
 
 	return SkipGameCode;
 }
@@ -73,7 +73,6 @@ ASMJIT_PATCH(0x4B1150, DriveLocomotionClass_WhileMoving_CrushSlowdown, 0x9)
 	__asm { fld slowdownCoefficient };
 
 	return SkipGameCode;
-
 }
 
 ASMJIT_PATCH(0x4B19F7, DriveLocomotionClass_WhileMoving_CrushTilt, 0xD)
@@ -116,7 +115,8 @@ ASMJIT_PATCH(0x6A108D, ShipLocomotionClass_WhileMoving_CrushTilt, 0xD)
 	auto const pLinkedTo = pThis->LinkedTo;
 	auto const pTypeExt = TechnoTypeExtContainer::Instance.Find(pLinkedTo->GetTechnoType());
 
-	if (pTypeExt->CrushForwardTiltPerFrame.isset()) {
+	if (pTypeExt->CrushForwardTiltPerFrame.isset())
+	{
 		pLinkedTo->RockingForwardsPerFrame = static_cast<float>(pTypeExt->CrushForwardTiltPerFrame.Get());
 		return SkipGameCode;
 	}

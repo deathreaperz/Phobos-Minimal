@@ -14,7 +14,7 @@ bool EngraveTrajectoryType::Load(PhobosStreamReader& Stm, bool RegisterForChange
 {
 	return this->PhobosTrajectoryType::Load(Stm, RegisterForChange) &&
 
-	Stm
+		Stm
 		.Process(this->SourceCoord)
 		.Process(this->TargetCoord)
 		.Process(this->MirrorCoord)
@@ -30,14 +30,13 @@ bool EngraveTrajectoryType::Load(PhobosStreamReader& Stm, bool RegisterForChange
 		.Process(this->DamageDelay)
 		.Process(this->Duration)
 		;
-
 }
 
 bool EngraveTrajectoryType::Save(PhobosStreamWriter& Stm) const
 {
 	return this->PhobosTrajectoryType::Save(Stm) &&
 
-	Stm
+		Stm
 		.Process(this->SourceCoord)
 		.Process(this->TargetCoord)
 		.Process(this->MirrorCoord)
@@ -87,13 +86,13 @@ bool EngraveTrajectoryType::Read(CCINIClass* const pINI, const char* pSection)
 bool EngraveTrajectory::Load(PhobosStreamReader& Stm, bool RegisterForChange)
 {
 	return this->PhobosTrajectory::Load(Stm, false) &&
-	this->Serialize(Stm);
+		this->Serialize(Stm);
 }
 
 bool EngraveTrajectory::Save(PhobosStreamWriter& Stm) const
 {
 	return this->PhobosTrajectory::Save(Stm) &&
-	const_cast<EngraveTrajectory*>(this)->Serialize(Stm);
+		const_cast<EngraveTrajectory*>(this)->Serialize(Stm);
 }
 
 void EngraveTrajectory::OnUnlimbo(CoordStruct* pCoord, VelocityClass* pVelocity)
@@ -122,15 +121,16 @@ void EngraveTrajectory::OnUnlimbo(CoordStruct* pCoord, VelocityClass* pVelocity)
 			if (!pBullet->WeaponType)
 				return;
 
-			if (pBullet->WeaponType == TechnoExtData::GetCurrentWeapon(pBullet->Owner, WeaponIndex, false) || pBullet->WeaponType == TechnoExtData::GetCurrentWeapon(pBullet->Owner, WeaponIndex, true)){
-				auto[FLHFound, FLH] = TechnoExtData::GetBurstFLH(pBullet->Owner, WeaponIndex);
+			if (pBullet->WeaponType == TechnoExtData::GetCurrentWeapon(pBullet->Owner, WeaponIndex, false) || pBullet->WeaponType == TechnoExtData::GetCurrentWeapon(pBullet->Owner, WeaponIndex, true))
+			{
+				auto [FLHFound, FLH] = TechnoExtData::GetBurstFLH(pBullet->Owner, WeaponIndex);
 				flh_found = FLHFound;
 
 				if (!FLHFound)
 				{
 					if (auto pInfantry = cast_to<InfantryClass*>(pBullet->Owner))
 					{
-						auto[FLHFound_b, FLH_b] = TechnoExtData::GetInfantryFLH(pInfantry, WeaponIndex);
+						auto [FLHFound_b, FLH_b] = TechnoExtData::GetInfantryFLH(pInfantry, WeaponIndex);
 						flh_found = FLHFound_b;
 						FLH = FLH_b;
 					}
@@ -235,7 +235,8 @@ bool EngraveTrajectory::OnAI()
 
 	this->Duration -= 1;
 
-	if (this->Duration < 0) {
+	if (this->Duration < 0)
+	{
 		return true;
 	}
 	else //SetLocation() seems to work wrong if I put this part into OnAIVelocity().

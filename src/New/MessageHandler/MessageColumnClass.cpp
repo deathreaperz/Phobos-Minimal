@@ -33,35 +33,35 @@ void MessageColumnClass::InitClear()
 	if (this->Button_Toggle)
 	{
 		GScreenClass::Instance->RemoveButton(this->Button_Toggle);
-		GameDelete<true,false>(this->Button_Toggle);
+		GameDelete<true, false>(this->Button_Toggle);
 		this->Button_Toggle = nullptr;
 	}
 
 	if (this->Button_Up)
 	{
 		GScreenClass::Instance->RemoveButton(this->Button_Up);
-		GameDelete<true,false>(this->Button_Up);
+		GameDelete<true, false>(this->Button_Up);
 		this->Button_Up = nullptr;
 	}
 
 	if (this->Button_Down)
 	{
 		GScreenClass::Instance->RemoveButton(this->Button_Down);
-		GameDelete<true,false>(this->Button_Down);
+		GameDelete<true, false>(this->Button_Down);
 		this->Button_Down = nullptr;
 	}
 
 	if (this->Scroll_Bar)
 	{
 		GScreenClass::Instance->RemoveButton(this->Scroll_Bar);
-		GameDelete<true,false>(this->Scroll_Bar);
+		GameDelete<true, false>(this->Scroll_Bar);
 		this->Scroll_Bar = nullptr;
 	}
 
 	if (this->Scroll_Board)
 	{
 		GScreenClass::Instance->RemoveButton(this->Scroll_Board);
-		GameDelete<true,false>(this->Scroll_Board);
+		GameDelete<true, false>(this->Scroll_Board);
 		this->Scroll_Board = nullptr;
 	}
 }
@@ -223,14 +223,14 @@ MessageLabelClass* MessageColumnClass::AddMessage(const wchar_t* name, const wch
 		VocClass::PlayGlobal(RulesClass::Instance->IncomingMessage, Panning::Center, 1.0f);
 
 	const auto pLabel = GameCreate<MessageLabelClass>
-	(
-		this->LabelsPos.X,
-		this->LabelsPos.Y,
-		newID,
-		(timeout == -1) ? 0 : (timeout + currentTime),
-		!silent,
-		delay + currentTime
-	);
+		(
+			this->LabelsPos.X,
+			this->LabelsPos.Y,
+			newID,
+			(timeout == -1) ? 0 : (timeout + currentTime),
+			!silent,
+			delay + currentTime
+		);
 
 	if (this->LabelList)
 		pLabel->AddTail(*this->LabelList);
@@ -274,7 +274,6 @@ void MessageColumnClass::MouseEnter(bool block)
 
 	if (const auto pButton = this->Button_Toggle)
 		pButton->Disabled = false;
-
 }
 
 void MessageColumnClass::MouseLeave(bool block)
@@ -603,11 +602,11 @@ MessageLabelClass* MessageColumnClass::GetLastLabel() const
 template <bool check>
 int MessageColumnClass::GetMaxScroll() const
 {
-	if constexpr (check) {
+	if constexpr (check)
+	{
 		if (!ScenarioExtData::Instance())
 			return 0;
 	}
-
 
 	return MaxImpl(0, static_cast<int>(ScenarioExtData::Instance()->RecordMessages.size()) - this->MaxRecord);
 }

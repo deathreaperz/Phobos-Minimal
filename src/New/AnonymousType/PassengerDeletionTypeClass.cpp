@@ -34,8 +34,7 @@ PassengerDeletionTypeClass::PassengerDeletionTypeClass(TechnoTypeClass* pOwnerTy
 	, ReportSound {}
 	, Anim {}
 	, UnderEMP { false }
-{
-}
+{ }
 
 void PassengerDeletionTypeClass::LoadFromINI(CCINIClass* pINI, const char* pSection)
 {

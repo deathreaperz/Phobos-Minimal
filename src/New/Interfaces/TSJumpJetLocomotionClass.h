@@ -1,7 +1,7 @@
 #pragma once
 #include "Base.h"
 
-DEFINE_LOCO(TSJumpJet,4C8171D5-E7A7-43D1-80F3-0C285CF6B352)
+DEFINE_LOCO(TSJumpJet, 4C8171D5 - E7A7 - 43D1 - 80F3 - 0C285CF6B352)
 {
 public:
 
@@ -22,7 +22,6 @@ public:
 		DESCENDING
 	};
 
-
 	/**
 		 *  IPersist methods.
 		 */
@@ -32,7 +31,7 @@ public:
 	 *  IPersistStream methods.
 	 */
 	IFACEMETHOD_(HRESULT, Load)(IStream * stream) override;
-	IFACEMETHOD_(HRESULT, Save)(IStream* pStm, BOOL fClearDirty) override;
+	IFACEMETHOD_(HRESULT, Save)(IStream * pStm, BOOL fClearDirty) override;
 
 	/**
 	 *  ILocomotion methods.
@@ -54,7 +53,7 @@ public:
 	 */
 	virtual int Size() override { return sizeof(*this); }
 
-public :
+public:
 
 	TSJumpJetLocomotionClass();
 	TSJumpJetLocomotionClass(noinit_t const& x) : LocomotionClass { noinit_t() } { }

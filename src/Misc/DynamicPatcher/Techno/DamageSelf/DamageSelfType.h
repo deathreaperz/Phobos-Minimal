@@ -113,14 +113,13 @@ public:
 		return Hit;
 	}
 
-
 	DamageSelfState() : Hit { }
 		, delay { }
 		, Data { }
 		, DelayTimer { }
 	{ }
 
-	DamageSelfState(int Delay , const DamageSelfType& DData) : Hit { false }
+	DamageSelfState(int Delay, const DamageSelfType& DData) : Hit { false }
 		, delay { Delay }
 		, Data { }
 		, DelayTimer { }
@@ -145,7 +144,6 @@ public:
 	bool Save(PhobosStreamWriter& Stm) const
 	{ return const_cast<DamageSelfState*>(this)->Serialize(Stm); }
 
-
 	bool Hit;
 	int delay;
 	std::unique_ptr<DamageSelfType> Data;
@@ -157,7 +155,7 @@ public:
 	template <typename T>
 	bool Serialize(T& Stm)
 	{
-	//	Debug::LogInfo("Processing Element From DamageSelfState ! ");
+		//	Debug::LogInfo("Processing Element From DamageSelfState ! ");
 		return Stm
 			.Process(Hit)
 			.Process(delay)

@@ -10,7 +10,6 @@
 
 struct LevitateCharacteristics
 {
-
 	double Drag { 0.05 }; // rate that jellyfish slows down
 	// max velocity that jellyfish can move again when...
 	double Vel_Max_Happy { 4.0 }; //   ...just puttering around
@@ -29,12 +28,12 @@ struct LevitateCharacteristics
 	double ProximityDistance { 1.5 }; //How close before special deacceleration & drift logic take over?
 };
 
-DEFINE_LOCO(Levitate,501DEF92-C7ED-448E-8FEB-7908DCE73377)
+DEFINE_LOCO(Levitate, 501DEF92 - C7ED - 448E-8FEB - 7908DCE73377)
 {
 public:
 
 	//IUnknown
-	virtual HRESULT __stdcall QueryInterface(REFIID iid, LPVOID* ppvObject)
+	virtual HRESULT __stdcall QueryInterface(REFIID iid, LPVOID * ppvObject)
 	{
 		return LocomotionClass::QueryInterface(iid, ppvObject);
 	}
@@ -43,9 +42,10 @@ public:
 	virtual ULONG __stdcall Release() { return LocomotionClass::Release(); }
 
 	//IPersist
-	virtual HRESULT __stdcall GetClassID(CLSID* pClassID) {
-
-		if (pClassID == nullptr) {
+	virtual HRESULT __stdcall GetClassID(CLSID * pClassID)
+	{
+		if (pClassID == nullptr)
+		{
 			return E_POINTER;
 		}
 
@@ -56,9 +56,9 @@ public:
 
 	//IPersistStream
 	virtual HRESULT __stdcall IsDirty() { return LocomotionClass::IsDirty(); }
-	virtual HRESULT __stdcall Load(IStream* pStm) {
-
-		HRESULT hr = LocomotionClass::Internal_Load(this,pStm);
+	virtual HRESULT __stdcall Load(IStream * pStm)
+	{
+		HRESULT hr = LocomotionClass::Internal_Load(this, pStm);
 		if (FAILED(hr))
 		{
 			return E_FAIL;
@@ -68,10 +68,10 @@ public:
 		new (this) LevitateLocomotionClass(noinit_t());
 		return hr;
 	}
-	virtual HRESULT __stdcall Save(IStream* pStm, BOOL fClearDirty)  {
-
+	virtual HRESULT __stdcall Save(IStream * pStm, BOOL fClearDirty)
+	{
 		this->Characteristic.Drag = 1.00;
-		HRESULT hr = LocomotionClass::Internal_Save(this, pStm , fClearDirty);
+		HRESULT hr = LocomotionClass::Internal_Save(this, pStm, fClearDirty);
 		if (SUCCEEDED(hr))
 		{
 			GameDebugLog::Log("LevitateLoco Save !");
@@ -82,21 +82,24 @@ public:
 	}
 	virtual ~LevitateLocomotionClass() override = default; // should be SDDTOR in fact
 	virtual int Size() override { return sizeof(*this); }
-	virtual HRESULT __stdcall Link_To_Object(void* pointer) override {
+	virtual HRESULT __stdcall Link_To_Object(void* pointer) override
+	{
 		return LocomotionClass::Link_To_Object(pointer);
 	}
 
 	virtual bool __stdcall Is_Moving() override { return LinkedTo != nullptr; };
 	virtual CoordStruct __stdcall Destination() override { return CoordStruct::Empty; }
 	virtual CoordStruct __stdcall Head_To_Coord() override { return LinkedTo->GetCoords(); }
-	virtual Move __stdcall Can_Enter_Cell(CellStruct cell) override {
+	virtual Move __stdcall Can_Enter_Cell(CellStruct cell) override
+	{
 		return LinkedTo->IsCellOccupied(MapClass::Instance->GetCellAt(cell), FacingType::None, -1, nullptr, false);
 	}
 	virtual bool __stdcall Process() override;
 
 	virtual Layer __stdcall In_Which_Layer()override { return Layer::Ground; }
 	virtual bool __stdcall Is_Moving_Now() override { return LinkedTo != nullptr; }
-	virtual void __stdcall Mark_All_Occupation_Bits(int mark) override {
+	virtual void __stdcall Mark_All_Occupation_Bits(int mark) override
+	{
 		auto headto = Head_To_Coord();
 		if (mark)
 		{
@@ -126,7 +129,8 @@ public:
 	void ProcessSomething();
 	bool IsAdjentCellEligible(CoordStruct nArgsCoord);
 
-	void Reset(int state) {
+	void Reset(int state)
+	{
 		State = state;
 		CurrentVelocity = 0;
 		Delta = {};

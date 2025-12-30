@@ -15,21 +15,20 @@ ASMJIT_BEGIN_NAMESPACE
 //! \cond INTERNAL
 //! \addtogroup asmjit_logging
 //! \{
+namespace Formatter
+{
+	[[maybe_unused]]
+	static ASMJIT_INLINE size_t padding_from_options(const FormatOptions& format_options, FormatPaddingGroup group) noexcept
+	{
+		static constexpr uint16_t default_padding_table[uint32_t(FormatPaddingGroup::kMaxValue) + 1] = { 44, 26 };
+		static_assert(uint32_t(FormatPaddingGroup::kMaxValue) + 1 == 2, "If a new group is defined it must be added here");
 
-namespace Formatter {
+		size_t padding = format_options.padding(group);
+		return padding ? padding : size_t(default_padding_table[uint32_t(group)]);
+	}
 
-[[maybe_unused]]
-static ASMJIT_INLINE size_t padding_from_options(const FormatOptions& format_options, FormatPaddingGroup group) noexcept {
-  static constexpr uint16_t default_padding_table[uint32_t(FormatPaddingGroup::kMaxValue) + 1] = { 44, 26 };
-  static_assert(uint32_t(FormatPaddingGroup::kMaxValue) + 1 == 2, "If a new group is defined it must be added here");
-
-  size_t padding = format_options.padding(group);
-  return padding ? padding : size_t(default_padding_table[uint32_t(group)]);
-}
-
-Error format_virt_reg_name(String& sb, const VirtReg* v_reg) noexcept;
-Error format_virt_reg_name_with_prefix(String& sb, const char* prefix, size_t prefix_size, const VirtReg* v_reg) noexcept;
-
+	Error format_virt_reg_name(String& sb, const VirtReg* v_reg) noexcept;
+	Error format_virt_reg_name_with_prefix(String& sb, const char* prefix, size_t prefix_size, const VirtReg* v_reg) noexcept;
 } // {Formatter}
 
 //! \}

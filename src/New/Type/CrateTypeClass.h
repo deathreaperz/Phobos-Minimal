@@ -23,7 +23,7 @@ public:
 	ValueableIdx<VocClass> Sound;
 	SpeedType Speed;
 
-    CrateTypeClass(const char* const pTitle): Enumerable<CrateTypeClass>(pTitle)
+	CrateTypeClass(const char* const pTitle) : Enumerable<CrateTypeClass>(pTitle)
 		, Weight { }
 		, Anim { nullptr }
 		, Argument { 0.0 }
@@ -33,12 +33,15 @@ public:
 	{ }
 
 	static void ReadListFromINI(CCINIClass* pINI);
-	static void OPTIONALINLINE AddDefaults(){
-		if (Array.empty()){
+	static void OPTIONALINLINE AddDefaults()
+	{
+		if (Array.empty())
+		{
 			Array.reserve(Powerups::Effects.size());
 
-			for (auto crate : Powerups::Effects.data()){
-				Debug::LogInfo("Creating default Crate of [{}]" , crate);
+			for (auto crate : Powerups::Effects.data())
+			{
+				Debug::LogInfo("Creating default Crate of [{}]", crate);
 				Allocate(crate);
 			}
 		}
@@ -46,9 +49,9 @@ public:
 
 	static void ReadFromINIList(CCINIClass* pINI);
 
-	void LoadFromINI(CCINIClass *pINI);
-	void LoadFromStream(PhobosStreamReader &Stm);
-	void SaveToStream(PhobosStreamWriter &Stm);
+	void LoadFromINI(CCINIClass* pINI);
+	void LoadFromStream(PhobosStreamReader& Stm);
+	void SaveToStream(PhobosStreamWriter& Stm);
 
 private:
 	template <typename T>

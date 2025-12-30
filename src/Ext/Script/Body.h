@@ -86,7 +86,6 @@ enum class PhobosScripts : int
 	DecreaseCurrentAITriggerWeight = 14002,
 	UnregisterGreatSuccess = 14003,
 
-
 	OverrideOnlyTargetHouseEnemy = 14005,
 	SetHouseAngerModifier = 14006,
 	ModifyHateHouseIndex = 14007,
@@ -113,7 +112,7 @@ enum class PhobosScripts : int
 	DisableTriggersFromList = 16010,
 	DisableTriggersWithObjects = 16011,
 	EnableTriggersWithObjects = 16012,
-	
+
 	ConditionalJumpResetVariables = 16013,
 	ConditionalJumpManageResetIfJump = 16014,
 	AbortActionAfterSuccessKill = 16015,
@@ -129,7 +128,7 @@ enum class PhobosScripts : int
 	ConditionalJumpCheckAliveHumans = 16025,
 	ConditionalJumpCheckObjects = 16026,
 	ConditionalJumpCheckHumanIsMostHated = 16027,
-	
+
 	// Range 18000-18999 are variable actions
 	LocalVariableSet = 18000,
 	LocalVariableAdd = 18001,
@@ -346,8 +345,7 @@ private:
 private:
 	template <typename T>
 	void Serialize(T& Stm)
-	{
-	}
+	{ }
 };
 
 class ScriptExtContainer final : public Container<ScriptExtData>
@@ -358,7 +356,6 @@ public:
 public:
 	static ScriptExtContainer Instance;
 
-	virtual bool LoadAll(const json& root) { return true;  };
-	virtual bool SaveAll(json& root) { return true;  };
-
+	virtual bool LoadAll(const json& root) { return true; };
+	virtual bool SaveAll(json& root) { return true; };
 };

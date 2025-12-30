@@ -11,10 +11,10 @@ class TechnoClass;
 class HouseClass;
 struct DebrisSpawners
 {
-	static void SpawnSecondary(int total , CoordStruct& coord, Iterator<AnimTypeClass*> iter,
+	static void SpawnSecondary(int total, CoordStruct& coord, Iterator<AnimTypeClass*> iter,
 				TechnoClass* pTechno, HouseClass* pOwner, HouseClass* pVictim);
 	static void Spawn(int MinDeb, int MaxDeb, CoordStruct& coord, Iterator<VoxelAnimTypeClass*> types, Iterator<AnimTypeClass*> typeb,
 				Iterator<int> maximums, Iterator<int> minimums, std::optional<bool> IsLimit,
-				TechnoClass* pTechno , HouseClass* pOwner , HouseClass* pVictim
-		);
+				TechnoClass* pTechno, HouseClass* pOwner, HouseClass* pVictim
+	);
 };

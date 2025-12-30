@@ -12,8 +12,7 @@ public:
 	Anchor() = default;
 	Anchor(HorizontalPosition hPos, VerticalPosition vPos)
 		: Horizontal { hPos }, Vertical { vPos }
-	{
-	}
+	{ }
 
 	Anchor(const Anchor& other) = default;
 	Anchor& operator=(const Anchor& other) = default;

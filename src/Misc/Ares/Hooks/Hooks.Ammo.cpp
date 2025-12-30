@@ -35,9 +35,9 @@ ASMJIT_PATCH(0x6FCA0D, TechnoClass_CanFire_Ammo, 6)
 		return Continue;
 
 	return (nAmmo >= WeaponTypeExtContainer::Instance.Find(pWeapon)->Ammo)
-	  ? Continue : FireErrAmmo;
+		? Continue : FireErrAmmo;
 
-    /*const auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType());
+	/*const auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType());
 	const bool IsDisabled = pTypeExt->NoAmmoWeapon == -1;
 
 	if (!IsDisabled)

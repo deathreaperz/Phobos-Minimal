@@ -13,7 +13,8 @@
 #include <AnimClass.h>
 #include <Utilities/MemoryPoolUniquePointer.h>
 
-enum class SelfHealingStatus : char {
+enum class SelfHealingStatus : char
+{
 	Online = 1, Offline = 2
 };
 
@@ -30,13 +31,12 @@ class ShieldClass
 public:
 	ShieldClass();
 	ShieldClass(TechnoClass* pTechno, bool isAttached);
-	ShieldClass(TechnoClass* pTechno) : ShieldClass(pTechno, false) {};
+	ShieldClass(TechnoClass* pTechno) : ShieldClass(pTechno, false) { };
 
 	~ShieldClass()
 	{
 		Array.remove(this);
 	}
-
 
 	//void OnInit() { }
 	//void OnUnInit() { }
@@ -58,7 +58,7 @@ public:
 	void OnUpdate();
 
 	void BreakShield(AnimTypeClass* pBreakAnim = nullptr, WeaponTypeClass* pBreakWeapon = nullptr);
-	void SetRespawn(int duration, double amount, int rate, bool restartInCombat, int restartInCombatDelay, bool resetTimer, std::vector<AnimTypeClass*>* anim , WeaponTypeClass* weapon = nullptr);
+	void SetRespawn(int duration, double amount, int rate, bool restartInCombat, int restartInCombatDelay, bool resetTimer, std::vector<AnimTypeClass*>* anim, WeaponTypeClass* weapon = nullptr);
 	void SetSelfHealing(int duration, double amount, int rate, bool restartInCombat, int restartInCombatDelay, bool resetTimer);
 
 	void KillAnim();
@@ -102,7 +102,8 @@ public:
 		return this->HP <= 0 && !this->Type->Respawn;
 	}
 
-	COMPILETIMEEVAL FORCEDINLINE bool HasTint() const {
+	COMPILETIMEEVAL FORCEDINLINE bool HasTint() const
+	{
 		return this->Type->Tint_Color.isset() || this->Type->Tint_Intensity != 0.0;
 	}
 
@@ -162,7 +163,7 @@ public:
 
 	void UpdateTint(bool forceUpdate = false);
 
-	void InvalidateAnimPointer(AnimClass *ptr);
+	void InvalidateAnimPointer(AnimClass* ptr);
 
 	bool Load(PhobosStreamReader& Stm, bool RegisterForChange);
 	bool Save(PhobosStreamWriter& Stm) const;
@@ -228,10 +229,10 @@ public:
 	TechnoTypeClass* CurTechnoType;
 	int HP;
 
-	struct Timers {
-
-		bool Load(PhobosStreamReader& Stm, bool RegisterForChange) {
-
+	struct Timers
+	{
+		bool Load(PhobosStreamReader& Stm, bool RegisterForChange)
+		{
 			return Stm
 				.Process(this->SelfHealing_CombatRestart)
 				.Process(this->SelfHealing)
@@ -241,8 +242,8 @@ public:
 				.Success();
 		}
 
-		bool Save(PhobosStreamWriter& Stm) const {
-
+		bool Save(PhobosStreamWriter& Stm) const
+		{
 			return Stm
 				.Process(this->SelfHealing_CombatRestart)
 				.Process(this->SelfHealing)
@@ -259,10 +260,9 @@ public:
 		CDTimerClass Respawn_CombatRestart;
 		CDTimerClass Respawn;
 		CDTimerClass Respawn_Warhead;
-
 	} Timers;
 
-	Handle<AnimClass* , UninitAnim> IdleAnim;
+	Handle<AnimClass*, UninitAnim> IdleAnim;
 	bool Cloak;
 	bool Online;
 	bool Temporal;

@@ -1,6 +1,5 @@
 #include "Body.h"
 
-
 #include <Utilities/Macro.h>
 #include <Misc/Ares/Hooks/Header.h>
 
@@ -165,8 +164,8 @@ void ResetOwnerMission(FootClass* owner)
 	owner->EnterIdleMode(false, true);
 }
 
-bool FakeParasiteClass::__Update_GrappleAnim_Frame() {
-
+bool FakeParasiteClass::__Update_GrappleAnim_Frame()
+{
 	DirStruct victimFacing = this->Victim->PrimaryFacing.Current();
 
 	int baseFrame = 0;
@@ -205,13 +204,14 @@ bool FakeParasiteClass::__Update_GrappleAnim_Frame() {
 		++this->GrappleAnimFrame;
 
 		// Check if animation sequence is complete (10 frames)
-		if (this->GrappleAnimFrame >= 10) {
+		if (this->GrappleAnimFrame >= 10)
+		{
 			return true; // Animation phase complete
 		}
 
 		// Update the actual animation object if it exists
-		if (AnimClass* anim = this->GrappleAnim) {
-
+		if (AnimClass* anim = this->GrappleAnim)
+		{
 			anim->Animation.Start(128, 128);
 			// Calculate animation stage based on facing direction
 			const int facingIndex = (((victimFacing.Raw >> 12) + 1) >> 1) & 7;
@@ -230,13 +230,15 @@ void FakeParasiteClass::__ClearAnim()
 	this->GrappleState = ParasiteState::Start;
 
 	// Clean up the grapple animation if it exists
-	if (this->GrappleAnim) {
+	if (this->GrappleAnim)
+	{
 		this->GrappleAnim->UnInit();
 		this->GrappleAnim = nullptr;
 	}
 
 	// Remove from invalid animation array if registered
-	if (this->GrappleAnimGotInvalid) {
+	if (this->GrappleAnimGotInvalid)
+	{
 		ParasiteClass* searchItem = this;
 		PointerExpiredNotification::NotifyInvalidAnim->Remove(searchItem);
 		this->GrappleAnimGotInvalid = false;
@@ -258,7 +260,8 @@ void FakeParasiteClass::__Grapple_AI()
 		// Not in water - uninfect and paralyze owner
 		this->__Uninfect();
 
-		if (auto pOwner = this->Owner) {
+		if (auto pOwner = this->Owner)
+		{
 			pOwner->ParalysisTimer.Start(0);
 		}
 
@@ -278,11 +281,13 @@ void FakeParasiteClass::__Grapple_AI()
 		auto const pWeaponExt = WarheadTypeExtContainer::Instance.Find(weaponType->Warhead);
 		auto const pAnimType = pWeaponExt->Parasite_GrappleAnim.Get(RulesExtData::Instance()->DefaultSquidAnim.Get());
 
-		if (pAnimType) {
-			if (AnimClass* newAnim = GameCreate<AnimClass>(pAnimType, victimCoord, 0, 1, AnimFlag::AnimFlag_600, 0, 0)) {
-					this->GrappleAnim = newAnim;
-					auto const Invoker = (this->Owner) ? this->Owner->GetOwningHouse() : nullptr;
-					AnimExtData::SetAnimOwnerHouseKind(newAnim, Invoker, (this->Victim) ? this->Victim->GetOwningHouse() : nullptr, this->Owner, false, false);
+		if (pAnimType)
+		{
+			if (AnimClass* newAnim = GameCreate<AnimClass>(pAnimType, victimCoord, 0, 1, AnimFlag::AnimFlag_600, 0, 0))
+			{
+				this->GrappleAnim = newAnim;
+				auto const Invoker = (this->Owner) ? this->Owner->GetOwningHouse() : nullptr;
+				AnimExtData::SetAnimOwnerHouseKind(newAnim, Invoker, (this->Victim) ? this->Victim->GetOwningHouse() : nullptr, this->Owner, false, false);
 
 				// Add to invalid animation array if space available
 				PointerExpiredNotification::NotifyInvalidAnim->Add(this);
@@ -350,8 +355,8 @@ void FakeParasiteClass::__Grapple_AI()
 
 		auto const AnimType = WarheadTypeExtContainer::Instance.Find(weapon->WeaponType->Warhead)->SquidSplash.GetElements(RulesClass::Instance->SplashList);
 
-		if(AnimType) {
-
+		if (AnimType)
+		{
 			DirStruct facingDir = this->Victim->PrimaryFacing.Current();
 
 			double facingAngle = -((facingDir.Raw - Math::BINARY_ANGLE_MASK) * Math::DIRECTION_FIXED_MAGIC);
@@ -364,7 +369,8 @@ void FakeParasiteClass::__Grapple_AI()
 				float offsetX = i * 128.0f - 128.0f;
 
 				// Randomize Y offset
-				if (ScenarioClass::Instance->Random.RandomBool()) {
+				if (ScenarioClass::Instance->Random.RandomBool())
+				{
 					offsetY = -64.0f;
 				}
 
@@ -372,14 +378,15 @@ void FakeParasiteClass::__Grapple_AI()
 				CoordStruct splashCoord {
 					.X = int((offsetX * cosAngle - offsetY * sinAngle) + victimCoord.X),
 					.Y = int(victimCoord.Y + (offsetX * sinAngle + offsetY * cosAngle)),
-					.Z = victimCoord.Z 
+					.Z = victimCoord.Z
 				};
 
 				if (!MapClass::Instance->GetCellAt(splashCoord)->Tile_Is_Water())
 					continue;
 
 				// Create splash animation
-				if (auto pSplash = AnimType[ScenarioClass::Instance->Random.RandomRanged(0 , AnimType.size() - 1)]) {
+				if (auto pSplash = AnimType[ScenarioClass::Instance->Random.RandomRanged(0, AnimType.size() - 1)])
+				{
 					auto const Invoker = (this->Owner) ? this->Owner->GetOwningHouse() : nullptr;
 					AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pSplash, splashCoord, 2, 1, AnimFlag::AnimFlag_600, -10, 0), Invoker,
 						(this->Victim) ? this->Victim->GetOwningHouse() : nullptr, this->Owner, false, false);
@@ -391,9 +398,11 @@ void FakeParasiteClass::__Grapple_AI()
 		const bool culling = WarheadTypeExtContainer::Instance.Find(weaponType->Warhead)
 			->applyCulling(this->Owner, this->Victim);
 
-		if (culling) {
+		if (culling)
+		{
 			// Award experience if trainable
-			if (this->Owner->GetTechnoType()->Trainable && !this->Owner->Owner->IsAlliedWith(this->Victim)) {
+			if (this->Owner->GetTechnoType()->Trainable && !this->Owner->Owner->IsAlliedWith(this->Victim))
+			{
 				TechnoTypeClass* victimType = this->Victim->GetTechnoType();
 				TechnoTypeClass* ownerType = this->Owner->GetTechnoType();
 				this->Owner->Veterancy.Add(ownerType->GetActualCost(this->Owner->Owner), victimType->GetCost());
@@ -405,12 +414,14 @@ void FakeParasiteClass::__Grapple_AI()
 			FootClass* victimToSink = this->Victim;
 			this->__Uninfect();
 
-			if (pVictimTypeExt->Sinkable_SquidGrab){
+			if (pVictimTypeExt->Sinkable_SquidGrab)
+			{
 				victimToSink->IsSinking = true;
 				victimToSink->Destroyed(this->Owner);
 				victimToSink->Stun();
 			}
-			else {
+			else
+			{
 				auto damage = this->Victim->GetTechnoType()->Strength;
 				this->Victim->ReceiveDamage(&damage, 0, RulesClass::Instance->C4Warhead, this->Owner, true, false, this->Owner->Owner);
 			}
@@ -420,7 +431,9 @@ void FakeParasiteClass::__Grapple_AI()
 
 			// Paralyze owner briefly
 			this->Owner->ParalysisTimer.Start(0);
-		} else {
+		}
+		else
+		{
 			// Damage victim instead of submerging
 			int damage = weaponType->Damage; // Weapon damage
 			this->Victim->ReceiveDamage(&damage, 0, weaponType->Warhead, this->Owner, 0, 1, 0);
@@ -451,8 +464,10 @@ void FakeParasiteClass::__Grapple_AI()
 
 	// Update grapple animation attachment
 	AnimClass* grappleAnim = this->GrappleAnim;
-	if (grappleAnim && this->Owner && this->Victim) {
-		if (this->Victim != grappleAnim->OwnerObject) {
+	if (grappleAnim && this->Owner && this->Victim)
+	{
+		if (this->Victim != grappleAnim->OwnerObject)
+		{
 			grappleAnim->SetOwnerObject(this->Victim);
 			grappleAnim->LightConvert = this->Owner->GetRemapColour();
 			grappleAnim->TintColor = this->Victim->GetCell()->Color1.Red;
@@ -460,8 +475,8 @@ void FakeParasiteClass::__Grapple_AI()
 	}
 }
 
-void NOINLINE TakeDamage(FootClass* pVictiom , FootClass* pOwner , WeaponTypeClass* pWeapon) {
-
+void NOINLINE TakeDamage(FootClass* pVictiom, FootClass* pOwner, WeaponTypeClass* pWeapon)
+{
 	auto const pWarheadTypeExt = WarheadTypeExtContainer::Instance.Find(pWeapon->Warhead);
 
 	if (pWarheadTypeExt->Parasite_Damaging_Chance.isset()
@@ -472,7 +487,8 @@ void NOINLINE TakeDamage(FootClass* pVictiom , FootClass* pOwner , WeaponTypeCla
 		return;
 	}
 
-	if (auto const pInvestationWP = pWarheadTypeExt->Parasite_InvestationWP.Get(nullptr)) {
+	if (auto const pInvestationWP = pWarheadTypeExt->Parasite_InvestationWP.Get(nullptr))
+	{
 		WeaponTypeExtData::DetonateAt1(pInvestationWP, pVictiom, pOwner, true, nullptr);
 		return;
 	}
@@ -483,7 +499,8 @@ void NOINLINE TakeDamage(FootClass* pVictiom , FootClass* pOwner , WeaponTypeCla
 
 void FakeParasiteClass::__AI()
 {
-	if (!this->Victim) {
+	if (!this->Victim)
+	{
 		return;
 	}
 
@@ -491,7 +508,8 @@ void FakeParasiteClass::__AI()
 	TechnoTypeClass* ownerType = this->Owner->GetTechnoType();
 	auto const pOwnerTypeExt = TechnoTypeExtContainer::Instance.Find(ownerType);
 
-	if (pOwnerTypeExt->GrapplingAttack.Get(ownerType->Naval && ownerType->Organic)) {
+	if (pOwnerTypeExt->GrapplingAttack.Get(ownerType->Naval && ownerType->Organic))
+	{
 		this->__Grapple_AI();
 		return;
 	}
@@ -505,7 +523,8 @@ void FakeParasiteClass::__AI()
 	CoordStruct victimCoord = victim->Location;
 
 	// Check damage delivery timer
-	if (this->DamageDeliveryTimer.GetTimeLeft() > 0) {
+	if (this->DamageDeliveryTimer.GetTimeLeft() > 0)
+	{
 		return; // Not time to deliver damage yet
 	}
 
@@ -520,7 +539,8 @@ void FakeParasiteClass::__AI()
 		.Get(static_cast<InfantryClass*>(this->Victim)->Type->Cyborg);
 
 	// Handle infantry differently (direct damage to health)
-	if (WarheadTypeExtContainer::Instance.Find(weaponType->Warhead)->Parasite_DisableRocking.Get() || InfantryInstantKill) {
+	if (WarheadTypeExtContainer::Instance.Find(weaponType->Warhead)->Parasite_DisableRocking.Get() || InfantryInstantKill)
+	{
 		TakeDamage(this->Victim, this->Owner, weaponType);
 		return;
 	}
@@ -528,7 +548,8 @@ void FakeParasiteClass::__AI()
 	// Non-infantry: create spark effects and apply damage
 
 	// Create particle system
-	if (auto pParticle = WarheadTypeExtContainer::Instance.Find(weaponType->Warhead)->Parasite_ParticleSys.Get(RulesClass::Instance->DefaultSparkSystem)) {
+	if (auto pParticle = WarheadTypeExtContainer::Instance.Find(weaponType->Warhead)->Parasite_ParticleSys.Get(RulesClass::Instance->DefaultSparkSystem))
+	{
 		CoordStruct nLocHere = victimCoord;
 		if (pParticle->BehavesLike == ParticleSystemTypeBehavesLike::Smoke)
 			nLocHere.Z += 100;
@@ -540,9 +561,11 @@ void FakeParasiteClass::__AI()
 	DirStruct facingDir = this->Victim->PrimaryFacing.Current();
 
 	// Create weapon animation if available
-	if (weaponType->Anim.Count > 0) {
+	if (weaponType->Anim.Count > 0)
+	{
 		int animIndex = (((facingDir.Raw >> 12) + 1) >> 1) & 7;
-		if (AnimTypeClass* animType = weaponType->Anim.Items[animIndex]) {
+		if (AnimTypeClass* animType = weaponType->Anim.Items[animIndex])
+		{
 			AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(animType, victimCoord, 0, 1, AnimFlag::AnimFlag_600, 0, 0),
 					this->Owner ? this->Owner->GetOwningHouse() : nullptr,
 					this->Victim ? this->Victim->GetOwningHouse() : nullptr,
@@ -572,16 +595,20 @@ void FakeParasiteClass::__AI()
 	TakeDamage(this->Victim, this->Owner, weaponType);
 }
 
-void FakeParasiteClass::__Detach(AbstractClass* detachingObject, bool permanent) {
+void FakeParasiteClass::__Detach(AbstractClass* detachingObject, bool permanent)
+{
 	// Handle owner detachment
-	if (detachingObject == this->Owner) {
+	if (detachingObject == this->Owner)
+	{
 		this->Owner = nullptr;
 		return;
 	}
 
 	// Handle victim detachment
-	if (permanent && detachingObject == this->Victim) {
-		if (!Game::InScenario2) {
+	if (permanent && detachingObject == this->Victim)
+	{
+		if (!Game::InScenario2)
+		{
 			this->Victim = nullptr;
 			return;
 		}
@@ -589,7 +616,8 @@ void FakeParasiteClass::__Detach(AbstractClass* detachingObject, bool permanent)
 		// Check suppression timer
 		// If suppression timer active and owner not iron curtained, destroy owner
 		if (this->SuppressionTimer.GetTimeLeft() > 0 &&
-			!this->Owner->IsIronCurtained()) {
+			!this->Owner->IsIronCurtained())
+		{
 			this->Victim->ParasiteEatingMe = nullptr;
 			this->Victim = nullptr;
 			this->Owner->UnInit();
@@ -601,14 +629,19 @@ void FakeParasiteClass::__Detach(AbstractClass* detachingObject, bool permanent)
 		auto const pWhat = this->Owner->WhatAmI();
 
 		bool allowed = false;
-		if (pWhat == UnitClass::AbsID) {
+		if (pWhat == UnitClass::AbsID)
+		{
 			allowed = !this->Owner->GetTechnoType()->Naval;
-		} else if (pWhat == AbstractType::Infantry) {
+		}
+		else if (pWhat == AbstractType::Infantry)
+		{
 			allowed = true;
 		}
 
-		if (allowed) {
-			if (this->Owner->GetHeight() > 200) {
+		if (allowed)
+		{
+			if (this->Owner->GetHeight() > 200)
+			{
 				detachCoord = this->Owner->Location;
 				this->Owner->IsFallingDown = this->Owner->IsABomb = true;
 			}
@@ -616,7 +649,8 @@ void FakeParasiteClass::__Detach(AbstractClass* detachingObject, bool permanent)
 				detachCoord = CoordStruct::Empty;
 		}
 
-		if(!detachCoord.IsValid() || CellClass::Coord2Cell(detachCoord) == CellStruct::Empty) {
+		if (!detachCoord.IsValid() || CellClass::Coord2Cell(detachCoord) == CellStruct::Empty)
+		{
 			Debug::LogInfo("Parasite[{} : {}] With Invalid Location ! , Removing ! ", (void*)this, Owner->get_ID());
 			this->Owner->Health = 0;
 			this->Owner->UnInit();
@@ -625,7 +659,7 @@ void FakeParasiteClass::__Detach(AbstractClass* detachingObject, bool permanent)
 		}
 
 		// Get victim facing direction
-		DirStruct facingDir= this->Victim->PrimaryFacing.Current();
+		DirStruct facingDir = this->Victim->PrimaryFacing.Current();
 		DirType ownerDirection = DirType(((facingDir.Raw >> 7) + 1) >> 1);
 
 		bool canPlace = false;
@@ -633,13 +667,15 @@ void FakeParasiteClass::__Detach(AbstractClass* detachingObject, bool permanent)
 		++Unsorted::ScenarioInit; // Prevent certain global updates during placement
 
 		// Check if placement is valid
-		if (detachCoord.IsValid()) {
+		if (detachCoord.IsValid())
+		{
 			canPlace = this->Owner->Unlimbo(detachCoord, ownerDirection);
 		}
 
 		--Unsorted::ScenarioInit;
 
-		if (!canPlace) {
+		if (!canPlace)
+		{
 			// Failed to place - destroy owner
 			this->Owner->Health = 0;
 			this->Owner->UnInit();
@@ -681,26 +717,33 @@ void FakeParasiteClass::__Uninfect()
 	DirStruct exitDirection;
 
 	// Choose opposite direction if facing forward
-	if (facingIndex > 2) {
+	if (facingIndex > 2)
+	{
 		exitDirection.Raw -= Math::BINARY_ANGLE_MASK;
-	} else {
+	}
+	else
+	{
 		exitDirection.Raw += Math::BINARY_ANGLE_MASK;
 	}
 
 	CellStruct targetCell;
 
 	// Naval units use different logic
-	if (Naval) {
+	if (Naval)
+	{
 		// Get adjacent cell in exit direction
 		CellStruct victimCell = this->Victim->InlineMapCoords();
 		int dirIndex = (((exitDirection.Raw >> 12) + 1) >> 1) & 7;
 		auto neig = CellSpread::GetNeighbourOffset(dirIndex);
 		targetCell.X = neig.X + victimCell.X;
 		targetCell.Y = neig.Y + victimCell.Y;
-	} else {
+	}
+	else
+	{
 		// Check suppression timer for non-naval units
 		// If suppression active, destroy owner
-		if (this->SuppressionTimer.GetTimeLeft() > 0) {
+		if (this->SuppressionTimer.GetTimeLeft() > 0)
+		{
 			this->Owner->Health = 0;
 
 			// Clear victim's paralysis
@@ -721,26 +764,30 @@ void FakeParasiteClass::__Uninfect()
 	ZoneType zone = (ZoneType)MapClass::Instance->GetMapZone(targetCell, mzone, 0);
 
 	// Check if cell is clear for owner
-	if (!targetCellClass->IsClearToMove(ownerType->SpeedType, false, false, zone, mzone, -1, true)) {
-		this->Victim->NearbyLocation(&targetCell , nullptr);
+	if (!targetCellClass->IsClearToMove(ownerType->SpeedType, false, false, zone, mzone, -1, true))
+	{
+		this->Victim->NearbyLocation(&targetCell, nullptr);
 	}
 
 	// Get coordinate for placement
 	CoordStruct placementCoord = CoordStruct::Empty;
 
-	if (targetCell.IsValid()) {
+	if (targetCell.IsValid())
+	{
 		placementCoord = MapClass::Instance->GetCellAt(targetCell)->GetCoords();
 	}
 
 	// Validate placement coordinate and victim cell
 	const bool canPlace = targetCell.IsValid() && placementCoord.IsValid() && this->__Victims_Cell_Valid();
 
-	if (!canPlace) {
+	if (!canPlace)
+	{
 		// Cannot place - destroy owner
 		this->Owner->Health = 0;
 		this->Owner->UnInit();
 	}
-	else {
+	else
+	{
 		// Try to place owner
 		DirType placementDir = DirType(((exitDirection.Raw >> 7) + 1) >> 1);
 
@@ -749,7 +796,9 @@ void FakeParasiteClass::__Uninfect()
 			// Placement failed - destroy owner
 			this->Owner->Health = 0;
 			this->Owner->UnInit();
-		} else {
+		}
+		else
+		{
 			// Successfully placed
 
 			// Restore player control if applicable
@@ -784,7 +833,7 @@ void FakeParasiteClass::__Infect(FootClass* target)
 	this->DamageDeliveryTimer.Start(0);
 
 	// Check if target can be infected
-	if (this->CanInfect(target)) //TODO 
+	if (this->CanInfect(target)) //TODO
 	{
 		// Force locomotion to target coordinates
 		this->Owner->Locomotor->Force_Track(-1, target->Location);
@@ -792,14 +841,16 @@ void FakeParasiteClass::__Infect(FootClass* target)
 		// Mark target as being parasited
 		target->ParasiteEatingMe = this->Owner;
 		this->Victim = target;
-	} else {
+	}
+	else
+	{
 		// Cannot infect - place owner back on map
 		CellClass* ownerLastCell = MapClass::Instance->GetCellAt(this->Owner->LastMapCoords);
 		CoordStruct placementCoord = ownerLastCell->GetCoords();
 		bool attempt = this->Owner->Unlimbo(placementCoord, DirType::North);
 
-		if (!attempt) {
-
+		if (!attempt)
+		{
 			if (!this->Owner)
 				return;
 
@@ -813,28 +864,32 @@ void FakeParasiteClass::__Infect(FootClass* target)
 			attempt = this->Owner->Unlimbo(placementCoord, DirType::North);
 		}
 
-		if (attempt) {
+		if (attempt)
+		{
 			// Successfully placed back on map
 			FootClass* owner = this->Owner;
 
 			// Reveal from limbo
-			owner->UpdateSight(false, 0 ,false, nullptr, false);
+			owner->UpdateSight(false, 0, false, nullptr, false);
 
 			// Update map visibility
 			CoordStruct ownerCoord = owner->Location;
 			MapClass::Instance->RevealArea3(&owner->Location, owner->LastSightRange - 3, owner->LastSightRange + 2, 0);
 
 			// Reset mission if not busy
-			if (!owner->HaveMegaMission()) {
+			if (!owner->HaveMegaMission())
+			{
 				owner->SetTarget(nullptr);
 				owner->SetDestination(nullptr, true);
 			}
 
 			// Enter idle mode
 			owner->EnterIdleMode(false, true);
-		} else {
+		}
+		else
+		{
 			// Failed to place - destroy owner
-			if(this->Owner)
+			if (this->Owner)
 				this->Owner->UnInit();
 		}
 	}
@@ -844,37 +899,44 @@ bool FakeParasiteClass::__Victims_Cell_Valid()
 {
 	FootClass* victim = this->Victim;
 
-	if (!victim) {
+	if (!victim)
+	{
 		return false;
 	}
 
 	// Cannot infect airborne units
-	if (victim->IsInAir()) {
+	if (victim->IsInAir())
+	{
 		return false;
 	}
 
 	// Naval parasites have different rules
-	if (this->Owner->GetTechnoType()->Naval) {
+	if (this->Owner->GetTechnoType()->Naval)
+	{
 		// Naval parasites work on water - check for buildings
 		return victim->GetCell()->GetBuilding() == nullptr;
 	}
 
 	// Check terrain restrictions for non-naval units
 	FootClass* owner = this->Owner;
-	if (owner && owner->WhatAmI() == UnitClass::AbsID) {
+	if (owner && owner->WhatAmI() == UnitClass::AbsID)
+	{
 		// Cannot operate on terrain objects
-		const auto pTerrain = [](CellClass* pCell)->TerrainClass* {
-			for (ObjectClass* pObject = pCell->FirstObject; pObject; pObject = pObject->NextObject) {
+		const auto pTerrain = [](CellClass* pCell)->TerrainClass*
+			{
+				for (ObjectClass* pObject = pCell->FirstObject; pObject; pObject = pObject->NextObject)
+				{
 					const auto pTerrain = cast_to<TerrainClass*, false>(pObject);
 
-				if (pTerrain && !TerrainTypeExtContainer::Instance.Find(pTerrain->Type)->IsPassable)
-					return pTerrain;
-			}
+					if (pTerrain && !TerrainTypeExtContainer::Instance.Find(pTerrain->Type)->IsPassable)
+						return pTerrain;
+				}
 
 				return nullptr;
-		}(this->Victim->GetCell());
+			}(this->Victim->GetCell());
 
-		if (pTerrain) {
+		if (pTerrain)
+		{
 			return false;
 		}
 	}
@@ -884,16 +946,18 @@ bool FakeParasiteClass::__Victims_Cell_Valid()
 	LandType landType = victimCell->LandType;
 
 	// Check water/beach/rock terrain
-	if (landType == LandType::Water || landType == LandType::Beach || landType == LandType::Rock) {
-
-		if (GroundType::GetCost(landType, owner->GetTechnoType()->SpeedType) <= 0.0) {
+	if (landType == LandType::Water || landType == LandType::Beach || landType == LandType::Rock)
+	{
+		if (GroundType::GetCost(landType, owner->GetTechnoType()->SpeedType) <= 0.0)
+		{
 			// Check for specific overlay ranges (ice?)
 			int overlay = victimCell->OverlayTypeIndex;
 			bool hasSpecialOverlay = (overlay >= 74 && overlay <= 99) ||
 				(overlay >= 205 && overlay <= 230);
 
 			// Invalid if it's water without bridge or special overlay
-			if (!victimCell->ContainsBridgeHead() && !hasSpecialOverlay) {
+			if (!victimCell->ContainsBridgeHead() && !hasSpecialOverlay)
+			{
 				return false;
 			}
 		}
@@ -905,12 +969,14 @@ bool FakeParasiteClass::__Victims_Cell_Valid()
 
 CoordStruct FakeParasiteClass::__Detach_From_Victim()
 {
-	if (!this->Victim) {
+	if (!this->Victim)
+	{
 		return CoordStruct::Empty;
 	}
 
 	// If victim's cell is not valid, find adjacent cell
-	if (!this->__Victims_Cell_Valid()) {
+	if (!this->__Victims_Cell_Valid())
+	{
 		// Get victim facing direction
 		DirStruct victimFacing = this->Victim->PrimaryFacing.Current();
 		int facingIndex = (((victimFacing.Raw >> 12) + 1) >> 1) & 7;
@@ -920,17 +986,20 @@ CoordStruct FakeParasiteClass::__Detach_From_Victim()
 		CellClass* adjacentCell = victimCell->GetAdjacentCell((FacingType)facingIndex);
 
 		// Check if non-naval unit can use this cell
-		if (!this->Owner->GetTechnoType()->Naval) {
+		if (!this->Owner->GetTechnoType()->Naval)
+		{
 			LandType landType = adjacentCell->LandType;
 
 			// Check water/beach/rock terrain
-			if (landType == LandType::Water || landType == LandType::Beach || landType == LandType::Rock) {
+			if (landType == LandType::Water || landType == LandType::Beach || landType == LandType::Rock)
+			{
 				int overlay = adjacentCell->OverlayTypeIndex;
 				bool hasSpecialOverlay = (overlay >= 74 && overlay <= 99) ||
 					(overlay >= 205 && overlay <= 230);
 
 				// Cannot place on water without bridge or special overlay
-				if (!adjacentCell->ContainsBridgeHead() && !hasSpecialOverlay) {
+				if (!adjacentCell->ContainsBridgeHead() && !hasSpecialOverlay)
+				{
 					return CoordStruct::Empty;
 				}
 			}
@@ -946,7 +1015,8 @@ CoordStruct FakeParasiteClass::__Detach_From_Victim()
 
 		// For units, use exact cell center
 		FootClass* owner = this->Owner;
-		if (owner && owner->WhatAmI() == UnitClass::AbsID) {
+		if (owner && owner->WhatAmI() == UnitClass::AbsID)
+		{
 			CellClass* targetCell = MapClass::Instance->GetCellAt(result);
 			result = targetCell->GetCoords();
 		}
@@ -954,21 +1024,31 @@ CoordStruct FakeParasiteClass::__Detach_From_Victim()
 		const bool HasBridgeHead = MapClass::Instance->GetCellAt(result)->ContainsBridgeHead();
 
 		// Handle bridge placement
-		if (this->Victim->OnBridge) {
-			if (HasBridgeHead) {
+		if (this->Victim->OnBridge)
+		{
+			if (HasBridgeHead)
+			{
 				result.Z += 410; // Bridge height offset
 				this->Owner->OnBridge = true;
-			} else {
+			}
+			else
+			{
 				this->Owner->OnBridge = false;
 			}
-		} else {
-			if (HasBridgeHead) {
+		}
+		else
+		{
+			if (HasBridgeHead)
+			{
 				// Check if we should go on bridge
-				CoordStruct victimCellCenter =victimCell->GetCoords();
+				CoordStruct victimCellCenter = victimCell->GetCoords();
 
-				if (result.Z >= victimCellCenter.Z) {
+				if (result.Z >= victimCellCenter.Z)
+				{
 					this->Owner->OnBridge = false;
-				} else {
+				}
+				else
+				{
 					result.Z += 410;
 					this->Owner->OnBridge = true;
 				}
@@ -980,7 +1060,8 @@ CoordStruct FakeParasiteClass::__Detach_From_Victim()
 		}
 
 		// Validate result
-		if (!result.IsValid()) {
+		if (!result.IsValid())
+		{
 			return CoordStruct::Empty;
 		}
 
@@ -992,12 +1073,13 @@ CoordStruct FakeParasiteClass::__Detach_From_Victim()
 
 	// For units, adjust to cell center
 	FootClass* owner = this->Owner;
-	if (owner && owner->WhatAmI() == UnitClass::AbsID) {
-
+	if (owner && owner->WhatAmI() == UnitClass::AbsID)
+	{
 		result = MapClass::Instance->GetCellAt(result)->GetCoords();
 
 		// Handle bridge height
-		if (this->Victim->OnBridge) {
+		if (this->Victim->OnBridge)
+		{
 			result.Z += 410;
 		}
 	}
@@ -1008,8 +1090,8 @@ CoordStruct FakeParasiteClass::__Detach_From_Victim()
 	return result;
 }
 
-DEFINE_FUNCTION_JUMP(VTABLE ,0x7EF8EC, FakeParasiteClass::__AI)
-DEFINE_FUNCTION_JUMP(LJMP, 0x629FD0 , FakeParasiteClass::__AI)
+DEFINE_FUNCTION_JUMP(VTABLE, 0x7EF8EC, FakeParasiteClass::__AI)
+DEFINE_FUNCTION_JUMP(LJMP, 0x629FD0, FakeParasiteClass::__AI)
 DEFINE_FUNCTION_JUMP(LJMP, 0x62A260, FakeParasiteClass::__Detach)
 DEFINE_FUNCTION_JUMP(LJMP, 0x62AC30, FakeParasiteClass::__Detach_From_Victim)
 DEFINE_FUNCTION_JUMP(LJMP, 0x6297F0, FakeParasiteClass::__Grapple_AI)

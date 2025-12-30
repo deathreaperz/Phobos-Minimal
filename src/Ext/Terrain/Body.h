@@ -38,7 +38,6 @@ public:
 	{
 		this->Name = pObj->Type->ID;
 		this->AbsType = TerrainClass::AbsID;
-
 	}
 	TerrainExtData(TerrainClass* pObj, noinit_t nn) : ObjectExtData(pObj, nn) { }
 
@@ -48,11 +47,13 @@ public:
 	{
 		this->ObjectExtData::InvalidatePointer(ptr, bRemoved);
 
-		if (this->LighSource.get() == ptr) {
+		if (this->LighSource.get() == ptr)
+		{
 			this->LighSource.release();
 		}
 
-		if (this->AttachedAnim.get() == ptr) {
+		if (this->AttachedAnim.get() == ptr)
+		{
 			this->AttachedAnim.release();
 		}
 	}
@@ -107,7 +108,6 @@ public:
 
 	virtual bool LoadAll(const json& root);
 	virtual bool SaveAll(json& root);
-
 };
 
 class TerrainTypeExtData;
@@ -127,11 +127,13 @@ public:
 		bool PreventsPassengerEscape,
 		HouseClass* SourceHouse);
 
-	TerrainExtData* _GetExtData() {
+	TerrainExtData* _GetExtData()
+	{
 		return *reinterpret_cast<TerrainExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 
-	TerrainTypeExtData* _GetTypeExtData() {
+	TerrainTypeExtData* _GetTypeExtData()
+	{
 		return *reinterpret_cast<TerrainTypeExtData**>(((DWORD)this->Type) + AbstractExtOffset);
 	}
 

@@ -56,7 +56,6 @@ public:
 
 #pragma endregion
 
-
 	void Spread_AI(void);
 	void Initialize_Spread(void);
 	void Recalc_Spread(void);
@@ -188,7 +187,7 @@ private:
 };
 
 class TiberiumExtContainer final : public Container<TiberiumExtData>
-				, public ReadWriteContainerInterfaces<TiberiumExtData>
+	, public ReadWriteContainerInterfaces<TiberiumExtData>
 {
 public:
 	static COMPILETIMEEVAL const char* ClassName = "TiberiumExtContainer";
@@ -238,7 +237,8 @@ public:
 	HRESULT __stdcall _Load(IStream* pStm);
 	HRESULT __stdcall _Save(IStream* pStm, BOOL clearDirty);
 
-	TiberiumExtData* _GetExtData() {
+	TiberiumExtData* _GetExtData()
+	{
 		return *reinterpret_cast<TiberiumExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 };

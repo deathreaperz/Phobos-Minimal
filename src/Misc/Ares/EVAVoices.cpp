@@ -47,7 +47,8 @@ void EVAVoices::RegisterType(const char* type)
 {
 	int index = EVAVoices::FindIndexById(type);
 
-	if (index < 0) {
+	if (index < 0)
+	{
 		char* str = _strdup(type);
 		Types.emplace_back(str);
 		free(str);
@@ -67,12 +68,15 @@ ASMJIT_PATCH(0x753000, VoxClass_CreateFromINIList, 6)
 
 	auto const pSection = "EVATypes";
 
-	if(pINI->GetSection(pSection)) {
+	if (pINI->GetSection(pSection))
+	{
 		auto const count = pINI->GetKeyCount(pSection);
 
-		for(auto i = 0; i < count; ++i) {
+		for (auto i = 0; i < count; ++i)
+		{
 			auto const pKey = pINI->GetKeyName(pSection, i);
-			if(pINI->ReadString(pSection, pKey, Phobos::readDefval, buffer) > 0) {
+			if (pINI->ReadString(pSection, pKey, Phobos::readDefval, buffer) > 0)
+			{
 				EVAVoices::RegisterType(buffer);
 			}
 		}
@@ -81,16 +85,19 @@ ASMJIT_PATCH(0x753000, VoxClass_CreateFromINIList, 6)
 	// read all dialogs
 	auto const pSection2 = GameStrings::DialogList();
 
-	if(pINI->GetSection(pSection2)) {
+	if (pINI->GetSection(pSection2))
+	{
 		auto const count = pINI->GetKeyCount(pSection2);
 
-		for(auto i = 0; i < count; ++i) {
+		for (auto i = 0; i < count; ++i)
+		{
 			auto const pKey = pINI->GetKeyName(pSection2, i);
-			if(pINI->ReadString(pSection2, pKey, Phobos::readDefval, buffer) > 0) {
-
+			if (pINI->ReadString(pSection2, pKey, Phobos::readDefval, buffer) > 0)
+			{
 				// find or allocate done manually
 				VoxClass* pVox = VoxClass::Find(buffer);
-				if(!pVox) {
+				if (!pVox)
+				{
 					pVox = GameCreate<VoxClass2>(buffer);
 				}
 
@@ -105,8 +112,10 @@ ASMJIT_PATCH(0x753000, VoxClass_CreateFromINIList, 6)
 // need to destroy manually because of non-virtual destructor
 ASMJIT_PATCH(0x7531CF, VoxClass_DeleteAll, 5)
 {
-	for(int i = VoxClass::Array->Count - 1; i >= 0; --i) {
-		if (auto pItem = static_cast<VoxClass2*>(VoxClass::Array->Items[i])) {
+	for (int i = VoxClass::Array->Count - 1; i >= 0; --i)
+	{
+		if (auto pItem = static_cast<VoxClass2*>(VoxClass::Array->Items[i]))
+		{
 			// destroy backwards instead of forwards
 			GameDelete<true, false>(std::exchange(pItem, nullptr));
 		}
@@ -128,8 +137,9 @@ ASMJIT_PATCH(0x752FDC, VoxClass_LoadFromINI, 5)
 	pThis->Voices.resize(count);
 
 	// put the filename in there. 8 chars max.
-	for(auto i = 0u; i < count; ++i) {
-		if(pINI->ReadString(pThis->Name, EVAVoices::Types[i].c_str(), Phobos::readDefval, buffer) > 0)
+	for (auto i = 0u; i < count; ++i)
+	{
+		if (pINI->ReadString(pThis->Name, EVAVoices::Types[i].c_str(), Phobos::readDefval, buffer) > 0)
 			PhobosCRT::strCopy(pThis->Voices[i].Name, buffer);
 	}
 
@@ -151,45 +161,50 @@ ASMJIT_PATCH(0x753380, VoxClass_GetFilename, 5)
 	auto const index = VoxClass::EVAIndex();
 
 	const char* ret = Phobos::readDefval;
-	switch(index)
+	switch (index)
 	{
 	case -1:
-	break;
+		break;
 	case 0:
 		ret = pThis->Allied;
-	break;
+		break;
 	case 1:
 		ret = pThis->Russian;
-	break;
+		break;
 	case 2:
 		ret = pThis->Yuri;
-	break;
+		break;
 	default:
 		auto const idxVoc = static_cast<size_t>(index - 3);
-		if(idxVoc < pThis->Voices.size()) {
+		if (idxVoc < pThis->Voices.size())
+		{
 			ret = pThis->Voices[idxVoc].Name;
 		}
-	break;
+		break;
 	}
 
 	R->EAX(ret);
 	return 0x753398;
 }
 
-void __fastcall VoxClass_SetEvaIndex(int house) {
-
-	if (Phobos::Otamaa::DoingLoadGame) {
+void __fastcall VoxClass_SetEvaIndex(int house)
+{
+	if (Phobos::Otamaa::DoingLoadGame)
+	{
 		VoxClass::EVAIndex = 0;
 	}
-	else if (auto pSide = SideClass::Array->get_or_default(house)) {
+	else if (auto pSide = SideClass::Array->get_or_default(house))
+	{
 		VoxClass::EVAIndex = SideExtContainer::Instance.Find(pSide)->EVAIndex;
-	} else if (house < 0) {
+	}
+	else if (house < 0)
+	{
 		VoxClass::EVAIndex = 0;
 	}
 }
 
-DEFINE_FUNCTION_JUMP(CALL,0x534FAC, VoxClass_SetEvaIndex);
-DEFINE_FUNCTION_JUMP(LJMP,0x7534E0, VoxClass_SetEvaIndex);
+DEFINE_FUNCTION_JUMP(CALL, 0x534FAC, VoxClass_SetEvaIndex);
+DEFINE_FUNCTION_JUMP(LJMP, 0x7534E0, VoxClass_SetEvaIndex);
 
 //ASMJIT_PATCH(0x7534e0 , VoxClass_SetEVAIndex , 5)
 //{	GET(int ,side , ECX);

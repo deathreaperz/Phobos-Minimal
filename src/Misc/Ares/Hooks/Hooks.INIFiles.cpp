@@ -15,7 +15,8 @@
 	Line 2543: [15:45:23] SyringeDebugger::HandleException: Ares.dll [0x525ddb , INIClass_Parse_IniSectionIncludes_PreProcess2 , 5]
 */
 
-struct AresINIData {
+struct AresINIData
+{
 	static COMPILETIMEEVAL const char* const iteratorChar = "+";
 	static COMPILETIMEEVAL const char* const iteratorReplacementFormat = "var_%d";
 
@@ -32,7 +33,6 @@ GenericNode* AresINIData::NodeCompare;
 
 #include <New/Type/GenericPrerequisite.h>
 
-
 ASMJIT_PATCH(0x528A10, INIClass_GetString, 5)
 {
 	if (Phobos::Config::UseNewInheritance)
@@ -47,8 +47,10 @@ ASMJIT_PATCH(0x528A10, INIClass_GetString, 5)
 
 	int ret_len = 0;
 
-	if (buffer && bufferlength >= 2 && pSection && pKey) {
-		if (auto result = pThis->GetKeyValue(pSection, pKey, pDefault)) {
+	if (buffer && bufferlength >= 2 && pSection && pKey)
+	{
+		if (auto result = pThis->GetKeyValue(pSection, pKey, pDefault))
+		{
 			// Trim leading whitespace
 			while (*result && *result <= ' ')
 				++result;
@@ -81,14 +83,13 @@ ASMJIT_PATCH(0x526CC0, INIClass_Section_GetKeyName, 7)
 
 	auto pResult = pThis->GetOrReturnCurrenSection(pSection);
 
-	if (pResult && idx < pResult->EntryIndex.Count())
+	if (pResult&& idx < pResult->EntryIndex.Count())
 	{
 		if (pResult == AresINIData::SectionCompare
 			&& (AresINIData::KeyCompareIdx + 1) == idx
 			&& AresINIData::NodeCompare != pResult->Entries.GetLast()
 			)
 		{
-
 			auto result = AresINIData::NodeCompare->Next();
 			++AresINIData::KeyCompareIdx;
 			AresINIData::NodeCompare = result;
@@ -116,7 +117,8 @@ ASMJIT_PATCH(0x526CC0, INIClass_Section_GetKeyName, 7)
 
 ASMJIT_PATCH(0x5260d9, INIClass_Parse_Override, 7)
 {
-	struct INIClass_ {
+	struct INIClass_
+	{
 		BYTE gap[44];
 		IndexClass<int, INISection*> SectionIndex;
 	};
@@ -157,8 +159,8 @@ ASMJIT_PATCH(0x5260A2, INIClass_Parse_IteratorChar1, 6)
 {
 	GET(INIEntry*, entry, ESI);
 
-	if (!CRT::strcmp(entry->Key, AresINIData::iteratorChar)) {
-
+	if (!CRT::strcmp(entry->Key, AresINIData::iteratorChar))
+	{
 		char buffer[0x10];
 		sprintf_s(buffer, AresINIData::iteratorReplacementFormat, AresINIData::iteratorValue++);
 
@@ -174,21 +176,21 @@ ASMJIT_PATCH(0x525D23, INIClass_Parse_IteratorChar2, 5)
 	GET(char*, value, ESI);
 	LEA_STACK(char*, key, 0x78)
 
-	if (!CRT::strcmp(key, AresINIData::iteratorChar))
-	{
-		char buffer[0x200];
-		strcpy_s(buffer, value);
-		int len = sprintf_s(key, sizeof(buffer),
-			AresINIData::iteratorReplacementFormat,
-			AresINIData::iteratorValue++);
-
-		if (len >= 0)
+		if (!CRT::strcmp(key, AresINIData::iteratorChar))
 		{
-			char* newValue = &key[len + 1];
-			strcpy_s(newValue, 511 - len, buffer);
-			R->ESI<char*>(newValue);
+			char buffer[0x200];
+			strcpy_s(buffer, value);
+			int len = sprintf_s(key, sizeof(buffer),
+				AresINIData::iteratorReplacementFormat,
+				AresINIData::iteratorValue++);
+
+			if (len >= 0)
+			{
+				char* newValue = &key[len + 1];
+				strcpy_s(newValue, 511 - len, buffer);
+				R->ESI<char*>(newValue);
+			}
 		}
-	}
 
 	return 0;
 }
@@ -304,7 +306,6 @@ NOINLINE INISection* GetInheritedSection(INIClass* pThis, char* ptr)
 	return nullptr;
 }
 
-
 ASMJIT_PATCH(0x525CA5, INIClass_Parse_IniSectionIncludes_PreProcess1, 8)
 {
 	GET(char*, ptr, EAX);
@@ -328,18 +329,25 @@ ASMJIT_PATCH(0x525DDB, INIClass_Parse_IniSectionIncludes_PreProcess2, 5)
 }
 #endif
 
-class NOVTABLE FakeCCIniClass : public CCINIClass {
+class NOVTABLE FakeCCIniClass : public CCINIClass
+{
 public:
-	int __GetPipType(const char* pSection, const char* pKey, int fallback) {
+	int __GetPipType(const char* pSection, const char* pKey, int fallback)
+	{
 		if (this->ReadString(pSection, pKey, Phobos::readDefval, Phobos::readBuffer) > 0)
 		{
 			int nbuffer;
-			if (Parser<int>::TryParse(Phobos::readBuffer, &nbuffer)) {
+			if (Parser<int>::TryParse(Phobos::readBuffer, &nbuffer))
+			{
 				return nbuffer;
-			} else {
+			}
+			else
+			{
 				// find the pip value with the name specified
-				for (const auto& data : TechnoTypeClass::PipsTypeName) {
-					if (data == Phobos::readBuffer) {
+				for (const auto& data : TechnoTypeClass::PipsTypeName)
+				{
+					if (data == Phobos::readBuffer)
+					{
 						//Debug::LogInfo("[%s]%s=%s ([%d] from [%s]) ", pSection, pKey, Phobos::readBuffer, it->Value, it->Name);
 						return data.Value;
 					}

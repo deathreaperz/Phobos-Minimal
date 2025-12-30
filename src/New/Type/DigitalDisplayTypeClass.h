@@ -56,7 +56,6 @@ public:
 		, ShowType { DisplayShowType::Select }
 	{ }
 
-
 	void LoadFromINI(CCINIClass* pINI);
 	void LoadFromStream(PhobosStreamReader& Stm);
 	void SaveToStream(PhobosStreamWriter& Stm);

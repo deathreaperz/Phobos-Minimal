@@ -1,4 +1,3 @@
-
 #include "Header.h"
 
 #include <Utilities/Patch.h>
@@ -44,7 +43,6 @@ static COMPILETIMEEVAL reference<DynamicVectorClass<ObjectClass*>*, 0x87F778u> c
 		L"Be advised that reports from at least two players are needed.", L"Reconnection Error!",
 		MB_YESNO | MB_ICONERROR) == IDYES)
 	{
-
 		Debug::DumpStack(R, 8084);
 
 		HCURSOR loadCursor = LoadCursor(nullptr, IDC_WAIT);
@@ -81,12 +79,16 @@ static COMPILETIMEEVAL reference<DynamicVectorClass<ObjectClass*>*, 0x87F778u> c
 
 		char logFilename[0x40];
 
-		if (Game::EnableMPSyncDebug) {
-			for (int i = 0; i < 256; i++) {
+		if (Game::EnableMPSyncDebug)
+		{
+			for (int i = 0; i < 256; i++)
+			{
 				sprintf_s(logFilename, std::size(logFilename) - 1, Debug::SyncFileFormat2.c_str(), HouseClass::CurrentPlayer->ArrayIndex, i);
 				SyncLogger::WriteSyncLog(logFilename);
 			}
-		} else {
+		}
+		else
+		{
 			sprintf_s(logFilename, std::size(logFilename) - 1, Debug::SyncFileFormat.c_str(), HouseClass::CurrentPlayer->ArrayIndex);
 			SyncLogger::WriteSyncLog(logFilename);
 		}
@@ -378,11 +380,13 @@ public:
 	static std::string_view GetExceptionName(DWORD code)
 	{
 		auto it = std::ranges::find_if(ExceptionNames,
-			[code](const ExceptionMapping& mapping) {
-	 			return mapping.code == code;
+			[code](const ExceptionMapping& mapping)
+ {
+	 return mapping.code == code;
 			});
 
-		if (it != ExceptionNames.end()) {
+		if (it != ExceptionNames.end())
+		{
 			return it->name;
 		}
 		return "Unknown Exception";
@@ -679,7 +683,6 @@ ASMJIT_PATCH(0x64CCBF, DoList_ReplaceReconMessage, 6)
 
 LONG __fastcall ExceptionHandler(int code, PEXCEPTION_POINTERS const pExs)
 {
-
 	DWORD* eip_pointer = reinterpret_cast<DWORD*>(&pExs->ContextRecord->Eip);
 	std::string reason = "Unknown";
 	const auto hwnd = IsWindow(Game::hWnd()) ? Game::hWnd() : nullptr;
@@ -1063,7 +1066,8 @@ struct Logger
 private:
 	// Helper function to write formatted string to FILE*
 	template<typename... Args>
-	static void write_to_file(FILE* file, fmt::format_string<Args...> format_str, Args&&... args) {
+	static void write_to_file(FILE* file, fmt::format_string<Args...> format_str, Args&&... args)
+	{
 		const auto formatted = fmt::format(format_str, std::forward<Args>(args)...);
 		fputs(formatted.c_str(), file);
 	}
@@ -1071,24 +1075,28 @@ private:
 public:
 
 	template<typename T>
-	static void WriteLog(const T* it, int idx, DWORD checksum, FILE* F) {
+	static void WriteLog(const T* it, int idx, DWORD checksum, FILE* F)
+	{
 		write_to_file(F, "#{:05d}:\t{:08X}", idx, checksum);
 	}
 
 	template<>
-	static void WriteLog(const AbstractClass* it, int idx, DWORD checksum, FILE* F) {
+	static void WriteLog(const AbstractClass* it, int idx, DWORD checksum, FILE* F)
+	{
 		WriteLog<void>(it, idx, checksum, F);
 		auto abs = it->WhatAmI();
 		write_to_file(F, "; Abs: {} ({})", abs, AbstractClass::GetAbstractClassName(abs));
 	}
 
 	template<>
-	static void WriteLog(const ObjectClass* it, int idx, DWORD checksum, FILE* F) {
+	static void WriteLog(const ObjectClass* it, int idx, DWORD checksum, FILE* F)
+	{
 		WriteLog<AbstractClass>(it, idx, checksum, F);
 
 		std::string_view typeID = GameStrings::NoneStr();
 		int typeIndex = -1;
-		if (auto pType = it->GetType()) {
+		if (auto pType = it->GetType())
+		{
 			typeID = pType->ID;
 			typeIndex = pType->GetArrayIndex();
 		}
@@ -1101,7 +1109,8 @@ public:
 	}
 
 	template<>
-	static void WriteLog(const MissionClass* it, int idx, DWORD checksum, FILE* F) {
+	static void WriteLog(const MissionClass* it, int idx, DWORD checksum, FILE* F)
+	{
 		WriteLog<ObjectClass>(it, idx, checksum, F);
 		const auto Cur = it->GetCurrentMission();
 		write_to_file(F, "; Mission: {} ({}); StartTime: {}",
@@ -1109,13 +1118,15 @@ public:
 	}
 
 	template<>
-	static void WriteLog(const TechnoClass* it, int idx, DWORD checksum, FILE* F) {
+	static void WriteLog(const TechnoClass* it, int idx, DWORD checksum, FILE* F)
+	{
 		WriteLog<MissionClass>(it, idx, checksum, F);
 
 		std::string_view targetID = GameStrings::NoneStr();
 		int targetIndex = -1;
 		CoordStruct targetCrd = { -1, -1, -1 };
-		if (auto pTarget = it->Target) {
+		if (auto pTarget = it->Target)
+		{
 			targetID = AbstractClass::GetAbstractClassName(pTarget->WhatAmI());
 			targetIndex = pTarget->GetArrayIndex();
 			targetCrd = pTarget->GetCoords();
@@ -1127,14 +1138,16 @@ public:
 	}
 
 	template<>
-	static void WriteLog(const FootClass* it, int idx, DWORD checksum, FILE* F) {
+	static void WriteLog(const FootClass* it, int idx, DWORD checksum, FILE* F)
+	{
 		WriteLog<TechnoClass>(it, idx, checksum, F);
 
 		std::string_view destID = GameStrings::NoneStr();
 
 		int destIndex = -1;
 		CoordStruct destCrd = { -1, -1, -1 };
-		if (auto pDest = it->Destination) {
+		if (auto pDest = it->Destination)
+		{
 			destID = AbstractClass::GetAbstractClassName(pDest->WhatAmI());
 			destIndex = pDest->GetArrayIndex();
 			destCrd = pDest->GetCoords();
@@ -1147,7 +1160,8 @@ public:
 	}
 
 	template<>
-	static void WriteLog(const UnitClass* it, int idx, DWORD checksum, FILE* F) {
+	static void WriteLog(const UnitClass* it, int idx, DWORD checksum, FILE* F)
+	{
 		WriteLog<FootClass>(it, idx, checksum, F);
 
 		const auto& Loco = it->Locomotor;
@@ -1159,28 +1173,33 @@ public:
 	}
 
 	template<>
-	static void WriteLog(const InfantryClass* it, int idx, DWORD checksum, FILE* F) {
+	static void WriteLog(const InfantryClass* it, int idx, DWORD checksum, FILE* F)
+	{
 		WriteLog<FootClass>(it, idx, checksum, F);
 	}
 
 	template<>
-	static void WriteLog(const AircraftClass* it, int idx, DWORD checksum, FILE* F) {
+	static void WriteLog(const AircraftClass* it, int idx, DWORD checksum, FILE* F)
+	{
 		WriteLog<FootClass>(it, idx, checksum, F);
 	}
 
 	template<>
-	static void WriteLog(const BuildingClass* it, int idx, DWORD checksum, FILE* F) {
+	static void WriteLog(const BuildingClass* it, int idx, DWORD checksum, FILE* F)
+	{
 		WriteLog<TechnoClass>(it, idx, checksum, F);
 	}
 
 	template<>
-	static void WriteLog(const AbstractTypeClass* it, int idx, DWORD checksum, FILE* F) {
+	static void WriteLog(const AbstractTypeClass* it, int idx, DWORD checksum, FILE* F)
+	{
 		WriteLog<AbstractClass>(it, idx, checksum, F);
 		write_to_file(F, "; ID: {}; Name: {}", it->ID, it->Name);
 	}
 
 	template<>
-	static void WriteLog(const HouseClass* it, int idx, DWORD checksum, FILE* F) {
+	static void WriteLog(const HouseClass* it, int idx, DWORD checksum, FILE* F)
+	{
 		WriteLog<void>(it, idx, checksum, F);
 
 		write_to_file(F, "; Player Name : {} ({} - {}); IsHumanPlayer: {}; ColorScheme: {} ({}); Edge: {}; StartingAllies: {}; Startspot: {},{}; Visionary: {}; MapIsClear: {}; Money: {}",
@@ -1190,18 +1209,23 @@ public:
 			static_cast<int>(it->Edge), it->StartingAllies.data, it->StartingCell.X, it->StartingCell.Y,
 			it->Visionary, it->MapIsClear, it->Available_Money());
 
-		if (!it->IsNeutral() && !it->IsControlledByHuman()) {
+		if (!it->IsNeutral() && !it->IsControlledByHuman())
+		{
 			write_to_file(F, "\nLogging AI BaseNodes : \n");
 
 			const auto& b = it->Base.BaseNodes;
 
-			for (int j = 0; j < b.Count; ++j) {
+			for (int j = 0; j < b.Count; ++j)
+			{
 				const auto& n = b[j];
-				if (n.BuildingTypeIndex >= 0) {
+				if (n.BuildingTypeIndex >= 0)
+				{
 					auto lbl = BuildingTypeClass::Array->Items[n.BuildingTypeIndex]->ID;
 					write_to_file(F, "\tNode #{:03d}: {} @ ({:05d}, {:05d}), Attempts so far: {}, Placed: {}\n",
 						j, lbl, n.MapCoords.X, n.MapCoords.Y, n.Attempts, n.Placed);
-				} else {
+				}
+				else
+				{
 					write_to_file(F, "\tNode #{:03d}: Special {} @ ({:05d}, {:05d}), Attempts so far: {}, Placed: {}\n",
 						j, n.BuildingTypeIndex, n.MapCoords.X, n.MapCoords.Y, n.Attempts, n.Placed);
 				}
@@ -1212,14 +1236,17 @@ public:
 
 	// calls WriteLog and appends a newline
 	template<typename T>
-	static void WriteLogLine(const T* it, int idx, DWORD checksum, FILE* F) {
+	static void WriteLogLine(const T* it, int idx, DWORD checksum, FILE* F)
+	{
 		WriteLog(it, idx, checksum, F);
 		write_to_file(F, "\n");
 	}
 
 	template<typename T>
-	static void LogItem(const T* it, int idx, FILE* F) {
-		if (it->WhatAmI() != AnimClass::AbsID || it->Fetch_ID() != -2) {
+	static void LogItem(const T* it, int idx, FILE* F)
+	{
+		if (it->WhatAmI() != AnimClass::AbsID || it->Fetch_ID() != -2)
+		{
 			SafeChecksummer Ch {};
 			it->ComputeCRC(Ch);
 			WriteLogLine(it, idx, Ch.operator unsigned int(), F);
@@ -1227,45 +1254,59 @@ public:
 	}
 
 	template<typename T>
-	static void VectorLogger(const DynamicVectorClass<T>* Array, FILE* F, const char* Label = nullptr) {
-		if (Label) {
+	static void VectorLogger(const DynamicVectorClass<T>* Array, FILE* F, const char* Label = nullptr)
+	{
+		if (Label)
+		{
 			write_to_file(F, "Checksums for [{}] ({}) :\n", Label, Array ? Array->Count : -1);
 		}
 
-		if (Array) {
-			for (auto i = 0; i < Array->Count; ++i) {
+		if (Array)
+		{
+			for (auto i = 0; i < Array->Count; ++i)
+			{
 				auto it = Array->Items[i];
 				LogItem(it, i, F);
 			}
-		} else {
+		}
+		else
+		{
 			write_to_file(F, "Array not initialized yet...\n");
 		}
 	}
 
 	template<typename T>
-	static void HouseLogger(const DynamicVectorClass<T>* Array, FILE* F, const char* Label = nullptr) {
-		if (Array) {
-			for (auto j = 0; j < HouseClass::Array->Count; ++j) {
+	static void HouseLogger(const DynamicVectorClass<T>* Array, FILE* F, const char* Label = nullptr)
+	{
+		if (Array)
+		{
+			for (auto j = 0; j < HouseClass::Array->Count; ++j)
+			{
 				auto pHouse = HouseClass::Array->Items[j];
 				write_to_file(F, "-------------------- {} ({}) {} -------------------\n",
 					pHouse->Type->Name, j, Label ? Label : "");
 
-				for (auto i = 0; i < Array->Count; ++i) {
+				for (auto i = 0; i < Array->Count; ++i)
+				{
 					auto it = Array->Items[i]; if (it->Owner == pHouse)
 					{
 						LogItem(it, i, F);
 					}
 				}
 			}
-		} else {
+		}
+		else
+		{
 			write_to_file(F, "Array not initialized yet...\n");
 		}
 	}
 
-	static bool LogFrame(const std::string& LogFilename, EventClass* OffendingEvent = nullptr) {
+	static bool LogFrame(const std::string& LogFilename, EventClass* OffendingEvent = nullptr)
+	{
 		FILE* LogFile = nullptr;
 
-		if (!fopen_s(&LogFile, LogFilename.c_str(), "wt") && LogFile) {
+		if (!fopen_s(&LogFile, LogFilename.c_str(), "wt") && LogFile)
+		{
 			std::setvbuf(LogFile, nullptr, _IOFBF, 1024 * 1024); // 1024 kb buffer - should be sufficient for whole log
 
 			write_to_file(LogFile, "YR synchronization log\n");
@@ -1273,14 +1314,16 @@ public:
 			write_to_file(LogFile, "\n");
 
 			int i = 0;
-			for (const auto& data : Patch::ModuleDatas) {
+			for (const auto& data : Patch::ModuleDatas)
+			{
 				write_to_file(LogFile, "Module [({}) {}: Base address = {:08X}]\n",
 					i++, data.ModuleName, data.BaseAddr);
 			}
 
 			write_to_file(LogFile, "\n");
 
-			for (size_t ixF = 0; ixF < EventClass::LatestFramesCRC.c_size(); ++ixF) {
+			for (size_t ixF = 0; ixF < EventClass::LatestFramesCRC.c_size(); ++ixF)
+			{
 				write_to_file(LogFile, "LastFrame CRC[{:02d}] = {:08X}\n", ixF, EventClass::LatestFramesCRC[ixF]);
 			}
 
@@ -1295,7 +1338,8 @@ public:
 				AresGlobalData::ModName, AresGlobalData::ModVersion,
 				static_cast<unsigned>(AresGlobalData::ModIdentifier));
 
-			if (HouseClass::CurrentPlayer()) {
+			if (HouseClass::CurrentPlayer())
+			{
 				write_to_file(LogFile, "Player Name: {}\n", HouseClass::CurrentPlayer->PlainName);
 			}
 
@@ -1336,7 +1380,8 @@ public:
 			VectorLogger(&MapClass::Logics(), LogFile, "Logics");
 
 			write_to_file(LogFile, "\n**Checksums for Map Layers**\n");
-			for (size_t ixL = 0; ixL < MapClass::ObjectsInLayers.c_size(); ++ixL) {
+			for (size_t ixL = 0; ixL < MapClass::ObjectsInLayers.c_size(); ++ixL)
+			{
 				write_to_file(LogFile, "Checksums for Layer {}\n", ixL);
 				VectorLogger(&(MapClass::ObjectsInLayers[ixL]), LogFile);
 			}
@@ -1350,7 +1395,9 @@ public:
 
 			fclose(LogFile);
 			return true;
-		} else {
+		}
+		else
+		{
 			Debug::FatalError("Failed to open file for sync log. Error code {}.\n", errno);
 			return false;
 		}

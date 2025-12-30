@@ -32,44 +32,46 @@ public:
 
 	static void LoadFromINIList_New(CCINIClass* pINI, bool bDebug = false);
 
-	static OPTIONALINLINE COMPILETIMEEVAL size_t AllocateWithDefault(const char* Title , const MouseCursor& cursor) {
+	static OPTIONALINLINE COMPILETIMEEVAL size_t AllocateWithDefault(const char* Title, const MouseCursor& cursor)
+	{
 		size_t sz = Array.size();
-			Array.emplace_back((std::make_unique<CursorTypeClass>(Title)));
-			Array.back()->CursorData = cursor;
+		Array.emplace_back((std::make_unique<CursorTypeClass>(Title)));
+		Array.back()->CursorData = cursor;
 		return sz;
 	}
 
 private:
 	template <typename T>
 	void Serialize(T& Stm);
-
 };
 
 template<>
-struct IndexFinder<CursorTypeClass*>{
-
+struct IndexFinder<CursorTypeClass*>
+{
 	static OPTIONALINLINE bool getindex(int& value, INI_EX& parser, const char* pSection, const char* pKey, bool allocate = false)
 	{
 		if (parser.ReadString(pSection, pKey))
 		{
 			std::string_view val_(parser.value());
 
-			if (GameStrings::IsBlank(parser.value())) {
+			if (GameStrings::IsBlank(parser.value()))
+			{
 				value = -1;
 				return true;
 			}
 
-			if (int idx = CursorTypeClass::FindIndexById(parser.value());  idx != -1) {
+			if (int idx = CursorTypeClass::FindIndexById(parser.value());  idx != -1)
+			{
 				value = idx;
 				return true;
 			}
 
-			if (!val_.empty()) {
-
+			if (!val_.empty())
+			{
 				const size_t commaCount = std::ranges::count(val_, ',');
 
-				if(commaCount == 6){
-
+				if (commaCount == 6)
+				{
 					std::string secondaryname = pSection;
 					secondaryname += "_";
 					secondaryname += pKey;
@@ -78,10 +80,13 @@ struct IndexFinder<CursorTypeClass*>{
 					int outIndex = -1;
 
 					//already registered by the secondary name
-					if (int idxb = CursorTypeClass::FindIndexById(secondaryname.c_str());  idxb != -1) {
+					if (int idxb = CursorTypeClass::FindIndexById(secondaryname.c_str());  idxb != -1)
+					{
 						pCursor = CursorTypeClass::Array[idxb].get();
 						outIndex = idxb;
-					} else {
+					}
+					else
+					{
 						outIndex = (int)CursorTypeClass::Array.size();
 						pCursor = CursorTypeClass::Array.emplace_back((std::make_unique<CursorTypeClass>(secondaryname.data()))).get();
 					}

@@ -169,7 +169,7 @@ public:
 	const HouseTypeClass* This_Const() const { return reinterpret_cast<const HouseTypeClass*>(this->AttachedToObject); }
 
 	virtual bool LoadFromINI(CCINIClass* pINI, bool parseFailAddr);
-	virtual bool WriteToINI(CCINIClass* pINI) const { return true;  }
+	virtual bool WriteToINI(CCINIClass* pINI) const { return true; }
 
 public:
 
@@ -211,7 +211,8 @@ public:
 
 	bool _ReadFromINI(CCINIClass* pINI);
 
-	HouseTypeExtData* _GetExtData() {
+	HouseTypeExtData* _GetExtData()
+	{
 		return *reinterpret_cast<HouseTypeExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 };

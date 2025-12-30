@@ -30,7 +30,6 @@ private:
 			.Process(SpawnHitFLH)
 			.Process(EliteSpawnHitFLH)
 			;
-
 	}
 };
 

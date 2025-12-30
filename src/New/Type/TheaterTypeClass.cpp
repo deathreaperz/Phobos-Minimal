@@ -63,8 +63,6 @@ bool TheaterTypeClass::IsDefaultTheater()
 
 CCINIClass* TheaterTypeClass::GetConfigINI()
 {
-
-
 	return nullptr;
 }
 
@@ -74,37 +72,42 @@ void TheaterTypeClass::LoadAllTheatersToArray()
 {
 	GameConfig _conf { "Theaters.ini" };
 
-	_conf.OpenINIAction([](CCINIClass* pINI) {
-		const char* pSection = TheaterTypeClass::MainSection;
+	_conf.OpenINIAction([](CCINIClass* pINI)
+ {
+	 const char* pSection = TheaterTypeClass::MainSection;
 
-		if (pINI->GetSection(pSection)) {
-			for (int i = 0; i < pINI->GetKeyCount(pSection); ++i) {
-				if (pINI->ReadString(pSection,
-				pINI->GetKeyName(pSection, i),
-				Phobos::readDefval,
-				Phobos::readBuffer) > 0
-					)
-				{
-					if (auto pTheater = FindOrAllocate(Phobos::readBuffer))
-						pTheater->LoadFromINI(pINI);
-					else
-						Debug::LogInfo("Error Reading {} \"{}\".", pSection, Phobos::readBuffer);
-				}
-			}
-		}
+	 if (pINI->GetSection(pSection))
+	 {
+		 for (int i = 0; i < pINI->GetKeyCount(pSection); ++i)
+		 {
+			 if (pINI->ReadString(pSection,
+				 pINI->GetKeyName(pSection, i),
+				 Phobos::readDefval,
+				 Phobos::readBuffer) > 0
+				 )
+			 {
+				 if (auto pTheater = FindOrAllocate(Phobos::readBuffer))
+					 pTheater->LoadFromINI(pINI);
+				 else
+					 Debug::LogInfo("Error Reading {} \"{}\".", pSection, Phobos::readBuffer);
+			 }
+		 }
+	 }
 	});
 }
 
 void TheaterTypeClass::AddDefaults()
 {
-	if (Array.empty()) {
+	if (Array.empty())
+	{
 		Array.reserve(Theater::Array.size());
 
-		for (size_t i = 0; i < Theater::Array.size(); ++i) {
+		for (size_t i = 0; i < Theater::Array.size(); ++i)
+		{
 			AllocateWithDefault(
-				Theater::Array[i].Identifier ,
-				Theater::Array[i] ,
-				i == (size_t)TheaterType::Snow ,
+				Theater::Array[i].Identifier,
+				Theater::Array[i],
+				i == (size_t)TheaterType::Snow,
 				!(i == (size_t)TheaterType::NewUrban || i == (size_t)TheaterType::Lunar),
 				 i == (size_t)TheaterType::Lunar
 			);

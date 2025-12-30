@@ -36,7 +36,6 @@ static FORCEDINLINE void DoStuffs(int idx, StripClass* pStrip, int height, int w
 			i->Rect.Width = 48;
 
 			i++;
-
 		}
 		while (i != (MaxShown + pBegin));
 	}
@@ -200,7 +199,6 @@ ASMJIT_PATCH(0x6AC02F, SidebarClass_InitGUI_Strip3, 0x8)
 					nullptr,
 				true };
 			CCToolTip::Instance->Add(_temp);
-
 		}
 	}
 
@@ -309,7 +307,6 @@ ASMJIT_PATCH(0x6A94B0, StripClass_Deactivate, 6)
 #endif
 
 #ifndef CAMEOS_
-
 
 ASMJIT_PATCH(0x6A4EA5, SidebarClass_CameosList, 6)
 {
@@ -422,15 +419,16 @@ static COMPILETIMEEVAL NOINLINE BuildType* lower_bound(BuildType* first, int siz
 template<typename T, typename Compare>
 bool insert_sorted_unique(std::vector<T>& vec, T item, Compare comp)
 {
-    auto pos = std::lower_bound(vec.begin(), vec.end(), item);
+	auto pos = std::lower_bound(vec.begin(), vec.end(), item);
 
-        // Check if item already exists
-    if (pos != vec.end() && comp(item, *pos) && comp(*pos, item)) {
-    	return false; // Item already exists
-    }
+	// Check if item already exists
+	if (pos != vec.end() && comp(item, *pos) && comp(*pos, item))
+	{
+		return false; // Item already exists
+	}
 
-    vec.insert(pos, std::move(item));
-    return true;
+	vec.insert(pos, std::move(item));
+	return true;
 }
 
 ASMJIT_PATCH(0x6A8710, StripClass_AddCameo_ReplaceItAll, 6)
@@ -445,8 +443,8 @@ ASMJIT_PATCH(0x6A8710, StripClass_AddCameo_ReplaceItAll, 6)
 		newCameo.Cat = ObjectTypeClass::IsBuildCat5(BuildingTypeClass::AbsID, ItemIndex);
 	}
 
-	if(insert_sorted_unique(MouseClassExt::TabCameos[pTab->TabIndex],
-		 newCameo , std::equal_to<BuildType>()))
+	if (insert_sorted_unique(MouseClassExt::TabCameos[pTab->TabIndex],
+		newCameo, std::equal_to<BuildType>()))
 		++pTab->BuildableCount;
 
 	return 0x6A87E7;
@@ -570,24 +568,30 @@ bool NOINLINE RemoveCameo(BuildType* item)
 	{
 		const auto& supers = HouseClass::CurrentPlayer->Supers;
 
-		if (supers.valid_index(item->ItemIndex)) {
-			if(!SWSidebarClass::IsEnabled()){
+		if (supers.valid_index(item->ItemIndex))
+		{
+			if (!SWSidebarClass::IsEnabled())
+			{
 				if (supers[item->ItemIndex]->Granted)
 					return false;
-
-			} else {
-				if (supers[item->ItemIndex]->Granted) {
-					if(SWSidebarClass::Global()->AddButton(item->ItemIndex)){
+			}
+			else
+			{
+				if (supers[item->ItemIndex]->Granted)
+				{
+					if (SWSidebarClass::Global()->AddButton(item->ItemIndex))
+					{
 						ScenarioExtData::Instance()->SWSidebar_Indices.emplace(item->ItemIndex);
 						return true;
-					} else {
+					}
+					else
+					{
 						return false;
 					}
 				}
 			}
 		}
 	}
-
 
 	if (item->CurrentFactory)
 	{
@@ -652,8 +656,9 @@ ASMJIT_PATCH(0x6aa600, StripClass_RecheckCameos, 5)
 	const auto rtt = tabs[pThis->TopRowIndex].ItemType;
 	const auto idx = tabs[pThis->TopRowIndex].ItemIndex;
 
-	auto iter = std::remove_if(tabs.begin(), tabs.end(),[=](BuildType& item) {
-		return RemoveCameo(&item);
+	auto iter = std::remove_if(tabs.begin(), tabs.end(), [=](BuildType& item)
+ {
+	 return RemoveCameo(&item);
 	});
 
 	tabs.erase(iter, tabs.end());

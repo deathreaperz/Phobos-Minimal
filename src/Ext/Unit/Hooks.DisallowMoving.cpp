@@ -12,7 +12,8 @@
 
 ASMJIT_PATCH(0x740A93, UnitClass_Mission_Move_DisallowMoving, 0x6)
 {
-	enum {
+	enum
+	{
 		QueueGuardInstead = 0x740AEF,
 		ReturnTrue = 0x740AFD,
 		ContinueCheck = 0x0
@@ -21,7 +22,7 @@ ASMJIT_PATCH(0x740A93, UnitClass_Mission_Move_DisallowMoving, 0x6)
 	GET(UnitClass*, pThis, ESI);
 
 	return  TechnoExtData::CannotMove(pThis)
-	? QueueGuardInstead : ContinueCheck;
+		? QueueGuardInstead : ContinueCheck;
 }
 
 ASMJIT_PATCH(0x741AA7, UnitClass_Assign_Destination_DisallowMoving, 0x6)
@@ -30,7 +31,7 @@ ASMJIT_PATCH(0x741AA7, UnitClass_Assign_Destination_DisallowMoving, 0x6)
 	GET(UnitClass*, pThis, EBP);
 
 	return  TechnoExtData::CannotMove(pThis)
-	? ClearNavComsAndReturn : ContinueCheck;
+		? ClearNavComsAndReturn : ContinueCheck;
 }
 
 ASMJIT_PATCH(0x743B4B, UnitClass_Scatter_DisallowMoving, 0x6)
@@ -39,7 +40,7 @@ ASMJIT_PATCH(0x743B4B, UnitClass_Scatter_DisallowMoving, 0x6)
 	GET(UnitClass*, pThis, EBP);
 
 	return  TechnoExtData::CannotMove(pThis)
-	? ReleaseReturn : ContinueCheck;
+		? ReleaseReturn : ContinueCheck;
 }
 
 ASMJIT_PATCH(0x74038F, UnitClass_What_Action_ObjectClass_DisallowMoving_1, 0x6)
@@ -88,7 +89,7 @@ ASMJIT_PATCH(0x736B60, UnitClass_Rotation_AI_DisallowMoving, 0x6)
 	GET(UnitClass*, pThis, ESI);
 
 	return !TechnoTypeExtContainer::Instance.Find(pThis->Type)
-			->TurretResponse.Get(pThis->Type->Speed != 0) ? 0x736AFB : 0;
+		->TurretResponse.Get(pThis->Type->Speed != 0) ? 0x736AFB : 0;
 }
 
 // ASMJIT_PATCH(0x74416C, UnitClass_Mission_DisallowMoving, 0x7)		//UnitClass::Mission_AreaGuard
@@ -172,7 +173,7 @@ ASMJIT_PATCH(0x7415A9, UnitClass_ApproachTarget_SetWeaponIndex, 0x6)
 
 ASMJIT_PATCH(0x741050, UnitClass_CanFire_DeployToFire, 0x6)
 {
-	enum { NoNeedToCheck = 0x74132B , SkipGameCode = 0x7410B7,  MustDeploy = 0x7410A8 };
+	enum { NoNeedToCheck = 0x74132B, SkipGameCode = 0x7410B7, MustDeploy = 0x7410A8 };
 
 	GET(UnitClass*, pThis, ESI);
 
@@ -186,14 +187,16 @@ ASMJIT_PATCH(0x741050, UnitClass_CanFire_DeployToFire, 0x6)
 
 	auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->Type);
 
-	if (!pTypeExt->NoTurret_TrackTarget.Get(RulesExtData::Instance()->NoTurret_TrackTarget)) {
+	if (!pTypeExt->NoTurret_TrackTarget.Get(RulesExtData::Instance()->NoTurret_TrackTarget))
+	{
 		return NoNeedToCheck;
 	}
 
 	return SkipGameCode;
 }
 
-ASMJIT_PATCH(0x73891D, UnitClass_Active_Click_With_DisallowMoving, 0x6) {
+ASMJIT_PATCH(0x73891D, UnitClass_Active_Click_With_DisallowMoving, 0x6)
+{
 	GET(UnitClass*, pThis, ESI);
 
 	return pThis->Type->Speed == 0 ? 0x738927 : 0;
@@ -203,7 +206,8 @@ ASMJIT_PATCH(0x73EFC4, UnitClass_Mission_Hunt_DisallowMoving, 0x6)
 {
 	GET(UnitClass*, pThis, ESI);
 
-	if (TechnoExtData::CannotMove(pThis)) {
+	if (TechnoExtData::CannotMove(pThis))
+	{
 		pThis->QueueMission(Mission::Guard, false);
 		pThis->NextMission();
 
@@ -221,7 +225,6 @@ ASMJIT_PATCH(0x73EFC4, UnitClass_Mission_Hunt_DisallowMoving, 0x6)
 // 	GET(UnitClass*, pThis, ESI);
 
 // 	if (TechnoExtData::CannotMove(pThis)) {
-
 // 		if (pThis->CanPassiveAcquireTargets() && pThis->TargetingTimer.Completed())
 // 			pThis->TargetAndEstimateDamage(&pThis->Location, ThreatType::Area);
 

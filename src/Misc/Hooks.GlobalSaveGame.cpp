@@ -407,9 +407,11 @@ HRESULT Put_All_Pointers(LPSTREAM pStm)
 	if (!SUCCEEDED(hr)) return hr;
 
 	// Game options section (known problematic area)
-	if (SessionClass::Instance->GameMode == GameMode::Skirmish) {
+	if (SessionClass::Instance->GameMode == GameMode::Skirmish)
+	{
 		Debug::Log("Writing Skirmish Session.Options\n");
-		if (!GameOptionsType::Instance->Save(pStm)){
+		if (!GameOptionsType::Instance->Save(pStm))
+		{
 			Debug::Log("\t***** GameOptionsType SAVE FAILED!\n");
 			return E_FAIL;
 		}
@@ -440,15 +442,19 @@ bool __fastcall Make_Save_Game(const char* file_name, const wchar_t* descr, bool
 {
 	WCHAR wide_file_name[PATH_MAX];
 
-	if (SpawnerMain::Configs::Enabled && SavedGames::CreateSubdir()) {
+	if (SpawnerMain::Configs::Enabled && SavedGames::CreateSubdir())
+	{
 		MultiByteToWideChar(CP_ACP, 0, SavedGames::FormatPath(file_name), -1, wide_file_name, std::size(wide_file_name));
-	} else {
+	}
+	else
+	{
 		MultiByteToWideChar(CP_ACP, 0, file_name, -1, wide_file_name, std::size(wide_file_name));
 	}
 
 	Debug::Log("\nSAVING GAME [%s - %ls]\n", file_name, descr);
 
-	if (!ExtensionSaveJson::Save(wide_file_name)){
+	if (!ExtensionSaveJson::Save(wide_file_name))
+	{
 		Debug::FatalError("Cannot Save dll datas !");
 		return false;
 	}
@@ -457,7 +463,8 @@ bool __fastcall Make_Save_Game(const char* file_name, const wchar_t* descr, bool
 
 	ATL::CComPtr<IStorage> storage;
 	HRESULT hr = StgCreateDocfile(wide_file_name, STGM_CREATE | STGM_READWRITE | STGM_SHARE_EXCLUSIVE, 0, &storage);
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		Debug::FatalError("Failed to create storage.\n");
 		return false;
 	}
@@ -486,7 +493,8 @@ bool __fastcall Make_Save_Game(const char* file_name, const wchar_t* descr, bool
 
 	Debug::Log("Saving version information\n");
 	hr = saveversion.Write(storage);
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		Debug::FatalError("Failed to write version information.\n");
 		return false;
 	}
@@ -495,7 +503,8 @@ bool __fastcall Make_Save_Game(const char* file_name, const wchar_t* descr, bool
 	// so the compound-file allocator won't reuse its space for the CONTENTS stream.
 	Debug::Log("Committing storage after SavegameInformation write to finalize property-set...\n");
 	hr = storage->Commit(STGC_DEFAULT);
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		Debug::FatalError("Failed to commit storage after SavegameInformation write. hr=0x%08X\n", hr);
 		return false;
 	}
@@ -503,38 +512,43 @@ bool __fastcall Make_Save_Game(const char* file_name, const wchar_t* descr, bool
 	Debug::Log("Creating content stream.\n");
 	ATL::CComPtr<IStream> docfile;
 	hr = storage->CreateStream(L"CONTENTS", STGM_CREATE | STGM_WRITE | STGM_SHARE_EXCLUSIVE, 0, 0, &docfile);
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		Debug::FatalError("Failed to create content stream.\n");
 		return false;
 	}
 
 	hr = docfile->Commit(STGC_OVERWRITE); // flush stream buffers
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		Debug::FatalError("Failed to commit CONTENTS stream.\n");
 		return false;
 	}
 
 	LARGE_INTEGER li = {};
 	hr = docfile->Seek(li, STREAM_SEEK_SET, nullptr);
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		Debug::FatalError("Failed to seek CONTENTS stream to beginning.\n");
 		return false;
 	}
 
-
 	IUnknown* pUnknown = nullptr;
 	ATL::CComPtr<ILinkStream> linkstream;
 	hr = CoCreateInstance(__uuidof(CStreamClass), nullptr, CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER | CLSCTX_LOCAL_SERVER, IID_IUnknown, (void**)&pUnknown);
-	if (SUCCEEDED(hr)) {
+	if (SUCCEEDED(hr))
+	{
 		hr = OleRun(pUnknown);
-		if (SUCCEEDED(hr)) {
+		if (SUCCEEDED(hr))
+		{
 			pUnknown->QueryInterface(__uuidof(ILinkStream), (void**)&linkstream);
 		}
 		pUnknown->Release();
 	}
 
 	hr = linkstream->Link_Stream(docfile);
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		Debug::FatalError("Failed to link stream to compressor.\n");
 		return false;
 	}
@@ -548,7 +562,8 @@ bool __fastcall Make_Save_Game(const char* file_name, const wchar_t* descr, bool
 
 	Debug::Log("Unlinking content stream from compressor.\n");
 	hr = linkstream->Unlink_Stream(nullptr);
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		Debug::FatalError("Failed to link unstream from compressor.\n");
 		return false;
 	}
@@ -558,7 +573,8 @@ bool __fastcall Make_Save_Game(const char* file_name, const wchar_t* descr, bool
 
 	Debug::Log("Closing DocFile.\n");
 	hr = storage->Commit(STGC_DEFAULT);
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		Debug::FatalError("Failed to commit storage.\n");
 		return false;
 	}

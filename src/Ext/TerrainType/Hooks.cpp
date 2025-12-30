@@ -14,7 +14,6 @@
 #include <Ext/Cell/Body.h>
 #include <Ext/Rules/Body.h>
 
-
 ASMJIT_PATCH(0x47C065, CellClass_CellColor_TerrainRadarColor, 0x6)
 {
 	enum { SkipTerrainColor = 0x47C0AE, ReturnFromFunction = 0x47C0A3 };

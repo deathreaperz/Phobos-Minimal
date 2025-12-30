@@ -6,14 +6,15 @@
 
 // a poor man's map with contiguous storage
 template <typename TKey, typename TValue, class customMem = std::allocator<std::pair<TKey, TValue>>>
-requires direct_comparable<TKey>
+	requires direct_comparable<TKey>
 class PhobosMap
 {
 	using pair_t = std::pair<TKey, TValue>;
 	using container_t = std::vector<pair_t, customMem>;
 public:
 
-	constexpr FORCEINLINE container_t* AsPair(){
+	constexpr FORCEINLINE container_t* AsPair()
+	{
 		return &this->values;
 	}
 
@@ -76,7 +77,8 @@ public:
 	}
 
 	template <typename Func>
-	COMPILETIMEEVAL void erase_all_if(Func&& act) {
+	COMPILETIMEEVAL void erase_all_if(Func&& act)
+	{
 		fast_remove_if(this->values, std::forward<Func>(act));
 	}
 
@@ -183,16 +185,18 @@ public:
 
 	COMPILETIMEEVAL auto get_key_iterator(const TKey& key)
 	{
-		return std::ranges::find_if(this->values, [&](const container_t::value_type& item){
-			return item.first == key;
+		return std::ranges::find_if(this->values, [&](const container_t::value_type& item)
+{
+	return item.first == key;
 		});
 	}
 
 	// nonmodifiable
 	COMPILETIMEEVAL auto get_key_iterator(const TKey& key) const
 	{
-		return std::ranges::find_if(this->values, [&](const container_t::value_type& item) {
-			return item.first == key;
+		return std::ranges::find_if(this->values, [&](const container_t::value_type& item)
+ {
+	 return item.first == key;
 		});
 	}
 

@@ -31,7 +31,8 @@ public:
 	template<bool timestamp, bool setData, class T, typename... ArgTypes>
 	static bool AddToEvent(EventClass& event, ArgTypes... args)
 	{
-		if COMPILETIMEEVAL(setData) {
+		if COMPILETIMEEVAL(setData)
+		{
 			T type { args... };
 			event.Data.nothing.Set<T>(&type);
 		}
@@ -48,7 +49,7 @@ public:
 
 		SET_DEFAULT_PROP(TogglePassiveAcquireMode)
 
-		static void Raise(TechnoClass* pTechno, PassiveAcquireMode mode);
+			static void Raise(TechnoClass* pTechno, PassiveAcquireMode mode);
 
 		TargetClass Who;
 		PassiveAcquireMode Mode;
@@ -65,14 +66,13 @@ public:
 		TargetClass Who;
 	};
 
-
 	struct TrenchRedirectClick
 	{
 		TrenchRedirectClick(CellStruct* target, BuildingClass* source);
 
 		SET_DEFAULT_PROP(TrenchRedirectClick)
 
-		static void Raise(BuildingClass* Source, CellStruct* Target);
+			static void Raise(BuildingClass* Source, CellStruct* Target);
 
 		TargetClass TargetCell;
 		TargetClass Source;
@@ -84,7 +84,7 @@ public:
 
 		SET_DEFAULT_PROP(ProtocolZero)
 
-		static void Raise();
+			static void Raise();
 
 		static COMPILETIMEEVAL int SendResponseTimeInterval = 30;
 		static COMPILETIMEEVAL int SendResponseTimeFrame = 8 * SendResponseTimeInterval;
@@ -112,7 +112,7 @@ public:
 	{
 		SET_DEFAULT_PROP(FirewallToggle)
 
-		static void Raise(HouseClass* Source);
+			static void Raise(HouseClass* Source);
 
 		TargetClass dummy; //not really used actually
 	};
@@ -126,10 +126,10 @@ public:
 		switch ((Events)type)
 		{
 			GET_SIZE_EV(TrenchRedirectClick)
-			GET_SIZE_EV(ProtocolZero)
-			GET_SIZE_EV(FirewallToggle)
-			GET_SIZE_EV(ManualReload)
-			GET_SIZE_EV(TogglePassiveAcquireMode)
+				GET_SIZE_EV(ProtocolZero)
+				GET_SIZE_EV(FirewallToggle)
+				GET_SIZE_EV(ManualReload)
+				GET_SIZE_EV(TogglePassiveAcquireMode)
 		default:
 			return 0;
 		}
@@ -143,10 +143,10 @@ public:
 		switch (type)
 		{
 			GET_NAME_EV(TrenchRedirectClick)
-			GET_NAME_EV(ProtocolZero)
-			GET_NAME_EV(FirewallToggle)
-			GET_NAME_EV(ManualReload)
-			GET_NAME_EV(TogglePassiveAcquireMode)
+				GET_NAME_EV(ProtocolZero)
+				GET_NAME_EV(FirewallToggle)
+				GET_NAME_EV(ManualReload)
+				GET_NAME_EV(TogglePassiveAcquireMode)
 		default:
 			return "Unknown";
 		}
@@ -159,10 +159,10 @@ public:
 		switch (type)
 		{
 			RESPOND_TO_EV(TrenchRedirectClick)
-			RESPOND_TO_EV(ProtocolZero)
-			RESPOND_TO_EV(FirewallToggle)
-			RESPOND_TO_EV(ManualReload)
-			RESPOND_TO_EV(TogglePassiveAcquireMode)
+				RESPOND_TO_EV(ProtocolZero)
+				RESPOND_TO_EV(FirewallToggle)
+				RESPOND_TO_EV(ManualReload)
+				RESPOND_TO_EV(TogglePassiveAcquireMode)
 		default:
 			break;
 		}

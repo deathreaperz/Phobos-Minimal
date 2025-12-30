@@ -37,7 +37,6 @@ ASMJIT_PATCH(0x70E475, TechnoClass_InvulnerabilityIntensity_Adjust, 0x5)
 
 ASMJIT_PATCH(0x4148F4, AircraftClass_DrawIt_LevelIntensity, 0x5)
 {
-
 	GET(AircraftClass*, pThis, EBP);
 	GET(int, level, EDI);
 

@@ -15,19 +15,19 @@ public:
 	BarTypeClass(const char* pTitle = GameStrings::NoneStr()) : Enumerable<BarTypeClass>(pTitle)
 	{ }
 
-	void LoadFromINI(CCINIClass * pINI);
-	void LoadFromStream(PhobosStreamReader & Stm) {
+	void LoadFromINI(CCINIClass* pINI);
+	void LoadFromStream(PhobosStreamReader& Stm)
+	{
 		this->Serialize(Stm);
 	}
 
-	void SaveToStream(PhobosStreamWriter & Stm) {
+	void SaveToStream(PhobosStreamWriter& Stm)
+	{
 		this->Serialize(Stm);
 	}
 
 private:
 	template <typename T>
-	void Serialize(T & Stm)
-	{
-	}
-
+	void Serialize(T& Stm)
+	{ }
 };

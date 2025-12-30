@@ -12,7 +12,6 @@ ASMJIT_BEGIN_NAMESPACE
 
 //! \addtogroup asmjit_error_handling
 //! \{
-
 class BaseEmitter;
 
 //! Error handler can be used to override the default behavior of error handling.
@@ -183,41 +182,40 @@ class BaseEmitter;
 //!   return 0;
 //! }
 //! ```
-class ASMJIT_VIRTAPI ErrorHandler {
+class ASMJIT_VIRTAPI ErrorHandler
+{
 public:
-  ASMJIT_BASE_CLASS(ErrorHandler)
+	ASMJIT_BASE_CLASS(ErrorHandler)
 
-  //! \name Construction & Destruction
-  //! \{
+		//! \name Construction & Destruction
+		//! \{
+		//! Creates a new `ErrorHandler` instance.
+		ASMJIT_API ErrorHandler() noexcept;
+	//! Destroys the `ErrorHandler` instance.
+	ASMJIT_API virtual ~ErrorHandler() noexcept;
 
-  //! Creates a new `ErrorHandler` instance.
-  ASMJIT_API ErrorHandler() noexcept;
-  //! Destroys the `ErrorHandler` instance.
-  ASMJIT_API virtual ~ErrorHandler() noexcept;
+	//! \}
 
-  //! \}
+	//! \name Interface
+	//! \{
+	//! Error handler (must be reimplemented).
+	//!
+	//! Error handler is called after an error happened and before it's propagated to the caller. There are multiple
+	//! ways how the error handler can be used:
+	//!
+	//! 1. User-based error handling without throwing exception or using C's`longjmp()`. This is for users that don't
+	//!     use exceptions and want customized error handling.
+	//!
+	//! 2. Throwing an exception. AsmJit doesn't use exceptions and is completely exception-safe, but you can throw
+	//!     exception from your error handler if this way is the preferred way of handling errors in your project.
+	//!
+	//! 3. Using plain old C's `setjmp()` and `longjmp()`. Asmjit always puts `BaseEmitter` to a consistent state before
+	//!    calling `handle_error()`  so `longjmp()` can be used without any issues to cancel the code generation if an
+	//!    error occurred. There is no difference between exceptions and `longjmp()` from AsmJit's perspective, however,
+	//!    never jump outside of `CodeHolder` and `BaseEmitter` scope as you would leak memory.
+	ASMJIT_API virtual void handle_error(Error err, const char* message, BaseEmitter* origin);
 
-  //! \name Interface
-  //! \{
-
-  //! Error handler (must be reimplemented).
-  //!
-  //! Error handler is called after an error happened and before it's propagated to the caller. There are multiple
-  //! ways how the error handler can be used:
-  //!
-  //! 1. User-based error handling without throwing exception or using C's`longjmp()`. This is for users that don't
-  //!     use exceptions and want customized error handling.
-  //!
-  //! 2. Throwing an exception. AsmJit doesn't use exceptions and is completely exception-safe, but you can throw
-  //!     exception from your error handler if this way is the preferred way of handling errors in your project.
-  //!
-  //! 3. Using plain old C's `setjmp()` and `longjmp()`. Asmjit always puts `BaseEmitter` to a consistent state before
-  //!    calling `handle_error()`  so `longjmp()` can be used without any issues to cancel the code generation if an
-  //!    error occurred. There is no difference between exceptions and `longjmp()` from AsmJit's perspective, however,
-  //!    never jump outside of `CodeHolder` and `BaseEmitter` scope as you would leak memory.
-  ASMJIT_API virtual void handle_error(Error err, const char* message, BaseEmitter* origin);
-
-  //! \}
+	//! \}
 };
 
 //! \}
@@ -225,4 +223,3 @@ public:
 ASMJIT_END_NAMESPACE
 
 #endif // ASMJIT_CORE_ERRORHANDLER_H_INCLUDED
-

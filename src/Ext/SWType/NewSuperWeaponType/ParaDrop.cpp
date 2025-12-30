@@ -6,16 +6,21 @@
 
 bool SW_ParaDrop::Activate(SuperClass* const pThis, const CellStruct& Coords, bool const IsPlayer)
 {
-	if (pThis->IsCharged) {
-		if(auto pTarget = MapClass::Instance->TryGetCellAt(Coords)) {
+	if (pThis->IsCharged)
+	{
+		if (auto pTarget = MapClass::Instance->TryGetCellAt(Coords))
+		{
 			SWTypeExtData* pData = SWTypeExtContainer::Instance.Find(pThis->Type);
 
 			const auto nDeferement = pData->SW_Deferment.Get(-1);
 
-			if (nDeferement <= 0) {
-			  this->SendParadrop(pThis, pTarget);
-			} else {
-			  this->newStateMachine(nDeferement, Coords, pThis, pTarget);
+			if (nDeferement <= 0)
+			{
+				this->SendParadrop(pThis, pTarget);
+			}
+			else
+			{
+				this->newStateMachine(nDeferement, Coords, pThis, pTarget);
 			}
 
 			return true;
@@ -46,61 +51,67 @@ void SW_ParaDrop::LoadFromINI(SWTypeExtData* pData, CCINIClass* pINI)
 	std::string _base = GameStrings::ParaDrop();
 
 	auto CreateParaDropBase = [](char* pID, std::string& base)
-	{
-		// put a string like "Paradrop.Americans" into the buffer
-		if (pID && strlen(pID)) {
-			base += ".";
-			base += pID;
-		}
-	};
+		{
+			// put a string like "Paradrop.Americans" into the buffer
+			if (pID && strlen(pID))
+			{
+				base += ".";
+				base += pID;
+			}
+		};
 
-	auto ParseParaDrop = [section, &exINI](const char* pID, int Plane , ParadropData& out)
-	{
-		// create the plane part of this request. this will be
-		// an empty string for the first plane for this is the default.
-		//char plane[0x10] = "";
-		std::string _plane(".Plane");
-		if (Plane) {
-			_plane += std::to_string(Plane + 1);
-		} else {
-			_plane.clear();
-		}
+	auto ParseParaDrop = [section, &exINI](const char* pID, int Plane, ParadropData& out)
+		{
+			// create the plane part of this request. this will be
+			// an empty string for the first plane for this is the default.
+			//char plane[0x10] = "";
+			std::string _plane(".Plane");
+			if (Plane)
+			{
+				_plane += std::to_string(Plane + 1);
+			}
+			else
+			{
+				_plane.clear();
+			}
 
-		// construct the full tag name base
-		std::string _ID = pID;
-		// parse the plane contents
-		out.Aircraft.Read(exINI, section, (_ID + _plane + ".Aircraft").c_str());
+			// construct the full tag name base
+			std::string _ID = pID;
+			// parse the plane contents
+			out.Aircraft.Read(exINI, section, (_ID + _plane + ".Aircraft").c_str());
 
-		// a list of UnitTypes and InfantryTypes
+			// a list of UnitTypes and InfantryTypes
 
-		out.Types.Read(exINI, section, (_ID + _plane + ".Types").c_str());
+			out.Types.Read(exINI, section, (_ID + _plane + ".Types").c_str());
 
-		// don't parse nums if there are no types
-		if (!out.Aircraft && out.Types.empty()) {
+			// don't parse nums if there are no types
+			if (!out.Aircraft && out.Types.empty())
+			{
+				return;
+			}
+
+			// the number how many times each item is created
+			out.Num.Read(exINI, section, (_ID + _plane + ".Num").c_str());
+
 			return;
-		}
-
-		// the number how many times each item is created
-		out.Num.Read(exINI, section, (_ID + _plane + ".Num").c_str());
-
-		return;
-	};
+		};
 
 	auto GetParadropPlane = [=, &_base](char const* pID, size_t defaultCount, AbstractTypeClass* pKey)
-	{
-		auto& ParaDrop = pData->ParaDropDatas[pKey];
-		auto const lastCount = ParaDrop.size() ? ParaDrop.size() : defaultCount;
+		{
+			auto& ParaDrop = pData->ParaDropDatas[pKey];
+			auto const lastCount = ParaDrop.size() ? ParaDrop.size() : defaultCount;
 
-		// get the number of planes for this house or side
-		std::string _key = pID;
-		auto const count = pINI->ReadInteger(section, (_key + ".Count").c_str(), lastCount);
+			// get the number of planes for this house or side
+			std::string _key = pID;
+			auto const count = pINI->ReadInteger(section, (_key + ".Count").c_str(), lastCount);
 
-		// parse every plane
-		ParaDrop.resize(static_cast<size_t>(count));
-		for (int i = 0; i < count; ++i) {
-			ParseParaDrop(_base.c_str(), i , ParaDrop[i]);
-		}
-	};
+			// parse every plane
+			ParaDrop.resize(static_cast<size_t>(count));
+			for (int i = 0; i < count; ++i)
+			{
+				ParseParaDrop(_base.c_str(), i, ParaDrop[i]);
+			}
+		};
 
 	// now load the paradrops
 	// 0: default
@@ -153,11 +164,14 @@ bool SW_ParaDrop::SendParadrop(SuperClass* pThis, CellClass* pCell)
 	Iterator<TechnoTypeClass*> FallbackTypes;
 	Iterator<int> FallbackNum;
 
-	if (IsAmericanParadrop) {
+	if (IsAmericanParadrop)
+	{
 		FallbackTypes = make_iterator(RulesClass::Instance->AmerParaDropInf);
 		FallbackNum = make_iterator(RulesClass::Instance->AmerParaDropNum);
-	} else {
-		HouseExtData::GetParadropContent(pHouse , FallbackTypes, FallbackNum);
+	}
+	else
+	{
+		HouseExtData::GetParadropContent(pHouse, FallbackTypes, FallbackNum);
 	}
 
 	const auto pCountry = pData->ParaDropDatas.tryfind(pHouse->Type);
@@ -171,8 +185,10 @@ bool SW_ParaDrop::SendParadrop(SuperClass* pThis, CellClass* pCell)
 
 	// how many planes shall we launch?
 	int count = 1;
-	for (auto const& planes : drops) {
-		if (planes && !planes->empty()) {
+	for (auto const& planes : drops)
+	{
+		if (planes && !planes->empty())
+		{
 			count = planes->size();
 			break;
 		}
@@ -197,7 +213,6 @@ bool SW_ParaDrop::SendParadrop(SuperClass* pThis, CellClass* pCell)
 		{ // factor 1 or 0: "plane * j" => "plane" or "0" (default)
 			for (auto const& planes : drops)
 			{ // get the country/side-specific plane list
-
 				// only do something if there is data missing
 				if (!(ParaDropTypes && ParaDropNum && pParaDropPlane))
 				{
@@ -211,9 +226,8 @@ bool SW_ParaDrop::SendParadrop(SuperClass* pThis, CellClass* pCell)
 					auto const pPlane = &(*planes)[index];
 
 					// get the plane at specified index
-					if(!pPlane->Num.empty())
+					if (!pPlane->Num.empty())
 					{
-
 						// get the contents, if not already set
 						if (!ParaDropTypes || !ParaDropNum)
 						{
@@ -242,7 +256,8 @@ bool SW_ParaDrop::SendParadrop(SuperClass* pThis, CellClass* pCell)
 		}
 
 		// house fallback for the plane
-		if (!pParaDropPlane) {
+		if (!pParaDropPlane)
+		{
 			pParaDropPlane = pFallbackPlane;
 		}
 
@@ -271,7 +286,6 @@ void SW_ParaDrop::SendPDPlane(HouseClass* pOwner
 	{
 		return;
 	}
-
 
 	++Unsorted::ScenarioInit;
 	auto const pPlane = static_cast<AircraftClass*>(pPlaneType->CreateObject(pOwner));
@@ -325,7 +339,8 @@ void SW_ParaDrop::SendPDPlane(HouseClass* pOwner
 				pNew->SetLocation(pPlane->Location);
 				pNew->Limbo();
 
-				if (pPlane->Type->OpenTopped) {
+				if (pPlane->Type->OpenTopped)
+				{
 					pPlane->EnteredOpenTopped(pNew);
 				}
 
@@ -344,7 +359,7 @@ void SW_ParaDrop::SendPDPlane(HouseClass* pOwner
 
 	if (!bSpawned)
 	{
-		GameDelete<true , false>(pPlane);
+		GameDelete<true, false>(pPlane);
 		return;
 	}
 
@@ -363,15 +378,17 @@ bool SW_ParaDrop::IsLaunchSite(const SWTypeExtData* pData, BuildingClass* pBuild
 }
 
 template<typename T>
-COMPILETIMEEVAL void insertFromIterator(std::vector<std::vector<T>>& vec2d, const Iterator<T>& iter) {
+COMPILETIMEEVAL void insertFromIterator(std::vector<std::vector<T>>& vec2d, const Iterator<T>& iter)
+{
 	std::vector<T> newRow;
-    newRow.reserve(iter.size());
+	newRow.reserve(iter.size());
 
-	for (size_t i = 0; i < iter.size(); ++i) {
-        newRow.push_back(iter[i]);
-    }
+	for (size_t i = 0; i < iter.size(); ++i)
+	{
+		newRow.push_back(iter[i]);
+	}
 
-    vec2d.push_back(std::move(newRow));
+	vec2d.push_back(std::move(newRow));
 }
 
 void ParaDropStateMachine::UpdateProperties()
@@ -434,7 +451,6 @@ void ParaDropStateMachine::UpdateProperties()
 		{ // factor 1 or 0: "plane * j" => "plane" or "0" (default)
 			for (auto const& planes : drops)
 			{ // get the country/side-specific plane list
-
 				// only do something if there is data missing
 				if (!(ParaDropTypes && ParaDropNum && pParaDropPlane))
 				{
@@ -450,7 +466,6 @@ void ParaDropStateMachine::UpdateProperties()
 					// get the plane at specified index
 					if (!pPlane->Num.empty())
 					{
-
 						// get the contents, if not already set
 						if (!ParaDropTypes || !ParaDropNum)
 						{
@@ -485,7 +500,8 @@ void ParaDropStateMachine::UpdateProperties()
 		}
 
 		// finally, send the plane
-		if (ParaDropTypes && ParaDropNum && pParaDropPlane) {
+		if (ParaDropTypes && ParaDropNum && pParaDropPlane)
+		{
 			this->PlaneType.push_back(pParaDropPlane);
 			insertFromIterator(this->Types, ParaDropTypes);
 			insertFromIterator(this->Nums, ParaDropNum);
@@ -502,11 +518,13 @@ void ParaDropStateMachine::Update()
 		pData->PrintMessage(pData->Message_Activate, this->Super->Owner);
 
 		auto const sound = pData->SW_ActivationSound.Get(-1);
-		if (sound != -1) {
+		if (sound != -1)
+		{
 			VocClass::PlayGlobal(sound, Panning::Center, 1.0);
 		}
 
-		for(size_t i = 0; i < this->PlaneType.size(); ++i) {
+		for (size_t i = 0; i < this->PlaneType.size(); ++i)
+		{
 			SW_ParaDrop::SendPDPlane(this->Super->Owner, this->Target, this->PlaneType[i], this->Types[i], this->Nums[i]);
 		}
 	}

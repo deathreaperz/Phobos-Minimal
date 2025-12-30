@@ -36,8 +36,8 @@ ASMJIT_PATCH(0x6870D7, ReadScenario_LoadingScreens, 0x5)
 
 ASMJIT_PATCH(0x6873AB, INIClass_ReadScenario_EarlyLoadRules, 5)
 {
-
-	if (SessionClass::Instance->GameMode == GameMode::Campaign) {
+	if (SessionClass::Instance->GameMode == GameMode::Campaign)
+	{
 		RulesClass::Instance()->Read_Sides(CCINIClass::INI_Rules);
 		for (auto pSide : *SideClass::Array)
 			SideExtContainer::Instance.LoadFromINI(pSide, CCINIClass::INI_Rules, false);
@@ -58,15 +58,18 @@ ASMJIT_PATCH(0x552F79, LoadProgressManager_Draw_MissingLoadingScreenDefaults, 0x
 	if (!pThis->LoadScreenSHP)
 		pThis->LoadScreenSHP = FileSystem::LoadSHPFile(isLowRes ? pScenarioExt->DefaultLS640BkgdName : pScenarioExt->DefaultLS800BkgdName);
 
-	if (!pDrawer) {
+	if (!pDrawer)
+	{
 		// Uncertain how necessary this is but is what game does...
-		if (LoadProgressManager::LoadScreenPal) {
-			GameDelete<true,false>(LoadProgressManager::LoadScreenPal());
+		if (LoadProgressManager::LoadScreenPal)
+		{
+			GameDelete<true, false>(LoadProgressManager::LoadScreenPal());
 			LoadProgressManager::LoadScreenPal = nullptr;
 		}
 
-		if (LoadProgressManager::LoadScreenBytePal) {
-			GameDelete<true,false>(LoadProgressManager::LoadScreenBytePal());
+		if (LoadProgressManager::LoadScreenBytePal)
+		{
+			GameDelete<true, false>(LoadProgressManager::LoadScreenBytePal());
 			LoadProgressManager::LoadScreenBytePal = nullptr;
 		}
 

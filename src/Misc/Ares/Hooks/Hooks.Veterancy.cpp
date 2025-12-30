@@ -29,7 +29,6 @@
 // handle all veterancy gains ourselves
 ASMJIT_PATCH(0x702E9D, TechnoClass_RegisterDestruction_Veterancy, 0x6)
 {
-
 	GET(TechnoClass*, pKiller, EDI);
 	GET(TechnoClass*, pVictim, ESI);
 	GET(const int, Score, EBP);

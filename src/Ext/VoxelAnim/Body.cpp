@@ -21,7 +21,7 @@ TechnoClass* VoxelAnimExtData::GetTechnoOwner(VoxelAnimClass* pThis)
 	if (!pTypeExt || !pTypeExt->Damage_DealtByOwner)
 		return nullptr;
 
-	auto const pExt  = VoxelAnimExtContainer::Instance.TryFind(pThis);
+	auto const pExt = VoxelAnimExtContainer::Instance.TryFind(pThis);
 
 	if (!pExt || !pExt->Invoker)
 		return nullptr;
@@ -55,7 +55,7 @@ void VoxelAnimExtData::InitializeLaserTrails(VoxelAnimTypeExtData* pTypeExt)
 	{
 		LaserTrails.emplace_back(
 			std::move(std::make_unique<LaserTrailClass>(
-			LaserTrailTypeClass::Array[idxTrail].get(), pOwner->LaserColor)));
+				LaserTrailTypeClass::Array[idxTrail].get(), pOwner->LaserColor)));
 	}
 }
 
@@ -66,7 +66,7 @@ void VoxelAnimExtData::Serialize(T& Stm)
 {
 	//Debug::LogInfo("Processing Element From VoxelAnimExt ! ");
 
-	 Stm
+	Stm
 		.Process(this->Invoker, true)
 		.Process(this->LaserTrails)
 		.Process(this->Trails)
@@ -112,7 +112,6 @@ bool VoxelAnimExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool VoxelAnimExtContainer::SaveAll(json& root)
@@ -140,17 +139,17 @@ bool VoxelAnimExtContainer::SaveAll(json& root)
 }
 
 // =================================
-ASMJIT_PATCH(0x7494CE , VoxelAnimClass_CTOR, 0x6)
+ASMJIT_PATCH(0x7494CE, VoxelAnimClass_CTOR, 0x6)
 {
 	GET(VoxelAnimClass*, pItem, ESI);
 
-	if(pItem->Type){
-
+	if (pItem->Type)
+	{
 		auto pExt = VoxelAnimExtContainer::Instance.Allocate(pItem);
 		const auto pTypeExt = VoxelAnimTypeExtContainer::Instance.Find(pItem->Type);
 
 		if (!pTypeExt->LaserTrail_Types.empty())
-				pExt->LaserTrails.reserve(pTypeExt->LaserTrail_Types.size());
+			pExt->LaserTrails.reserve(pTypeExt->LaserTrail_Types.size());
 
 		pExt->InitializeLaserTrails(pTypeExt);
 		TrailsManager::Construct(pItem);
@@ -171,9 +170,8 @@ ASMJIT_PATCH(0x749B02, VoxelAnimClass_DTOR, 0xA)
 void FakeVoxelAnimClass::_Detach(AbstractClass* pTarget, bool bRemoved)
 {
 	this->ObjectClass::PointerExpired(pTarget, bRemoved);
-	if(auto pExt = this->_GetExtData())
+	if (auto pExt = this->_GetExtData())
 		pExt->InvalidatePointer(pTarget, bRemoved);
 }
 
-DEFINE_FUNCTION_JUMP(VTABLE ,0x7F6340 , FakeVoxelAnimClass::_Detach)
-
+DEFINE_FUNCTION_JUMP(VTABLE, 0x7F6340, FakeVoxelAnimClass::_Detach)

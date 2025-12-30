@@ -39,7 +39,8 @@ ASMJIT_PATCH(0x53CBF5, IonBlastClass_Update_Duration, 5)
 	GET(IonBlastClass*, IB, EBX);
 
 	int Ripple_Radius = 79;
-	if (auto pData = WarheadTypeExtData::IonBlastExt.get_or_default(IB)) {
+	if (auto pData = WarheadTypeExtData::IonBlastExt.get_or_default(IB))
+	{
 		Ripple_Radius = MinImpl(Ripple_Radius, pData->Ripple_Radius + 1);
 	}
 
@@ -65,11 +66,13 @@ ASMJIT_PATCH(0x53CC63, IonBlastClass_Update_Beam, 6)
 		auto animCoord = nLoc;
 		animCoord.Z += 5;
 
-		if (pBlast) {
+		if (pBlast)
+		{
 			GameCreate<AnimClass>(pBlast, animCoord);
 		}
 
-		if (auto pBeam = pWHExt->Ion_Beam.Get(RulesClass::Instance->IonBeam)) {
+		if (auto pBeam = pWHExt->Ion_Beam.Get(RulesClass::Instance->IonBeam))
+		{
 			GameCreate<AnimClass>(pBeam, animCoord);
 		}
 

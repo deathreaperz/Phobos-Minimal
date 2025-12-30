@@ -27,7 +27,7 @@ public:
 		, IgnoreFog { false }
 		, IgnoreShroud { false }
 		, Override { true }
-	{}
+	{ }
 
 	virtual ~PaintballType() = default;
 
@@ -37,7 +37,7 @@ public:
 		, IgnoreFog { nData.IgnoreFog }
 		, IgnoreShroud { nData.IgnoreShroud }
 		, Override { nData.Override }
-	{}
+	{ }
 
 	PaintballType(PaintballType& nData) : Color { nData.Color }
 		, BrightMultiplier { nData.BrightMultiplier }
@@ -45,7 +45,7 @@ public:
 		, IgnoreFog { nData.IgnoreFog }
 		, IgnoreShroud { nData.IgnoreShroud }
 		, Override { nData.Override }
-	{}
+	{ }
 
 	void Read(INI_EX& parser, const char* pSection);
 
@@ -79,7 +79,8 @@ public:
 
 	bool IsActive() { return timer.GetTimeLeft() > 0; }
 	void Init();
-	void SetData(PaintballType& type) {
+	void SetData(PaintballType& type)
+	{
 		this->Data = &type;
 	}
 
@@ -91,7 +92,6 @@ public:
 	bool Save(PhobosStreamWriter& Stm) const
 	{ return const_cast<PaintBall*>(this)->Serialize(Stm); }
 
-
 	CDTimerClass timer;
 	PaintballType* Data;
 	OptionalStruct<uintptr_t, true> Color;
@@ -102,12 +102,10 @@ public:
 	{
 		//Debug::LogInfo("Processing Element From PaintBall ! ");
 		return Stm
-			.Process(timer,true)
+			.Process(timer, true)
 			.Process(Data, true)
 			.Process(Color)
 			.Success()
 			;
 	}
 };
-
-

@@ -148,23 +148,27 @@ void ShieldClass::SyncShieldToAnother(TechnoClass* pFrom, TechnoClass* pTo)
 
 	if (pTypeExt->ShieldType && pFromExt->CurrentShieldType != pTypeExt->ShieldType)
 	{
-		if(pToExt->Shield) {
+		if (pToExt->Shield)
+		{
 			const auto nFromPrecentage = int(pFromExt->Shield->GetHealthRatio() * pToExt->Shield->Type->Strength);
 			pToExt->Shield->SetHP((int)nFromPrecentage);
 
-			if (pToExt->Shield->GetHP() == 0){
-					pToExt->Shield->SetRespawn(
-					pTypeExt->ShieldType->Respawn_Rate,
-					pTypeExt->ShieldType->Respawn,
-					pTypeExt->ShieldType->Respawn_Rate,
-					pTypeExt->ShieldType->Respawn_RestartInCombat,
-					-1,
-					true,
-					&pTypeExt->ShieldType->Respawn_Anim.AsVector()
+			if (pToExt->Shield->GetHP() == 0)
+			{
+				pToExt->Shield->SetRespawn(
+				pTypeExt->ShieldType->Respawn_Rate,
+				pTypeExt->ShieldType->Respawn,
+				pTypeExt->ShieldType->Respawn_Rate,
+				pTypeExt->ShieldType->Respawn_RestartInCombat,
+				-1,
+				true,
+				&pTypeExt->ShieldType->Respawn_Anim.AsVector()
 				);
 			}
 		}
-	} else {
+	}
+	else
+	{
 		pToExt->CurrentShieldType = pFromExt->CurrentShieldType;
 		pToExt->Shield.reset(pFromExt->Shield.release());
 		pToExt->Shield->KillAnim();
@@ -205,19 +209,22 @@ int ShieldClass::OnReceiveDamage(args_ReceiveDamage* args)
 		return *args->Damage;
 	}
 
-	if (*args->Damage < 0) {
-		if (auto const pFoot = flag_cast_to<FootClass*, false>(this->Techno)) {
-			if (auto const pParasite = pFoot->ParasiteEatingMe) {
-					// Remove parasite.
-					pParasite->ParasiteImUsing->SuppressionTimer.Start(50);
-					pParasite->ParasiteImUsing->ExitUnit();
+	if (*args->Damage < 0)
+	{
+		if (auto const pFoot = flag_cast_to<FootClass*, false>(this->Techno))
+		{
+			if (auto const pParasite = pFoot->ParasiteEatingMe)
+			{
+				// Remove parasite.
+				pParasite->ParasiteImUsing->SuppressionTimer.Start(50);
+				pParasite->ParasiteImUsing->ExitUnit();
 			}
 		}
 	}
 
 	const bool IC = pWHExt->CanAffectInvulnerable(this->Techno);
 
-	if(!IC || CanBePenetrated(args->WH) || TechnoExtData::IsTypeImmune(this->Techno, args->Attacker))
+	if (!IC || CanBePenetrated(args->WH) || TechnoExtData::IsTypeImmune(this->Techno, args->Attacker))
 		return *args->Damage;
 
 	const auto pSource = args->Attacker ? args->Attacker->Owner : args->SourceHouse;
@@ -246,8 +253,8 @@ int ShieldClass::OnReceiveDamage(args_ReceiveDamage* args)
 	int nDamageResult = 0;
 	bool IsShielRequreFeeback = true;
 	DamageToShieldAfterMinMax = std::clamp(DamageToShield,
-		GeneralUtils::SafeMultiply(pWHExt->Shield_ReceivedDamage_Minimum.Get(this->Type->ReceivedDamage_Minimum) , pWHExt->Shield_ReceivedDamage_MinMultiplier),
-			GeneralUtils::SafeMultiply(pWHExt->Shield_ReceivedDamage_Maximum.Get(this->Type->ReceivedDamage_Maximum) , pWHExt->Shield_ReceivedDamage_MaxMultiplier));
+		GeneralUtils::SafeMultiply(pWHExt->Shield_ReceivedDamage_Minimum.Get(this->Type->ReceivedDamage_Minimum), pWHExt->Shield_ReceivedDamage_MinMultiplier),
+			GeneralUtils::SafeMultiply(pWHExt->Shield_ReceivedDamage_Maximum.Get(this->Type->ReceivedDamage_Maximum), pWHExt->Shield_ReceivedDamage_MaxMultiplier));
 
 	if (DamageToShieldAfterMinMax == 0)
 	{
@@ -278,7 +285,7 @@ int ShieldClass::OnReceiveDamage(args_ReceiveDamage* args)
 			}
 		}
 
-		if(pWHExt->Malicious && !pWHExt->Nonprovocative)
+		if (pWHExt->Malicious && !pWHExt->Nonprovocative)
 			this->ResponseAttack(args->WH);
 
 		if (pWHExt->DecloakDamagedTargets)
@@ -291,13 +298,13 @@ int ShieldClass::OnReceiveDamage(args_ReceiveDamage* args)
 		//the shield will be broken
 		if (residueDamage >= 0)
 		{
-			residueDamage = MaxImpl(0 ,int((double)(residueDamage) /
-			//GeneralUtils::GetWarheadVersusArmor(args->WH , this->Type->Armor)
-			pWHExt->GetVerses(this->Type->Armor).Verses)
+			residueDamage = MaxImpl(0, int((double)(residueDamage) /
+				//GeneralUtils::GetWarheadVersusArmor(args->WH , this->Type->Armor)
+				pWHExt->GetVerses(this->Type->Armor).Verses)
 			); //only absord percentage damage
 
 			if (bool(Phobos::Debug_DisplayDamageNumbers > DrawDamageMode::disabled) && Phobos::Debug_DisplayDamageNumbers < DrawDamageMode::count && (nHPCopy) != 0)
-				FlyingStrings::Instance.DisplayDamageNumberString(nHPCopy, DamageDisplayType::Shield, this->Techno->GetRenderCoords(), TechnoExtContainer::Instance.Find(this->Techno)->DamageNumberOffset ,Phobos::Debug_DisplayDamageNumbers);
+				FlyingStrings::Instance.DisplayDamageNumberString(nHPCopy, DamageDisplayType::Shield, this->Techno->GetRenderCoords(), TechnoExtContainer::Instance.Find(this->Techno)->DamageNumberOffset, Phobos::Debug_DisplayDamageNumbers);
 
 			this->BreakShield(pWHExt->Shield_BreakAnim, pWHExt->Shield_BreakWeapon.Get(nullptr));
 
@@ -308,7 +315,7 @@ int ShieldClass::OnReceiveDamage(args_ReceiveDamage* args)
 			// that mean the damage can be sustained with the sield
 		{
 			if (bool(Phobos::Debug_DisplayDamageNumbers > DrawDamageMode::disabled) && Phobos::Debug_DisplayDamageNumbers < DrawDamageMode::count && (-DamageToShield) != 0)
-				FlyingStrings::Instance.DisplayDamageNumberString((-DamageToShield), DamageDisplayType::Shield, this->Techno->GetRenderCoords(), TechnoExtContainer::Instance.Find(this->Techno)->DamageNumberOffset,Phobos::Debug_DisplayDamageNumbers);
+				FlyingStrings::Instance.DisplayDamageNumberString((-DamageToShield), DamageDisplayType::Shield, this->Techno->GetRenderCoords(), TechnoExtContainer::Instance.Find(this->Techno)->DamageNumberOffset, Phobos::Debug_DisplayDamageNumbers);
 
 			if (this->Type->HitFlash && pWHExt->Shield_HitFlash)
 			{
@@ -332,7 +339,7 @@ int ShieldClass::OnReceiveDamage(args_ReceiveDamage* args)
 				MapClass::FlashbangWarheadAt(size, args->WH, this->Techno->Location, true, flags);
 			}
 
-			if(!pWHExt->Shield_SkipHitAnim)
+			if (!pWHExt->Shield_SkipHitAnim)
 				this->WeaponNullifyAnim(pWHExt->Shield_HitAnim);
 
 			this->HP -= DamageToShield; //set the HP remaining after get hit
@@ -345,19 +352,23 @@ int ShieldClass::OnReceiveDamage(args_ReceiveDamage* args)
 	{
 		// if the shield still in full HP
 		// heal the shield user instead
-		if (ShieldStillInfullHP) {
+		if (ShieldStillInfullHP)
+		{
 			if (FakeWarheadTypeClass::ModifyDamage(DamageToShieldAfterMinMax,
-				 args->WH,
-				 TechnoExtData::GetArmor(this->Techno),
-				 args->DistanceToEpicenter) < 0
+				args->WH,
+				TechnoExtData::GetArmor(this->Techno),
+				args->DistanceToEpicenter) < 0
 				 )
 				IsShielRequreFeeback = !this->Type->PassthruNegativeDamage;
-		} else { //otherwise we heal the shield
-			if (this->Type->CanBeHealed) {
+		}
+		else
+		{ //otherwise we heal the shield
+			if (this->Type->CanBeHealed)
+			{
 				auto nDamageCopy = DamageToShieldAfterMinMax;
 
 				if (bool(Phobos::Debug_DisplayDamageNumbers > DrawDamageMode::disabled) && Phobos::Debug_DisplayDamageNumbers < DrawDamageMode::count && DamageToShieldAfterMinMax != 0)
-					FlyingStrings::Instance.DisplayDamageNumberString(DamageToShieldAfterMinMax, DamageDisplayType::Shield, this->Techno->GetRenderCoords(), TechnoExtContainer::Instance.Find(this->Techno)->DamageNumberOffset , Phobos::Debug_DisplayDamageNumbers);
+					FlyingStrings::Instance.DisplayDamageNumberString(DamageToShieldAfterMinMax, DamageDisplayType::Shield, this->Techno->GetRenderCoords(), TechnoExtContainer::Instance.Find(this->Techno)->DamageNumberOffset, Phobos::Debug_DisplayDamageNumbers);
 
 				this->HP = std::clamp(this->HP + (-nDamageCopy), 0, this->Type->Strength.Get());
 				this->UpdateIdleAnim();
@@ -368,7 +379,8 @@ int ShieldClass::OnReceiveDamage(args_ReceiveDamage* args)
 	}
 
 	//replace damage
-	if (!nDamageResult && this->HP == 0) {
+	if (!nDamageResult && this->HP == 0)
+	{
 		if (auto const pTag = this->Techno->AttachedTag)
 			pTag->RaiseEvent((TriggerEvent)PhobosTriggerEvent::ShieldBroken, this->Techno,
 				CellStruct::Empty, false, args->Attacker);//where is this? is this correct?
@@ -436,7 +448,7 @@ bool ShieldClass::CanBeTargeted(WeaponTypeClass* pWeapon) const
 		return true;
 
 	const auto pWHExt = WarheadTypeExtContainer::Instance.Find(pWeapon->Warhead);
-	return (Math::abs( pWHExt->GetVerses(this->Type->Armor).Verses ) >= 0.001);
+	return (Math::abs(pWHExt->GetVerses(this->Type->Armor).Verses) >= 0.001);
 }
 
 bool ShieldClass::CanBePenetrated(WarheadTypeClass* pWarhead) const
@@ -454,9 +466,10 @@ bool ShieldClass::CanBePenetrated(WarheadTypeClass* pWarhead) const
 	if (!affectedTypes.empty() && !affectedTypes.contains(this->Type))
 		return false;
 
-	if (!pWHExt->Shield_Penetrate_Armor_Types.empty()) {
+	if (!pWHExt->Shield_Penetrate_Armor_Types.empty())
+	{
 		Armor shieldArmror = this->GetOrInheritArmor();
-		if(!pWHExt->Shield_Penetrate_Armor_Types.Contains(ArmorTypeClass::Array[(int)shieldArmror].get()))
+		if (!pWHExt->Shield_Penetrate_Armor_Types.Contains(ArmorTypeClass::Array[(int)shieldArmror].get()))
 			return false;
 	}
 
@@ -546,10 +559,12 @@ void ShieldClass::OnUpdate()
 	const auto selfHealingCheck = this->SelfHealEnabledByCheck();
 	auto timer = (this->HP <= 0) ? &this->Timers.Respawn : &this->Timers.SelfHealing;
 
-	if (selfHealingCheck == SelfHealingStatus::Offline) {
+	if (selfHealingCheck == SelfHealingStatus::Offline)
+	{
 		timer->Pause();
 	}
-	else if(selfHealingCheck == SelfHealingStatus::Online) {
+	else if (selfHealingCheck == SelfHealingStatus::Online)
+	{
 		timer->Resume();
 		this->RespawnShield();
 		this->SelfHealing();
@@ -604,7 +619,8 @@ void ShieldClass::OnlineCheck()
 
 	if (!isActive)
 	{
-		if (this->Online){
+		if (this->Online)
+		{
 			this->UpdateTint();
 			this->Online = false;
 		}
@@ -635,7 +651,8 @@ void ShieldClass::OnlineCheck()
 	}
 	else
 	{
-		if (!this->Online) {
+		if (!this->Online)
+		{
 			this->UpdateTint();
 			this->Online = true;
 		}
@@ -669,7 +686,8 @@ void ShieldClass::TemporalCheck()
 
 void ShieldClass::UpdateTint(bool forceUpdate)
 {
-	if (this->Type->Tint_Color.isset() || this->Type->Tint_Intensity != 0.0 || forceUpdate){
+	if (this->Type->Tint_Color.isset() || this->Type->Tint_Intensity != 0.0 || forceUpdate)
+	{
 		TechnoExtContainer::Instance.Find(this->Techno)->Tints.Update();
 		this->Techno->MarkForRedraw();
 	}
@@ -772,7 +790,8 @@ SelfHealingStatus ShieldClass::SelfHealEnabledByCheck()
 void ShieldClass::SelfHealing()
 {
 	auto timerSelfHealCombat = &this->Timers.SelfHealing_CombatRestart;
-	if (timerSelfHealCombat->InProgress()) {
+	if (timerSelfHealCombat->InProgress())
+	{
 		return;
 	}
 
@@ -895,7 +914,6 @@ void ShieldClass::RespawnShield()
 
 		if (pWeapon)
 			TechnoExtData::FireWeaponAtSelf(pTechno, pWeapon);
-
 	}
 	else if (timerWH->Completed() && timer->InProgress())
 	{
@@ -915,8 +933,8 @@ void ShieldClass::SetRespawn(int duration, double amount, int rate, bool restart
 	this->Respawn_RestartInCombat_Warhead = restartInCombat;
 	this->Respawn_RestartInCombatDelay_Warhead = restartInCombatDelay >= 0 ? restartInCombatDelay : pType->Respawn_RestartInCombatDelay;
 
-	if(anim)
-		std::copy(anim->begin(),anim->end(), std::back_inserter(this->Respawn_Anim_Warhead));
+	if (anim)
+		std::copy(anim->begin(), anim->end(), std::back_inserter(this->Respawn_Anim_Warhead));
 
 	this->Respawn_Weapon_Warhead = weapon ? weapon : pType->Respawn_Weapon;
 	this->Respawn_Rate_Warhead = rate >= 0 ? rate : Type->Respawn_Rate;
@@ -990,8 +1008,8 @@ void ShieldClass::CreateAnim()
 {
 	auto idleAnimType = this->GetIdleAnimType();
 
-		if (this->Cloak && (!idleAnimType || AnimTypeExtContainer::Instance.Find(idleAnimType)->DetachOnCloak))
-			return;
+	if (this->Cloak && (!idleAnimType || AnimTypeExtContainer::Instance.Find(idleAnimType)->DetachOnCloak))
+		return;
 
 	if (!this->IdleAnim && idleAnimType)
 	{
@@ -1047,7 +1065,7 @@ void ShieldClass::DrawShieldBar_Building(int iLength, Point2D* pLocation, Rectan
 		return;
 
 	static constexpr Point2D selectBracketPositionOffset { -6 , -3 };
-	static constexpr Point2D locationOffset {-5 , -3};
+	static constexpr Point2D locationOffset { -5 , -3 };
 
 	Point2D selectBracketPosition = TechnoExtData::GetBuildingSelectBracketPosition(
 		this->Techno,
@@ -1089,7 +1107,6 @@ void ShieldClass::DrawShieldBar_Building(int iLength, Point2D* pLocation, Rectan
 			position = selectBracketPosition;
 			position.X -= deltaX + 6;
 			position.Y -= deltaY + 3;
-
 
 			DSurface::Temp->DrawSHP(FileSystem::PALETTE_PAL, FileSystem::PIPS_SHP,
 				emptyFrame, &position, pBound, BlitterFlags(0x600), 0, 0, ZGradient::Ground, 1000, 0, 0, 0, 0, 0);

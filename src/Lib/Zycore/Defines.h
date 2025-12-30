@@ -32,60 +32,60 @@
 #ifndef ZYCORE_DEFINES_H
 #define ZYCORE_DEFINES_H
 
-/* ============================================================================================== */
-/* Meta macros                                                                                    */
-/* ============================================================================================== */
+ /* ============================================================================================== */
+ /* Meta macros                                                                                    */
+ /* ============================================================================================== */
 
-/**
- * Concatenates two values using the stringify operator (`##`).
- *
- * @param   x   The first value.
- * @param   y   The second value.
- *
- * @return  The combined string of the given values.
- */
+ /**
+  * Concatenates two values using the stringify operator (`##`).
+  *
+  * @param   x   The first value.
+  * @param   y   The second value.
+  *
+  * @return  The combined string of the given values.
+  */
 #define ZYAN_MACRO_CONCAT(x, y) x ## y
 
-/**
- * Concatenates two values using the stringify operator (`##`) and expands the value to
- *          be used in another macro.
- *
- * @param   x   The first value.
- * @param   y   The second value.
- *
- * @return  The combined string of the given values.
- */
+  /**
+   * Concatenates two values using the stringify operator (`##`) and expands the value to
+   *          be used in another macro.
+   *
+   * @param   x   The first value.
+   * @param   y   The second value.
+   *
+   * @return  The combined string of the given values.
+   */
 #define ZYAN_MACRO_CONCAT_EXPAND(x, y) ZYAN_MACRO_CONCAT(x, y)
 
-/**
- * Checks if a header can be included.
- *
- * @param name  Header file name.
- *
- * @return      True if header exists, false if it doesn't or it's not possible to check.
- */
+   /**
+	* Checks if a header can be included.
+	*
+	* @param name  Header file name.
+	*
+	* @return      True if header exists, false if it doesn't or it's not possible to check.
+	*/
 #if defined(__has_include)
 #   define ZYAN_HAS_INCLUDE(name) __has_include(name)
 #else
 #   define ZYAN_HAS_INCLUDE(name) 0
 #endif
 
-/**
- * Checks if a symbol is a recognized built-in function.
- *
- * @param symbol  Function name.
- *
- * @return        True if symbol is known, false otherwise.
- */
+	/**
+	 * Checks if a symbol is a recognized built-in function.
+	 *
+	 * @param symbol  Function name.
+	 *
+	 * @return        True if symbol is known, false otherwise.
+	 */
 #if defined(__has_builtin)
 #   define ZYAN_HAS_BUILTIN(symbol) __has_builtin(symbol)
 #else
 #   define ZYAN_HAS_BUILTIN(symbol) 0
 #endif
 
-/* ============================================================================================== */
-/* Compiler detection                                                                             */
-/* ============================================================================================== */
+	 /* ============================================================================================== */
+	 /* Compiler detection                                                                             */
+	 /* ============================================================================================== */
 
 #if defined(__clang__)
 #   define ZYAN_CLANG
@@ -331,18 +331,18 @@
 #   endif
 #endif
 
-/**
- * Symbol is not exported and for internal use only.
- */
+ /**
+  * Symbol is not exported and for internal use only.
+  */
 #if defined(ZYAN_GNUC)
 #   define ZYCORE_NO_EXPORT __attribute__((__visibility__("hidden")))
 #else
 #   define ZYCORE_NO_EXPORT
 #endif
 
-/* ============================================================================================== */
-/* Misc compatibility macros                                                                      */
-/* ============================================================================================== */
+  /* ============================================================================================== */
+  /* Misc compatibility macros                                                                      */
+  /* ============================================================================================== */
 
 #if defined(ZYAN_CLANG)
 #   define ZYAN_NO_SANITIZE(what) __attribute__((no_sanitize(what)))
@@ -381,9 +381,9 @@
 #   define ZYAN_ASSERT(condition) assert(condition)
 #endif
 
-/**
- * Compiler-time assertion.
- */
+ /**
+  * Compiler-time assertion.
+  */
 #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L && !defined(__cplusplus)
 #   define ZYAN_STATIC_ASSERT(x) _Static_assert(x, #x)
 #elif (defined(__cplusplus) && __cplusplus >= 201103L) || \
@@ -398,9 +398,9 @@
         typedef int ZYAN_MACRO_CONCAT_EXPAND(ZYAN_SASSERT_, __COUNTER__) [(x) ? 1 : -1]
 #endif
 
-/**
- * Marks the current code path as unreachable.
- */
+  /**
+   * Marks the current code path as unreachable.
+   */
 #if defined(ZYAN_RELEASE)
 #   if defined(ZYAN_CLANG) // GCC eagerly evals && RHS, we have to use nested ifs.
 #       if __has_builtin(__builtin_unreachable)
@@ -431,48 +431,48 @@
 #   define ZYAN_UNREACHABLE { assert(0); abort(); }
 #endif
 
-/* ============================================================================================== */
-/* Utils                                                                                          */
-/* ============================================================================================== */
+   /* ============================================================================================== */
+   /* Utils                                                                                          */
+   /* ============================================================================================== */
 
-/* ---------------------------------------------------------------------------------------------- */
-/* General purpose                                                                                */
-/* ---------------------------------------------------------------------------------------------- */
+   /* ---------------------------------------------------------------------------------------------- */
+   /* General purpose                                                                                */
+   /* ---------------------------------------------------------------------------------------------- */
 
-/**
- * Marks the specified parameter as unused.
- *
- * @param   x   The name of the unused parameter.
- */
+   /**
+	* Marks the specified parameter as unused.
+	*
+	* @param   x   The name of the unused parameter.
+	*/
 #define ZYAN_UNUSED(x) (void)(x)
 
-/**
- * Intentional fallthrough.
- */
+	/**
+	 * Intentional fallthrough.
+	 */
 #if defined(ZYAN_GCC) && __GNUC__ >= 7
 #   define ZYAN_FALLTHROUGH ; __attribute__((__fallthrough__))
 #else
 #   define ZYAN_FALLTHROUGH
 #endif
 
-/**
- * Declares a bitfield.
- *
- * @param   x   The size (in bits) of the bitfield.
- */
+	 /**
+	  * Declares a bitfield.
+	  *
+	  * @param   x   The size (in bits) of the bitfield.
+	  */
 #define ZYAN_BITFIELD(x) : x
 
-/**
- * Marks functions that require libc (cannot be used with `ZYAN_NO_LIBC`).
- */
+	  /**
+	   * Marks functions that require libc (cannot be used with `ZYAN_NO_LIBC`).
+	   */
 #define ZYAN_REQUIRES_LIBC
 
-/**
- * Decorator for `printf`-style functions.
- *
- * @param   format_index    The 1-based index of the format string parameter.
- * @param   first_to_check  The 1-based index of the format arguments parameter.
- */
+	   /**
+		* Decorator for `printf`-style functions.
+		*
+		* @param   format_index    The 1-based index of the format string parameter.
+		* @param   first_to_check  The 1-based index of the format arguments parameter.
+		*/
 #if defined(__RESHARPER__)
 #   define ZYAN_PRINTF_ATTR(format_index, first_to_check) \
         [[gnu::format(printf, format_index, first_to_check)]]
@@ -483,12 +483,12 @@
 #   define ZYAN_PRINTF_ATTR(format_index, first_to_check)
 #endif
 
-/**
- * Decorator for `wprintf`-style functions.
- *
- * @param   format_index    The 1-based index of the format string parameter.
- * @param   first_to_check  The 1-based index of the format arguments parameter.
- */
+		/**
+		 * Decorator for `wprintf`-style functions.
+		 *
+		 * @param   format_index    The 1-based index of the format string parameter.
+		 * @param   first_to_check  The 1-based index of the format arguments parameter.
+		 */
 #if defined(__RESHARPER__)
 #   define ZYAN_WPRINTF_ATTR(format_index, first_to_check) \
         [[rscpp::format(wprintf, format_index, first_to_check)]]
@@ -496,101 +496,101 @@
 #   define ZYAN_WPRINTF_ATTR(format_index, first_to_check)
 #endif
 
-/* ---------------------------------------------------------------------------------------------- */
-/* Arrays                                                                                         */
-/* ---------------------------------------------------------------------------------------------- */
+		 /* ---------------------------------------------------------------------------------------------- */
+		 /* Arrays                                                                                         */
+		 /* ---------------------------------------------------------------------------------------------- */
 
-/**
- * Returns the length (number of elements) of an array.
- *
- * @param   a   The name of the array.
- *
- * @return  The number of elements of the given array.
- */
+		 /**
+		  * Returns the length (number of elements) of an array.
+		  *
+		  * @param   a   The name of the array.
+		  *
+		  * @return  The number of elements of the given array.
+		  */
 #define ZYAN_ARRAY_LENGTH(a) (sizeof(a) / sizeof((a)[0]))
 
-/* ---------------------------------------------------------------------------------------------- */
-/* Arithmetic                                                                                     */
-/* ---------------------------------------------------------------------------------------------- */
+		  /* ---------------------------------------------------------------------------------------------- */
+		  /* Arithmetic                                                                                     */
+		  /* ---------------------------------------------------------------------------------------------- */
 
-/**
- * Returns the smaller value of `a` or `b`.
- *
- * @param   a   The first value.
- * @param   b   The second value.
- *
- * @return  The smaller value of `a` or `b`.
- */
+		  /**
+		   * Returns the smaller value of `a` or `b`.
+		   *
+		   * @param   a   The first value.
+		   * @param   b   The second value.
+		   *
+		   * @return  The smaller value of `a` or `b`.
+		   */
 #define ZYAN_MIN(a, b) (((a) < (b)) ? (a) : (b))
 
-/**
- * Returns the bigger value of `a` or `b`.
- *
- * @param   a   The first value.
- * @param   b   The second value.
- *
- * @return  The bigger value of `a` or `b`.
- */
+		   /**
+			* Returns the bigger value of `a` or `b`.
+			*
+			* @param   a   The first value.
+			* @param   b   The second value.
+			*
+			* @return  The bigger value of `a` or `b`.
+			*/
 #define ZYAN_MAX(a, b) (((a) > (b)) ? (a) : (b))
 
-/**
- * Returns the absolute value of `a`.
- *
- * @param   a   The value.
- *
- * @return  The absolute value of `a`.
- */
+			/**
+			 * Returns the absolute value of `a`.
+			 *
+			 * @param   a   The value.
+			 *
+			 * @return  The absolute value of `a`.
+			 */
 #define ZYAN_ABS(a) (((a) < 0) ? -(a) : (a))
 
-/**
- * Checks, if the given value is a power of 2.
- *
- * @param   x   The value.
- *
- * @return  `ZYAN_TRUE`, if the given value is a power of 2 or `ZYAN_FALSE`, if not.
- *
- * Note that this macro always returns `ZYAN_TRUE` for `x == 0`.
- */
+			 /**
+			  * Checks, if the given value is a power of 2.
+			  *
+			  * @param   x   The value.
+			  *
+			  * @return  `ZYAN_TRUE`, if the given value is a power of 2 or `ZYAN_FALSE`, if not.
+			  *
+			  * Note that this macro always returns `ZYAN_TRUE` for `x == 0`.
+			  */
 #define ZYAN_IS_POWER_OF_2(x) (((x) & ((x) - 1)) == 0)
 
-/**
- * Checks, if the given value is properly aligned.
- *
- * Note that this macro only works for powers of 2.
- */
+			  /**
+			   * Checks, if the given value is properly aligned.
+			   *
+			   * Note that this macro only works for powers of 2.
+			   */
 #define ZYAN_IS_ALIGNED_TO(x, align) (((x) & ((align) - 1)) == 0)
 
-/**
- * Aligns the value to the nearest given alignment boundary (by rounding it up).
- *
- * @param   x       The value.
- * @param   align   The desired alignment.
- *
- * @return  The aligned value.
- *
- * Note that this macro only works for powers of 2.
- */
+			   /**
+				* Aligns the value to the nearest given alignment boundary (by rounding it up).
+				*
+				* @param   x       The value.
+				* @param   align   The desired alignment.
+				*
+				* @return  The aligned value.
+				*
+				* Note that this macro only works for powers of 2.
+				*/
 #define ZYAN_ALIGN_UP(x, align) (((x) + (align) - 1) & ~((align) - 1))
 
-/**
- * Aligns the value to the nearest given alignment boundary (by rounding it down).
- *
- * @param   x       The value.
- * @param   align   The desired alignment.
- *
- * @return  The aligned value.
- *
- * Note that this macro only works for powers of 2.
- */
+				/**
+				 * Aligns the value to the nearest given alignment boundary (by rounding it down).
+				 *
+				 * @param   x       The value.
+				 * @param   align   The desired alignment.
+				 *
+				 * @return  The aligned value.
+				 *
+				 * Note that this macro only works for powers of 2.
+				 */
 #define ZYAN_ALIGN_DOWN(x, align) (((x) - 1) & ~((align) - 1))
 
-/**
- * Divide the 64bit integer value by the given divisor.
- *
- * @param   n       Variable containing the dividend that will be updated with the result of the
- *                  division.
- * @param   divisor The divisor.
- */
+				 /**
+				  * Divide the 64bit integer value by the given divisor.
+				  *
+				  * @param   n       Variable containing the dividend that will be updated with the result of the
+				  *                  division.
+				  * @param   divisor The divisor.
+				  */
 #if defined(ZYAN_LINUX) && defined(ZYAN_KERNEL)
 #   include <asm/div64.h> /* do_div */
 #   define ZYAN_DIV64(n, divisor) do_div((n), (divisor))
@@ -598,32 +598,32 @@
 #   define ZYAN_DIV64(n, divisor) ((n) /= (divisor))
 #endif
 
-/* ---------------------------------------------------------------------------------------------- */
-/* Bit operations                                                                                 */
-/* ---------------------------------------------------------------------------------------------- */
+				  /* ---------------------------------------------------------------------------------------------- */
+				  /* Bit operations                                                                                 */
+				  /* ---------------------------------------------------------------------------------------------- */
 
-/*
- * Checks, if the bit at index `b` is required to present the ordinal value `n`.
- *
- * @param   n   The ordinal value.
- * @param   b   The bit index.
- *
- * @return  `ZYAN_TRUE`, if the bit at index `b` is required to present the ordinal value `n` or
- *          `ZYAN_FALSE`, if not.
- *
- * Note that this macro always returns `ZYAN_FALSE` for `n == 0`.
- */
+				  /*
+				   * Checks, if the bit at index `b` is required to present the ordinal value `n`.
+				   *
+				   * @param   n   The ordinal value.
+				   * @param   b   The bit index.
+				   *
+				   * @return  `ZYAN_TRUE`, if the bit at index `b` is required to present the ordinal value `n` or
+				   *          `ZYAN_FALSE`, if not.
+				   *
+				   * Note that this macro always returns `ZYAN_FALSE` for `n == 0`.
+				   */
 #define ZYAN_NEEDS_BIT(n, b) (((unsigned long)(n) >> (b)) > 0)
 
-/*
- * Returns the number of bits required to represent the ordinal value `n`.
- *
- * @param   n   The ordinal value.
- *
- * @return  The number of bits required to represent the ordinal value `n`.
- *
- * Note that this macro returns `0` for `n == 0`.
- */
+				   /*
+					* Returns the number of bits required to represent the ordinal value `n`.
+					*
+					* @param   n   The ordinal value.
+					*
+					* @return  The number of bits required to represent the ordinal value `n`.
+					*
+					* Note that this macro returns `0` for `n == 0`.
+					*/
 #define ZYAN_BITS_TO_REPRESENT(n) \
     ( \
         ZYAN_NEEDS_BIT(n,  0) + ZYAN_NEEDS_BIT(n,  1) + \
@@ -644,8 +644,8 @@
         ZYAN_NEEDS_BIT(n, 30) + ZYAN_NEEDS_BIT(n, 31)   \
     )
 
-/* ---------------------------------------------------------------------------------------------- */
+					/* ---------------------------------------------------------------------------------------------- */
 
-/* ============================================================================================== */
+					/* ============================================================================================== */
 
 #endif /* ZYCORE_DEFINES_H */

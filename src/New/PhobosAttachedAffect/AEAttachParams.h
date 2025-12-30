@@ -13,7 +13,7 @@ struct AEAttachParams
 	bool CumulativeRefreshAll_OnAttach { false };
 	bool CumulativeRefreshSameSourceOnly { true };
 
-public :
+public:
 
 	bool Load(PhobosStreamReader& stm, bool registerForChange) { return this->Serialize(stm); }
 	bool Save(PhobosStreamWriter& stm) const

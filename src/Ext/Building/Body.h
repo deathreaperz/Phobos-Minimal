@@ -131,7 +131,8 @@ public:
 	virtual AbstractType WhatIam() const { return base_type::AbsID; }
 	virtual int GetSize() const { return sizeof(*this); };
 
-	virtual void CalculateCRC(CRCEngine& crc) const {
+	virtual void CalculateCRC(CRCEngine& crc) const
+	{
 		this->TechnoExtData::CalculateCRC(crc);
 	}
 
@@ -234,7 +235,7 @@ public:
 	int _Mission_Missile();
 	void _Spawn_Refinery_Smoke_Particles();
 	void _DetachAnim(AnimClass* pAnim);
-	DamageState _ReceiveDamage(int* Damage, int DistanceToEpicenter , WarheadTypeClass* WH , TechnoClass* Attacker , bool IgnoreDefenses , bool PreventsPassengerEscape , HouseClass* SourceHouse);
+	DamageState _ReceiveDamage(int* Damage, int DistanceToEpicenter, WarheadTypeClass* WH, TechnoClass* Attacker, bool IgnoreDefenses, bool PreventsPassengerEscape, HouseClass* SourceHouse);
 	int _GetAirstrikeInvulnerabilityIntensity(int currentIntensity) const;
 	void _OnFinishRepairB(InfantryClass* pEngineer);
 	void _OnFinishRepair();
@@ -265,12 +266,13 @@ public:
 		const bool res = this->BuildingClass::SetOwningHouse(pHouse, announce);
 
 		// If we're supposed to be playing buildup during/after owner change reset any changes to mission or BState made during owner change.
-		if (res && this->CurrentMission == Mission::Construction && this->BState == BStateType::Construction) {
+		if (res && this->CurrentMission == Mission::Construction && this->BState == BStateType::Construction)
+		{
 			this->IsReadyToCommence = false;
 			this->QueueBState = BStateType::None;
 			this->QueuedMission = Mission::None;
 		}
-	
+
 		// Fix : update powered anims
 		//if (res && (this->Type->Powered || this->Type->PoweredSpecial))
 		//	this->UpdatePowerDown();
@@ -280,31 +282,37 @@ public:
 
 	void _OnFireAI();
 	void _DrawExtras(Point2D* pLocation, RectangleStruct* pBounds);
-	void _DrawVisible(Point2D* pLocation , RectangleStruct* pBounds);
+	void _DrawVisible(Point2D* pLocation, RectangleStruct* pBounds);
 	void _DrawStuffsWhenSelected(Point2D* pPoint, Point2D* pOriginalPoint, RectangleStruct* pRect);
 	KickOutResult __ExitObject(TechnoClass* object, CellStruct exitCell);
 
-	FORCEDINLINE BuildingClass* _AsBuilding() const {
+	FORCEDINLINE BuildingClass* _AsBuilding() const
+	{
 		return (BuildingClass*)this;
 	}
 
-	FORCEDINLINE BuildingExtData* _GetExtData() {
+	FORCEDINLINE BuildingExtData* _GetExtData()
+	{
 		return *reinterpret_cast<BuildingExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 
-	FORCEDINLINE const BuildingExtData* _GetExtData() const{
+	FORCEDINLINE const BuildingExtData* _GetExtData() const
+	{
 		return *reinterpret_cast<const BuildingExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 
-	FORCEDINLINE TechnoExtData* _GetTechnoExtData() {
+	FORCEDINLINE TechnoExtData* _GetTechnoExtData()
+	{
 		return *reinterpret_cast<TechnoExtData**>(((TechnoExtData*)this));
 	}
 
-	FORCEDINLINE const TechnoExtData* _GetTechnoExtData() const {
+	FORCEDINLINE const TechnoExtData* _GetTechnoExtData() const
+	{
 		return *reinterpret_cast<const TechnoExtData**>(((TechnoExtData*)this));
 	}
 
-	FORCEDINLINE BuildingTypeExtData* _GetTypeExtData() {
+	FORCEDINLINE BuildingTypeExtData* _GetTypeExtData()
+	{
 		return ((FakeBuildingTypeClass*)this->Type)->_GetExtData();
 	}
 };

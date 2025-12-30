@@ -76,7 +76,7 @@ bool InfantryTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	INI_EX iniEX_art(CCINIClass::INI_Art());
 	const auto pSection_art = this->This()->ImageFile;
 
-	this->Is_Deso.Read(exINI, pID,  "IsDesolator");
+	this->Is_Deso.Read(exINI, pID, "IsDesolator");
 	this->Is_Cow.Read(exINI, pID, "IsCow");
 	this->C4Delay.Read(exINI, pID, "C4Delay");
 	this->C4ROF.Read(exINI, pID, "C4ROF");
@@ -136,7 +136,6 @@ bool InfantryTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	//pWeaponReader.Read(exINI, pID, "Secondary.CrawlWeapon", true);
 	//temp = { pWeaponReader , nSecData->FLH , nSecData->BarrelLength, nSecData->BarrelThickness,  nSecData->TurretLocked };
 	//std::memcpy(this->CrawlingWeaponDatas  + 2, &temp, sizeof(WeaponStruct));
-
 
 	//pWeaponReader.Read(exINI, pID, "Secondary.EliteCrawlWeapon", true);
 	//temp = { pWeaponReader , nSecEliteData->FLH , nSecEliteData->BarrelLength, nSecEliteData->BarrelThickness,  nSecEliteData->TurretLocked };
@@ -216,7 +215,6 @@ bool InfantryTypeExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool InfantryTypeExtContainer::SaveAll(json& root)
@@ -257,12 +255,10 @@ void InfantryTypeExtContainer::LoadFromINI(InfantryTypeClass* key, CCINIClass* p
 		//this function can be called again multiple time but without need to re-init the data
 		ptr->SetInitState(InitState::Ruled);
 	}
-
 }
 
 void InfantryTypeExtContainer::WriteToINI(InfantryTypeClass* key, CCINIClass* pINI)
 {
-
 	if (auto ptr = this->TryFind(key))
 	{
 		if (!pINI)
@@ -328,7 +324,8 @@ ASMJIT_PATCH(0x5239D0, InfantryTypeClass_DTOR, 0x5)
 
 ASMJIT_PATCH(0x524B53, InfantryTypeClass_Load_Suffix, 0x5)
 {
-	if (Phobos::Config::ArtImageSwap) {
+	if (Phobos::Config::ArtImageSwap)
+	{
 		GET(BYTE*, poisonedVal, EDI);
 		poisonedVal -= 0xE20;
 		TechnoImageReplacer::Replace(reinterpret_cast<InfantryTypeClass*>(poisonedVal));

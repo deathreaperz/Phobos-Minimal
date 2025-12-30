@@ -18,7 +18,8 @@ ASMJIT_PATCH(0x72749B, TriggerTypeClass_LoadFromINI_Buffers, 0x8)
 	GET(TriggerTypeClass*, pThis, EBP);
 	GET_STACK(CCINIClass*, pINI, 0x248);
 
-	if (pINI->ReadString(GameStrings::Events(), pThis->ID, Phobos::readDefval, Phobos::readBuffer, Phobos::readLength)) {
+	if (pINI->ReadString(GameStrings::Events(), pThis->ID, Phobos::readDefval, Phobos::readBuffer, Phobos::readLength))
+	{
 		if (auto v16 = CRT::atoi(CRT::strtok(Phobos::readBuffer, Phobos::readDelims)))
 		{
 			do
@@ -33,7 +34,8 @@ ASMJIT_PATCH(0x72749B, TriggerTypeClass_LoadFromINI_Buffers, 0x8)
 		}
 	}
 
-	if (pINI->ReadString(GameStrings::Actions(), pThis->ID, Phobos::readDefval, Phobos::readBuffer, Phobos::readLength)) {
+	if (pINI->ReadString(GameStrings::Actions(), pThis->ID, Phobos::readDefval, Phobos::readBuffer, Phobos::readLength))
+	{
 		pThis->FirstAction = nullptr;
 		TActionClass* pTemp = nullptr;
 
@@ -43,9 +45,12 @@ ASMJIT_PATCH(0x72749B, TriggerTypeClass_LoadFromINI_Buffers, 0x8)
 			{
 				auto pAction = GameCreate<TActionClass>();
 				pAction->LoadFromINI();
-				if (pThis->FirstAction) {
+				if (pThis->FirstAction)
+				{
 					pTemp->NextAction = pAction;
-				} else {
+				}
+				else
+				{
 					pThis->FirstAction = pAction;
 				}
 				--v16;
@@ -63,11 +68,13 @@ ASMJIT_PATCH(0x4750D0, CCINIClass_ReadHouseTypeList_Buffers, 0xA)
 	GET(CCINIClass*, pThis, ECX);
 	GET_STACK(const char*, pSection, 0x4);
 	GET_STACK(const char*, pKey, 0x8);
-	GET_STACK(DWORD , _default, 0xC);
+	GET_STACK(DWORD, _default, 0xC);
 
-	if (pThis->ReadString(pSection, pKey, Phobos::readDefval, Phobos::readBuffer, Phobos::readLength)) {
+	if (pThis->ReadString(pSection, pKey, Phobos::readDefval, Phobos::readBuffer, Phobos::readLength))
+	{
 		_default = 0u;
-		for (auto i = strtok(Phobos::readBuffer, Phobos::readDelims); i; i = strtok(0, Phobos::readDelims)) {
+		for (auto i = strtok(Phobos::readBuffer, Phobos::readDelims); i; i = strtok(0, Phobos::readDelims))
+		{
 			_default |= HouseTypeClass::FindIndexOfNameShiftToTheRightOnce(i);
 		}
 	}
@@ -83,9 +90,11 @@ ASMJIT_PATCH(0x475260, CCINIClass_ReadAlly_Buffers, 0xA)
 	GET_STACK(const char*, pKey, 0x8);
 	GET_STACK(DWORD, _default, 0xC);
 
-	if (pThis->ReadString(pSection, pKey, Phobos::readDefval, Phobos::readBuffer, Phobos::readLength)) {
+	if (pThis->ReadString(pSection, pKey, Phobos::readDefval, Phobos::readBuffer, Phobos::readLength))
+	{
 		_default = 0u;
-		for (auto i = strtok(Phobos::readBuffer, Phobos::readDelims); i; i = strtok(0, Phobos::readDelims)) {
+		for (auto i = strtok(Phobos::readBuffer, Phobos::readDelims); i; i = strtok(0, Phobos::readDelims))
+		{
 			_default |= (1 << HouseClass::FindIndexByName(i));
 		}
 	}
@@ -225,13 +234,13 @@ OPTIONALINLINE void ParseVector_loc(DynamicVectorClass<T>& List, INI_EX& IniEx, 
 		char* context = nullptr;
 
 		using BaseType = std::remove_pointer_t<T>;
-		Debug::LogInfo("Parsing [{}] form [{}] result {}", key ,  section , IniEx.value());
+		Debug::LogInfo("Parsing [{}] form [{}] result {}", key, section, IniEx.value());
 
 		for (char* cur = strtok_s(IniEx.value(), Phobos::readDelims, &context); cur;
 			 cur = strtok_s(nullptr, Phobos::readDelims, &context))
 		{
 			BaseType* buffer = nullptr;
-			if COMPILETIMEEVAL (Allocate)
+			if COMPILETIMEEVAL(Allocate)
 			{
 				buffer = BaseType::FindOrAllocate(cur);
 			}
@@ -242,7 +251,7 @@ OPTIONALINLINE void ParseVector_loc(DynamicVectorClass<T>& List, INI_EX& IniEx, 
 
 			if (buffer)
 			{
-				if COMPILETIMEEVAL (!Unique)
+				if COMPILETIMEEVAL(!Unique)
 				{
 					List.push_back(buffer);
 				}
@@ -257,7 +266,6 @@ OPTIONALINLINE void ParseVector_loc(DynamicVectorClass<T>& List, INI_EX& IniEx, 
 			}
 		}
 		Debug::LogInfo("count : {}", List.Count);
-
 	}
 };
 // ============= [General] =============
@@ -280,7 +288,7 @@ ASMJIT_PATCH(0x66D55E, Buf_General, 6)
 	detail::ParseVector(pRules->SovParaDropNum, exINI, section, GameStrings::SovParaDropNum, "Expect valid number");
 	detail::ParseVector(pRules->YuriParaDropNum, exINI, section, GameStrings::YuriParaDropNum, "Expect valid number");
 
-	detail::ParseVector<InfantryTypeClass* , true>(pRules->AnimToInfantry, exINI, section, GameStrings::AnimToInfantry, "Expect valid InfantryType");
+	detail::ParseVector<InfantryTypeClass*, true>(pRules->AnimToInfantry, exINI, section, GameStrings::AnimToInfantry, "Expect valid InfantryType");
 
 	//if (!ATOI_Count.has_value() || !ATOI_Count.value())
 	//	ATOI_Count = pRules->AnimToInfantry.Count;
@@ -309,11 +317,15 @@ ASMJIT_PATCH(0x66D55E, Buf_General, 6)
 
 	detail::ParseVector<TerrainTypeClass*>(pRules->DefaultMirageDisguises, exINI, section, GameStrings::DefaultMirageDisguises, "Expect valid TerrainType");
 
-	if (pINI->ReadString(section, GameStrings::WallTower, nullptr, Phobos::readBuffer) > 0) {
-		if (const auto pBuilding = BuildingTypeClass::FindOrAllocate(Phobos::readBuffer)) {
+	if (pINI->ReadString(section, GameStrings::WallTower, nullptr, Phobos::readBuffer) > 0)
+	{
+		if (const auto pBuilding = BuildingTypeClass::FindOrAllocate(Phobos::readBuffer))
+		{
 			pRules->WallTower = pBuilding;
-		} else {
-			Debug::LogInfo("WallTower Building readed as [{}] but it is nullptr ! " , Phobos::readBuffer);
+		}
+		else
+		{
+			Debug::LogInfo("WallTower Building readed as [{}] but it is nullptr ! ", Phobos::readBuffer);
 		}
 	}
 

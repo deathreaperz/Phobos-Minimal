@@ -1,4 +1,4 @@
-	#include "Body.h"
+#include "Body.h"
 
 #include <UnitClass.h>
 #include <Utilities/Macro.h>
@@ -92,19 +92,21 @@ ASMJIT_PATCH(0x4555E4, BuildingClass_IsPowerOnline_Overpower, 0x6)
 	GET(FakeBuildingClass*, pThis, ESI);
 	GET(const int, threshold, EDI);
 
-		// Battery.KeepOnline activated
+	// Battery.KeepOnline activated
 	if (!threshold)
 		return R->Origin() == 0x4555E4 ? Continue1 : Continue2;
 
-	if(pThis->_GetTypeExtData()->Overpower_KeepOnline < 0)
+	if (pThis->_GetTypeExtData()->Overpower_KeepOnline < 0)
 		return LowPower;
 
 	int overPower = 0;
 
-	for (const auto& pCharger : pThis->Overpowerers) {
+	for (const auto& pCharger : pThis->Overpowerers)
+	{
 		const auto pWeapon = pCharger->GetWeapon(1)->WeaponType;
 
-		if (pWeapon && pWeapon->Warhead) {
+		if (pWeapon && pWeapon->Warhead)
+		{
 			const auto pWHExt = WarheadTypeExtContainer::Instance.Find(pWeapon->Warhead);
 			overPower += pWHExt->ElectricAssaultLevel;
 		}
@@ -180,7 +182,8 @@ ASMJIT_PATCH(0x449ADA, BuildingClass_MissionConstruction_DeployToFireFix, 0x6) /
 	GET(FakeBuildingClass*, pThis, ESI);
 
 	Mission nMission = Mission::Guard;
-	if (pThis->_GetExtData()->DeployedTechno && pThis->LastTarget) {
+	if (pThis->_GetExtData()->DeployedTechno && pThis->LastTarget)
+	{
 		pThis->SetTarget(pThis->LastTarget);
 		nMission = Mission::Attack;
 	}
@@ -219,15 +222,15 @@ ASMJIT_PATCH(0x449ADA, BuildingClass_MissionConstruction_DeployToFireFix, 0x6) /
 
 ASMJIT_PATCH(0x440B4F, BuildingClass_Unlimbo_SetShouldRebuild, 0x5)
 {
-    enum { ContinueCheck = 0x440B58, ShouldNotRebuild = 0x440B81 };
+	enum { ContinueCheck = 0x440B58, ShouldNotRebuild = 0x440B81 };
 	GET(FakeBuildingClass* const, pThis, ESI);
 
 	if (pThis->_GetTypeExtData()->NewEvaVoice)
 		pThis->_GetExtData()->UpdateMainEvaVoice();
 
-	if(SessionClass::IsCampaign())
+	if (SessionClass::IsCampaign())
 	{
-		if(!pThis->BeingProduced)
+		if (!pThis->BeingProduced)
 			return ShouldNotRebuild;
 
 		// Preplaced structures are already managed before
@@ -235,7 +238,7 @@ ASMJIT_PATCH(0x440B4F, BuildingClass_Unlimbo_SetShouldRebuild, 0x5)
 			return ShouldNotRebuild;
 
 		if (!HouseExtContainer::Instance.Find(pThis->Owner)->RepairBaseNodes[GameOptionsClass::Instance->Difficulty].Get(RulesExtData::Instance()->RepairBaseNodes))
-		return ShouldNotRebuild;
+			return ShouldNotRebuild;
 	}
 
 	// Vanilla instruction: always repairable in other game modes
@@ -244,13 +247,13 @@ ASMJIT_PATCH(0x440B4F, BuildingClass_Unlimbo_SetShouldRebuild, 0x5)
 
 ASMJIT_PATCH(0x465D40, BuildingTypeClass_IsUndeployable_ConsideredVehicle, 0x6)
 {
-	enum { ReturnFromFunction = 0x465D6A , Continue = 0x0 };
+	enum { ReturnFromFunction = 0x465D6A, Continue = 0x0 };
 
 	GET(FakeBuildingTypeClass*, pThis, ECX);
 
 	const auto pBldExt = pThis->_GetExtData();
 	const bool IsCustomEligible = pThis->Foundation == BuildingTypeExtData::CustomFoundation
-			&& pBldExt->CustomHeight == 1 && pBldExt->CustomWidth == 1;
+		&& pBldExt->CustomHeight == 1 && pBldExt->CustomWidth == 1;
 
 	const bool FoundationEligible = IsCustomEligible || pThis->Foundation == Foundation::_1x1;
 
@@ -310,7 +313,6 @@ ASMJIT_PATCH(0x450D9C, BuildingClass_AI_Anims_IncludeWeeder_1, 0x6)
 		&& !SWTypeExtContainer::Instance.Find(pSuper->Type)->SW_InitialReady)
 		return 0x451048;
 
-
 	R->EAX(pSuper);
 	return 0x451030;
 }
@@ -337,8 +339,8 @@ ASMJIT_PATCH(0x44EFD8, BuildingClass_FindExitCell_BarracksExitCell, 0x6)
 
 	auto const pTypeExt = pThis->_GetTypeExtData();
 
-	if (pTypeExt->BarracksExitCell.isset()) {
-
+	if (pTypeExt->BarracksExitCell.isset())
+	{
 		const auto exitCell = pThis->GetMapCoords() + CellStruct {
 			(short)pTypeExt->BarracksExitCell->X, (short)pTypeExt->BarracksExitCell->Y
 		};
@@ -350,11 +352,11 @@ ASMJIT_PATCH(0x44EFD8, BuildingClass_FindExitCell_BarracksExitCell, 0x6)
 				-1,
 				nullptr,
 				true)
-				== Move::OK) {
+				== Move::OK)
+			{
 				resultCell = exitCell;
 				return ReturnFromFunction;
 			}
-
 		}
 
 		return SkipGameCode;
@@ -417,7 +419,7 @@ ASMJIT_PATCH(0x4FAAD8, HouseClass_AbandonProduction_RewriteForBuilding, 0x8)
 	SidebarClass::Instance->RepaintSidebar(SidebarClass::GetObjectTabIdx(absType, index, 0));
 	return Return;
 }
-#else 
+#else
 //DEFINE_JUMP(LJMP, 0x4FABEE, 0x4FAB3D)
 
 ASMJIT_PATCH(0x4FAAD8, HouseClass_AbandonProduction_RewriteForBuilding, 0x8)
@@ -540,7 +542,7 @@ static void KickOutStuckUnits(BuildingClass* pThis)
 // Attempt to kick the stuck unit out again by setting the destination
 ASMJIT_PATCH(0x44E202, BuildingClass_Mission_Unload_CheckStuck, 0x6)
 {
-	enum { Waiting = 0x44E267, NextStatus = 0x44E20C};
+	enum { Waiting = 0x44E267, NextStatus = 0x44E20C };
 
 	GET(BuildingClass*, pThis, EBP);
 
@@ -590,21 +592,21 @@ ASMJIT_PATCH(0x73F5A7, UnitClass_IsCellOccupied_UnlimboDirection, 0x8)
 }
 
 // Check for any stuck units inside after successful unload each time. If there is, kick it out
- ASMJIT_PATCH(0x44E260, BuildingClass_Mission_Unload_KickOutStuckUnits, 0x7)
- {
- 	GET(BuildingClass*, pThis, EBP);
+ASMJIT_PATCH(0x44E260, BuildingClass_Mission_Unload_KickOutStuckUnits, 0x7)
+{
+	GET(BuildingClass*, pThis, EBP);
 
- 	KickOutStuckUnits(pThis);
+	KickOutStuckUnits(pThis);
 
- 	return 0;
- }
+	return 0;
+}
 
 ASMJIT_PATCH(0x449306, BuildingClass_SetOwningHouse_Sell, 0x6)
 {
 	enum { NoSell = 0x44936E };
 	GET(FakeBuildingClass*, pThis, ESI);
 	return pThis->_GetTypeExtData()->AISellCapturedBuilding
-			.Get(RulesExtData::Instance()->AISellCapturedBuilding) ? 0 : NoSell;
+		.Get(RulesExtData::Instance()->AISellCapturedBuilding) ? 0 : NoSell;
 }
 
 ASMJIT_PATCH(0x4485DB, BuildingClass_SetOwningHouse_SyncLinkedOwner, 0x6)
@@ -612,5 +614,5 @@ ASMJIT_PATCH(0x4485DB, BuildingClass_SetOwningHouse_SyncLinkedOwner, 0x6)
 	enum { SkipGameCode = 0x4486C8 };
 	GET(FakeBuildingClass*, pThis, ESI);
 	return pThis->_GetTypeExtData()->BuildingRadioLink_SyncOwner
-			.Get(RulesExtData::Instance()->BuildingRadioLink_SyncOwner) ? 0 : SkipGameCode;
+		.Get(RulesExtData::Instance()->BuildingRadioLink_SyncOwner) ? 0 : SkipGameCode;
 }

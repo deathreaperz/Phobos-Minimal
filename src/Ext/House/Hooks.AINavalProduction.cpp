@@ -76,7 +76,8 @@ ASMJIT_PATCH(0x450319, BuildingClass_AI_Factory_NavalProductionFix, 0x6)
 	{
 		index = pHouse->ProducingAircraftTypeIndex;
 
-		if (index >= 0){
+		if (index >= 0)
+		{
 			const auto pAircraftType = AircraftTypeClass::Array->Items[index];
 
 			if (!pAircraftType->AirportBound || BuildingExtData::HasFreeDocks(pThis))
@@ -119,7 +120,6 @@ ASMJIT_PATCH(0x450319, BuildingClass_AI_Factory_NavalProductionFix, 0x6)
 		break;
 	}
 
-
 	R->EAX(pTechnoType);
 	return SkipGameCode;
 }
@@ -131,9 +131,12 @@ ASMJIT_PATCH(0x4CA0B1, FactoryClass_Abandon_NavalProductionFix, 0x6)
 	GET(FactoryClass* const, pThis, ESI);
 	GET(UnitClass*, pObject, ECX);
 
-	if (pObject->Type->Naval) {
+	if (pObject->Type->Naval)
+	{
 		HouseExtContainer::Instance.Find(pThis->Owner)->ProducingNavalUnitTypeIndex = -1;
-	} else {
+	}
+	else
+	{
 		pThis->Owner->ProducingUnitTypeIndex = -1;
 	}
 

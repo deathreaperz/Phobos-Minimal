@@ -40,69 +40,69 @@
 extern "C" {
 #endif
 
-/* ============================================================================================== */
-/* Exported functions                                                                             */
-/* ============================================================================================== */
+	/* ============================================================================================== */
+	/* Exported functions                                                                             */
+	/* ============================================================================================== */
 
-/**
- * @addtogroup utils Utils
- * Miscellaneous utility functions. Address translation and other helpers.
- * @{
- */
+	/**
+	 * @addtogroup utils Utils
+	 * Miscellaneous utility functions. Address translation and other helpers.
+	 * @{
+	 */
 
-/* ---------------------------------------------------------------------------------------------- */
-/* Address calculation                                                                            */
-/* ---------------------------------------------------------------------------------------------- */
+	 /* ---------------------------------------------------------------------------------------------- */
+	 /* Address calculation                                                                            */
+	 /* ---------------------------------------------------------------------------------------------- */
 
-// TODO: Provide a function that works in minimal-mode and does not require a operand parameter
+	 // TODO: Provide a function that works in minimal-mode and does not require a operand parameter
 
-/**
- * Calculates the absolute address value for the given instruction operand.
- *
- * @param   instruction     A pointer to the `ZydisDecodedInstruction` struct.
- * @param   operand         A pointer to the `ZydisDecodedOperand` struct.
- * @param   runtime_address The runtime address of the instruction.
- * @param   result_address  A pointer to the memory that receives the absolute address.
- *
- * @return  A zyan status code.
- *
- * You should use this function in the following cases:
- * - `IMM` operands with relative address (e.g. `JMP`, `CALL`, ...)
- * - `MEM` operands with `RIP`/`EIP`-relative address (e.g. `MOV RAX, [RIP+0x12345678]`)
- * - `MEM` operands with absolute address (e.g. `MOV RAX, [0x12345678]`)
- *   - The displacement needs to get truncated and zero extended
- */
-ZYDIS_EXPORT ZyanStatus ZydisCalcAbsoluteAddress(const ZydisDecodedInstruction* instruction,
-    const ZydisDecodedOperand* operand, ZyanU64 runtime_address, ZyanU64* result_address);
+	 /**
+	  * Calculates the absolute address value for the given instruction operand.
+	  *
+	  * @param   instruction     A pointer to the `ZydisDecodedInstruction` struct.
+	  * @param   operand         A pointer to the `ZydisDecodedOperand` struct.
+	  * @param   runtime_address The runtime address of the instruction.
+	  * @param   result_address  A pointer to the memory that receives the absolute address.
+	  *
+	  * @return  A zyan status code.
+	  *
+	  * You should use this function in the following cases:
+	  * - `IMM` operands with relative address (e.g. `JMP`, `CALL`, ...)
+	  * - `MEM` operands with `RIP`/`EIP`-relative address (e.g. `MOV RAX, [RIP+0x12345678]`)
+	  * - `MEM` operands with absolute address (e.g. `MOV RAX, [0x12345678]`)
+	  *   - The displacement needs to get truncated and zero extended
+	  */
+	ZYDIS_EXPORT ZyanStatus ZydisCalcAbsoluteAddress(const ZydisDecodedInstruction* instruction,
+		const ZydisDecodedOperand* operand, ZyanU64 runtime_address, ZyanU64* result_address);
 
-/**
- * Calculates the absolute address value for the given instruction operand.
- *
- * @param   instruction         A pointer to the `ZydisDecodedInstruction` struct.
- * @param   operand             A pointer to the `ZydisDecodedOperand` struct.
- * @param   runtime_address     The runtime address of the instruction.
- * @param   register_context    A pointer to the `ZydisRegisterContext` struct.
- * @param   result_address      A pointer to the memory that receives the absolute target-address.
- *
- * @return  A zyan status code.
- *
- * This function behaves like `ZydisCalcAbsoluteAddress` but takes an additional register-context
- * argument to allow calculation of addresses depending on runtime register values.
- *
- * Note that `IP/EIP/RIP` from the register-context will be ignored in favor of the passed
- * runtime-address.
- */
-ZYDIS_EXPORT ZyanStatus ZydisCalcAbsoluteAddressEx(const ZydisDecodedInstruction* instruction,
-    const ZydisDecodedOperand* operand, ZyanU64 runtime_address,
-    const ZydisRegisterContext* register_context, ZyanU64* result_address);
+	/**
+	 * Calculates the absolute address value for the given instruction operand.
+	 *
+	 * @param   instruction         A pointer to the `ZydisDecodedInstruction` struct.
+	 * @param   operand             A pointer to the `ZydisDecodedOperand` struct.
+	 * @param   runtime_address     The runtime address of the instruction.
+	 * @param   register_context    A pointer to the `ZydisRegisterContext` struct.
+	 * @param   result_address      A pointer to the memory that receives the absolute target-address.
+	 *
+	 * @return  A zyan status code.
+	 *
+	 * This function behaves like `ZydisCalcAbsoluteAddress` but takes an additional register-context
+	 * argument to allow calculation of addresses depending on runtime register values.
+	 *
+	 * Note that `IP/EIP/RIP` from the register-context will be ignored in favor of the passed
+	 * runtime-address.
+	 */
+	ZYDIS_EXPORT ZyanStatus ZydisCalcAbsoluteAddressEx(const ZydisDecodedInstruction* instruction,
+		const ZydisDecodedOperand* operand, ZyanU64 runtime_address,
+		const ZydisRegisterContext* register_context, ZyanU64* result_address);
 
-/* ---------------------------------------------------------------------------------------------- */
+	/* ---------------------------------------------------------------------------------------------- */
 
-/**
- * @}
- */
+	/**
+	 * @}
+	 */
 
-/* ============================================================================================== */
+	 /* ============================================================================================== */
 
 #ifdef __cplusplus
 }

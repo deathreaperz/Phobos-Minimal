@@ -21,17 +21,19 @@ SWFirerClass::SWFirerClass(SuperClass* SW, int deferment, CellStruct cell, bool 
 
 void SWFirerManagerClass::Update()
 {
-	Array.remove_all_if([](auto& item) {
-		if (item.deferment.Completed()) {
-			item.SW->SetReadiness(true);
-			item.SW->Launch(item.cell, item.playerControl);
-			item.SW->Reset();
-			item.SW->RechargeTimer.StartTime = item.oldstart;
-			item.SW->RechargeTimer.TimeLeft = item.oldleft;
-			return true;
-		}
+	Array.remove_all_if([](auto& item)
+ {
+	 if (item.deferment.Completed())
+	 {
+		 item.SW->SetReadiness(true);
+		 item.SW->Launch(item.cell, item.playerControl);
+		 item.SW->Reset();
+		 item.SW->RechargeTimer.StartTime = item.oldstart;
+		 item.SW->RechargeTimer.TimeLeft = item.oldleft;
+		 return true;
+	 }
 
-		return false;
+	 return false;
 	});
 }
 
@@ -44,14 +46,17 @@ bool SWFirerManagerClass::LoadGlobal(const json& root)
 {
 	this->Clear();
 
-	if (root.contains("SWFirerManagerClass")) {
+	if (root.contains("SWFirerManagerClass"))
+	{
 		size_t dataSize = root["collectionsize"].get<size_t>();
 		Debug::Log("[ExtSave] Loading SWFirerManagerClass %d\n", dataSize);
 
-		if (dataSize > 0) {
+		if (dataSize > 0)
+		{
 			Array.reserve(dataSize);
 
-			for (auto& _item : root["collection"]) {
+			for (auto& _item : root["collection"])
+			{
 				auto& newPtr = Array.emplace_back();
 				size_t itemdatasize = _item["itemdatasize"].get<size_t>();
 				std::string encoded = _item["itemdata"].get<std::string>();
@@ -79,8 +84,8 @@ bool SWFirerManagerClass::SaveGlobal(json& root)
 
 	entry_first["collectionsize"] = Array.size();
 
-	if (!Array.empty()) {
-
+	if (!Array.empty())
+	{
 		entry_first["collection"] = json::array();
 		auto& _arrayOfData = entry_first["collection"];
 

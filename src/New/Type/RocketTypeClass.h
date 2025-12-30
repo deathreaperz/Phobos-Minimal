@@ -38,10 +38,12 @@ public:
 		, Offset { }
 	{ }
 
-	static void COMPILETIMEEVAL OPTIONALINLINE AddDefaults() {
+	static void COMPILETIMEEVAL OPTIONALINLINE AddDefaults()
+	{
 		Array.reserve(DefaultRockets.size());
 
-		for (auto& rocket:  DefaultRockets) {
+		for (auto& rocket : DefaultRockets)
+		{
 			FindOrAllocate(rocket);
 		}
 	}
@@ -58,23 +60,23 @@ public:
 
 private:
 
-	void LoadFromINI_B(CCINIClass* pINI , size_t idx);
+	void LoadFromINI_B(CCINIClass* pINI, size_t idx);
 
 	template <typename T>
 	void Serialize(T& Stm)
 	{
 		Stm
-		.Process(RocketData)
-		.Process(Warhead)
-		.Process(EliteWarhead)
-		.Process(TakeoffAnim)
-		.Process(PreLauchAnim)
-		.Process(TrailerAnim)
-		.Process(TrailerSeparation)
-		.Process(Weapon)
-		.Process(EliteWeapon)
-		.Process(Raise)
-		.Process(Offset)
-		;
+			.Process(RocketData)
+			.Process(Warhead)
+			.Process(EliteWarhead)
+			.Process(TakeoffAnim)
+			.Process(PreLauchAnim)
+			.Process(TrailerAnim)
+			.Process(TrailerSeparation)
+			.Process(Weapon)
+			.Process(EliteWeapon)
+			.Process(Raise)
+			.Process(Offset)
+			;
 	}
 };

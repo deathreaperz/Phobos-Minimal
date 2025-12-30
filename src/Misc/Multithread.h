@@ -16,7 +16,7 @@ struct Multithreading
 	static COMPILETIMEEVAL reference<bool, 0xA8B8B4u> const EnableMultiplayerDebug {};
 
 	static void __cdecl MultiplayerDebugPrint()
-		{ JMP(0x55F1E0); }
+	{ JMP(0x55F1E0); }
 
 	static std::unique_ptr<std::thread> DrawingThread;
 	static std::timed_mutex DrawingMutex;
@@ -34,7 +34,7 @@ struct Multithreading
 	static void ExitMultithreadMode();
 	// Wait for mutex lock respectfuly or, if too much time has passed, demand it.
 	static void LockOrDemandMutex(std::timed_mutex& mutex, bool& demands, std::chrono::duration<long long, std::milli> patienceDuration);
-	
+
 	static void ShutdownMultitheadMode()
 	{
 		if (!IsInMultithreadMode)
@@ -45,4 +45,3 @@ struct Multithreading
 		DrawingThread.release();
 	}
 };
-

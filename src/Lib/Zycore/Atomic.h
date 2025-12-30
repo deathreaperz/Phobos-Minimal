@@ -39,187 +39,187 @@ extern "C" {
 #include <Zycore/Defines.h>
 #include <Zycore/Types.h>
 
-/* ============================================================================================== */
-/* Enums and Types                                                                                */
-/* ============================================================================================== */
+	/* ============================================================================================== */
+	/* Enums and Types                                                                                */
+	/* ============================================================================================== */
 
-/*
- * Wraps a 32-bit value to provide atomic access.
- */
-typedef struct ZyanAtomic32_
-{
-    ZyanU32 volatile value;
-} ZyanAtomic32;
+	/*
+	 * Wraps a 32-bit value to provide atomic access.
+	 */
+	typedef struct ZyanAtomic32_
+	{
+		ZyanU32 volatile value;
+	} ZyanAtomic32;
 
-/*
- * Wraps a 64-bit value to provide atomic access.
- */
-typedef struct ZyanAtomic64_
-{
-    ZyanU64 volatile value;
-} ZyanAtomic64;
+	/*
+	 * Wraps a 64-bit value to provide atomic access.
+	 */
+	typedef struct ZyanAtomic64_
+	{
+		ZyanU64 volatile value;
+	} ZyanAtomic64;
 
-/*
- * Wraps a pointer-sized value to provide atomic access.
- */
-typedef struct ZyanAtomicPointer_
-{
-    ZyanVoidPointer volatile value;
-} ZyanAtomicPointer;
+	/*
+	 * Wraps a pointer-sized value to provide atomic access.
+	 */
+	typedef struct ZyanAtomicPointer_
+	{
+		ZyanVoidPointer volatile value;
+	} ZyanAtomicPointer;
 
-/* ============================================================================================== */
-/* Macros                                                                                         */
-/* ============================================================================================== */
+	/* ============================================================================================== */
+	/* Macros                                                                                         */
+	/* ============================================================================================== */
 
-/* ---------------------------------------------------------------------------------------------- */
-/* Pointer sized                                                                                  */
-/* ---------------------------------------------------------------------------------------------- */
+	/* ---------------------------------------------------------------------------------------------- */
+	/* Pointer sized                                                                                  */
+	/* ---------------------------------------------------------------------------------------------- */
 
-/**
- * @copydoc ZyanAtomicCompareExchange
- */
+	/**
+	 * @copydoc ZyanAtomicCompareExchange
+	 */
 #define ZYAN_ATOMIC_COMPARE_EXCHANGE(destination, comparand, value) \
     ZyanAtomicCompareExchange((ZyanAtomicPointer*)&(destination), (comparand), (value))
 
-/**
- * @copydoc ZyanAtomicIncrement
- */
+	 /**
+	  * @copydoc ZyanAtomicIncrement
+	  */
 #define ZYAN_ATOMIC_INCREMENT(destination) \
     ZyanAtomicIncrement((ZyanAtomicPointer*)&(destination));
 
-/**
- * @copydoc ZyanAtomicDecrement
- */
+	  /**
+	   * @copydoc ZyanAtomicDecrement
+	   */
 #define ZYAN_ATOMIC_DECREMENT(destination) \
     ZyanAtomicDecrement((ZyanAtomicPointer*)&(destination));
 
-/* ---------------------------------------------------------------------------------------------- */
-/* 32-bit                                                                                         */
-/* ---------------------------------------------------------------------------------------------- */
+	   /* ---------------------------------------------------------------------------------------------- */
+	   /* 32-bit                                                                                         */
+	   /* ---------------------------------------------------------------------------------------------- */
 
-/**
- * @copydoc ZyanAtomicCompareExchange
- */
+	   /**
+		* @copydoc ZyanAtomicCompareExchange
+		*/
 #define ZYAN_ATOMIC_COMPARE_EXCHANGE32(destination, comparand, value) \
     ZyanAtomicCompareExchange32((ZyanAtomic32*)&(destination), (comparand), (value))
 
-/**
- * @copydoc ZyanAtomicIncrement
- */
+		/**
+		 * @copydoc ZyanAtomicIncrement
+		 */
 #define ZYAN_ATOMIC_INCREMENT32(destination) \
     ZyanAtomicIncrement32((ZyanAtomic32*)&(destination));
 
-/**
- * @copydoc ZyanAtomicDecrement
- */
+		 /**
+		  * @copydoc ZyanAtomicDecrement
+		  */
 #define ZYAN_ATOMIC_DECREMENT32(destination) \
     ZyanAtomicDecrement32((ZyanAtomic32*)&(destination));
 
-/* ---------------------------------------------------------------------------------------------- */
-/* 64-bit                                                                                         */
-/* ---------------------------------------------------------------------------------------------- */
+		  /* ---------------------------------------------------------------------------------------------- */
+		  /* 64-bit                                                                                         */
+		  /* ---------------------------------------------------------------------------------------------- */
 
-/**
- * @copydoc ZyanAtomicCompareExchange
- */
+		  /**
+		   * @copydoc ZyanAtomicCompareExchange
+		   */
 #define ZYAN_ATOMIC_COMPARE_EXCHANGE64(destination, comparand, value) \
     ZyanAtomicCompareExchange64((ZyanAtomic64*)&(destination), (comparand), (value))
 
-/**
- * @copydoc ZyanAtomicIncrement
- */
+		   /**
+			* @copydoc ZyanAtomicIncrement
+			*/
 #define ZYAN_ATOMIC_INCREMENT64(destination) \
     ZyanAtomicIncrement64((ZyanAtomic64*)&(destination));
 
-/**
- * @copydoc ZyanAtomicDecrement
- */
+			/**
+			 * @copydoc ZyanAtomicDecrement
+			 */
 #define ZYAN_ATOMIC_DECREMENT64(destination) \
     ZyanAtomicDecrement64((ZyanAtomic64*)&(destination));
 
-/* ---------------------------------------------------------------------------------------------- */
+			 /* ---------------------------------------------------------------------------------------------- */
 
-/* ============================================================================================== */
-/* Functions                                                                                      */
-/* ============================================================================================== */
+			 /* ============================================================================================== */
+			 /* Functions                                                                                      */
+			 /* ============================================================================================== */
 
-/* ---------------------------------------------------------------------------------------------- */
-/* Pointer sized                                                                                  */
-/* ---------------------------------------------------------------------------------------------- */
+			 /* ---------------------------------------------------------------------------------------------- */
+			 /* Pointer sized                                                                                  */
+			 /* ---------------------------------------------------------------------------------------------- */
 
-/**
- * Compares two values for equality and, if they are equal, replaces the first value.
- *
- * @param   destination A pointer to the destination value.
- * @param   comparand   The value to compare with.
- * @param   value       The replacement value.
- *
- * @return  The original value.
- */
-static ZyanUPointer ZyanAtomicCompareExchange(ZyanAtomicPointer* destination,
-    ZyanUPointer comparand, ZyanUPointer value);
+			 /**
+			  * Compares two values for equality and, if they are equal, replaces the first value.
+			  *
+			  * @param   destination A pointer to the destination value.
+			  * @param   comparand   The value to compare with.
+			  * @param   value       The replacement value.
+			  *
+			  * @return  The original value.
+			  */
+	static ZyanUPointer ZyanAtomicCompareExchange(ZyanAtomicPointer* destination,
+		ZyanUPointer comparand, ZyanUPointer value);
 
-/**
- * Increments the given value and stores the result, as an atomic operation.
- *
- * @param   destination A pointer to the destination value.
- *
- * @return  The incremented value.
-*/
-static ZyanUPointer ZyanAtomicIncrement(ZyanAtomicPointer* destination);
+	/**
+	 * Increments the given value and stores the result, as an atomic operation.
+	 *
+	 * @param   destination A pointer to the destination value.
+	 *
+	 * @return  The incremented value.
+	*/
+	static ZyanUPointer ZyanAtomicIncrement(ZyanAtomicPointer* destination);
 
-/**
- * Decrements the given value and stores the result, as an atomic operation.
- *
- * @param   destination A pointer to the destination value.
- *
- * @return  The decremented value.
-*/
-static ZyanUPointer ZyanAtomicDecrement(ZyanAtomicPointer* destination);
+	/**
+	 * Decrements the given value and stores the result, as an atomic operation.
+	 *
+	 * @param   destination A pointer to the destination value.
+	 *
+	 * @return  The decremented value.
+	*/
+	static ZyanUPointer ZyanAtomicDecrement(ZyanAtomicPointer* destination);
 
-/* ---------------------------------------------------------------------------------------------- */
-/* 32-bit                                                                                         */
-/* ---------------------------------------------------------------------------------------------- */
+	/* ---------------------------------------------------------------------------------------------- */
+	/* 32-bit                                                                                         */
+	/* ---------------------------------------------------------------------------------------------- */
 
-/**
- * @copydoc ZyanAtomicCompareExchange
- */
-static ZyanU32 ZyanAtomicCompareExchange32(ZyanAtomic32* destination,
-    ZyanU32 comparand, ZyanU32 value);
+	/**
+	 * @copydoc ZyanAtomicCompareExchange
+	 */
+	static ZyanU32 ZyanAtomicCompareExchange32(ZyanAtomic32* destination,
+		ZyanU32 comparand, ZyanU32 value);
 
-/**
- * @copydoc ZyanAtomicIncrement
- */
-static ZyanU32 ZyanAtomicIncrement32(ZyanAtomic32* destination);
+	/**
+	 * @copydoc ZyanAtomicIncrement
+	 */
+	static ZyanU32 ZyanAtomicIncrement32(ZyanAtomic32* destination);
 
-/**
- * @copydoc ZyanAtomicDecrement
- */
-static ZyanU32 ZyanAtomicDecrement32(ZyanAtomic32* destination);
+	/**
+	 * @copydoc ZyanAtomicDecrement
+	 */
+	static ZyanU32 ZyanAtomicDecrement32(ZyanAtomic32* destination);
 
-/* ---------------------------------------------------------------------------------------------- */
-/* 64-bit                                                                                         */
-/* ---------------------------------------------------------------------------------------------- */
+	/* ---------------------------------------------------------------------------------------------- */
+	/* 64-bit                                                                                         */
+	/* ---------------------------------------------------------------------------------------------- */
 
-/**
- * @copydoc ZyanAtomicCompareExchange
- */
-static ZyanU64 ZyanAtomicCompareExchange64(ZyanAtomic64* destination,
-    ZyanU64 comparand, ZyanU64 value);
+	/**
+	 * @copydoc ZyanAtomicCompareExchange
+	 */
+	static ZyanU64 ZyanAtomicCompareExchange64(ZyanAtomic64* destination,
+		ZyanU64 comparand, ZyanU64 value);
 
-/**
- * @copydoc ZyanAtomicIncrement
- */
-static ZyanU64 ZyanAtomicIncrement64(ZyanAtomic64* destination);
+	/**
+	 * @copydoc ZyanAtomicIncrement
+	 */
+	static ZyanU64 ZyanAtomicIncrement64(ZyanAtomic64* destination);
 
-/**
- * @copydoc ZyanAtomicDecrement
- */
-static ZyanU64 ZyanAtomicDecrement64(ZyanAtomic64* destination);
+	/**
+	 * @copydoc ZyanAtomicDecrement
+	 */
+	static ZyanU64 ZyanAtomicDecrement64(ZyanAtomic64* destination);
 
-/* ---------------------------------------------------------------------------------------------- */
+	/* ---------------------------------------------------------------------------------------------- */
 
-/* ============================================================================================== */
+	/* ============================================================================================== */
 
 #if defined(ZYAN_CLANG) || defined(ZYAN_GCC) || defined(ZYAN_ICC)
 #   include <Zycore/Internal/AtomicGNU.h>

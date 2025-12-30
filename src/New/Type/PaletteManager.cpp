@@ -25,12 +25,14 @@ void PaletteManager::Clear_Internal()
 		this->Palette = nullptr;
 	}
 
-	if(this->Convert_Temperate && !this->NoTemperate){
+	if (this->Convert_Temperate && !this->NoTemperate)
+	{
 		GameDelete(this->Convert_Temperate);
 		this->Convert_Temperate = nullptr;
 	}
 
-	if (this->Convert) {
+	if (this->Convert)
+	{
 		GameDelete(this->Convert);
 		this->Convert = nullptr;
 	}
@@ -40,30 +42,36 @@ void PaletteManager::Clear_Internal()
 
 void PaletteManager::CreateConvert()
 {
-	if (!this->Palette) {
-		Debug::LogInfo("[{}] Missing Palette Data ! " , this->Name.data());
+	if (!this->Palette)
+	{
+		Debug::LogInfo("[{}] Missing Palette Data ! ", this->Name.data());
 		return;
 	}
 
-	if(!NoTemperate) {
+	if (!NoTemperate)
+	{
 		this->Convert_Temperate = (GameCreate<ConvertClass>(this->Palette, &FileSystem::TEMPERAT_PAL(), DSurface::Primary(), 53, false));
 		this->Convert = (GameCreate<ConvertClass>(this->Palette, this->Palette, DSurface::Alternate(), 1, false));
 	}
-	else {
+	else
+	{
 		this->Convert_Temperate = this->Convert = (GameCreate<ConvertClass>(this->Palette, this->Palette, DSurface::Alternate(), 1, false));
 	}
 
 	std::string realname = _strlwr(this->Name.data());
 
 	// the function will handle the name change
-	if(realname.find("~~~") != std::string::npos){
+	if (realname.find("~~~") != std::string::npos)
+	{
 		realname.erase(realname.find("~~~"));
 
 		if (realname.find(".pal") != std::string::npos)
 			realname.erase(realname.find(".pal"));
 
 		this->ColorschemeDataVector = (ColorScheme::GeneratePalette(realname.data()));
-	} else { //dont need extension
+	}
+	else
+	{ //dont need extension
 		std::string cachedWithExt = _strlwr(this->CachedName.data());
 
 		if (cachedWithExt.find(".pal") != std::string::npos)
@@ -89,15 +97,16 @@ void PaletteManager::LoadFromName(const char* PaletteName)
 	}
 }
 
-void FindOrAllocateDefaultConvers(const char* name  , bool noTemperate) {
+void FindOrAllocateDefaultConvers(const char* name, bool noTemperate)
+{
 	auto pUnitSno = PaletteManager::FindOrAllocate(name);
 	pUnitSno->NoTemperate = noTemperate;
 	pUnitSno->Clear_Internal();
 
-	if (auto pPal = (BytePalette*)FakeFileLoader::_Retrieve(pUnitSno->CachedName.data(), false)) {
-
-
-		for (auto& color : pPal->Entries) {
+	if (auto pPal = (BytePalette*)FakeFileLoader::_Retrieve(pUnitSno->CachedName.data(), false))
+	{
+		for (auto& color : pPal->Entries)
+		{
 			color.R <<= 2;
 			color.G <<= 2;
 			color.B <<= 2;
@@ -118,7 +127,8 @@ void FindOrAllocateDefaultConvers(const char* name  , bool noTemperate) {
 		Debug::Log("Allocating Pal [%s]\n", name);
 }
 
-struct DefaultPaletteData {
+struct DefaultPaletteData
+{
 	const char* const PaletteName;
 	bool NoTemperate;
 };
@@ -137,10 +147,10 @@ constexpr DefaultPaletteData const DefaultPalettes[]
 
 void PaletteManager::InitDefaultConverts()
 {
-	for (auto& [name, tem] : DefaultPalettes) {
+	for (auto& [name, tem] : DefaultPalettes)
+	{
 		FindOrAllocateDefaultConvers(name, tem);
 	}
-
 }
 
 bool PaletteManager::LoadFromCachedName()
@@ -215,8 +225,8 @@ bool CustomPalette::Read(INI_EX& parser, const char* pSection, const char* pKey)
 
 		const std::string target = "~~~";
 
-		if (name.find(target) != std::string::npos) {
-
+		if (name.find(target) != std::string::npos)
+		{
 			const std::string replacement = Theater::GetTheater(ScenarioClass::Instance->Theater).Extension;
 
 			size_t pos = 0;
@@ -255,13 +265,15 @@ bool CustomPalette::Load(PhobosStreamReader& Stm, bool RegisterForChange)
 	if (!Stm.Process(this->Mode))
 		return false;
 
-	if (hasPalette) {
+	if (hasPalette)
+	{
 		if (!Stm.Process(this->Name, RegisterForChange))
 			return false;
 
 		this->Palette.reset(GameCreate<BytePalette>());
 
-		if (!Stm.Process(*this->Palette)) {
+		if (!Stm.Process(*this->Palette))
+		{
 			return false;
 		}
 
@@ -278,7 +290,8 @@ bool CustomPalette::Save(PhobosStreamWriter& Stm) const
 	Stm.Process(hasPalette);
 	Stm.Process(this->Mode);
 
-	if(hasPalette){
+	if (hasPalette)
+	{
 		Stm.Process(this->Name);
 		Stm.Process(*this->Palette);
 	}
@@ -315,7 +328,8 @@ void CustomPalette::CreateConvert()
 	this->Convert.reset(buffer);
 	std::string filename = this->Name; // make a copy to avoid modifying the original string
 	size_t last_dot = filename.find_last_of('.');
-	if (last_dot != std::string::npos) {
+	if (last_dot != std::string::npos)
+	{
 		filename.erase(last_dot); // remove from the dot to the end
 	}
 

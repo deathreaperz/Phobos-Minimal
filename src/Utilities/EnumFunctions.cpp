@@ -257,7 +257,7 @@ std::array<std::pair<const char*, ChronoSparkleDisplayPosition>, 5u> EnumFunctio
 }
 };
 
-std::array<std::pair<const char* ,AffectPlayerType>, 5u> EnumFunctions::AffectPlayerType_ToStrings
+std::array<std::pair<const char*, AffectPlayerType>, 5u> EnumFunctions::AffectPlayerType_ToStrings
 {
 {	{ "none" ,AffectPlayerType::None },
 	{ "computer" ,AffectPlayerType::Computer },
@@ -268,9 +268,9 @@ std::array<std::pair<const char* ,AffectPlayerType>, 5u> EnumFunctions::AffectPl
 };
 
 std::array<const char*, (size_t)NewCrateType::count> EnumFunctions::NewCrateType_ToStrings
-{{
+{ {
 	{ "Money" }, { "Super" }, { "Weapon" }, { "Units" }
- }};
+ } };
 
 std::array<const char*, 6u> EnumFunctions::DamageState_to_strings
 {
@@ -291,15 +291,15 @@ std::array<const char*, 8u> EnumFunctions::FacingType_to_strings
 }
 };
 
-bool EnumFunctions::CanTargetHouse(AffectedHouse const &flags, HouseClass* ownerHouse, HouseClass* targetHouse)
+bool EnumFunctions::CanTargetHouse(AffectedHouse const& flags, HouseClass* ownerHouse, HouseClass* targetHouse)
 {
-	if(flags != AffectedHouse::None) {
-
+	if (flags != AffectedHouse::None)
+	{
 		if (flags == AffectedHouse::All)
 			return true;
 
-		if (ownerHouse && targetHouse) {
-
+		if (ownerHouse && targetHouse)
+		{
 			if ((flags & AffectedHouse::Owner) && ownerHouse == targetHouse)
 				return true;
 
@@ -386,13 +386,13 @@ bool EnumFunctions::IsTechnoEligibleB(TechnoClass* const pTechno, AffectedTarget
 				return (allowed & AffectedTarget::Infantry) != AffectedTarget::None;
 			case UnitClass::AbsID:
 			{
-				if(!pTechno->GetTechnoType()->ConsideredAircraft)
+				if (!pTechno->GetTechnoType()->ConsideredAircraft)
 					return (allowed & AffectedTarget::Unit) != AffectedTarget::None;
 
 				return (allowed & AffectedTarget::Aircraft) != AffectedTarget::None;
 			}
 			case AircraftClass::AbsID:
-					return (allowed & AffectedTarget::Aircraft) != AffectedTarget::None;
+				return (allowed & AffectedTarget::Aircraft) != AffectedTarget::None;
 			case BuildingClass::AbsID:
 			{
 				return ((allowed & AffectedTarget::Building) != AffectedTarget::None);
@@ -406,11 +406,12 @@ bool EnumFunctions::IsTechnoEligibleB(TechnoClass* const pTechno, AffectedTarget
 	return false;
 }
 
-bool EnumFunctions::CanAffectTechnoResult(AbstractType type, AffectedTechno allowed) {
-
-	if (allowed != AffectedTechno::None) {
-
-		switch (type) {
+bool EnumFunctions::CanAffectTechnoResult(AbstractType type, AffectedTechno allowed)
+{
+	if (allowed != AffectedTechno::None)
+	{
+		switch (type)
+		{
 		case AbstractType::Building:
 			return (allowed & AffectedTechno::Building) != AffectedTechno::None;
 		case AbstractType::Infantry:
@@ -419,26 +420,26 @@ bool EnumFunctions::CanAffectTechnoResult(AbstractType type, AffectedTechno allo
 			return (allowed & AffectedTechno::Unit) != AffectedTechno::None;
 		case AbstractType::Aircraft:
 			return (allowed & AffectedTechno::Aircraft) != AffectedTechno::None;
-
 		}
 	}
 	return false;
 }
 
-bool EnumFunctions::AreCellAndObjectsEligible(CellClass* const pCell, AffectedTarget  const& allowed, AffectedHouse const&  allowedHouses, HouseClass* owner, bool explicitEmptyCells, bool considerAircraftSeparately, bool allowBridges)
+bool EnumFunctions::AreCellAndObjectsEligible(CellClass* const pCell, AffectedTarget  const& allowed, AffectedHouse const& allowedHouses, HouseClass* owner, bool explicitEmptyCells, bool considerAircraftSeparately, bool allowBridges)
 {
-	if(!EnumFunctions::IsCellEligible(pCell, allowed, explicitEmptyCells , allowBridges))
+	if (!EnumFunctions::IsCellEligible(pCell, allowed, explicitEmptyCells, allowBridges))
 		return false;
 
 	for (auto pObject = pCell->FirstObject; pObject; pObject = pObject->NextObject)
 	{
 		if (auto pTechno = flag_cast_to<TechnoClass*, false>(pObject))
 		{
-			if (owner && !EnumFunctions::CanTargetHouse(allowedHouses, owner, pTechno->Owner)) {
+			if (owner && !EnumFunctions::CanTargetHouse(allowedHouses, owner, pTechno->Owner))
+			{
 				return false;
 			}
 
-			if(!EnumFunctions::IsTechnoEligible(pTechno, allowed, considerAircraftSeparately))
+			if (!EnumFunctions::IsTechnoEligible(pTechno, allowed, considerAircraftSeparately))
 				return false;
 		}
 	}

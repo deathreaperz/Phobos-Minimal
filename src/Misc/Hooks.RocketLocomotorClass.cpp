@@ -84,7 +84,6 @@ struct _KamikazetrackerClass
 		});
 
 		pThis->Nodes.Reset(std::distance(pThis->Nodes.begin(), removeIter));
-
 	}
 
 	static void __fastcall Clear(Kamikaze* pThis, DWORD)
@@ -103,7 +102,6 @@ struct _KamikazetrackerClass
 //DEFINE_FUNCTION_JUMP(LJMP, 0x54E4D0, _KamikazetrackerClass::AI));
 //DEFINE_FUNCTION_JUMP(LJMP, 0x54E590, _KamikazetrackerClass::Detach));
 //DEFINE_FUNCTION_JUMP(LJMP, 0x54E6F0, _KamikazetrackerClass::Clear));
-
 
 /*
 *	Original Backport code author : CCHyper & ZivDero
@@ -323,12 +321,11 @@ struct _RocketLocomotionClass
 			pRocket->CurrentSpeed = 0.0;
 			pRocket->SpawnerIsElite = spawn_owner && spawn_owner->Veterancy.IsElite();
 
-			if (pRocket->MissionTimer.Percent_Expired() != 1.0) {
-
+			if (pRocket->MissionTimer.Percent_Expired() != 1.0)
+			{
 				const double pitch_initial = rocket->PitchInitial * Math::DEG90_AS_RAD;
 				const double pitch_final = rocket->PitchFinal * Math::DEG90_AS_RAD;
 				pRocket->CurrentPitch = float((pitch_final - pitch_initial) * pRocket->MissionTimer.Percent_Expired() + pitch_initial);
-
 			}
 			else
 			{
@@ -378,12 +375,13 @@ struct _RocketLocomotionClass
 		}
 		case RocketMissionState::Flight:
 		{
-
 			if (pAir->GetHeight() <= 0)
 			{
 				Explode(pRocket);
 				return false;
-			} else {
+			}
+			else
+			{
 				pRocket->CurrentSpeed += rocket->Acceleration;
 				pRocket->CurrentSpeed = std::min(pRocket->CurrentSpeed, static_cast<double>(pAirType->Speed));
 
@@ -402,7 +400,6 @@ struct _RocketLocomotionClass
 				}
 				else
 				{
-
 					if (pRocket->CurrentPitch > 0.0)
 					{
 						pRocket->CurrentPitch -= rocket->TurnRate;
@@ -443,7 +440,6 @@ struct _RocketLocomotionClass
 
 			if (pRocket->TrailerTimer.Expired())
 			{
-
 				if (auto pTakeOff = GetTakeOffAnim(pAirType))
 				{
 					AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pTakeOff, pAir->Location, 2, 1, 0x600, -10),
@@ -499,7 +495,6 @@ struct _RocketLocomotionClass
 
 		if (pRocket->CurrentSpeed > 0.0)
 		{
-
 			Coordinate coord = Get_Next_Position(pRocket, pRocket->CurrentSpeed);
 
 			if (MapClass::Instance->IsWithinUsableArea(CellClass::Coord2Cell(coord), true))
@@ -531,7 +526,6 @@ public:
 
 		if (!RocketHasWeapon(pLinked, pRocketType, pThis->SpawnerIsElite, next))
 		{
-
 			CellStruct cell = CellClass::Coord2Cell(next);
 			const auto pCell = MapClass::Instance->GetCellAt(next);
 
@@ -608,7 +602,6 @@ DEFINE_FUNCTION_JUMP(VTABLE, 0x7F0B9C, _RocketLocomotionClass::_Is_Moving_Now));
 DEFINE_FUNCTION_JUMP(VTABLE, 0x7F0B5C, _RocketLocomotionClass::_Process));
 #else
 
-
 #pragma region RocketLocoHooks
 //TODO : Cmisl Hardcoded shit
 // 662496
@@ -635,7 +628,6 @@ DEFINE_FUNCTION_JUMP(VTABLE, 0x7F0B5C, _RocketLocomotionClass::_Process));
 
 #pragma region Process
 
-
 ASMJIT_PATCH(0x6622E0, RocketLocomotionClass_ILocomotion_Process_CustomMissile, 6)
 {
 	GET(AircraftClass* const, pThis, ECX);
@@ -661,12 +653,11 @@ ASMJIT_PATCH(0x66238A, RocketLocomotionClass_ILocomotion_Process_CustomMissileTa
 
 	if (AnimTypeClass* pType = pExt->CustomMissileTakeoffAnim)
 	{
-
 		AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pType, pOwner->Location, 2, 1, 0x600, -10, false),
 			pOwner->Owner,
 			nullptr,
 			pOwner,
-			true , false
+			true, false
 		);
 
 		return 0x6623F3;
@@ -773,7 +764,6 @@ ASMJIT_PATCH(0x662720, RocketLocomotionClass_ILocomotion_Process_Raise, 0x6)
 #pragma endregion
 
 #pragma region Explode
-
 
 ASMJIT_PATCH(0x66305A, RocketLocomotionClass_Explode_CustomMissile, 6)
 {

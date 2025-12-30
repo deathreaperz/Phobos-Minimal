@@ -49,7 +49,8 @@ ASMJIT_PATCH(0x449CC1, BuildingClass_Mission_Destruction_EVASoldAndUndeploysInto
 	GET(BuildingClass*, pThis, EBP);
 
 	if (pThis->IsOwnedByCurrentPlayer &&
-		(!pThis->ArchiveTarget || !pThis->Type->UndeploysInto)) {
+		(!pThis->ArchiveTarget || !pThis->Type->UndeploysInto))
+	{
 		VoxClass::PlayIndex(TechnoTypeExtContainer::Instance.Find(pThis->Type)->EVA_Sold.Get());
 	}
 
@@ -61,7 +62,8 @@ ASMJIT_PATCH(0x44A827, BuildingClass_Mi_Selling_PlaySellSound, 0x6)
 {
 	GET(BuildingClass*, pThis, EBP);
 
-	if (!CanUndeployOnSell(pThis)) {
+	if (!CanUndeployOnSell(pThis))
+	{
 		VocClass::SafeImmedietelyPlayAt(TechnoTypeExtContainer::Instance.Find(pThis->Type)->SellSound.Get(), &pThis->Location);
 	}
 
@@ -82,4 +84,4 @@ ASMJIT_PATCH(0x44A964, BuildingClass_Mi_Selling_VoiceDeploy, 0x6)
 	return CanUndeployOnSell(pThis) ? CanDeploySound : SkipShit;
 }
 
-DEFINE_JUMP(LJMP, 0x44AB22 ,0x44AB3B) // Structure Sold EVA played twice
+DEFINE_JUMP(LJMP, 0x44AB22, 0x44AB3B) // Structure Sold EVA played twice

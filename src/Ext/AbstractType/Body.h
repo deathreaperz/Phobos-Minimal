@@ -10,14 +10,15 @@ public:
 	PhobosFixedString<0x18> Name;
 public:
 
-	AbstractTypeExtData(AbstractTypeClass* pObj) : AbstractExtended(pObj) {
+	AbstractTypeExtData(AbstractTypeClass* pObj) : AbstractExtended(pObj)
+	{
 		this->Name = pObj->ID;
 	}
 	AbstractTypeExtData(AbstractTypeClass* pObj, noinit_t nn) : AbstractExtended(pObj, nn) { }
 
 	virtual ~AbstractTypeExtData() = default;
 
-	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override {}
+	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override { }
 
 	virtual void LoadFromStream(PhobosStreamReader& Stm) override
 	{

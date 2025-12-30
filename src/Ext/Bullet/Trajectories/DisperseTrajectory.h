@@ -136,13 +136,11 @@ public:
 
 	DisperseTrajectory(TrajectoryFlag varian, BulletClass* pBullet, PhobosTrajectoryType* pType) :
 		PhobosTrajectory { varian , pBullet , pType }
-	{
-	}
+	{ }
 
 	DisperseTrajectory(BulletClass* pBullet, PhobosTrajectoryType* pType) :
 		PhobosTrajectory { TrajectoryFlag::Disperse , pBullet , pType }
-	{
-	}
+	{ }
 
 	virtual ~DisperseTrajectory() override = default;
 	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override { };

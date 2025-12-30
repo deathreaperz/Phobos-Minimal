@@ -24,7 +24,7 @@ ASMJIT_PATCH(0x7355BA, UnitClass_Init_InitialStrength, 0x6)
 	GET(UnitClass*, pThis, ESI);
 	GET(UnitTypeClass*, pType, EAX);
 
-	if(TechnoTypeExtContainer::Instance.Find(pType)->Initial_DriverKilled)
+	if (TechnoTypeExtContainer::Instance.Find(pType)->Initial_DriverKilled)
 		TechnoExtContainer::Instance.Find(pThis)->Is_DriverKilled = true;
 
 	R->EAX(TechnoTypeExtContainer::Instance.Find(pType)->InitialStrength.Get(pType->Strength));
@@ -58,7 +58,8 @@ ASMJIT_PATCH(0x442C43, BuildingClass_Init, 0x5)
 
 	HouseExtData* pHouseExt = nullptr;
 
-	if (pThis->Owner) {
+	if (pThis->Owner)
+	{
 		pThis->OwnerCountryIndex = pThis->Owner->Type->ParentIdx;
 		pThis->Owner->AddTracking(pThis);
 		pHouseExt = HouseExtContainer::Instance.Find(pThis->Owner);

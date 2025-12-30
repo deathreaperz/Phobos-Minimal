@@ -59,7 +59,6 @@ ASMJIT_PATCH(0x54547F, IsometricTileTypeClass_ReadINI_SetPaletteISO, 0x6)
 	}
 
 	return 0x5454EB;
-
 }
 
 ASMJIT_PATCH(0x5454F0, IsometricTileTypeClass_ReadINI_TerrainControl, 0x6)
@@ -214,7 +213,6 @@ ASMJIT_PATCH(0x5F9070, ObjectTypeClass_Load2DArt, 6)
 	pType->Image = nullptr;
 	pType->ImageAllocated = false;
 
-
 	// what? it's what the game does, evidently those load somewhere else
 	const bool IsTerrainOrSmudge = what == SmudgeTypeClass::AbsID || what == TerrainTypeClass::AbsID;
 
@@ -283,13 +281,14 @@ ASMJIT_PATCH(0x5349E3, ScenarioClass_InitTheater_Handle, 0x6)
 	GET(TheaterType, nType, EDI);
 
 	const auto thName = nType == TheaterType::None ? "unknown" : TheaterTypeClass::Array[(size_t)nType]->Name.data();
-	Debug::LogInfo("Init For Theater [{} - {}]", (int)nType , thName);
+	Debug::LogInfo("Init For Theater [{} - {}]", (int)nType, thName);
 	ScenarioClass::Instance->Theater = nType;
 	lastTheater = nType;
 	typedef int(*wsprintfA_ptr)(LPSTR, LPCSTR, ...);
 	GET(wsprintfA_ptr, pFunc, EBP);
 
-	if (nType == TheaterType::None) {
+	if (nType == TheaterType::None)
+	{
 		Debug::FatalError("TheaterType is invalid ! , fallback to Temperate!");
 	}
 
@@ -595,11 +594,13 @@ ASMJIT_PATCH(0x627699, TheaterTypeClass_ProcessOtherPalettes_Process, 0x6)
 
 	static std::map<std::string, bool> AlreadLogged {};
 
-	if(Phobos::Otamaa::IsAdmin){
+	if (Phobos::Otamaa::IsAdmin)
+	{
 		auto& logged = AlreadLogged[pOriginalName];
 
-		if (!pFile && !logged) {
-		Debug::LogInfo("Failed to load [{}] as [{}] !", pOriginalName, pNameProcessed);
+		if (!pFile && !logged)
+		{
+			Debug::LogInfo("Failed to load [{}] as [{}] !", pOriginalName, pNameProcessed);
 			logged = true;
 		}
 	}

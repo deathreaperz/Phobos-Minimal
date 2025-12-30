@@ -47,10 +47,10 @@ public:
 
 	static bool __fastcall TypeSelectFilter(TechnoClass* pTechno, DynamicVectorClass<const char*>& names);
 
-	static void __DrawTimersSW(SuperClass* pSuper , int value, int interval);
+	static void __DrawTimersSW(SuperClass* pSuper, int value, int interval);
 	static void __DrawRadialIndicator(bool draw_indicator, bool animate, Coordinate center_coord, ColorStruct color, float radius, bool concentric, bool round);
 	static void __RenderOverlapForeignMap();
-	
+
 	static void DrawCollisionDebug();
 
 	// Reversed from Tactical::Select
@@ -65,7 +65,6 @@ public:
 
 	void __DrawAllTacticalText(wchar_t* text);
 
-
 	void _Render_Objects_Near_Shroud(bool arg0, Point2D pos, RectangleStruct* a5);
 	void _Draw_Pixel_Effects(RectangleStruct* tactical_rect, RectangleStruct* effect_rect);
 	void _Render_Layer(bool arg);
@@ -75,7 +74,6 @@ public:
 	//bool DebugDrawAllCellInfo(); //TODO
 	//bool DebugDrawBridgeInfo(); //TODO
 	//void DebugDrawMouseCellMembers //TODO
-
 };
 
 static_assert(sizeof(FakeTacticalClass) == sizeof(TacticalClass), "MustBe Same!");
@@ -133,4 +131,3 @@ public:
 
 	static std::vector<const char*> IFVGroups;
 };
-

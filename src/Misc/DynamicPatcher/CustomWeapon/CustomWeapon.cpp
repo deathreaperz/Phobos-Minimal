@@ -1,6 +1,5 @@
 #include "CustomWeapon.h"
 
-
 #include <Ext/Techno/Body.h>
 #include <Ext/WeaponType/Body.h>
 #include <Ext/BulletType/Body.h>
@@ -101,7 +100,6 @@ bool CustomWeaponManager::FireCustomWeapon(TechnoClass* pShooter,
 
 		if (burst > 1 && fireData.SimulateBurst)
 		{
-
 			int flipY = 1;
 
 			//if (BulletTypeClass* pBulletType = pWeapon->Projectile)
@@ -139,7 +137,6 @@ void CustomWeaponManager::SimulateBurstFire(TechnoClass* pShooter, TechnoClass* 
 	}
 
 	SimulateBurstFireOnce(pShooter, pAttacker, pTarget, pWeapon, burst);
-
 }
 
 void GetBulletVelocity(VelocityClass& nVel, CoordStruct& sourcePos, CoordStruct& targetPos, TechnoClass* pShooter, int burst, int radial, bool radialFire, int idx)
@@ -173,12 +170,12 @@ TechnoClass* CustomWeaponManager::WhoIsShooter(TechnoClass* pAttacker) const
 
 void  CustomWeaponManager::InvalidatePointer(AbstractClass* ptr, bool bRemoved)
 {
-	if(bRemoved) {
-
+	if (bRemoved)
+	{
 		auto it = simulateBurstQueue.begin();
 		while (it != simulateBurstQueue.end())
 		{
-			if ( ((*it)->Target == ptr || (*it)->Shooter == ptr))
+			if (((*it)->Target == ptr || (*it)->Shooter == ptr))
 				it = simulateBurstQueue.erase(it);
 			else
 				++it;
@@ -215,7 +212,8 @@ bool FireWeaponManager::FireCustomWeapon(TechnoClass* pShooter, TechnoClass* pAt
 
 void FireWeaponManager::InvalidatePointer(AbstractClass* ptr, bool bRemoved)
 {
-	if(bRemoved){
+	if (bRemoved)
+	{
 		auto it = DelayFires.begin();
 		while (it != DelayFires.end())
 		{

@@ -18,14 +18,14 @@ void PhobosGlobal::Clear()
 	pInstance->LandTypeParseCounter = 0;
 
 	pInstance->LastAnimName.clear();
-
 }
 
 void PhobosGlobal::PointerGotInvalid(AbstractClass* ptr, bool removed)
 {
 	auto pInstance = PhobosGlobal::Instance();
-	pInstance->PathfindTechno.InvalidatePointer(ptr , removed);
-	for (auto& copyArr : pInstance->CurCopyArray) {
+	pInstance->PathfindTechno.InvalidatePointer(ptr, removed);
+	for (auto& copyArr : pInstance->CurCopyArray)
+	{
 		copyArr.second.Invalidate(ptr, removed);
 	}
 }
@@ -33,7 +33,6 @@ void PhobosGlobal::PointerGotInvalid(AbstractClass* ptr, bool removed)
 bool PhobosGlobal::SaveGlobals(PhobosStreamWriter& stm) { return PhobosGlobal::Instance()->Serialize(stm); }
 bool PhobosGlobal::LoadGlobals(PhobosStreamReader& stm)
 {
-
 	if (PhobosGlobal::Instance()->Serialize(stm))
 	{
 #ifndef ENABLE_FOUNDATIONHOOK

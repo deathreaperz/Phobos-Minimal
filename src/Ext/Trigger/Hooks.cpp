@@ -218,22 +218,25 @@ ASMJIT_PATCH(0x7264C0, TriggerClass_RegisterEvent_ForceSequentialEvents, 0x7)
 			if (!alreadyOccured)
 			{
 				HouseClass* pEventOwner = nullptr;
-				if (!SessionClass::IsCampaign()){
-
+				if (!SessionClass::IsCampaign())
+				{
 					auto const& triggerOwners = ScenarioExtData::Instance()->TriggerTypePlayerAtXOwners;
 					auto it = triggerOwners.get_key_iterator(pThis->Type->ArrayIndex);
 
-					if (it != triggerOwners.end()) {
-						if (auto const pHouse = HouseClass::FindByPlayerAt(it->second)) {
+					if (it != triggerOwners.end())
+					{
+						if (auto const pHouse = HouseClass::FindByPlayerAt(it->second))
+						{
 							pEventOwner = pHouse;
 							break;
 						}
 					}
-
-				} else {
+				}
+				else
+				{
 					pEventOwner = HouseClass::FindByCountryName(pThis->Type->House->ID);
 				}
-		
+
 				triggeredNow = ((FakeTEventClass*)pCurrentEvent)->_Occured(
 									nEvent,
 									pEventOwner,

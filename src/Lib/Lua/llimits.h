@@ -7,13 +7,10 @@
 #ifndef llimits_h
 #define llimits_h
 
-
 #include <limits.h>
 #include <stddef.h>
 
-
 #include "lua.h"
-
 
 #define l_numbits(t)	cast_int(sizeof(t) * CHAR_BIT)
 
@@ -37,11 +34,9 @@ typedef unsigned long lu_mem;
 #define MAX_LMEM  \
 	cast(l_mem, (cast(lu_mem, 1) << (l_numbits(l_mem) - 1)) - 1)
 
-
 /* chars used as small naturals (so that 'char' is reserved for characters) */
 typedef unsigned char lu_byte;
 typedef signed char ls_byte;
-
 
 /* Type for thread status/error codes */
 typedef lu_byte TStatus;
@@ -64,10 +59,8 @@ typedef lu_byte TStatus;
 */
 #define ispow2(x)	(((x) & ((x) - 1)) == 0)
 
-
 /* number of chars of a literal string without the ending \0 */
 #define LL(x)   (sizeof(x)/sizeof(char) - 1)
-
 
 /*
 ** conversion of pointer to unsigned integer: this is for hashing only;
@@ -89,12 +82,9 @@ typedef lu_byte TStatus;
 
 #define point2uint(p)	cast_uint((L_P2I)(p) & UINT_MAX)
 
-
-
 /* types of 'usual argument conversions' for lua_Number and lua_Integer */
 typedef LUAI_UACNUMBER l_uacNumber;
 typedef LUAI_UACINT l_uacInt;
-
 
 /*
 ** Internal assertions for in-house debugging
@@ -116,12 +106,10 @@ typedef LUAI_UACINT l_uacInt;
 /* to avoid problems with conditions too long */
 #define lua_longassert(c)	assert_code((c) ? (void)0 : lua_assert(0))
 
-
 /* macro to avoid warnings about unused variables */
 #if !defined(UNUSED)
 #define UNUSED(x)	((void)(x))
 #endif
-
 
 /* type casts (a macro highlights casts in the code) */
 #define cast(t, exp)	((t)(exp))
@@ -139,7 +127,6 @@ typedef LUAI_UACINT l_uacInt;
 #define cast_sizet(i)	cast(size_t, (i))
 #define cast_Integer(i)	cast(lua_Integer, (i))
 #define cast_Inst(i)	cast(Instruction, (i))
-
 
 /* cast a signed lua_Integer to lua_Unsigned */
 #if !defined(l_castS2U)
@@ -186,8 +173,6 @@ typedef void (*voidf)(void);
 #define cast_func(p) ((voidf)(p))
 #endif
 
-
-
 /*
 ** non-return type
 */
@@ -203,7 +188,6 @@ typedef void (*voidf)(void);
 
 #endif
 
-
 /*
 ** Inline functions
 */
@@ -217,7 +201,6 @@ typedef void (*voidf)(void);
 
 #define l_sinline	static l_inline
 
-
 /*
 ** An unsigned with (at least) 4 bytes
 */
@@ -226,7 +209,6 @@ typedef unsigned int l_uint32;
 #else
 typedef unsigned long l_uint32;
 #endif
-
 
 /*
 ** The luai_num* macros define the primitive operations over numbers.
@@ -279,8 +261,6 @@ typedef unsigned long l_uint32;
 #define luai_numisnan(a)        (!luai_numeq((a), (a)))
 #endif
 
-
-
 /*
 ** lua_numbertointeger converts a float number with an integral value
 ** to an integer, or returns 0 if the float is not within the range of
@@ -294,8 +274,6 @@ typedef unsigned long l_uint32;
   ((n) >= (LUA_NUMBER)(LUA_MININTEGER) && \
    (n) < -(LUA_NUMBER)(LUA_MININTEGER) && \
       (*(p) = (LUA_INTEGER)(n), 1))
-
-
 
 /*
 ** LUAI_FUNC is a mark for all extern functions that are not to be
@@ -323,7 +301,6 @@ typedef unsigned long l_uint32;
 #define LUAI_DDEF	/* empty */
 
 #endif
-
 
 /* Give these macros simpler names for internal use */
 #define l_likely(x)	luai_likely(x)
@@ -354,4 +331,3 @@ typedef unsigned long l_uint32;
 /* }================================================================== */
 
 #endif
-

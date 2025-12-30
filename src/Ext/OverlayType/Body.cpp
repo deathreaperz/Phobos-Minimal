@@ -18,7 +18,7 @@ bool OverlayTypeExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	//auto const pArtINI = &CCINIClass::INI_Art();
 	auto pArtSection = pThis->ImageFile;
 
-	this->Palette.Read(exINI , pArtSection, "Palette");
+	this->Palette.Read(exINI, pArtSection, "Palette");
 	this->ZAdjust.Read(exINI, pArtSection, "ZAdjust");
 
 	return true;
@@ -36,7 +36,6 @@ void OverlayTypeExtData::Serialize(T& Stm)
 		;
 }
 
-
 // =============================
 // container
 OverlayTypeExtContainer OverlayTypeExtContainer::Instance;
@@ -51,7 +50,6 @@ bool OverlayTypeExtContainer::LoadAll(const json& root)
 
 		for (auto& entry : container[OverlayTypeExtData::ClassName])
 		{
-
 			uint32_t oldPtr = 0;
 			if (!ExtensionSaveJson::ReadHex(entry, "OldPtr", oldPtr))
 				return false;
@@ -115,12 +113,10 @@ void OverlayTypeExtContainer::LoadFromINI(OverlayTypeClass* key, CCINIClass* pIN
 		//this function can be called again multiple time but without need to re-init the data
 		ptr->SetInitState(InitState::Ruled);
 	}
-
 }
 
 void OverlayTypeExtContainer::WriteToINI(OverlayTypeClass* key, CCINIClass* pINI)
 {
-
 	if (auto ptr = this->TryFind(key))
 	{
 		if (!pINI)

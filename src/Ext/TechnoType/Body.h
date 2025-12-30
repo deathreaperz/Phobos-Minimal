@@ -83,7 +83,8 @@ struct ImageStatusses
 
 	~ImageStatusses()
 	{
-		if (Loaded) {
+		if (Loaded)
+		{
 			GameDelete<true, true>(Images.VXL);
 			GameDelete<true, true>(Images.HVA);
 
@@ -95,13 +96,15 @@ struct ImageStatusses
 
 	static ImageStatusses ReadVoxel(const char* const nKey);
 
-	void swap(VoxelStruct& from) {
-
-		if (from.VXL != this->Images.VXL) {
+	void swap(VoxelStruct& from)
+	{
+		if (from.VXL != this->Images.VXL)
+		{
 			std::swap(from.VXL, this->Images.VXL);
 		}
 
-		if (from.HVA != this->Images.HVA) {
+		if (from.HVA != this->Images.HVA)
+		{
 			std::swap(from.HVA, this->Images.HVA);
 		}
 
@@ -110,7 +113,8 @@ struct ImageStatusses
 
 	OPTIONALINLINE bool Load(PhobosStreamReader& Stm, bool RegisterForChange)
 	{
-		if(Loaded){
+		if (Loaded)
+		{
 			GameDelete<true, true>(Images.VXL);
 			GameDelete<true, true>(Images.HVA);
 
@@ -2116,16 +2120,16 @@ public:
 		, AIGuardModeGuardRangeMultiplier()
 		, AIGuardModeGuardRangeAddend()
 		, AIGuardStationaryStray()
-		, ThreatTypes(ThreatType::Normal,ThreatType::Normal )
-		, CombatDamages(0,0)
+		, ThreatTypes(ThreatType::Normal, ThreatType::Normal)
+		, CombatDamages(0, 0)
 		, TeamMember_ConsideredAs()
 		, WeaponGroupAs {}
 		, CanGoAboveTarget { false }
 		, OpenTransport_RangeBonus { 0 }
 		, OpenTransport_DamageMultiplier { 1.0 }
 		, TintColorAirstrike()
-		{
-		}
+	{
+	}
 
 	void InitializeConstant();
 	void Initialize();
@@ -2171,7 +2175,8 @@ public:
 	bool IsSecondary(int nWeaponIndex);
 	void AdjustCrushProperties();
 	void CalculateSpawnerRange();
-	void ResetSpawnerRange() {
+	void ResetSpawnerRange()
+	{
 		this->SpawnerRange = 0;
 		this->EliteSpawnerRange = 0;
 	}
@@ -2557,7 +2562,6 @@ private:
 			.Process(this->ConsideredNaval)
 			.Process(this->ConsideredVehicle)
 
-
 			.Process(this->VirtualUnit)
 
 			.Process(this->PrimaryCrawlFLH)
@@ -2873,7 +2877,6 @@ private:
 			.Process(this->DamageSelfData)
 			;
 
-
 		Stm.Process(this->AttachedEffect)
 			.Process(this->NoAmmoEffectAnim)
 			.Process(this->AttackFriendlies_WeaponIdx)
@@ -2991,7 +2994,6 @@ private:
 			.Process(this->ChronoSpherePreDelay)
 			.Process(this->ChronoSphereDelay)
 			.Process(this->PassengerWeapon)
-
 
 			.Process(this->RefinerySmokeParticleSystemOne)
 			.Process(this->RefinerySmokeParticleSystemTwo)
@@ -3203,17 +3205,16 @@ public:
 
 	void ParseVoiceWeaponAttacks(INI_EX& exINI, const char* pSection, ValueableVector<int>& n, ValueableVector<int>& nE);
 	void ParseCombatDamageAndThreatType(CCINIClass* const pINI);
-
 };
 
 class NOVTABLE FakeTechnoTypeClass
-//: public TechnoTypeClass
+	//: public TechnoTypeClass
 {
 public:
 	//TODO : replace bigger hook with LJMP patch
-	static WeaponStruct* __fastcall __GetWeapon(TechnoTypeClass* pThis , discard_t , int which);
-	static WeaponStruct* __fastcall __GetEliteWeapon(TechnoTypeClass* pThis , discard_t ,int which);
-	static int  __fastcall __GetWeaponTurretIndex(TechnoTypeClass* pThis , discard_t ,int which);
+	static WeaponStruct* __fastcall __GetWeapon(TechnoTypeClass* pThis, discard_t, int which);
+	static WeaponStruct* __fastcall __GetEliteWeapon(TechnoTypeClass* pThis, discard_t, int which);
+	static int  __fastcall __GetWeaponTurretIndex(TechnoTypeClass* pThis, discard_t, int which);
 };
 
 class TechnoTypeExtContainer final //: public Container<TechnoTypeExtData>

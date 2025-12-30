@@ -14,7 +14,7 @@ public:
 	virtual bool AbortFire(SuperClass* pSW, bool IsPlayer) override;
 
 	virtual void Initialize(SWTypeExtData* pData) override;
-	virtual void LoadFromINI(SWTypeExtData* pData,  CCINIClass* pINI) override;
+	virtual void LoadFromINI(SWTypeExtData* pData, CCINIClass* pINI) override;
 	virtual bool IsLaunchSite(const SWTypeExtData* pData, BuildingClass* pBuilding) const override;
 
 	virtual WarheadTypeClass* GetWarhead(const SWTypeExtData* pData) const override;
@@ -24,7 +24,8 @@ public:
 	static SuperClass* CurrentPsyDom;
 
 protected:
-	void newStateMachine(CellStruct XY, SuperClass* pSuper) {
+	void newStateMachine(CellStruct XY, SuperClass* pSuper)
+	{
 		SWStateMachine::Array.push_back(std::move(std::make_unique<PsychicDominatorStateMachine>(XY, pSuper, this)));
 	}
 };

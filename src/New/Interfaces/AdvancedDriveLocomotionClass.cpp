@@ -30,7 +30,7 @@ bool AdvancedDriveLocomotionClass::Is_Moving()
 			|| this->HeadToCoord.Y != this->LinkedTo->Location.Y);
 }
 
-Matrix3D* AdvancedDriveLocomotionClass::Draw_Matrix(Matrix3D*  buff, VoxelIndexKey* key)
+Matrix3D* AdvancedDriveLocomotionClass::Draw_Matrix(Matrix3D* buff, VoxelIndexKey* key)
 {
 	// Completely rewrite
 
@@ -43,11 +43,11 @@ Matrix3D* AdvancedDriveLocomotionClass::Draw_Matrix(Matrix3D*  buff, VoxelIndexK
 	const float arf = Math::abs(pLinked->AngleRotatedForwards);
 
 	auto getLerpVoxelRampMatrix = [&rate](int previous, int current)
-	{
-		Matrix3D mtx;
-		Matrix3D::used_Voxel_Draw_Matrix(&mtx , previous, current, rate);
-		return mtx;
-	};
+		{
+			Matrix3D mtx;
+			Matrix3D::used_Voxel_Draw_Matrix(&mtx, previous, current, rate);
+			return mtx;
+		};
 
 	if (ars < 0.005 && arf < 0.005)
 	{
@@ -59,7 +59,7 @@ Matrix3D* AdvancedDriveLocomotionClass::Draw_Matrix(Matrix3D*  buff, VoxelIndexK
 				key->Invalidate();
 
 			Matrix3D locoMtx;
-			 LocomotionClass::Draw_Matrix(&locoMtx, key);
+			LocomotionClass::Draw_Matrix(&locoMtx, key);
 			const auto rampMtx = getLerpVoxelRampMatrix(this->PreviousRamp, this->CurrentRamp);
 			*buff = rampMtx * locoMtx;
 			return buff;
@@ -71,9 +71,12 @@ Matrix3D* AdvancedDriveLocomotionClass::Draw_Matrix(Matrix3D*  buff, VoxelIndexK
 		Matrix3D locoMtx;
 		LocomotionClass::Draw_Matrix(&locoMtx, key);
 
-		if(shouldTilt){
+		if (shouldTilt)
+		{
 			*buff = (Game::VoxelRampMatrix[this->CurrentRamp]) * locoMtx;
-		} else {
+		}
+		else
+		{
 			*buff = locoMtx;
 		}
 
@@ -96,22 +99,25 @@ Matrix3D* AdvancedDriveLocomotionClass::Draw_Matrix(Matrix3D*  buff, VoxelIndexK
 		key->Invalidate();
 
 	Matrix3D locoMtx;
-	LocomotionClass::Draw_Matrix(&locoMtx , key);
+	LocomotionClass::Draw_Matrix(&locoMtx, key);
 
-	if(shouldTilt){
+	if (shouldTilt)
+	{
 		const auto rampMtx = rate >= 1.0
-		? Game::VoxelRampMatrix[this->CurrentRamp]
-		: getLerpVoxelRampMatrix(this->PreviousRamp, this->CurrentRamp);
+			? Game::VoxelRampMatrix[this->CurrentRamp]
+			: getLerpVoxelRampMatrix(this->PreviousRamp, this->CurrentRamp);
 
 		*buff = baseMtx * rampMtx * locoMtx * extraMtx;
-	}else {
+	}
+	else
+	{
 		*buff = baseMtx * locoMtx * extraMtx;
 	}
 
 	return buff;
 }
 
-Matrix3D* AdvancedDriveLocomotionClass::Shadow_Matrix(Matrix3D* mtx , VoxelIndexKey* key)
+Matrix3D* AdvancedDriveLocomotionClass::Shadow_Matrix(Matrix3D* mtx, VoxelIndexKey* key)
 {
 	// Completely rewrite
 
@@ -127,7 +133,7 @@ Matrix3D* AdvancedDriveLocomotionClass::Shadow_Matrix(Matrix3D* mtx , VoxelIndex
 			key->Invalidate();
 	}
 
-	LocomotionClass::Shadow_Matrix(mtx , key);
+	LocomotionClass::Shadow_Matrix(mtx, key);
 	return mtx;
 }
 
@@ -1462,11 +1468,11 @@ CoordStruct AdvancedDriveLocomotionClass::CoordLerp(const CoordStruct& crd1, con
 {
 	const float i_alpha = 1.0f - alpha;
 	return CoordStruct
-		{
-			int(crd2.X * alpha + crd1.X * i_alpha),
-			int(crd2.Y * alpha + crd1.Y * i_alpha),
-			int(crd2.Z * alpha + crd1.Z * i_alpha)
-		};
+	{
+		int(crd2.X * alpha + crd1.X * i_alpha),
+		int(crd2.Y * alpha + crd1.Y * i_alpha),
+		int(crd2.Z * alpha + crd1.Z * i_alpha)
+	};
 }
 
 // Auxiliary
@@ -1557,7 +1563,8 @@ inline void AdvancedDriveLocomotionClass::UpdateForwardState(int desiredRaw)
 	bool shouldReverse = false;
 
 	// Check if we have a target to face
-	if (this->ForwardTo != CoordStruct::Empty) {
+	if (this->ForwardTo != CoordStruct::Empty)
+	{
 		// Calculate angle to target
 		const DirStruct targetDir = DirStruct(std::atan2(
 			double(pLinked->Location.Y - this->ForwardTo.Y),
@@ -1572,7 +1579,8 @@ inline void AdvancedDriveLocomotionClass::UpdateForwardState(int desiredRaw)
 	}
 	// Check if we should retreat
 	else if (Unsorted::CurrentFrame - TechnoExtContainer::Instance.Find(pLinked)->LastHurtFrame
-			 <= pTypeExt->AdvancedDrive_Reverse_RetreatDuration) {
+			 <= pTypeExt->AdvancedDrive_Reverse_RetreatDuration)
+	{
 		// When retreating, reverse if we're facing the threat
 		const auto currentDir = pLinked->PrimaryFacing.Current();
 		const short angleDiff = static_cast<short>(desiredRaw - currentDir.Raw);
@@ -1580,7 +1588,8 @@ inline void AdvancedDriveLocomotionClass::UpdateForwardState(int desiredRaw)
 	}
 	// Check minimum distance for regular movement
 	else if (pLinked->Destination &&
-			 pLinked->DistanceFrom(pLinked->Destination) <= pTypeExt->AdvancedDrive_Reverse_MinimumDistance.Get()) {
+			 pLinked->DistanceFrom(pLinked->Destination) <= pTypeExt->AdvancedDrive_Reverse_MinimumDistance.Get())
+	{
 		// Use reverse for fine positioning at close range
 		shouldReverse = true;
 	}
@@ -1588,7 +1597,8 @@ inline void AdvancedDriveLocomotionClass::UpdateForwardState(int desiredRaw)
 	this->IsForward = !shouldReverse;
 
 	// Apply speed penalties for reverse movement
-	if (!this->IsForward) {
+	if (!this->IsForward)
+	{
 		this->MovementSpeed *= pTypeExt->AdvancedDrive_Reverse_Speed;
 	}
 }
@@ -1625,7 +1635,7 @@ inline bool AdvancedDriveLocomotionClass::InMotion()
 	const auto pDest = pLinked->Destination;
 
 	if ((!pDest || pDest->WhatAmI() != AbstractType::Cell
-			|| pLinked->GetMapCoords() != static_cast<CellClass*>(pDest)->MapCoords)
+		|| pLinked->GetMapCoords() != static_cast<CellClass*>(pDest)->MapCoords)
 		&& (pLinked->CurrentMission != Mission::Guard || this->IsDriving
 			|| this->TargetCoord == CoordStruct::Empty || this->TargetCoord != pLinked->Location))
 	{
@@ -1761,7 +1771,7 @@ inline int AdvancedDriveLocomotionClass::UpdateSpeedAccum(int& speedAccum)
 			if (pLinked->GetTechnoType()->IsTrain && !static_cast<UnitClass*>(pLinked)->IsFollowerCar)
 			{
 				auto pObject = (pLinked->OnBridge || (pLinked->Location.Z >= (CellClass::BridgeHeight
-						+ MapClass::Instance->GetCellFloorHeight(pLinked->Location))))
+					+ MapClass::Instance->GetCellFloorHeight(pLinked->Location))))
 					? pNewCell->AltObject : pNewCell->FirstObject;
 
 				while (pObject)
@@ -1840,79 +1850,79 @@ inline int AdvancedDriveLocomotionClass::UpdateSpeedAccum(int& speedAccum)
 				switch (pLinked->IsCellOccupied(pCell, static_cast<FacingType>(pathDir),
 					pLinked->GetCellLevel(), nullptr, true))
 				{
-					case Move::OK:
-					case Move::MovingBlock:
+				case Move::OK:
+				case Move::MovingBlock:
+				{
+					if (pLinked->WhatAmI() == AbstractType::Unit && !static_cast<UnitClass*>(pLinked)->Type->Passive)
+						break;
+
+					const auto speedPercent = pLinked->SpeedPercentage;
+					this->IsOnShortTrack = false;
+					this->TrackNumber = newTrack;
+					pTrackData = pNewTrackData;
+					dirChanged = false;
+					trackStructIndex = pNewTrackData->NormalTrackStructIndex;
+					this->TrackIndex = DriveLocomotionClass::RawTrack[trackStructIndex].EntryIndex - 1;
+					pTrackPoints = DriveLocomotionClass::RawTrack[trackStructIndex].TrackPoint;
+
+					this->StopDriving<true>();
+					this->IsDriving = true;
+					pLinked->UpdatePosition(PCPType::End);
+					this->IsDriving = false;
+
+					if (this->LinkCannotMove())
+						return 1;
+
+					this->StopDriving<true>();
+
+					if (coords != CoordStruct::Empty)
 					{
-						if (pLinked->WhatAmI() == AbstractType::Unit && !static_cast<UnitClass*>(pLinked)->Type->Passive)
-							break;
-
-						const auto speedPercent = pLinked->SpeedPercentage;
-						this->IsOnShortTrack = false;
-						this->TrackNumber = newTrack;
-						pTrackData = pNewTrackData;
-						dirChanged = false;
-						trackStructIndex = pNewTrackData->NormalTrackStructIndex;
-						this->TrackIndex = DriveLocomotionClass::RawTrack[trackStructIndex].EntryIndex - 1;
-						pTrackPoints = DriveLocomotionClass::RawTrack[trackStructIndex].TrackPoint;
-
-						this->StopDriving<true>();
 						this->IsDriving = true;
-						pLinked->UpdatePosition(PCPType::End);
-						this->IsDriving = false;
+						this->HeadToCoord = coords;
 
-						if (this->LinkCannotMove())
-							return 1;
-
-						this->StopDriving<true>();
-
-						if (coords != CoordStruct::Empty)
+						if (!pCell->CollectCrate(pLinked) || pLinked->InLimbo)
 						{
-							this->IsDriving = true;
-							this->HeadToCoord = coords;
-
-							if (!pCell->CollectCrate(pLinked) || pLinked->InLimbo)
-							{
-								if (pLinked->IsAlive)
-									this->StopDriving();
-							}
-							else
-							{
-								this->MarkOccupation(coords, MarkType::Down);
-								pLinked->SetSpeedPercentage(speedPercent);
-								memmove(&pLinked->PathDirections[0], &pLinked->PathDirections[1], 0x5Cu);
-								pLinked->PathDirections[23] = -1;
-							}
+							if (pLinked->IsAlive)
+								this->StopDriving();
 						}
-
-						break;
+						else
+						{
+							this->MarkOccupation(coords, MarkType::Down);
+							pLinked->SetSpeedPercentage(speedPercent);
+							memmove(&pLinked->PathDirections[0], &pLinked->PathDirections[1], 0x5Cu);
+							pLinked->PathDirections[23] = -1;
+						}
 					}
 
-					case Move::Cloak:
-					{
-						pCell->RevealCellObjects();
-						break;
-					}
+					break;
+				}
 
-					case Move::ClosedGate:
-					{
-						MapClass::Instance->MakeTraversable(pLinked, CellClass::Coord2Cell(coords));
-						break;
-					}
+				case Move::Cloak:
+				{
+					pCell->RevealCellObjects();
+					break;
+				}
 
-					case Move::Temp:
-					{
-						const bool onBridge = pCell->ContainsBridge()
-							&& (Math::abs(pLinked->Location.Z / Unsorted::CellHeight - pCell->Level) > 2);
-						MapClass::Instance->GetCellAt(this->HeadToCoord)->ScatterContent(CoordStruct::Empty,
-							true, true, onBridge);
+				case Move::ClosedGate:
+				{
+					MapClass::Instance->MakeTraversable(pLinked, CellClass::Coord2Cell(coords));
+					break;
+				}
 
-						break;
-					}
+				case Move::Temp:
+				{
+					const bool onBridge = pCell->ContainsBridge()
+						&& (Math::abs(pLinked->Location.Z / Unsorted::CellHeight - pCell->Level) > 2);
+					MapClass::Instance->GetCellAt(this->HeadToCoord)->ScatterContent(CoordStruct::Empty,
+						true, true, onBridge);
 
-					default:
-					{
-						break;
-					}
+					break;
+				}
+
+				default:
+				{
+					break;
+				}
 				}
 			}
 		}

@@ -120,7 +120,7 @@ public:
 	Valueable<bool> UseGlobalRadApplicationDelay { true };
 	Valueable<bool> IronCurtain_KeptOnDeploy { true };
 	Valueable<bool> ForceShield_KeptOnDeploy { false };
-	Valueable<IronCurtainFlag> IronCurtain_EffectOnOrganics { IronCurtainFlag::Kill};
+	Valueable<IronCurtainFlag> IronCurtain_EffectOnOrganics { IronCurtainFlag::Kill };
 	Valueable<WarheadTypeClass*> IronCurtain_KillOrganicsWarhead { nullptr };
 	Valueable<IronCurtainFlag> ForceShield_EffectOnOrganics { IronCurtainFlag::Ignore };
 	Valueable<WarheadTypeClass*> ForceShield_KillOrganicsWarhead { nullptr };
@@ -437,7 +437,8 @@ public:
 	Valueable<Leptons> VisualScatter_Min { Leptons(8) };
 	Valueable<Leptons> VisualScatter_Max { Leptons(52) };
 
-	struct LandTypeExt {
+	struct LandTypeExt
+	{
 		Valueable<double> Bounce_Elasticity {};
 
 		void LoadFromStream(PhobosStreamReader& Stm)
@@ -505,14 +506,16 @@ public:
 
 	Valueable<bool> GiveMoneyIfStorageFull { false }; // vanilla behaviour
 
-	struct ProneSpeedData {
+	struct ProneSpeedData
+	{
 		static COMPILETIMEEVAL double CRAWLING_SPEED_MULTIPLIER = std::bit_cast<double>(0x3FF5555555555555ull);
 		static COMPILETIMEEVAL double PRONE_SPEED_MULTIPLIER = std::bit_cast<double>(0x3FF8000000000000ull);
 
 		Valueable<double> Crawls { CRAWLING_SPEED_MULTIPLIER };
 		Valueable<double> NoCrawls { PRONE_SPEED_MULTIPLIER };
 
-		COMPILETIMEEVAL OPTIONALINLINE double getSpeed(bool crawls) const {
+		COMPILETIMEEVAL OPTIONALINLINE double getSpeed(bool crawls) const
+		{
 			return (crawls ? Crawls : NoCrawls).Get();
 		}
 
@@ -531,7 +534,6 @@ public:
 				.Process(NoCrawls)
 				;
 		}
-
 	} InfantrySpeedData {};
 
 	Valueable<bool> ColorAddUse8BitRGB { false };
@@ -578,13 +580,13 @@ public:
 	Valueable<Leptons> PlayerGuardModeGuardRangeAddend { Leptons(0) };
 	Valueable<Leptons> PlayerGuardModeGuardRangeMax { Leptons(4096) };
 	Valueable<Leptons> PlayerGuardStationaryStray { Leptons(-256) };
-    Valueable<bool> AIGuardModePursuit { true };
+	Valueable<bool> AIGuardModePursuit { true };
 	Valueable<double> AIGuardModeGuardRangeMultiplier { 2.0 };
 	Valueable<Leptons> AIGuardModeGuardRangeAddend { Leptons(0) };
 	Valueable<Leptons> AIGuardModeGuardRangeMax { Leptons(4096) };
 	Valueable<Leptons> AIGuardStationaryStray { Leptons(-256) };
 	Valueable<bool> IgnoreCenterMinorRadarEvent { false };
-	Valueable<int> WarheadAnimZAdjust { -15 } ;
+	Valueable<int> WarheadAnimZAdjust { -15 };
 	Valueable<bool> IvanBombAttachToCenter { false };
 	Valueable<bool> FallingDownTargetingFix { false };
 	Valueable<bool> AIAirTargetingFix { false };
@@ -600,12 +602,14 @@ public:
 
 	void Initialize();
 
-	void LoadFromStream(PhobosStreamReader& Stm) {
+	void LoadFromStream(PhobosStreamReader& Stm)
+	{
 		this->Serialize(Stm);
 		this->ReplaceVoxelLightSources();
 	}
 
-	void SaveToStream(PhobosStreamWriter& Stm) {
+	void SaveToStream(PhobosStreamWriter& Stm)
+	{
 		this->Serialize(Stm);
 	}
 

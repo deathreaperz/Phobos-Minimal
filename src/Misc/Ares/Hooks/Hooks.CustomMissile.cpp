@@ -44,7 +44,8 @@ ASMJIT_PATCH(0x6B7A6A, SpawnManagerClass_Update_CustomMissile2, 5)
 
 	const auto pExt = TechnoTypeExtContainer::Instance.Find(pSpawnType);
 
-	if (pExt->IsCustomMissile) {
+	if (pExt->IsCustomMissile)
+	{
 		auto node = &pSpawnManager->SpawnedNodes.Items[idxSpawn]->NodeSpawnTimer;
 		node->StartTime = Unsorted::CurrentFrame();
 		node->TimeLeft = pExt->CustomMissileData->PauseFrames + pExt->CustomMissileData->TiltFrames;
@@ -61,10 +62,14 @@ ASMJIT_PATCH(0x6B750B, SpawnManagerClass_Update_CustomMissilePreLauchAnim, 0x5)
 
 	const auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pSpawned->Type);
 
-	if (pSpawned->Type == RulesClass::Instance->CMisl.Type) {
+	if (pSpawned->Type == RulesClass::Instance->CMisl.Type)
+	{
 		return 0x0;
-	} else if (pTypeExt->IsCustomMissile) {
-		if(AnimTypeClass* pType = pTypeExt->CustomMissilePreLauchAnim) {
+	}
+	else if (pTypeExt->IsCustomMissile)
+	{
+		if (AnimTypeClass* pType = pTypeExt->CustomMissilePreLauchAnim)
+		{
 			AnimExtData::SetAnimOwnerHouseKind(GameCreate<AnimClass>(pType, pSpawned->Location, 2, 1, 0x600, -10, false),
 				pSpawned->Owner,
 				nullptr,
@@ -92,11 +97,13 @@ ASMJIT_PATCH(0x6B74BC, SpawnManagerClass_Update_MissileCoordOffset, 0x6)
 
 	const auto pExt = TechnoTypeExtContainer::Instance.Find(pMissile);
 
-	if (pExt->IsCustomMissile && pExt->CustomMissileOffset.isset()) {
+	if (pExt->IsCustomMissile && pExt->CustomMissileOffset.isset())
+	{
 		R->Stack(0x2C, R->ECX<int>() - pExt->CustomMissileOffset->X);
 		R->Stack(0x30, R->EDX<int>() - pExt->CustomMissileOffset->Y);
 	}
-	else if(pMissile == RulesClass::Instance->CMisl.Type) {
+	else if (pMissile == RulesClass::Instance->CMisl.Type)
+	{
 		return OffsetBy28;
 	}
 
@@ -110,7 +117,8 @@ ASMJIT_PATCH(0x6B7D50, SpawnManagerClass_CountDockedSpawns, 0x6)
 	GET(SpawnManagerClass*, pThis, ECX);
 
 	int nCur = 0;
-	if(pThis) { // some function call this without checking , so here it is the check
+	if (pThis)
+	{ // some function call this without checking , so here it is the check
 		for (auto const& pNode : pThis->SpawnedNodes)
 		{
 			const auto nStatus = pNode->Status;
@@ -125,7 +133,6 @@ ASMJIT_PATCH(0x6B7D50, SpawnManagerClass_CountDockedSpawns, 0x6)
 			{
 				++nCur;
 			}
-
 		}
 	}
 

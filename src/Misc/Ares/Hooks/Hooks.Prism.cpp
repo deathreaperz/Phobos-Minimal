@@ -1,4 +1,3 @@
-
 #include "Header.h"
 
 #include <Ext/Building/Body.h>
@@ -50,7 +49,7 @@ ASMJIT_PATCH(0x44B2FE, BuildingClass_Mi_Attack_IsPrism, 6)
 	//GET(int, idxWeapon, EBP); //which weapon was chosen to attack the target with
 	R->EAX(pThis->Type);
 
-	enum { IsPrism = 0x44B310, IsNotPrism = 0x44B630, IsCustomPrism = 0x44B6D6 , JustFire = 0x44B6C4};
+	enum { IsPrism = 0x44B310, IsNotPrism = 0x44B630, IsCustomPrism = 0x44B6D6, JustFire = 0x44B6C4 };
 
 	auto const pMasterData = BuildingExtContainer::Instance.Find(pThis);
 	auto const pMasterType = pThis->Type;
@@ -92,7 +91,6 @@ ASMJIT_PATCH(0x44B2FE, BuildingClass_Mi_Attack_IsPrism, 6)
 
 			//now we have all the towers we know the longest chain, and can set all the towers' charge delays
 			pMasterData->MyPrismForwarding->SetChargeDelay(LongestChain);
-
 		}
 		else if (pThis->PrismStage == PrismChargeState::Slave)
 		{
@@ -117,7 +115,7 @@ ASMJIT_PATCH(0x44B2FE, BuildingClass_Mi_Attack_IsPrism, 6)
 	//return IsNotPrism;
 	return (!pMasterTypeData->IsAnimDelayedBurst
 			 && pThis->CurrentBurstIndex != 0) ?
-			 JustFire : IsNotPrism;
+		JustFire : IsNotPrism;
 }
 
 ASMJIT_PATCH(0x447FAE, BuildingClass_GetFireError_PrismForward, 6)
@@ -131,9 +129,11 @@ ASMJIT_PATCH(0x447FAE, BuildingClass_GetFireError_PrismForward, 6)
 		//auto const pType = pThis->Type;
 		auto const pTypeData = pThis->_GetTypeExtData();
 
-		if (pTypeData->PrismForwarding.CanAttack()) {
+		if (pTypeData->PrismForwarding.CanAttack())
+		{
 			//is a prism tower
-			if (pThis->PrismStage == PrismChargeState::Slave && pTypeData->PrismForwarding.BreakSupport) {
+			if (pThis->PrismStage == PrismChargeState::Slave && pTypeData->PrismForwarding.BreakSupport)
+			{
 				return NotBusyCharging;
 			}
 		}
@@ -171,7 +171,6 @@ ASMJIT_PATCH(0x4503F0, BuildingClass_Update_Prism, 9)
 						}
 
 						auto const pTargetData = BuildingExtContainer::Instance.Find(pTarget->Owner);
-
 
 						auto const pTypeData = BuildingTypeExtContainer::Instance.Find(pType);
 						//slave firing
@@ -365,7 +364,6 @@ ASMJIT_PATCH(0x6FF48D, TechnoClass_Fire_IsLaser, 0xA)
 	auto pType = pThis->GetTechnoType();
 	if (pType->TargetLaser && pThis->Owner->ControlledByCurrentPlayer())
 	{
-
 		const auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->GetTechnoType());
 
 		if (pTypeExt->TargetLaser_WeaponIdx.empty()
@@ -382,7 +380,6 @@ ASMJIT_PATCH(0x6FF48D, TechnoClass_Fire_IsLaser, 0xA)
 
 		if (auto const pBld = cast_to<BuildingClass*, false>(pThis))
 		{	//ToggleLaserWeaponIndex
-
 			if (pExt->CurrentLaserWeaponIndex.empty())
 				pExt->CurrentLaserWeaponIndex = idxWeapon;
 			else
@@ -392,7 +389,6 @@ ASMJIT_PATCH(0x6FF48D, TechnoClass_Fire_IsLaser, 0xA)
 
 			if (auto const pLaser = pBld->CreateLaser(pTarget, idxWeapon, pTWeapon, CoordStruct::Empty))
 			{
-
 				//default thickness for buildings. this was 3 for PrismType (rising to 5 for supported prism) but no idea what it was for non-PrismType - setting to 3 for all BuildingTypes now.
 				pLaser->Thickness = Thickness == -1 ? 3 : Thickness;
 				auto const pBldTypeData = BuildingTypeExtContainer::Instance.Find(pBld->Type);
@@ -470,7 +466,6 @@ ASMJIT_PATCH(0x448277, BuildingClass_ChangeOwner_PrismForwardAndLeaveBomb, 5)
 	auto& pPrism = pData->MyPrismForwarding;
 
 	{
-
 		// the first and the last tower have to be allied to this
 		if (pTypeData->PrismForwarding.ToAllies)
 		{
@@ -514,8 +509,10 @@ ASMJIT_PATCH(0x70FD9A, TechnoClass_Drain_PrismForward, 6)
 	GET(TechnoClass* const, pThis, ESI);
 	GET(TechnoClass* const, pDrainee, EDI);
 
-	if (pDrainee->DrainingMe != pThis) { // else we're already being drained, nothing to do
-		if (auto const pBld = cast_to<BuildingClass*, false>(pDrainee)) {
+	if (pDrainee->DrainingMe != pThis)
+	{ // else we're already being drained, nothing to do
+		if (auto const pBld = cast_to<BuildingClass*, false>(pDrainee))
+		{
 			BuildingExtContainer::Instance.Find(pBld)->MyPrismForwarding->RemoveFromNetwork(true);
 		}
 	}

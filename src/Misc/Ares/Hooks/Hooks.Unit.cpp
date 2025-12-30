@@ -294,7 +294,7 @@ ASMJIT_PATCH(0x73769E, UnitClass_ReceivedRadioCommand_SpecificPassengers, 8)
 	GET(TechnoClass const* const, pSender, EDI);
 	GET(TechnoClass* const, pCall, EDI);
 
-	if(pThis->OnBridge && pCall->OnBridge)
+	if (pThis->OnBridge && pCall->OnBridge)
 		return 0x73780F;
 
 	auto const pSenderType = pSender->GetTechnoType();
@@ -360,9 +360,10 @@ ASMJIT_PATCH(0x737994, UnitClass_ReceivedRadioCommand_BySize4, 6)
 
 ASMJIT_PATCH(0x6FC0D3, TechnoClass_CanFire_DisableWeapons, 8)
 {
-	enum {
+	enum
+	{
 		FireRange = 0x6FC0DF,  //keep targeting ?
-		FireIllegal = 0x6FCCDF , //cannot fire at all , ignore target
+		FireIllegal = 0x6FCCDF, //cannot fire at all , ignore target
 		ContinueCheck = 0x0  //weeee
 	};
 
@@ -373,7 +374,8 @@ ASMJIT_PATCH(0x6FC0D3, TechnoClass_CanFire_DisableWeapons, 8)
 
 	pExt->CanFireWeaponType = pThis->GetWeapon(weaponIndex)->WeaponType;
 
-	if(pExt->CanFireWeaponType) {
+	if (pExt->CanFireWeaponType)
+	{
 		if (pExt->DisableWeaponTimer.InProgress())
 			return FireRange;
 
@@ -400,7 +402,6 @@ ASMJIT_PATCH(0x7091D6, TechnoClass_CanPassiveAquire_KillDriver, 6)
 	GET(TechnoClass*, pThis, ESI);
 	return (TechnoExtContainer::Instance.Find(pThis)->Is_DriverKilled ? 0x70927Du : 0u);
 }
-
 
 ASMJIT_PATCH(0x73758A, UnitClass_ReceivedRadioCommand_QueryEnterAsPassenger_KillDriver, 6)
 {
@@ -520,7 +521,6 @@ ASMJIT_PATCH(0x508D4A, HouseClass_UpdatePower_LocalDrain2, 6)
 	return 0;
 }
 
-
 ASMJIT_PATCH(0x73DE90, UnitClass_Mi_Unload_SimpleDeployer, 0x6)
 {
 	GET(UnitClass*, pThis, ESI);
@@ -533,7 +533,7 @@ ASMJIT_PATCH(0x73DE90, UnitClass_Mi_Unload_SimpleDeployer, 0x6)
 		&& TechnoExt_ExtData::ConvertToType(pThis, pTypeExt->Convert_Deploy))
 	{
 		if (pTypeExt->Convert_Deploy_Delay > 0)
-			 pExt->Convert_Deploy_Delay.Start(pTypeExt->Convert_Deploy_Delay);
+			pExt->Convert_Deploy_Delay.Start(pTypeExt->Convert_Deploy_Delay);
 
 		pThis->Deployed = false;
 	}
@@ -616,7 +616,6 @@ ASMJIT_PATCH(0x6B006D, SlaveManagerClass_UpdateMiner_ShortScan, 6)
 	return R->Origin() + 0x6;
 }ASMJIT_PATCH_AGAIN(0x6B026C, SlaveManagerClass_UpdateMiner_ShortScan, 6)
 
-
 ASMJIT_PATCH(0x6B01A3, SlaveManagerClass_UpdateMiner_ScanCorrection, 6)
 {
 	GET(SlaveManagerClass*, pThis, ESI);
@@ -625,7 +624,6 @@ ASMJIT_PATCH(0x6B01A3, SlaveManagerClass_UpdateMiner_ScanCorrection, 6)
 	R->EAX(pTypeExt->Harvester_ScanCorrection.Get(RulesClass::Instance->SlaveMinerScanCorrection));
 	return 0x6B01A9;
 }
-
 
 ASMJIT_PATCH(0x6AFDFC, SlaveManagerClass_UpdateMiner_LongScan, 6)
 {
@@ -682,7 +680,8 @@ ASMJIT_PATCH_AGAIN(0x73EA17, UnitClass_Mi_Harvest_ShortScan, 6)
 #include <Locomotor/Cast.h>
 
 #ifdef _eeee
-ASMJIT_PATCH(0x73E735, UnitClass_Mi_Harvest_LongScan, 7){
+ASMJIT_PATCH(0x73E735, UnitClass_Mi_Harvest_LongScan, 7)
+{
 	GET(UnitClass*, pThis, EBP);
 	GET(AbstractClass*, pFocus, EAX);
 
@@ -706,23 +705,28 @@ ASMJIT_PATCH(0x73E735, UnitClass_Mi_Harvest_LongScan, 7){
 		}
 	}
 
-	if(pFocus) {
-		pThis->SetDestination(pFocus,true);
+	if (pFocus)
+	{
+		pThis->SetDestination(pFocus, true);
 		pThis->SetArchiveTarget(nullptr);
 		R->Stack(0x14, false);
 	}
 
 	pThis->IsHarvesting = false;
-	if(pThis->Type->Weeder) {
+	if (pThis->Type->Weeder)
+	{
 		pThis->MoveToWeed(longScan / 256);
-	}else{
+	}
+	else
+	{
 		//this part is kind a confusing
 		//i feel that this part is actually releasing the previous locomotor that piggybacking the harvester
-		if(!locomotion_cast<TeleportLocomotionClass*>(pThis->Locomotor) && pThis->Destination) {
+		if (!locomotion_cast<TeleportLocomotionClass*>(pThis->Locomotor) && pThis->Destination)
+		{
 			pThis->SetDestination(nullptr, true);
 		}
 
-		pThis->MoveToTiberium(longScan / 256 , R->Stack<BYTE>(0x14));
+		pThis->MoveToTiberium(longScan / 256, R->Stack<BYTE>(0x14));
 		pThis->Locomotor.Release();
 	}
 
@@ -739,57 +743,58 @@ enum class HarvesterMissionStatus : int
 	Exit = 4,
 };
 
-ASMJIT_PATCH(0x4DCEB3, FootClass_TiberiumScanning_AllowPlayertoScanUderShroud, 0x7) {
+ASMJIT_PATCH(0x4DCEB3, FootClass_TiberiumScanning_AllowPlayertoScanUderShroud, 0x7)
+{
 	//GET(FootClass*, pThis, ESI);
 	int diff = GameModeOptionsClass::Instance->AIDifficulty;
 	return RulesExtData::Instance()->CampaignAllowHarvesterScanUnderShroud[diff] ? 0x4DCF26 : 0x0;
 }
 
- ASMJIT_PATCH(0x73E851, UnitClass_Mi_Harvest_LongScan, 6)
- {
- 	GET(UnitClass*, pThis, EBP);
- 	auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->Type);
- 	R->EAX(pTypeExt->Harvester_LongScan.Get(RulesClass::Instance->TiberiumLongScan));
- 	return R->Origin() + 0x6;
- }ASMJIT_PATCH_AGAIN(0x73E772, UnitClass_Mi_Harvest_LongScan, 6)
+ASMJIT_PATCH(0x73E851, UnitClass_Mi_Harvest_LongScan, 6)
+{
+	GET(UnitClass*, pThis, EBP);
+	auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->Type);
+	R->EAX(pTypeExt->Harvester_LongScan.Get(RulesClass::Instance->TiberiumLongScan));
+	return R->Origin() + 0x6;
+}ASMJIT_PATCH_AGAIN(0x73E772, UnitClass_Mi_Harvest_LongScan, 6)
 
- ASMJIT_PATCH(0x73E730, UnitClass_MissionHarvest_HarvesterScanAfterUnload, 0x5)
- {
- 	GET(UnitClass* const, pThis, EBP);
- 	GET(AbstractClass* const, pFocus, EAX);
+ASMJIT_PATCH(0x73E730, UnitClass_MissionHarvest_HarvesterScanAfterUnload, 0x5)
+{
+	GET(UnitClass* const, pThis, EBP);
+	GET(AbstractClass* const, pFocus, EAX);
 
- 	auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->Type);
- 	// Focus is set when the harvester is fully loaded and go home.
- 	if (pFocus && !pThis->Type->Weeder && pTypeExt->HarvesterScanAfterUnload.Get(RulesExtData::Instance()->HarvesterScanAfterUnload))
- 	{
- 		auto cellBuffer = CellStruct::Empty;
- 		auto long_scan = pTypeExt->Harvester_LongScan.Get(RulesClass::Instance->TiberiumLongScan);
- 		auto pCellStru = pThis->ScanForTiberium(&cellBuffer, long_scan / 256, 0);
+	auto pTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->Type);
+	// Focus is set when the harvester is fully loaded and go home.
+	if (pFocus && !pThis->Type->Weeder && pTypeExt->HarvesterScanAfterUnload.Get(RulesExtData::Instance()->HarvesterScanAfterUnload))
+	{
+		auto cellBuffer = CellStruct::Empty;
+		auto long_scan = pTypeExt->Harvester_LongScan.Get(RulesClass::Instance->TiberiumLongScan);
+		auto pCellStru = pThis->ScanForTiberium(&cellBuffer, long_scan / 256, 0);
 
- 		if (*pCellStru != CellStruct::Empty)
- 		{
- 			const auto pCell = MapClass::Instance->TryGetCellAt(pCellStru);
- 			const auto distFromTiberium = pCell ? pThis->DistanceFrom(pCell) : -1;
- 			const auto distFromFocus = pThis->DistanceFrom(pFocus);
+		if (*pCellStru != CellStruct::Empty)
+		{
+			const auto pCell = MapClass::Instance->TryGetCellAt(pCellStru);
+			const auto distFromTiberium = pCell ? pThis->DistanceFrom(pCell) : -1;
+			const auto distFromFocus = pThis->DistanceFrom(pFocus);
 
- 			// Check if pCell is better than focus.
- 			if (distFromTiberium > 0 && distFromTiberium < distFromFocus)
- 				R->EAX(pCell);
- 		}
+			// Check if pCell is better than focus.
+			if (distFromTiberium > 0 && distFromTiberium < distFromFocus)
+				R->EAX(pCell);
+		}
+	}
 
- 	}
-
-		// Removing unnecessary set destination
-		// This can effectively reduce the ineffective actions when Harvester automatically returning
-		// to work after be manually operated to return to Refinery.
-	if(pFocus && pFocus->WhatAmI() != AbstractType::Building || pThis->GetCell()->GetBuilding() != pFocus){
+	// Removing unnecessary set destination
+	// This can effectively reduce the ineffective actions when Harvester automatically returning
+	// to work after be manually operated to return to Refinery.
+	if (pFocus && pFocus->WhatAmI() != AbstractType::Building || pThis->GetCell()->GetBuilding() != pFocus)
+	{
 		return 0;
 	}
 
 	// Clear ArchiveTarget to avoid checking again next time
 	pThis->ArchiveTarget = nullptr;
- 	return 0x73E755;
- }
+	return 0x73E755;
+}
 
 ASMJIT_PATCH(0x74081F, UnitClass_Mi_Guard_KickFrameDelay, 5)
 {
@@ -836,7 +841,6 @@ ASMJIT_PATCH(0x74689B, UnitClass_Init_Academy, 6)
 
 	return 0;
 }ASMJIT_PATCH_AGAIN(0x735678, UnitClass_Init_Academy, 6) // inlined in CTOR
-
 
 // make the space between gunner name segment and ifv
 // name smart. it disappears if one of them is empty,
@@ -885,11 +889,12 @@ ASMJIT_PATCH(0x417DD2, AircraftClass_GetActionOnObject_NoManualUnload, 6)
 	return TechnoTypeExtContainer::Instance.Find(pThis->Type)->NoManualUnload ? 0x417DF4u : 0u;
 }
 
-ASMJIT_PATCH(0x73D800, UnitClass_MI_Unload_NoManualUnload, 0x5){
-	enum { Continue = 0x0 , AssignMissionGuard = 0x73D81C };
+ASMJIT_PATCH(0x73D800, UnitClass_MI_Unload_NoManualUnload, 0x5)
+{
+	enum { Continue = 0x0, AssignMissionGuard = 0x73D81C };
 	GET(UnitClass const* const, pThis, ESI);
 	return TechnoTypeExtContainer::Instance.Find(pThis->Type)->NoManualUnload ?
-	AssignMissionGuard : Continue;
+		AssignMissionGuard : Continue;
 }
 
 ASMJIT_PATCH(0x700EEC, TechnoClass_CanDeploySlashUnload_NoManualUnload, 6)
@@ -904,7 +909,6 @@ ASMJIT_PATCH(0x700EEC, TechnoClass_CanDeploySlashUnload_NoManualUnload, 6)
 
 	//if (auto pUnit = cast_to<UnitClass*>(pThis)){
 	//	if (!pUnit->InAir && pUnit->Deployed && pUnit->Type->DeployToLand) {
-
 	//	}
 	//}
 
@@ -920,7 +924,6 @@ ASMJIT_PATCH(0x53C450, TechnoClass_CanBePermaMC, 5)
 	if (pThis && pThis->WhatAmI() != AbstractType::Building
 		&& !pThis->IsIronCurtained() && !pThis->IsInAir())
 	{
-
 		if (!TechnoExtData::IsPsionicsImmune(pThis) && !pThis->GetTechnoType()->BalloonHover)
 		{
 			// KillDriver check
@@ -983,7 +986,6 @@ ASMJIT_PATCH(0x51C913, InfantryClass_CanFire_Heal, 7)
 
 	return  TechnoExt_ExtData::FiringAllowed(pThis, pThatTechno, pThis->GetWeapon(nWeaponIdx)->WeaponType) ?
 		retContinue : retFireIllegal;
-
 }
 
 ASMJIT_PATCH(0x741113, UnitClass_CanFire_Heal, 0xA)
@@ -1014,7 +1016,6 @@ ASMJIT_PATCH(0x6F7F4F, TechnoClass_EvaluateObject_NegativeDamage, 0x7)
 
 	return !pThatTechno->IsIronCurtained() && TechnoExt_ExtData::FiringAllowed(pThis, pThatTechno, pThis->GetWeapon(pThis->SelectWeapon(pThatTechno))->WeaponType) ?
 		ContinueCheck : retFalse;
-
 }
 
 template<bool CheckKeyPress>
@@ -1024,7 +1025,7 @@ std::pair<bool, int> HealActionProhibited(TechnoClass* pTarget, WeaponTypeClass*
 	const auto pThatShield = pThatTechnoExt->GetShield();
 	const auto pWHExt = WarheadTypeExtContainer::Instance.Find(pWeapon->Warhead);
 
-	if COMPILETIMEEVAL (CheckKeyPress)
+	if COMPILETIMEEVAL(CheckKeyPress)
 	{
 		if (WWKeyboardClass::Instance->IsForceMoveKeyPressed())
 			return { true , -1 };
@@ -1053,7 +1054,6 @@ std::pair<bool, int> HealActionProhibited(TechnoClass* pTarget, WeaponTypeClass*
 				}
 				else
 				{
-
 					if (pThatShield->GetType()->PassthruNegativeDamage)
 						return { pTarget->IsFullHP() , -1 };
 					else
@@ -1196,8 +1196,9 @@ ASMJIT_PATCH(0x73C725, UnitClass_DrawSHP_DrawShadowEarlier, 6)
 {
 	GET(UnitClass*, U, EBP);
 
-	if (UnitTypeClass* pCustomType = TechnoExt_ExtData::GetUnitTypeImage(U)) {
-		if(!pCustomType->Turret)
+	if (UnitTypeClass* pCustomType = TechnoExt_ExtData::GetUnitTypeImage(U))
+	{
+		if (!pCustomType->Turret)
 			return 0x73CE0D;
 	}
 
@@ -1268,9 +1269,12 @@ ASMJIT_PATCH(0x73BDA3, UnitClass_DrawVoxel_TurretFacing, 0x5)
 {
 	GET(UnitClass*, pThis, EBP);
 
-	if (!pThis->Type->Turret) {
-		if (UnitTypeClass* pCustomType = TechnoExt_ExtData::GetUnitTypeImage(pThis)) {
-			if (pCustomType->Turret) {
+	if (!pThis->Type->Turret)
+	{
+		if (UnitTypeClass* pCustomType = TechnoExt_ExtData::GetUnitTypeImage(pThis))
+		{
+			if (pCustomType->Turret)
+			{
 				GET(DirStruct*, dir, EAX);
 				*dir = pThis->PrimaryFacing.Current();
 			}
@@ -1441,7 +1445,6 @@ ASMJIT_PATCH(0x6F4A1D, TechnoClass_DiscoveredBy_Prereqs, 6)
 	return 0;
 }ASMJIT_PATCH_AGAIN(0x6F4A37, TechnoClass_DiscoveredBy_Prereqs, 5)
 
-
 ASMJIT_PATCH(0x741613, UnitClass_ApproachTarget_OmniCrusher, 6)
 {
 	GET(UnitClass* const, pThis, ESI);
@@ -1534,7 +1537,6 @@ static void CrushAffect(UnitClass* pThis, ObjectClass* pVictim, bool victimIsTec
 			WhenCrushedBy(pThis, pVictimTechno);
 		}
 	}
-
 }
 
 ASMJIT_PATCH(0x7418A1, UnitClass_CrusCell_TiltWhenCrushSomething, 0x5)
@@ -1739,22 +1741,23 @@ ASMJIT_PATCH(0x700E47, TechnoClass_CanDeploySlashUnload_Immobile, 0xA)
 	const CoordStruct crd = pCell->GetCoordsWithBridge();
 	auto pExt = UnitExtContainer::Instance.Find(pThis);
 
-	if (!pThis->BunkerLinkedItem) {
-
+	if (!pThis->BunkerLinkedItem)
+	{
 		if (!TechnoExtData::HasAmmoToDeploy(pThis))
 			return 0x700DCE;
 
-		if (pThis->Type->IsSimpleDeployer && !TechnoExtData::SimpleDeployerAllowedToDeploy(pThis, true, false)) {
+		if (pThis->Type->IsSimpleDeployer && !TechnoExtData::SimpleDeployerAllowedToDeploy(pThis, true, false))
+		{
 			return 0x700DCE;
 		}
 	}
-		// recreate replaced check, and also disallow if unit is still warping or dropping in.
+	// recreate replaced check, and also disallow if unit is still warping or dropping in.
 	return pExt->Convert_Deploy_Delay.InProgress()
-			|| pThis->IsUnderEMP()
-			|| pThis->IsWarpingIn()
-			|| pThis->IsFallingDown
-			|| pExt->Is_DriverKilled
-			? 0x700DCE : 0x700E59;
+		|| pThis->IsUnderEMP()
+		|| pThis->IsWarpingIn()
+		|| pThis->IsFallingDown
+		|| pExt->Is_DriverKilled
+		? 0x700DCE : 0x700E59;
 }
 
 ASMJIT_PATCH(0x736135, UnitClass_Update_Deactivated, 6)
@@ -1882,7 +1885,6 @@ ASMJIT_PATCH(0x73C7AC, UnitClass_DrawAsSHP_DrawTurret_TintFix, 0x6)
 	const double bodyRad = primaryDir.GetRadian<32>();
 	Matrix3D mtx = Matrix3D::GetIdentity();
 	mtx.RotateZ(static_cast<float>(bodyRad));
-
 
 	TechnoTypeExtContainer::Instance.Find(pThisType)->ApplyTurretOffset(&mtx, 1.0);
 

@@ -20,16 +20,15 @@ struct PhobosAEFunctions
 	static void UpdateAttachEffects(TechnoClass* pTechno);
 
 	static bool HasAttachedEffects(TechnoClass* pTechno, std::vector<PhobosAttachEffectTypeClass*>& attachEffectTypes, bool requireAll, bool ignoreSameSource,
-		TechnoClass* pInvoker, AbstractClass* pSource, std::vector<int> const* minCounts, std::vector<int> const* maxCounts , bool requireAnims = false);
+		TechnoClass* pInvoker, AbstractClass* pSource, std::vector<int> const* minCounts, std::vector<int> const* maxCounts, bool requireAnims = false);
 
 	//static bool HasAttachedEffects(TechnoClass* pTechno, PhobosAttachEffectTypeClass* attachEffectType, bool requireAll, bool ignoreSameSource,
 	//TechnoClass* pInvoker, AbstractClass* pSource, std::vector<int> const* minCounts, std::vector<int> const* maxCounts, bool requireAnims = false);
 
-
-	static void UpdateSelfOwnedAttachEffects(TechnoClass* pTechno , TechnoTypeClass* pNewType);
+	static void UpdateSelfOwnedAttachEffects(TechnoClass* pTechno, TechnoTypeClass* pNewType);
 
 public:
 
-	static void ApplyRevengeWeapon(TechnoClass* pThis , TechnoClass* pSource , WarheadTypeClass* pWH);
+	static void ApplyRevengeWeapon(TechnoClass* pThis, TechnoClass* pSource, WarheadTypeClass* pWH);
 	static void ApplyReflectDamage(TechnoClass* pThis, int* pDamage, TechnoClass* pAttacker, HouseClass* pAttacker_House, WarheadTypeClass* pWH);
 };

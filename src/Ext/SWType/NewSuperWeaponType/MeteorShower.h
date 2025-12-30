@@ -21,7 +21,8 @@ public:
 	virtual bool IsLaunchSite(const SWTypeExtData* pData, BuildingClass* pBuilding) const override;
 
 protected:
-	void newStateMachine(int Deferment, CellStruct XY, SuperClass* pSuper, TechnoClass* pfirer) {
+	void newStateMachine(int Deferment, CellStruct XY, SuperClass* pSuper, TechnoClass* pfirer)
+	{
 		SWStateMachine::Array.push_back(std::move(std::make_unique<MeteorShowerStateMachine>(Deferment, XY, pSuper, pfirer, this)));
 	}
 };

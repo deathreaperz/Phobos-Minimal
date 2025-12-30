@@ -14,8 +14,8 @@
 
 PhobosAttachEffectClass::~PhobosAttachEffectClass()
 {
-	if (const auto& pTrail = this->LaserTrail) {
-
+	if (const auto& pTrail = this->LaserTrail)
+	{
 		const auto pTechnoExt = TechnoExtContainer::Instance.Find(this->Techno);
 		const auto it = pTechnoExt->LaserTrails.find_if([pTrail](auto const& item) { return item.get() == pTrail; });
 
@@ -24,7 +24,6 @@ PhobosAttachEffectClass::~PhobosAttachEffectClass()
 
 		this->LaserTrail = nullptr;
 	}
-
 }
 
 void PhobosAttachEffectClass::Initialize(PhobosAttachEffectTypeClass* pType, TechnoClass* pTechno, HouseClass* pInvokerHouse,
@@ -49,10 +48,11 @@ void PhobosAttachEffectClass::Initialize(PhobosAttachEffectTypeClass* pType, Tec
 		this->Duration = MaxImpl(static_cast<int>(this->Duration * verses.Verses), 0);
 	}
 
-	if (pInvoker) {
+	if (pInvoker)
+	{
 		auto pInvokerExt = TechnoExtContainer::Instance.Find(pInvoker);
 
-		if(pType->Duration_ApplyFirepowerMult)
+		if (pType->Duration_ApplyFirepowerMult)
 			this->Duration = static_cast<int>(this->Duration * pInvoker->FirepowerMultiplier * pInvokerExt->AE.FirepowerMultiplier);
 	}
 
@@ -70,11 +70,11 @@ void PhobosAttachEffectClass::Initialize(PhobosAttachEffectTypeClass* pType, Tec
 	this->IsOnline = true;
 	this->IsCloaked = false;
 
-	if (this->InitialDelay <= 0) {
+	if (this->InitialDelay <= 0)
+	{
 		this->HasInitialized = true;
 		if (auto pTag = pTechno->AttachedTag)
 			pTag->RaiseEvent((TriggerEvent)PhobosTriggerEvent::AttachedIsUnderAttachedEffect, pTechno, CellStruct::Empty);
-
 	}
 
 	this->HasInitialized = (initialDelay <= 0);
@@ -84,12 +84,12 @@ void PhobosAttachEffectClass::Initialize(PhobosAttachEffectTypeClass* pType, Tec
 
 	const int laserTrailIdx = pType->LaserTrail_Type;
 
-	if (laserTrailIdx != -1) {
+	if (laserTrailIdx != -1)
+	{
 		pTechnoExt->LaserTrails.emplace_back(
 			std::move(std::make_unique<LaserTrailClass>(LaserTrailTypeClass::Array[laserTrailIdx].get(), pTechno->Owner->LaserColor)));
 		this->LaserTrail = pTechnoExt->LaserTrails.back().get();
 	}
-
 }
 
 void PhobosAttachEffectClass::InvalidatePointer(AbstractClass* ptr, bool removed)
@@ -142,7 +142,8 @@ void PhobosAttachEffectClass::AI()
 
 	if (this->CurrentDelay > 0)
 	{
-		if (!this->ShouldBeDiscardedNow()) {
+		if (!this->ShouldBeDiscardedNow())
+		{
 			this->CurrentDelay--;
 
 			if (this->CurrentDelay == 0)
@@ -210,8 +211,8 @@ void PhobosAttachEffectClass::AI_Temporal()
 		this->IsUnderTemporal = true;
 		this->CloakCheck();
 
-	if (!this->Animation && this->CanShowAnim())
-		this->CreateAnim();
+		if (!this->Animation && this->CanShowAnim())
+			this->CreateAnim();
 
 		if (this->Animation)
 		{
@@ -261,12 +262,14 @@ void PhobosAttachEffectClass::UpdateAnimLogic()
 		}
 	}
 
-	if (this->Animation && this->Type->Animation_DrawOffsets.size() > 0) {
+	if (this->Animation && this->Type->Animation_DrawOffsets.size() > 0)
+	{
 		auto const pAnimExt = AnimExtContainer::Instance.Find(this->Animation);
 		//auto const pTechnoExt = TechnoExtContainer::Instance.Find(this->Techno);
 		pAnimExt->AEDrawOffset = Point2D::Empty;
 
-		for (auto& drawOffset : this->Type->Animation_DrawOffsets) {
+		for (auto& drawOffset : this->Type->Animation_DrawOffsets)
+		{
 			if (drawOffset.RequiredTypes.size() < 1 || PhobosAEFunctions::HasAttachedEffects(this->Techno, drawOffset.RequiredTypes, false, false, nullptr, nullptr, nullptr, nullptr, true))
 				pAnimExt->AEDrawOffset += drawOffset.Offset;
 		}
@@ -278,7 +281,8 @@ void PhobosAttachEffectClass::UpdateCumulativeAnim(int count)
 	if (!this->HasCumulativeAnim || !this->Animation)
 		return;
 
-	if (count < 1) {
+	if (count < 1)
+	{
 		this->KillAnim();
 		return;
 	}
@@ -395,13 +399,15 @@ void PhobosAttachEffectClass::CreateAnim()
 	if (this->IsCloaked && AnimTypeExtContainer::Instance.Find(pAnimType)->DetachOnCloak)
 		return;
 
-	if (!this->Animation) {
+	if (!this->Animation)
+	{
 		this->Animation.reset(GameCreate<AnimClass>(pAnimType, this->Techno->Location));
 		this->Animation->SetOwnerObject(this->Techno);
 		this->Animation->Owner = this->Type->Animation_UseInvokerAsOwner ? InvokerHouse : this->Techno->Owner;
 		this->Animation->RemainingIterations = 0xFFu;
 		auto pAnimExt = ((FakeAnimClass*)this->Animation.get())->_GetExtData();
-		if (this->Type->Animation_UseInvokerAsOwner) {
+		if (this->Type->Animation_UseInvokerAsOwner)
+		{
 			pAnimExt->Invoker = Invoker;
 		}
 
@@ -412,11 +418,11 @@ void PhobosAttachEffectClass::CreateAnim()
 void PhobosAttachEffectClass::KillAnim()
 {
 	//Debug::LogInfo(__FUNCTION__" Executed [%s - %s]", this->Techno->GetThisClassName(), this->Techno->get_ID());
-	if (this->Animation) {
+	if (this->Animation)
+	{
 		this->Animation.detachptr();
 		AEProperties::UpdateAEAnimLogic(this->Techno);
 	}
-
 }
 
 void PhobosAttachEffectClass::SetAnimationTunnelState(bool visible)
@@ -435,7 +441,6 @@ void PhobosAttachEffectClass::RefreshDuration(int durationOverride)
 		this->Duration = durationOverride;
 	else
 		this->Duration = this->DurationOverride ? this->DurationOverride : this->Type->Duration;
-
 
 	if (auto pWH = this->Type->Duration_ApplyVersus_Warhead)
 	{
@@ -476,7 +481,8 @@ bool PhobosAttachEffectClass::ResetIfRecreatable()
 	return true;
 }
 
-bool _retTrue(bool& check) {
+bool _retTrue(bool& check)
+{
 	check = true;
 	return true;
 }
@@ -497,8 +503,8 @@ bool PhobosAttachEffectClass::ShouldBeDiscardedNow()
 	if (this->Type->DiscardOn_BelowPercent.isset() && this->Techno->GetHealthPercentage() <= this->Type->DiscardOn_BelowPercent.Get())
 		return _retTrue(this->LastDiscardCheckValue);
 
-	if(this->Type->DiscardOn != DiscardCondition::None){
-
+	if (this->Type->DiscardOn != DiscardCondition::None)
+	{
 		if (auto const pFoot = flag_cast_to<FootClass*, false>(this->Techno))
 		{
 			bool isMoving = pFoot->Locomotor->Is_Really_Moving_Now();
@@ -541,7 +547,6 @@ bool PhobosAttachEffectClass::ShouldBeDiscardedNow()
 					return _retTrue(this->LastDiscardCheckValue);
 			}
 		}
-
 	}
 
 	this->LastDiscardCheckValue = false;
@@ -582,7 +587,7 @@ int PhobosAttachEffectClass::Attach(TechnoClass* pTarget, HouseClass* pInvokerHo
 					markForRedraw = true;
 
 				if (pType->Cumulative && pType->CumulativeAnimations.size() > 0)
-					PhobosAEFunctions::UpdateCumulativeAttachEffects(pTarget, pType , nullptr);
+					PhobosAEFunctions::UpdateCumulativeAttachEffects(pTarget, pType, nullptr);
 			}
 		}
 	}
@@ -624,7 +629,7 @@ int PhobosAttachEffectClass::DetachByGroups(TechnoClass* pTarget, AEAttachInfoTy
 
 	for (auto const& attachEffect : pTargetExt->PhobosAE)
 	{
-		if(!attachEffect)
+		if (!attachEffect)
 			continue;
 
 		auto const pType = attachEffect->Type;
@@ -651,7 +656,8 @@ PhobosAttachEffectClass* PhobosAttachEffectClass::CreateAndAttach(
 
 	const auto pTargetTechnoType = pTarget->GetTechnoType();
 
-	if (pTarget->IsIronCurtained()) {
+	if (pTarget->IsIronCurtained())
+	{
 		const bool penetrates = pTarget->ProtectType == ProtectTypes::ForceShield
 			? pType->PenetratesForceShield.Get(pType->PenetratesIronCurtain) : pType->PenetratesIronCurtain;
 
@@ -674,7 +680,7 @@ PhobosAttachEffectClass* PhobosAttachEffectClass::CreateAndAttach(
 	int currentTypeCount = 0;
 	const bool cumulative = pType->Cumulative && checkCumulative;
 	PhobosAttachEffectClass* match = nullptr;
-	StackVector<PhobosAttachEffectClass* , 256> cumulativeMatches;
+	StackVector<PhobosAttachEffectClass*, 256> cumulativeMatches;
 
 	for (auto const& aePtr : targetAEs)
 	{
@@ -684,14 +690,16 @@ PhobosAttachEffectClass* PhobosAttachEffectClass::CreateAndAttach(
 		{
 			currentTypeCount++;
 
-			if (!cumulative) {
+			if (!cumulative)
+			{
 				attachEffect->RefreshDuration(attachParams.DurationOverride);
 
 				if (auto pTag = pTarget->AttachedTag)
 					pTag->RaiseEvent((TriggerEvent)PhobosTriggerEvent::AttachedIsUnderAttachedEffect, pTarget, CellStruct::Empty);
 
 				return nullptr;
-			} else if (!attachParams.CumulativeRefreshSameSourceOnly || (attachEffect->Source == pSource && attachEffect->Invoker == pInvoker))
+			}
+			else if (!attachParams.CumulativeRefreshSameSourceOnly || (attachEffect->Source == pSource && attachEffect->Invoker == pInvoker))
 			{
 				cumulativeMatches->push_back(attachEffect);
 
@@ -712,7 +720,8 @@ PhobosAttachEffectClass* PhobosAttachEffectClass::CreateAndAttach(
 					ae->RefreshDuration(attachParams.DurationOverride);
 				}
 			}
-			else if(match) {
+			else if (match)
+			{
 				match->RefreshDuration(attachParams.DurationOverride);
 			}
 
@@ -763,7 +772,8 @@ int PhobosAttachEffectClass::DetachTypes(TechnoClass* pTarget, AEAttachInfoTypeC
 		index++;
 	}
 
-	if (detachedCount > 0) {
+	if (detachedCount > 0)
+	{
 		AEProperties::Recalculate(pTarget);
 		AEProperties::UpdateAEAnimLogic(pTarget);
 	}
@@ -806,16 +816,19 @@ int PhobosAttachEffectClass::RemoveAllOfType(PhobosAttachEffectTypeClass* pType,
 		{
 			detachedCount++;
 
-			if (pType->ExpireWeapon && (pType->ExpireWeapon_TriggerOn & ExpireWeaponCondition::Remove) != ExpireWeaponCondition::None) {
-				if (!pType->Cumulative || !pType->ExpireWeapon_CumulativeOnlyOnce || stackCount == 1) {
-					PhobosAttachEffectClass::CumulateExpireWeapon(pType, pTarget, it->get()->Invoker , expireWeapons);
+			if (pType->ExpireWeapon && (pType->ExpireWeapon_TriggerOn & ExpireWeaponCondition::Remove) != ExpireWeaponCondition::None)
+			{
+				if (!pType->Cumulative || !pType->ExpireWeapon_CumulativeOnlyOnce || stackCount == 1)
+				{
+					PhobosAttachEffectClass::CumulateExpireWeapon(pType, pTarget, it->get()->Invoker, expireWeapons);
 				}
 			}
 
 			if (pType->Cumulative && pType->CumulativeAnimations.size() > 0)
 				PhobosAEFunctions::UpdateCumulativeAttachEffects(pTarget, pType, nullptr);
 
-			if (attachEffect->ResetIfRecreatable()) {
+			if (attachEffect->ResetIfRecreatable())
+			{
 				++it;
 				continue;
 			}
@@ -852,7 +865,8 @@ void PhobosAttachEffectClass::CumulateExpireWeapon(PhobosAttachEffectTypeClass* 
 
 void PhobosAttachEffectClass::DetonateExpireWeapon(std::vector<std::pair<WeaponTypeClass*, TechnoClass*>>& expireContainer)
 {
-	for (auto& [pWeapon, pTarget] : expireContainer) {
+	for (auto& [pWeapon, pTarget] : expireContainer)
+	{
 		WeaponTypeExtData::DetonateAt5(pWeapon, pTarget->Location, pTarget, pTarget, pWeapon->Damage, false, pTarget->Owner);
 	}
 }
@@ -867,12 +881,14 @@ void PhobosAttachEffectClass::TransferAttachedEffects(TechnoClass* pSource, Tech
 	for (auto it = pSourceExt->PhobosAE.begin(); it != pSourceExt->PhobosAE.end(); )
 	{
 		auto const attachEffect = it->get();
-		if(!attachEffect) {
+		if (!attachEffect)
+		{
 			it = pSourceExt->PhobosAE.erase(it);
 			continue;
 		}
 
-		if (attachEffect->IsSelfOwned()) {
+		if (attachEffect->IsSelfOwned())
+		{
 			++it;
 			continue;
 		}
@@ -880,14 +896,14 @@ void PhobosAttachEffectClass::TransferAttachedEffects(TechnoClass* pSource, Tech
 		auto const type = attachEffect->GetType();
 
 		const bool isValid = EnumFunctions::IsTechnoEligible(pTarget, type->AffectTargets, true)
-		&& (type->AffectTypes.empty() || type->AffectTypes.Contains(pTarget->GetTechnoType()))
-		&& !type->IgnoreTypes.Contains(pTarget->GetTechnoType());
+			&& (type->AffectTypes.empty() || type->AffectTypes.Contains(pTarget->GetTechnoType()))
+			&& !type->IgnoreTypes.Contains(pTarget->GetTechnoType());
 
-		if (!isValid) {
+		if (!isValid)
+		{
 			it = pSourceExt->PhobosAE.erase(it);
 			continue;
 		}
-
 
 		int currentTypeCount = 0;
 		PhobosAttachEffectClass* match = nullptr;
@@ -896,7 +912,7 @@ void PhobosAttachEffectClass::TransferAttachedEffects(TechnoClass* pSource, Tech
 
 		for (auto const& aePtr : pTargetExt->PhobosAE)
 		{
-			if(!aePtr)
+			if (!aePtr)
 				continue;
 
 			auto const targetAttachEffect = aePtr.get();
@@ -904,10 +920,13 @@ void PhobosAttachEffectClass::TransferAttachedEffects(TechnoClass* pSource, Tech
 			if (targetAttachEffect->GetType() == type)
 			{
 				currentTypeCount++;
-				if (!cumulative) {
+				if (!cumulative)
+				{
 					match = targetAttachEffect;
 					break;
-				} else if (targetAttachEffect->Source == attachEffect->Source && targetAttachEffect->Invoker == attachEffect->Invoker) {
+				}
+				else if (targetAttachEffect->Source == attachEffect->Source && targetAttachEffect->Invoker == attachEffect->Invoker)
+				{
 					if (!match || targetAttachEffect->Duration < match->Duration)
 						sourceMatch = targetAttachEffect;
 				}
@@ -918,12 +937,13 @@ void PhobosAttachEffectClass::TransferAttachedEffects(TechnoClass* pSource, Tech
 		{
 			if (!cumulative || (type->Cumulative_MaxCount >= 0 && currentTypeCount >= type->Cumulative_MaxCount))
 				match->Duration = MaxImpl(match->Duration, attachEffect->Duration);
-
-		} else {
+		}
+		else
+		{
 			AEAttachParams info {};
 			info.DurationOverride = attachEffect->DurationOverride;
 
-			if (auto const pAE = PhobosAttachEffectClass::CreateAndAttach(type, pTarget, pTargetExt->PhobosAE, attachEffect->InvokerHouse, attachEffect->Invoker, attachEffect->Source, info , false))
+			if (auto const pAE = PhobosAttachEffectClass::CreateAndAttach(type, pTarget, pTargetExt->PhobosAE, attachEffect->InvokerHouse, attachEffect->Invoker, attachEffect->Source, info, false))
 				pAE->Duration = attachEffect->Duration;
 		}
 
@@ -931,7 +951,8 @@ void PhobosAttachEffectClass::TransferAttachedEffects(TechnoClass* pSource, Tech
 		it = pSourceExt->PhobosAE.erase(it);
 	}
 
-	if (transferCount) {
+	if (transferCount)
+	{
 		AEProperties::UpdateAEAnimLogic(pSource);
 		AEProperties::UpdateAEAnimLogic(pTarget);
 	}
@@ -983,4 +1004,3 @@ bool PhobosAttachEffectClass::Save(PhobosStreamWriter& Stm) const
 {
 	return const_cast<PhobosAttachEffectClass*>(this)->Serialize(Stm);
 }
-

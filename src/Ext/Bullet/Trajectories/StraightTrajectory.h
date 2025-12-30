@@ -14,11 +14,11 @@ public:
 	StraightTrajectoryType(TrajectoryFlag variant) : PhobosTrajectoryType { variant }
 	{ }
 
-	StraightTrajectoryType() : PhobosTrajectoryType {TrajectoryFlag::Straight}
+	StraightTrajectoryType() : PhobosTrajectoryType { TrajectoryFlag::Straight }
 	{ }
 
 	virtual ~StraightTrajectoryType() = default;
-	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override  { }
+	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override { }
 	virtual bool Load(PhobosStreamReader& Stm, bool RegisterForChange) override;
 	virtual bool Save(PhobosStreamWriter& Stm) const override;
 
@@ -48,12 +48,12 @@ public:
 	StraightTrajectory() : PhobosTrajectory { TrajectoryFlag::Straight }
 	{ }
 
-	StraightTrajectory(TrajectoryFlag varian , BulletClass* pBullet, PhobosTrajectoryType* pType) :
-		PhobosTrajectory { varian , pBullet , pType } {
-	}
+	StraightTrajectory(TrajectoryFlag varian, BulletClass* pBullet, PhobosTrajectoryType* pType) :
+		PhobosTrajectory { varian , pBullet , pType }
+	{ }
 
 	StraightTrajectory(BulletClass* pBullet, PhobosTrajectoryType* pType) :
-		PhobosTrajectory {TrajectoryFlag::Straight , pBullet , pType }
+		PhobosTrajectory { TrajectoryFlag::Straight , pBullet , pType }
 	{ }
 
 	virtual ~StraightTrajectory() override = default;

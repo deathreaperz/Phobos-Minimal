@@ -42,7 +42,6 @@ static NOINLINE void* sysAllocateDoNotZero(Int numBytes)
 	if (!p)
 		MessageBox(NULL, "GlobalAlloc failed", "Error", MB_OK);
 
-
 	return p;
 }
 
@@ -296,7 +295,8 @@ MemoryPool* MemoryPoolFactory::createMemoryPool(const char* poolName, Int alloca
 
 void MemoryPoolFactory::reportAllocation()
 {
-	for (MemoryPool* pool = this->m_firstPoolInFactory; pool; pool = pool->getNextPoolInList()) {
+	for (MemoryPool* pool = this->m_firstPoolInFactory; pool; pool = pool->getNextPoolInList())
+	{
 		Debug::LogInfo("{} MemoryPool size {}", pool->getPoolName(), pool->getAllocationSize());
 	}
 }
@@ -713,7 +713,6 @@ void MemoryPool::freeBlock(void* pMem)
 	MemoryPoolSingleBlock* block = MemoryPoolSingleBlock::recoverBlockFromUserData(pMem);
 	MemoryPoolBlob* blob = block->getOwningBlob();
 
-
 	blob->freeSingleBlock(block);
 
 	// if we want to free the blobs as they become empty, do that here.
@@ -783,7 +782,6 @@ void MemoryPool::reset()
 	m_firstBlobWithFreeBlocks = NULL;
 
 	init(m_factory, m_poolName, m_allocationSize, m_initialAllocationCount, m_overflowAllocationCount);	// will throw on failure
-
 }
 
 #pragma endregion
@@ -950,7 +948,6 @@ void DynamicMemoryAllocator::freeBytes(void* pMem)
 		block->removeBlockFromList(&m_rawBlocks);
 
 		::sysFree((void*)block);
-
 	}
 	--m_usedBlocksInDma;
 }

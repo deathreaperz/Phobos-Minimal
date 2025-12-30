@@ -41,13 +41,13 @@ extern "C" {
 
 #ifndef ZYAN_NO_LIBC
 
-/* ============================================================================================== */
-/* VT100 CSI SGR sequences                                                                        */
-/* ============================================================================================== */
+	/* ============================================================================================== */
+	/* VT100 CSI SGR sequences                                                                        */
+	/* ============================================================================================== */
 
-/* ---------------------------------------------------------------------------------------------- */
-/* General                                                                                        */
-/* ---------------------------------------------------------------------------------------------- */
+	/* ---------------------------------------------------------------------------------------------- */
+	/* General                                                                                        */
+	/* ---------------------------------------------------------------------------------------------- */
 
 #define ZYAN_VT100SGR_RESET             "\033[0m"
 
@@ -106,52 +106,52 @@ extern "C" {
 /**
  * Declares the `ZyanStandardStream` enum.
  */
-typedef enum ZyanStandardStream_
-{
-    /**
-     * The default input stream.
-     */
-    ZYAN_STDSTREAM_IN,
-    /**
-     * The default output stream.
-     */
-    ZYAN_STDSTREAM_OUT,
-    /**
-     * The default error stream.
-     */
-    ZYAN_STDSTREAM_ERR
-} ZyanStandardStream;
+	typedef enum ZyanStandardStream_
+	{
+		/**
+		 * The default input stream.
+		 */
+		ZYAN_STDSTREAM_IN,
+		/**
+		 * The default output stream.
+		 */
+		ZYAN_STDSTREAM_OUT,
+		/**
+		 * The default error stream.
+		 */
+		ZYAN_STDSTREAM_ERR
+	} ZyanStandardStream;
 
-/* ============================================================================================== */
-/* Exported functions                                                                             */
-/* ============================================================================================== */
+	/* ============================================================================================== */
+	/* Exported functions                                                                             */
+	/* ============================================================================================== */
 
-/**
- * Enables VT100 ansi escape codes for the given stream.
- *
- * @param   stream  Either `ZYAN_STDSTREAM_OUT` or `ZYAN_STDSTREAM_ERR`.
- *
- * @return  A zyan status code.
- *
- * This functions returns `ZYAN_STATUS_SUCCESS` on all non-Windows systems without performing any
- * operations, assuming that VT100 is supported by default.
- *
- * On Windows systems, VT100 functionality is only supported on Windows 10 build 1607 (anniversary
- * update) and later.
- */
-ZYCORE_EXPORT ZyanStatus ZyanTerminalEnableVT100(ZyanStandardStream stream);
+	/**
+	 * Enables VT100 ansi escape codes for the given stream.
+	 *
+	 * @param   stream  Either `ZYAN_STDSTREAM_OUT` or `ZYAN_STDSTREAM_ERR`.
+	 *
+	 * @return  A zyan status code.
+	 *
+	 * This functions returns `ZYAN_STATUS_SUCCESS` on all non-Windows systems without performing any
+	 * operations, assuming that VT100 is supported by default.
+	 *
+	 * On Windows systems, VT100 functionality is only supported on Windows 10 build 1607 (anniversary
+	 * update) and later.
+	 */
+	ZYCORE_EXPORT ZyanStatus ZyanTerminalEnableVT100(ZyanStandardStream stream);
 
-/**
- * Checks, if the given standard stream reads from or writes to a terminal.
- *
- * @param   stream  The standard stream to check.
- *
- * @return  `ZYAN_STATUS_TRUE`, if the stream is bound to a terminal, `ZYAN_STATUS_FALSE` if not,
- *          or another zyan status code if an error occured.
- */
-ZYCORE_EXPORT ZyanStatus ZyanTerminalIsTTY(ZyanStandardStream stream);
+	/**
+	 * Checks, if the given standard stream reads from or writes to a terminal.
+	 *
+	 * @param   stream  The standard stream to check.
+	 *
+	 * @return  `ZYAN_STATUS_TRUE`, if the stream is bound to a terminal, `ZYAN_STATUS_FALSE` if not,
+	 *          or another zyan status code if an error occured.
+	 */
+	ZYCORE_EXPORT ZyanStatus ZyanTerminalIsTTY(ZyanStandardStream stream);
 
-/* ============================================================================================== */
+	/* ============================================================================================== */
 
 #endif // ZYAN_NO_LIBC
 

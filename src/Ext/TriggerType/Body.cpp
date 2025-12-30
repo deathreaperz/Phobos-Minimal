@@ -9,7 +9,8 @@
 
 HouseClass* TriggerTypeExtData::ResolveHouseParam(int const param, HouseClass* const pOwnerHouse)
 {
-	if (param == 8997) {
+	if (param == 8997)
+	{
 		return pOwnerHouse;
 	}
 

@@ -1159,11 +1159,11 @@ void ScriptExtData::Mission_Gather_NearTheLeader(TeamClass* pTeam, int countdown
 
 		if (!ScriptExtData::IsUnitAvailable(pLeaderUnit, true))
 		{
-			if(pLeaderUnit)
+			if (pLeaderUnit)
 				pLeaderUnit->IsTeamLeader = false;
 
 			pLeaderUnit = pTeam->FetchLeader();
-			pLeaderUnit->IsTeamLeader= true;
+			pLeaderUnit->IsTeamLeader = true;
 			pExt->TeamLeader = pLeaderUnit;
 		}
 
@@ -2545,7 +2545,7 @@ void ScriptExtData::SimpleDeployerDeploy(TeamClass* pTeam, int mode)
 				auto cacheIt = cellSearchCache.find(pSimpleUnit);
 				if (cacheIt != cellSearchCache.end())
 				{
-					auto&[cachedCell, cacheFrame] = cacheIt->second;
+					auto& [cachedCell, cacheFrame] = cacheIt->second;
 					// Use cache if it's less than 30 frames old (~1 second)
 					if (frameCounter - cacheFrame < 30 && cachedCell)
 					{

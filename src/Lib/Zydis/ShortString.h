@@ -40,9 +40,9 @@
 extern "C" {
 #endif
 
-/* ============================================================================================== */
-/* Enums and types                                                                                */
-/* ============================================================================================== */
+	/* ============================================================================================== */
+	/* Enums and types                                                                                */
+	/* ============================================================================================== */
 
 #if !defined(ZYAN_APPLE)
 #   pragma pack(push, 1)
@@ -56,35 +56,35 @@ extern "C" {
  * All fields in this struct should be considered as "private". Any changes may lead to unexpected
  * behavior.
  */
-typedef struct ZydisShortString_
-{
-    /**
-     * The buffer that contains the actual (null-terminated) string.
-    */
-    const char* data;
-    /**
-     * The length (number of characters) of the string (without 0-termination).
-    */
-    ZyanU8 size;
-} ZydisShortString;
+	typedef struct ZydisShortString_
+	{
+		/**
+		 * The buffer that contains the actual (null-terminated) string.
+		*/
+		const char* data;
+		/**
+		 * The length (number of characters) of the string (without 0-termination).
+		*/
+		ZyanU8 size;
+	} ZydisShortString;
 
 #if !defined(ZYAN_APPLE)
 #   pragma pack(pop)
 #endif
 
-/* ============================================================================================== */
-/* Macros                                                                                         */
-/* ============================================================================================== */
+	/* ============================================================================================== */
+	/* Macros                                                                                         */
+	/* ============================================================================================== */
 
-/**
- * Declares a `ZydisShortString` from a static C-style string.
- *
- * @param   string  The C-string constant.
- */
+	/**
+	 * Declares a `ZydisShortString` from a static C-style string.
+	 *
+	 * @param   string  The C-string constant.
+	 */
 #define ZYDIS_MAKE_SHORTSTRING(string) \
     { string, sizeof(string) - 1 }
 
-/* ============================================================================================== */
+	 /* ============================================================================================== */
 
 #ifdef __cplusplus
 }

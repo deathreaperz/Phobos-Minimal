@@ -49,7 +49,6 @@ ASMJIT_PATCH(0x53B080, PsyDom_Fire, 5)
 
 		if (pWarhead && damage != 0)
 		{
-
 			//this update every frame , so getting the firer here , seems degreading the performance ,..
 			DamageArea::Apply(&coords, damage, pNewData->GetFirer(pSuper, cell, false), pWarhead, true, pFirer);
 		}

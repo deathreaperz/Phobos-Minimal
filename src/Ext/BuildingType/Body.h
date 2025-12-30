@@ -498,9 +498,7 @@ public:
 		this->InitializeConstant();
 		this->NextBuilding_CurrentHeapId = pObj->ArrayIndex;
 		this->AbsType = BuildingTypeClass::AbsID;
-
 	}
-
 
 	BuildingTypeExtData(BuildingTypeClass* pObj, noinit_t nn) : TechnoTypeExtData(pObj, nn) { }
 
@@ -535,7 +533,7 @@ public:
 	const BuildingTypeClass* This_Const() const { return reinterpret_cast<const BuildingTypeClass*>(this->AttachedToObject); }
 
 	virtual bool LoadFromINI(CCINIClass* pINI, bool parseFailAddr);
-	virtual bool WriteToINI(CCINIClass* pINI) const {  return true; }
+	virtual bool WriteToINI(CCINIClass* pINI) const { return true; }
 
 public:
 
@@ -576,7 +574,6 @@ public:
 	//{
 	//	COMPILETIMEEVAL void operator ()(BuildingClass* pThis)
 	//	{
-
 	//		if COMPILETIMEEVAL (UpSound == BunkerSoundMode::Up)
 	//		{
 	//			const auto nSound = BuildingTypeExtContainer::Instance.Find(pThis->Type)->BunkerWallsUpSound.Get(RulesClass::Instance->BunkerWallsUpSound);
@@ -649,7 +646,8 @@ public:
 
 	bool _CanUseWaypoint();
 
-	BuildingTypeExtData* _GetExtData() {
+	BuildingTypeExtData* _GetExtData()
+	{
 		return *reinterpret_cast<BuildingTypeExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 

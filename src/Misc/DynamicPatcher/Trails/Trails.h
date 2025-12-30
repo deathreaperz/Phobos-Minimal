@@ -16,7 +16,7 @@ class UniversalTrail
 public:
 
 	TrailType* Type;
-	OptionalStruct<CoordStruct,true> LastLocation;
+	OptionalStruct<CoordStruct, true> LastLocation;
 	CDTimerClass DelayTimer;
 	CoordStruct FLH;
 	int initialDelay;
@@ -28,12 +28,12 @@ public:
 	HelperedVector<LandType> OnLandTypes;
 	HelperedVector<TileType> OnTileTypes;
 
-	UniversalTrail(TrailType* type ,CoordStruct flh, bool onturret) :
+	UniversalTrail(TrailType* type, CoordStruct flh, bool onturret) :
 		Type { type }
 		, LastLocation { }
 		, DelayTimer { }
 		, FLH { flh }
-		, initialDelay { type->InitialDelay > 0 ? type->InitialDelay:0 }
+		, initialDelay { type->InitialDelay > 0 ? type->InitialDelay : 0 }
 		, canDraw { !(type->InitialDelay > 0) }
 		, forceDraw { false }
 		, IsOnTurret { onturret }
@@ -63,7 +63,8 @@ public:
 	UniversalTrail(const UniversalTrail& other) = default;
 	UniversalTrail& operator=(const UniversalTrail& other) = default;
 
-	void ClearLastLocation() {
+	void ClearLastLocation()
+	{
 		LastLocation.reset();
 	}
 
@@ -76,7 +77,7 @@ public:
 		}
 	}
 
-	void RealDrawTrail(CoordStruct& sourcePos, CoordStruct& targetPos, HouseClass* pHouse, TechnoClass* pAnimInvoker , HouseClass* pHouseVictim)
+	void RealDrawTrail(CoordStruct& sourcePos, CoordStruct& targetPos, HouseClass* pHouse, TechnoClass* pAnimInvoker, HouseClass* pHouseVictim)
 	{
 		switch (Type->Mode)
 		{
@@ -95,17 +96,17 @@ public:
 			EffectHelpers::DrawBeam(sourcePos, targetPos, Type->BeamTrailType, ColorStruct::Empty);
 			break;
 		case TrailMode::PARTICLE:
-			EffectHelpers::DrawParticle(pHouse,sourcePos, targetPos, Type->ParticleTrailType.ParticleSystem.Get());
+			EffectHelpers::DrawParticle(pHouse, sourcePos, targetPos, Type->ParticleTrailType.ParticleSystem.Get());
 			break;
 		case TrailMode::ANIM:
-			DrawAnimTrail(sourcePos, pHouse , pAnimInvoker , pHouseVictim);
+			DrawAnimTrail(sourcePos, pHouse, pAnimInvoker, pHouseVictim);
 			break;
 		}
 	}
 
 	void DrawAnimTrail(CoordStruct& sourcePos, HouseClass* pAnimHouse, TechnoClass* pAnimInvoker, HouseClass* pHouseVictim);
 
-	void DrawTrail(HouseClass* pHouse, CoordStruct& sourcePos, const CoordStruct& createOffset , TechnoClass* pAnimInvoker = nullptr, HouseClass* pHouseVictim = nullptr)
+	void DrawTrail(HouseClass* pHouse, CoordStruct& sourcePos, const CoordStruct& createOffset, TechnoClass* pAnimInvoker = nullptr, HouseClass* pHouseVictim = nullptr)
 	{
 		if (!pHouse)
 			pHouse = HouseExtData::FindFirstCivilianHouse();
@@ -124,7 +125,7 @@ public:
 						forceDraw = false;
 						if (IsOnLand(sourcePos))
 						{
-							RealDrawTrail(sourcePos, targetPos, pHouse , pAnimInvoker , pHouseVictim);
+							RealDrawTrail(sourcePos, targetPos, pHouse, pAnimInvoker, pHouseVictim);
 						}
 						drivingState = DrivingState::Moving;
 					}
@@ -163,11 +164,12 @@ private:
 
 	bool IsOnTile(CellClass* pCell)
 	{
-		auto const pCount = std::ranges::count_if(OnTileTypes, [pCell](TileType const& nTile) {
-			if (nTile == TileType::Unk || ((int)nTile >= 21))
-				return false;
+		auto const pCount = std::ranges::count_if(OnTileTypes, [pCell](TileType const& nTile)
+ {
+	 if (nTile == TileType::Unk || ((int)nTile >= 21))
+		 return false;
 
-			return (pCell)->TileIs(nTile);
+	 return (pCell)->TileIs(nTile);
 		});
 
 		return pCount > 0;
@@ -183,7 +185,8 @@ private:
 
 				if (OnLandTypes.contains(landType))
 				{
-					if (!OnTileTypes.empty()) {
+					if (!OnTileTypes.empty())
+					{
 						return IsOnTile(pCell);
 					}
 
@@ -211,24 +214,23 @@ private:
 		//Debug::LogInfo("Processing Element From UniversalTrail ! ");
 
 		return Stm
-		.Process(Type)
-		.Process(LastLocation)
-		.Process(DelayTimer)
-		.Process(FLH)
-		.Process(initialDelay)
-		.Process(canDraw)
-		.Process(forceDraw)
-		.Process(IsOnTurret)
-		.Process(Visible)
-		.Process(drivingState)
-		.Process(OnLandTypes)
-		.Process(OnTileTypes)
-		.Success()
+			.Process(Type)
+			.Process(LastLocation)
+			.Process(DelayTimer)
+			.Process(FLH)
+			.Process(initialDelay)
+			.Process(canDraw)
+			.Process(forceDraw)
+			.Process(IsOnTurret)
+			.Process(Visible)
+			.Process(drivingState)
+			.Process(OnLandTypes)
+			.Process(OnTileTypes)
+			.Success()
 			//&& Stm.RegisterChange(this)
 			;
 	}
 };
-
 
 template <>
 struct Savegame::ObjectFactory<UniversalTrail>

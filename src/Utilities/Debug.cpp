@@ -2,7 +2,6 @@
 #include "Macro.h"
 #include <Phobos.h>
 
-
 #include <MouseClass.h>
 #include <Surface.h>
 
@@ -44,9 +43,10 @@ bool Debug::made {};
 
 #pragma endregion
 
-void Debug::InitLogger() {
-
-	if (!std::filesystem::exists(Debug::LogFilePathName.c_str())) {
+void Debug::InitLogger()
+{
+	if (!std::filesystem::exists(Debug::LogFilePathName.c_str()))
+	{
 		Debug::FatalError("Uneable to find %ls path !", Debug::LogFilePathName.c_str());
 		Debug::LogEnabled = false;
 		return;
@@ -54,7 +54,8 @@ void Debug::InitLogger() {
 
 	Debug::LogFile = _wfsopen(Debug::LogFileFullPath.c_str(), L"w", _SH_DENYWR);
 
-	if (!LogFile) {
+	if (!LogFile)
+	{
 		Debug::LogEnabled = false;
 		return;
 	}
@@ -64,7 +65,8 @@ void Debug::InitLogger() {
 
 void Debug::DeactivateLogger()
 {
-	if (Debug::LogFile) {
+	if (Debug::LogFile)
+	{
 		fclose(Debug::LogFile);
 		Debug::LogFile = nullptr;
 		Debug::LogEnabled = false;
@@ -73,13 +75,14 @@ void Debug::DeactivateLogger()
 
 void Debug::DetachLogger()
 {
-	if (Debug::LogFileActive() && Debug::made) {
-
+	if (Debug::LogFileActive() && Debug::made)
+	{
 		//Debug::g_MainLogger->info("Closing log file on program termination");
 
 		Debug::DeactivateLogger();
 
-		if (std::filesystem::exists(Debug::LogFileFullPath.c_str())) {
+		if (std::filesystem::exists(Debug::LogFileFullPath.c_str()))
+		{
 			CopyFileW(Debug::LogFileFullPath.c_str(), Debug::LogFileMainFormattedName.c_str(), FALSE);
 		}
 	}
@@ -87,7 +90,8 @@ void Debug::DetachLogger()
 
 void Debug::PrepareLogFile()
 {
-	if (!made) {
+	if (!made)
+	{
 		wchar_t path[MAX_PATH];
 		GetCurrentDirectoryW(MAX_PATH, path);
 		Debug::ApplicationFilePath = path;
@@ -95,14 +99,15 @@ void Debug::PrepareLogFile()
 		Debug::LogFilePathName += L"\\debug";
 		std::filesystem::path logDir = std::filesystem::path(Debug::LogFilePathName);
 		std::error_code ec;
-		std::filesystem::create_directories(logDir , ec);
+		std::filesystem::create_directories(logDir, ec);
 
-		if(ec){
-			Debug::FatalErrorAndExit("Failedtocreate dir %ls reason %s!\n" , Debug::LogFilePathName.c_str() , ec.message().c_str());
+		if (ec)
+		{
+			Debug::FatalErrorAndExit("Failedtocreate dir %ls reason %s!\n", Debug::LogFilePathName.c_str(), ec.message().c_str());
 			return;
 		}
 
-		Debug::LogFileFullPath = logDir.wstring() + L"\\" +  (Debug::LogFileMainName + Debug::LogFileExt);
+		Debug::LogFileFullPath = logDir.wstring() + L"\\" + (Debug::LogFileMainName + Debug::LogFileExt);
 		Debug::LogFileMainFormattedName = Debug::LogFilePathName + L"\\" + Debug::LogFileMainName + L"." + GetCurTime() + Debug::LogFileExt;
 
 		made = 1;
@@ -111,16 +116,16 @@ void Debug::PrepareLogFile()
 
 void Debug::DumpStack(REGISTERS* R, size_t len, int startAt)
 {
-	if (!Debug::LogFileActive()) {
+	if (!Debug::LogFileActive())
+	{
 		return;
 	}
 
-	fprintf_s(Debug::LogFile, "Dumping %d bytes of stack\n" , len);
+	fprintf_s(Debug::LogFile, "Dumping %d bytes of stack\n", len);
 	auto const end = len / 4;
 	auto const* const mem = R->lea_Stack<DWORD*>(startAt);
 	for (auto i = 0u; i < end; ++i)
 	{
-
 		const char* suffix = "";
 		const char* Object = "";
 		const uintptr_t ptr = mem[i];
@@ -159,7 +164,7 @@ void Debug::DumpStack(REGISTERS* R, size_t len, int startAt)
 				break;
 			}
 		}
-		fprintf_s(Debug::LogFile, "esp+%04X = %08X %s %s\n", i * 4, mem[i], suffix , Object);
+		fprintf_s(Debug::LogFile, "esp+%04X = %08X %s %s\n", i * 4, mem[i], suffix, Object);
 	}
 
 	fprintf_s(Debug::LogFile, "====================Done.\n");
@@ -170,13 +175,14 @@ std::wstring Debug::PrepareSnapshotDirectory()
 {
 	const std::wstring buffer = Debug::LogFilePathName + L"\\snapshot-" + Debug::GetCurTime();
 	std::error_code ec;
-	std::filesystem::create_directories(buffer,ec);
+	std::filesystem::create_directories(buffer, ec);
 
-	if (ec) {
+	if (ec)
+	{
 		std::wstring msg = fmt::format(L"Log file failed to create snapshor dir {} .\n Error code = {}",
-			Debug::LogFileFullPath , PhobosCRT::StringToWideString(ec.message()));
+			Debug::LogFileFullPath, PhobosCRT::StringToWideString(ec.message()));
 
-		MessageBoxW(Game::hWnd.get(), msg.c_str(), L"Error!" , MB_OK | MB_ICONEXCLAMATION);
+		MessageBoxW(Game::hWnd.get(), msg.c_str(), L"Error!", MB_OK | MB_ICONEXCLAMATION);
 		Phobos::ExeTerminate();
 		exit(errno);
 	}
@@ -184,8 +190,10 @@ std::wstring Debug::PrepareSnapshotDirectory()
 	return buffer;
 }
 
-void Debug::LogFileRemove() {
-	if (std::filesystem::exists(Debug::LogFileFullPath.c_str())) {
+void Debug::LogFileRemove()
+{
+	if (std::filesystem::exists(Debug::LogFileFullPath.c_str()))
+	{
 		DeleteFileW(Debug::LogFileFullPath.c_str());
 	}
 }
@@ -242,15 +250,16 @@ void Debug::FatalErrorCore(bool Dump, const std::string& msg)
 {
 	const bool log = Debug::LogFileActive();
 
-	if (msg.empty()) {
-
+	if (msg.empty())
+	{
 		if (log)
 			fprintf_s(Debug::LogFile, "Fatal Error: %ls\n", DefaultFEMessage.c_str());
 
 		Debug::FreeMouse();
 		MessageBoxW(Game::hWnd, DefaultFEMessage.c_str(), L"Fatal Error - Yuri's Revenge", MB_OK | MB_ICONERROR);
-	} else {
-
+	}
+	else
+	{
 		if (log)
 			fprintf_s(Debug::LogFile, "Fatal Error: %s\n", msg.c_str());
 
@@ -258,22 +267,25 @@ void Debug::FatalErrorCore(bool Dump, const std::string& msg)
 		MessageBoxA(Game::hWnd, msg.c_str(), "Fatal Error - Yuri's Revenge", MB_OK | MB_ICONERROR);
 	}
 
-	if (Dump) {
+	if (Dump)
+	{
 		Debug::FullDump();
 	}
 }
 
 void Debug::INIParseFailed(const char* section, const char* flag, const char* value, const char* Message)
 {
-	if (Phobos::Otamaa::TrackParserErrors && Debug::LogEnabled) {
-
-		if (!Message) {
+	if (Phobos::Otamaa::TrackParserErrors && Debug::LogEnabled)
+	{
+		if (!Message)
+		{
 			fprintf_s(Debug::LogFile, "[Phobos] Failed to parse INI file content: [%s]%s=%s.\n", section, flag, value);
-		} else {
+		}
+		else
+		{
 			fprintf_s(Debug::LogFile, "[Phobos] Failed to parse INI file content: [%s]%s=%s (%s).\n", section, flag, value, Message);
 		}
 
 		Debug::RegisterParserError();
 	}
 }
-

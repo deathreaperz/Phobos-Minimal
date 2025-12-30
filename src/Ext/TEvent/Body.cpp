@@ -97,7 +97,7 @@ bool TEventExtData::AttachedIsUnderAttachedEffectTEvent(TEventClass* pThis, Obje
 		return false;
 	}
 
-	auto const pTechno = flag_cast_to<TechnoClass* , false>(pObject);
+	auto const pTechno = flag_cast_to<TechnoClass*, false>(pObject);
 
 	if (!pTechno)
 		return false;
@@ -127,7 +127,6 @@ bool TEventExtData::Occured(TEventClass* pThis, EventArgs const& args, bool& res
 
 	switch (TEventKind)
 	{
-
 #pragma region LovalVariableManipulation
 	case PhobosTriggerEvent::LocalVariableGreaterThan:
 		result = TEventExtData::VariableCheck<false, std::greater<int>>(pThis);
@@ -239,7 +238,7 @@ bool TEventExtData::Occured(TEventClass* pThis, EventArgs const& args, bool& res
 		break;
 #pragma endregion
 
-//TODO compare agains like vanilla does ?
+		//TODO compare agains like vanilla does ?
 #pragma region PhobosEvent
 	/*
 	*	- PersistableFlag ?
@@ -289,12 +288,12 @@ HouseClass* TEventExtData::GetHouse(int TEvetValue, HouseClass* pEventHouse)
 
 bool TEventExtData::CellHasAnyTechnoTypeFromListTEvent(TEventClass* pThis, ObjectClass* pObject, HouseClass* pEventHouse)
 {
-
 	if (!pObject)
 		return false;
 
 	int desiredListIdx = -1;
-	if (sscanf_s(pThis->String, "%d", &desiredListIdx) <= 0 || desiredListIdx < 0) {
+	if (sscanf_s(pThis->String, "%d", &desiredListIdx) <= 0 || desiredListIdx < 0)
+	{
 		Debug::LogInfo("Error in event {}. The parameter 2 '{}' isn't a valid index value for [AITargetTypes]",
 			static_cast<int>(pThis->EventKind),
 			pThis->String
@@ -310,11 +309,14 @@ bool TEventExtData::CellHasAnyTechnoTypeFromListTEvent(TEventClass* pThis, Objec
 
 	bool found = false;
 
-	if (auto const pTechno = flag_cast_to<TechnoClass*, false>(pObject)) {
+	if (auto const pTechno = flag_cast_to<TechnoClass*, false>(pObject))
+	{
 		auto const pTechnoType = pTechno->GetTechnoType();
 
-		for (const auto& pDesiredItem : RulesExtData::Instance()->AITargetTypesLists[desiredListIdx]) {
-			if (pDesiredItem == pTechnoType) {
+		for (const auto& pDesiredItem : RulesExtData::Instance()->AITargetTypesLists[desiredListIdx])
+		{
+			if (pDesiredItem == pTechnoType)
+			{
 				HouseClass* pHouse = GetHouse(pThis->Value, pEventHouse);
 
 				if (pHouse && pTechno->Owner != pHouse)
@@ -331,11 +333,12 @@ bool TEventExtData::CellHasAnyTechnoTypeFromListTEvent(TEventClass* pThis, Objec
 
 bool TEventExtData::CellHasTechnoTypeTEvent(TEventClass* pThis, ObjectClass* pObject, HouseClass* pEventHouse)
 {
-	if (pObject) {
-
+	if (pObject)
+	{
 		const auto pTypeAttached = TechnoTypeClass::Find(pThis->String);
 
-		if (!pTypeAttached) {
+		if (!pTypeAttached)
+		{
 			Debug::LogInfo("Error in event {}. The parameter 2 '{}' isn't a valid Techno ID",
 				static_cast<int>(pThis->EventKind),
 				pThis->String
@@ -343,11 +346,14 @@ bool TEventExtData::CellHasTechnoTypeTEvent(TEventClass* pThis, ObjectClass* pOb
 			return false;
 		}
 
-		if (auto const pTechno = flag_cast_to<TechnoClass*, false>(pObject)) {
+		if (auto const pTechno = flag_cast_to<TechnoClass*, false>(pObject))
+		{
 			auto const pTechnoType = pTechno->GetTechnoType();
 
-			if (pTypeAttached == pTechnoType) {
-				if (HouseClass* pHouse = GetHouse(pThis->Value, pEventHouse)) {
+			if (pTypeAttached == pTechnoType)
+			{
+				if (HouseClass* pHouse = GetHouse(pThis->Value, pEventHouse))
+				{
 					return pTechno->Owner == pHouse;
 				}
 
@@ -364,7 +370,8 @@ bool TEventExtData::VariableCheck(TEventClass* pThis)
 {
 	const auto nVar = ScenarioExtData::GetVariables(IsGlobal);
 
-	if (auto itr = nVar->tryfind(pThis->Value)) {
+	if (auto itr = nVar->tryfind(pThis->Value))
+	{
 		// We uses TechnoName for our operator number
 		int nOpt = atoi(pThis->String);
 		return _Pr()(itr->Value, nOpt);
@@ -395,14 +402,15 @@ bool TEventExtData::HouseOwnsTechnoTypeTEvent(TEventClass* pThis)
 		return false;
 
 	auto pHouse = HouseClass::Index_IsMP(pThis->Value)
-	? HouseClass::FindByIndex(pThis->Value) : HouseClass::FindByCountryIndex(pThis->Value) ;
+		? HouseClass::FindByIndex(pThis->Value) : HouseClass::FindByCountryIndex(pThis->Value);
 
 	if (!pHouse)
 		return false;
 
 	if (pType->WhatAmI() == AbstractType::BuildingType)
 	{
-		for (auto pBuilding : pHouse->Buildings) {
+		for (auto pBuilding : pHouse->Buildings)
+		{
 			if (pBuilding->Type != pType)
 				continue;
 
@@ -411,7 +419,9 @@ bool TEventExtData::HouseOwnsTechnoTypeTEvent(TEventClass* pThis)
 		}
 
 		return false;
-	} else {
+	}
+	else
+	{
 		return pHouse->CountOwnedNow(pType) > 0;
 	}
 }
@@ -455,8 +465,10 @@ bool TEventExtData::HousesAreDestroyedTEvent(TEventClass* pThis)
 
 int FindTechnoTypeByName(const char* name)
 {
-	for (int i = TechnoTypeClass::Array->Count - 1; i >= 0; --i) {
-		if (strcmp(TechnoTypeClass::Array->Items[i]->Name, name) == 0) {
+	for (int i = TechnoTypeClass::Array->Count - 1; i >= 0; --i)
+	{
+		if (strcmp(TechnoTypeClass::Array->Items[i]->Name, name) == 0)
+		{
 			return i;
 		}
 	}
@@ -469,7 +481,8 @@ bool CheckTechTypeExists(TEventClass* evt, bool shouldExist)
 	int typeIndex = FindTechnoTypeByName(evt->String);
 	int typeCount = TechnoTypeClass::Array->Count;
 
-	if (typeIndex < 0 || typeIndex >= typeCount) {
+	if (typeIndex < 0 || typeIndex >= typeCount)
+	{
 		return false;
 	}
 
@@ -477,11 +490,14 @@ bool CheckTechTypeExists(TEventClass* evt, bool shouldExist)
 	int foundCount = 0;
 	int technoCount = TechnoClass::Array->Count;
 
-	for (int i = technoCount - 1; i >= 0; --i) {
+	for (int i = technoCount - 1; i >= 0; --i)
+	{
 		TechnoClass* techno = TechnoClass::Array->Items[i];
-		if (techno->GetTechnoType() == targetType) {
+		if (techno->GetTechnoType() == targetType)
+		{
 			foundCount++;
-			if (shouldExist && foundCount >= evt->Value) {
+			if (shouldExist && foundCount >= evt->Value)
+			{
 				return true;
 			}
 		}
@@ -492,22 +508,27 @@ bool CheckTechTypeExists(TEventClass* evt, bool shouldExist)
 
 bool HandleEntryEvents(TEventClass* evt, TriggerEvent event, ObjectClass* obj, bool* bool1)
 {
-	if (event != evt->EventKind) {
+	if (event != evt->EventKind)
+	{
 		return false;
 	}
 
 	auto country = AresTEventExt::ResolveHouseParam(evt->Value);
 
-	if (!country) {
+	if (!country)
+	{
 		return false;
 	}
 
-	if (!obj) {
+	if (!obj)
+	{
 		return false;
 	}
 
-	if (evt->Value != -1) {
-		if (obj->GetOwningHouseIndex() != country->ArrayIndex) {
+	if (evt->Value != -1)
+	{
+		if (obj->GetOwningHouseIndex() != country->ArrayIndex)
+		{
 			return false;
 		}
 	}
@@ -519,22 +540,26 @@ bool HandleEntryEvents(TEventClass* evt, TriggerEvent event, ObjectClass* obj, b
 
 bool HandleSpyAsHouse(TEventClass* evt, TriggerEvent event, ObjectClass* obj, bool* bool1)
 {
-	if (event != TriggerEvent::SpyAsHouse || !obj) {
+	if (event != TriggerEvent::SpyAsHouse || !obj)
+	{
 		return false;
 	}
 
 	auto country = AresTEventExt::ResolveHouseParam(evt->Value);
 
-	if (!country) {
+	if (!country)
+	{
 		return false;
 	}
 
 	HouseClass* showAsHouse = obj->GetDisguiseHouse(true);
-	if (!showAsHouse) {
+	if (!showAsHouse)
+	{
 		return false;
 	}
 
-	if (showAsHouse->ArrayIndex == country->ArrayIndex) {
+	if (showAsHouse->ArrayIndex == country->ArrayIndex)
+	{
 		*bool1 = 1;
 		return true;
 	}
@@ -544,16 +569,19 @@ bool HandleSpyAsHouse(TEventClass* evt, TriggerEvent event, ObjectClass* obj, bo
 
 bool HandleSpyAsInfantry(TEventClass* evt, TriggerEvent event, ObjectClass* obj, bool* bool1)
 {
-	if (event != TriggerEvent::SpyAsInfantry || !obj) {
+	if (event != TriggerEvent::SpyAsInfantry || !obj)
+	{
 		return false;
 	}
 
 	AbstractClass* showAsType = obj->GetDisguise(true);
-	if (showAsType->WhatAmI() != InfantryTypeClass::AbsID) {
+	if (showAsType->WhatAmI() != InfantryTypeClass::AbsID)
+	{
 		return false;
 	}
 
-	if (evt->Value != -1 && showAsType->GetArrayIndex() == evt->Value) {
+	if (evt->Value != -1 && showAsType->GetArrayIndex() == evt->Value)
+	{
 		*bool1 = 1;
 		return true;
 	}
@@ -563,7 +591,8 @@ bool HandleSpyAsInfantry(TEventClass* evt, TriggerEvent event, ObjectClass* obj,
 
 bool HandleNearWaypoint(TEventClass* evt, TriggerEvent event, ObjectClass* obj)
 {
-	if (event != TriggerEvent::ComesNearWaypoint) {
+	if (event != TriggerEvent::ComesNearWaypoint)
+	{
 		return false;
 	}
 
@@ -639,7 +668,7 @@ bool HandleHouseEvents(TEventClass* evt, HouseClass* house, bool* bool1)
 	{
 		auto pHouseExt = HouseExtContainer::Instance.Find(house);
 
-		if (house->LastBuiltVehicleType == evt->Value 
+		if (house->LastBuiltVehicleType == evt->Value
 			|| pHouseExt->LastBuiltNavalVehicleType == evt->Value)
 		{
 			*bool1 = 1;
@@ -679,7 +708,8 @@ bool HandleHouseEvents(TEventClass* evt, HouseClass* house, bool* bool1)
 		return house->Available_Money() <= evt->Value;
 
 	case TriggerEvent::BuildingDoesNotExist:
-		if (!house->ActiveBuildingTypes.get_count(evt->Value)) {
+		if (!house->ActiveBuildingTypes.get_count(evt->Value))
+		{
 			*bool1 = 1;
 			return true;
 		}
@@ -698,7 +728,8 @@ bool HandleValue2HouseEvents(TEventClass* evt)
 	// continue normally if a house was found or this isn't Player@X logic,
 	// otherwise return false directly so events don't fire for non-existing
 	// players.
-	if(targetHouse || !HouseClass::Index_IsMP(evt->Value)){
+	if (targetHouse || !HouseClass::Index_IsMP(evt->Value))
+	{
 		switch (evt->EventKind)
 		{
 		case TriggerEvent::ThievedBy:
@@ -716,9 +747,12 @@ bool HandleValue2HouseEvents(TEventClass* evt)
 
 		case TriggerEvent::DestroyedAll:
 		{
-			if (SessionClass::IsCampaign()) {
-				if (targetHouse->ActiveInfantryTypes.total() <= 0) {
-					for (auto& bld : targetHouse->Buildings) {
+			if (SessionClass::IsCampaign())
+			{
+				if (targetHouse->ActiveInfantryTypes.total() <= 0)
+				{
+					for (auto& bld : targetHouse->Buildings)
+					{
 						if (bld->Type->CanBeOccupied && bld->Occupants.Count > 0)
 							return false;
 					}
@@ -730,7 +764,8 @@ bool HandleValue2HouseEvents(TEventClass* evt)
 				if (targetHouse->ActiveInfantryTypes.total() > 0)
 					return false;
 
-				for (auto pItem : *InfantryClass::Array) {
+				for (auto pItem : *InfantryClass::Array)
+				{
 					if (pItem->InLimbo && targetHouse == pItem->GetOwningHouse() && targetHouse->IsAlliedWith(pItem->Transporter))
 						return false;
 				}
@@ -771,7 +806,6 @@ bool HandleDefaultEvents(
 		bool* bool1,
 		AbstractClass* source)
 {
-
 	// Constexpr lookup table for events that require exact event matching
 	static constexpr bool RequiresEventMatch[static_cast<int>(TriggerEvent::count)] = {
 		false, true,  true,  true,  true,  false, true,  true,  false, false, // 0-9
@@ -784,8 +818,10 @@ bool HandleDefaultEvents(
 	};
 
 	const int typeIndex = static_cast<int>(evt->EventKind);
-	if (typeIndex >= 0 && typeIndex < static_cast<int>(TriggerEvent::count)) {
-		if (RequiresEventMatch[typeIndex] && event != evt->EventKind && !Unsorted::ArmageddonMode()) {
+	if (typeIndex >= 0 && typeIndex < static_cast<int>(TriggerEvent::count))
+	{
+		if (RequiresEventMatch[typeIndex] && event != evt->EventKind && !Unsorted::ArmageddonMode())
+		{
 			return false;
 		}
 	}
@@ -809,19 +845,23 @@ bool HandleDefaultEvents(
 	case TriggerEvent::ComesNearWaypoint:
 		return HandleNearWaypoint(evt, event, obj);
 
-	case TriggerEvent::AttackedByHouse:{
-		if (event != TriggerEvent::AttackedByHouse || !source) {
+	case TriggerEvent::AttackedByHouse:
+	{
+		if (event != TriggerEvent::AttackedByHouse || !source)
+		{
 			return false;
 		}
 
 		int param = evt->Value;
 		// convert Player @ X to real index
-		if (HouseClass::Index_IsMP( evt->Value)) {
-			auto const pPlayer = AresTEventExt::ResolveHouseParam( evt->Value);
+		if (HouseClass::Index_IsMP(evt->Value))
+		{
+			auto const pPlayer = AresTEventExt::ResolveHouseParam(evt->Value);
 			param = pPlayer ? pPlayer->ArrayIndex : -1;
 		}
 
-		if (param != source->GetOwningHouse()->ArrayIndex){
+		if (param != source->GetOwningHouse()->ArrayIndex)
+		{
 			return false;
 		}
 
@@ -846,7 +886,7 @@ bool HandleDefaultEvents(
 
 bool FakeTEventClass::_Occured(TriggerEvent event, HouseClass* house, ObjectClass* obj, CDTimerClass* td, bool* bool1, AbstractClass* source)
 {
-	if(this->EventKind == TriggerEvent::None)
+	if (this->EventKind == TriggerEvent::None)
 		return false;
 
 	bool result = false;
@@ -855,11 +895,13 @@ bool FakeTEventClass::_Occured(TriggerEvent event, HouseClass* house, ObjectClas
 		event, house, obj, td, bool1, source
 	};
 
-	if (TEventExtData::Occured(this, args, result)) {
+	if (TEventExtData::Occured(this, args, result))
+	{
 		return result;
 	}
 
-	if (AresTEventExt::HasOccured(this, args, result)) {
+	if (AresTEventExt::HasOccured(this, args, result))
+	{
 		return result;
 	}
 
@@ -908,21 +950,21 @@ bool FakeTEventClass::_Occured(TriggerEvent event, HouseClass* house, ObjectClas
 	default:
 		return HandleDefaultEvents(this, event, house, obj, bool1, source);
 	}
-
 }
 
 ASMJIT_PATCH(0x71F9C0, TEventClass_Persistable, 6)
 {
 	GET(TEventClass*, pThis, ECX);
 
-	switch (pThis->EventKind) {
-		case TriggerEvent::SpiedBy:
-		case TriggerEvent::SpyAsHouse:
-		case TriggerEvent::SpyAsInfantry:
-		{
-			R->EAX(false);
-			return 0x71F9DF;
-		};
+	switch (pThis->EventKind)
+	{
+	case TriggerEvent::SpiedBy:
+	case TriggerEvent::SpyAsHouse:
+	case TriggerEvent::SpyAsInfantry:
+	{
+		R->EAX(false);
+		return 0x71F9DF;
+	};
 	}
 
 	std::pair<bool, bool> result =
@@ -972,7 +1014,7 @@ ASMJIT_PATCH(0x71f683, TEventClass_GetFlags, 5)
 	return (int)nAction > 59 ? 0x71F69C : 0x71F688;
 }
 
-DEFINE_FUNCTION_JUMP(CALL , 0x726540, FakeTEventClass::_Occured)
+DEFINE_FUNCTION_JUMP(CALL, 0x726540, FakeTEventClass::_Occured)
 // =============================
 // container
 TEventExtContainer TEventExtContainer::Instance;
@@ -1011,7 +1053,6 @@ bool TEventExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool TEventExtContainer::SaveAll(json& root)
@@ -1056,7 +1097,6 @@ ASMJIT_PATCH(0x71E856, TEventClass_SDDTOR, 0x6)
 	TEventExtContainer::Instance.Remove(pItem);
 	return 0;
 }ASMJIT_PATCH_AGAIN(0x71FAA6, TEventClass_SDDTOR, 0x6) // Factory
-
 
 ASMJIT_PATCH(0x71F58B, TEventClass_ReadINI_MaskedTEvents, 0x7)
 {

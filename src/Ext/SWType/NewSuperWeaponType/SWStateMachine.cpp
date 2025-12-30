@@ -17,19 +17,22 @@ HelperedVector<std::unique_ptr<SWStateMachine>> SWStateMachine::Array;
 
 void SWStateMachine::UpdateAll()
 {
-	SWStateMachine::Array.remove_all_if([](std::unique_ptr<SWStateMachine>& pMachine) {
-		 if (!pMachine)
-			 return true;
+	SWStateMachine::Array.remove_all_if([](std::unique_ptr<SWStateMachine>& pMachine)
+ {
+	 if (!pMachine)
+		 return true;
 
-		 pMachine->Update();
-		 return pMachine->Finished();
+	 pMachine->Update();
+	 return pMachine->Finished();
 	});
 }
 
 void SWStateMachine::PointerGotInvalid(AbstractClass* ptr, bool remove)
 {
-	for (auto& Machine : SWStateMachine::Array) {
-		if(Machine) {
+	for (auto& Machine : SWStateMachine::Array)
+	{
+		if (Machine)
+		{
 			Machine->InvalidatePointer(ptr, remove);
 		}
 	}

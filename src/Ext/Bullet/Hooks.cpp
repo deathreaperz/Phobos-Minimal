@@ -21,7 +21,7 @@
 
 ASMJIT_PATCH(0x466705, BulletClass_AI, 0x6) //8
 {
-	enum { retContunue = 0x0 , retDead = 0x466781 };
+	enum { retContunue = 0x0, retDead = 0x466781 };
 	GET(FakeBulletClass* const, pThis, EBP);
 
 	const auto pBulletExt = pThis->_GetExtData();
@@ -56,8 +56,8 @@ ASMJIT_PATCH(0x466705, BulletClass_AI, 0x6) //8
 				return retDead;
 	}
 
-	if(!pBulletExt->Trajectory || !PhobosTrajectory::BlockDrawTrail(pBulletExt->Trajectory)){
-
+	if (!pBulletExt->Trajectory || !PhobosTrajectory::BlockDrawTrail(pBulletExt->Trajectory))
+	{
 		// LaserTrails update routine is in BulletClass::AI hook because BulletClass::Draw
 		// doesn't run when the object is off-screen which leads to visual bugs - Kerbiter
 		if ((!pBulletExt->LaserTrails.empty()))
@@ -96,24 +96,28 @@ ASMJIT_PATCH(0x466705, BulletClass_AI, 0x6) //8
 	return 0;
 }
 
-ASMJIT_PATCH(0x469276, BulletClass_Logics_ApplyMindControl , 0xA)
+ASMJIT_PATCH(0x469276, BulletClass_Logics_ApplyMindControl, 0xA)
 {
 	GET(ObjectClass* const, pVictimObject, EDI);
 	GET(FakeBulletClass*, pThis, ESI);
 	const auto payback = pThis->Owner;
 
-	if(pVictimObject) {
-		if(pVictimObject->IsAlive) {
-			if(pVictimObject->AttachedTag) {
-			  pVictimObject->AttachedTag->SpringEvent(TriggerEvent::AttackedByAnybody,				pVictimObject,
-				CellStruct::Empty,
-				false,
-				payback);
+	if (pVictimObject)
+	{
+		if (pVictimObject->IsAlive)
+		{
+			if (pVictimObject->AttachedTag)
+			{
+				pVictimObject->AttachedTag->SpringEvent(TriggerEvent::AttackedByAnybody, pVictimObject,
+				  CellStruct::Empty,
+				  false,
+				  payback);
 			}
 
 			// #1708: this mofo was raising an event without checking whether
 			// there is a valid tag. this is the only faulty call of this kind.
-			if(pVictimObject->AttachedTag) {
+			if (pVictimObject->AttachedTag)
+			{
 				pVictimObject->AttachedTag->SpringEvent(TriggerEvent::AttackedByHouse,
 				pVictimObject,
 				CellStruct::Empty,
@@ -175,7 +179,7 @@ static FORCEDINLINE void TryDetonateDamageArea(BulletClass* pThis, TechnoClass* 
 
 ASMJIT_PATCH(0x4690D4, BulletClass_Logics_ApplyAdditionals, 0x6)
 {
-	enum { SkipShaking = 0x469130, GoToExtras = 0x469AA4  , ReturnFromFunction = 0x46A2FB };
+	enum { SkipShaking = 0x469130, GoToExtras = 0x469AA4, ReturnFromFunction = 0x46A2FB };
 
 	GET(FakeBulletClass*, pBullet, ESI);
 	GET(FakeWarheadTypeClass*, pWarhead, EAX);
@@ -246,7 +250,8 @@ ASMJIT_PATCH(0x4690D4, BulletClass_Logics_ApplyAdditionals, 0x6)
 		}
 	}
 
-	if (auto pTarget = flag_cast_to<ObjectClass*>(pBullet->Target)) {
+	if (auto pTarget = flag_cast_to<ObjectClass*>(pBullet->Target))
+	{
 		// Check if the WH should affect the techno target or skip it
 		if (!pWarhead->_GetExtData()->IsHealthInThreshold(pTarget))
 			return GoToExtras;
@@ -255,7 +260,8 @@ ASMJIT_PATCH(0x4690D4, BulletClass_Logics_ApplyAdditionals, 0x6)
 		TechnoClass* pBulletOwner = pBullet->Owner ? pBullet->Owner : nullptr;
 		HouseClass* pBulletHouseOwner = pBulletOwner ? pBulletOwner->GetOwningHouse() : (pBulletExt ? pBulletExt->Owner : HouseExtData::FindNeutral());
 
-		if(!pWarhead->_GetExtData()->CanAffectHouse(pBulletHouseOwner, pTarget->GetOwningHouse())){
+		if (!pWarhead->_GetExtData()->CanAffectHouse(pBulletHouseOwner, pTarget->GetOwningHouse()))
+		{
 			return GoToExtras;
 		}
 	}
@@ -280,7 +286,7 @@ ASMJIT_PATCH(0x4668BD, BulletClass_AI_Interceptor_InvisoSkip, 0x6)
 {
 	enum { DetonateBullet = 0x467F9B, Continue = 0x0 };
 	GET(FakeBulletClass*, pThis, EBP);
-	return (pThis->Type->Inviso && & pThis->_GetExtData()->InterceptorTechnoType)
+	return (pThis->Type->Inviso && &pThis->_GetExtData()->InterceptorTechnoType)
 		? DetonateBullet : Continue;
 }
 

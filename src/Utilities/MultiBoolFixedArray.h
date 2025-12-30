@@ -96,7 +96,8 @@ struct MultiBoolFixedArray
 		return true;
 	}
 
-	void Reset() {
+	void Reset()
+	{
 		std::memset(Bits, 0, sizeof(Bits));
 	}
 

@@ -15,15 +15,18 @@ public:
 
 	virtual ~FootExtData() = default;
 
-	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override {
+	virtual void InvalidatePointer(AbstractClass* ptr, bool bRemoved) override
+	{
 		this->TechnoExtData::InvalidatePointer(ptr, bRemoved);
 	}
 
-	virtual void LoadFromStream(PhobosStreamReader& Stm) override {
+	virtual void LoadFromStream(PhobosStreamReader& Stm) override
+	{
 		this->TechnoExtData::LoadFromStream(Stm);
 	}
 
-	virtual void SaveToStream(PhobosStreamWriter& Stm) override {
+	virtual void SaveToStream(PhobosStreamWriter& Stm) override
+	{
 		this->TechnoExtData::SaveToStream(Stm);
 	}
 
@@ -32,7 +35,8 @@ public:
 	FootClass* This() const { return reinterpret_cast<FootClass*>(AttachedToObject); }
 	const FootClass* This_Const() const { return reinterpret_cast<const FootClass*>(AttachedToObject); }
 
-	virtual void CalculateCRC(CRCEngine& crc) const override {
+	virtual void CalculateCRC(CRCEngine& crc) const override
+	{
 		this->TechnoExtData::CalculateCRC(crc);
 	}
 };

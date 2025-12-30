@@ -26,7 +26,6 @@ void SmudgeTypeExtData::Serialize(T& Stm)
 	Stm
 		.Process(this->Clearable)
 		;
-
 }
 
 // =============================
@@ -67,7 +66,6 @@ bool SmudgeTypeExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool SmudgeTypeExtContainer::SaveAll(json& root)
@@ -108,12 +106,10 @@ void SmudgeTypeExtContainer::LoadFromINI(ext_t::base_type* key, CCINIClass* pINI
 		//this function can be called again multiple time but without need to re-init the data
 		ptr->SetInitState(InitState::Ruled);
 	}
-
 }
 
 void SmudgeTypeExtContainer::WriteToINI(ext_t::base_type* key, CCINIClass* pINI)
 {
-
 	if (auto ptr = this->TryFind(key))
 	{
 		if (!pINI)
@@ -145,7 +141,8 @@ ASMJIT_PATCH(0x6B61B5, SmudgeTypeClass_SDDTOR, 0x7)
 #include <Misc/Hooks.Otamaa.h>
 #include <Ext/IsometricTileType/Body.h>
 
-bool FakeSmudgeTypeClass::_CanPlaceHere(CellStruct* origin, bool underbuildings) {
+bool FakeSmudgeTypeClass::_CanPlaceHere(CellStruct* origin, bool underbuildings)
+{
 	for (int h = 0; h < this->Height; h++)
 	{
 		for (int w = 0; w < this->Width; w++)
@@ -190,7 +187,8 @@ bool FakeSmudgeTypeClass::_CanPlaceHere(CellStruct* origin, bool underbuildings)
 
 			const auto isotype_ext = IsometricTileTypeExtContainer::Instance.Find(IsometricTileTypeClass::Array->Items[ittype]);
 
-			if (!isotype_ext->AllowedSmudges.empty() && !isotype_ext->AllowedSmudges.Contains(this)) {
+			if (!isotype_ext->AllowedSmudges.empty() && !isotype_ext->AllowedSmudges.Contains(this))
+			{
 				return false;
 			}
 		}

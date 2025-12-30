@@ -42,7 +42,8 @@ ASMJIT_PATCH(0x6F88BF, TechnoClass_EvaluateObject_AttackMindControlledDelay, 0x6
 	GET(TechnoClass* const, pThis, EDI);
 	GET(ObjectClass* const, pTarget, ESI);
 
-	if (const auto pTechno = flag_cast_to<TechnoClass* , false>(pTarget)) {
+	if (const auto pTechno = flag_cast_to<TechnoClass*, false>(pTarget))
+	{
 		if (!CanAttackMindControlled(pTechno, pThis))
 			return CannotSelect;
 	}

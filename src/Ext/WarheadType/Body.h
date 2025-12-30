@@ -841,10 +841,10 @@ public:
 		AnimZAdjust(),
 		IsCellSpreadWH(false),
 		IsFakeEngineer(false)
-		{
-			this->AbsType = WarheadTypeClass::AbsID;
-			this->InitializeConstant();
-		}
+	{
+		this->AbsType = WarheadTypeClass::AbsID;
+		this->InitializeConstant();
+	}
 
 	void Initialize();
 
@@ -881,7 +881,7 @@ public:
 
 	void InitializeConstant();
 	void ApplyRemoveDisguise(HouseClass* pHouse, TechnoClass* pTarget) const;
-	HouseClass*  ApplyRemoveMindControl(HouseClass* pHouse, TechnoClass* pTarget) const;
+	HouseClass* ApplyRemoveMindControl(HouseClass* pHouse, TechnoClass* pTarget) const;
 
 	bool applyPermaMC(HouseClass* const Owner, AbstractClass* const Target) const;
 
@@ -924,10 +924,10 @@ public:
 	void InterceptBullets(TechnoClass* pOwner, BulletClass* pBullet, CoordStruct coords);
 	bool CanAffectHouse(HouseClass* pOwnerHouse, HouseClass* pTargetHouse) const;
 	bool CanDealDamage(TechnoClass* pTechno, int damageIn, int distanceFromEpicenter, int& DamageResult, bool effectsRequireDamage = false) const;
-	bool CanDealDamage(TechnoClass* pTechno, bool Bypass = false, bool SkipVerses = false , bool checkImmune = true , bool checkLimbo = true) const;
+	bool CanDealDamage(TechnoClass* pTechno, bool Bypass = false, bool SkipVerses = false, bool checkImmune = true, bool checkLimbo = true) const;
 	bool CanAffectInvulnerable(TechnoClass* pTarget) const;
 	FullMapDetonateResult EligibleForFullMapDetonation(TechnoClass* pTechno, HouseClass* pOwner) const;
-	void ApplyDamageMult(TechnoClass* pVictim, TechnoClass* pSource, HouseClass* pSourceHouse,  int* pDamage) const;
+	void ApplyDamageMult(TechnoClass* pVictim, TechnoClass* pSource, HouseClass* pSourceHouse, int* pDamage) const;
 	void ApplyRecalculateDistanceDamage(ObjectClass* pVictim, args_ReceiveDamage* pArgs) const;
 	void ApplyRevengeWeapon(TechnoClass* pTarget) const;
 	bool applyCulling(TechnoClass* pSource, ObjectClass* pTarget) const;
@@ -936,16 +936,17 @@ public:
 	bool ApplySuppressDeathWeapon(TechnoClass* pVictim) const;
 	void ApplyBuildingUndeploy(TechnoClass* pTarget);
 	void ApplyAttachEffects(TechnoClass* pTarget, HouseClass* pInvokerHouse, TechnoClass* pInvoker);
-	void GetCritChance(TechnoClass* pFirer , double& chances) const;
+	void GetCritChance(TechnoClass* pFirer, double& chances) const;
 
-	COMPILETIMEEVAL VersesData& GetVerses(Armor armor) {
+	COMPILETIMEEVAL VersesData& GetVerses(Armor armor)
+	{
 		return this->Verses[static_cast<int>(armor)];
 	}
 
-	COMPILETIMEEVAL const VersesData& GetVerses(Armor armor) const {
+	COMPILETIMEEVAL const VersesData& GetVerses(Armor armor) const
+	{
 		return this->Verses[static_cast<int>(armor)];
 	}
-
 
 	bool IsHealthInThreshold(ObjectClass* pTarget) const;
 
@@ -1012,7 +1013,6 @@ public:
 
 	virtual void LoadFromINI(ext_t::base_type* key, CCINIClass* pINI, bool parseFailAddr);
 	virtual void WriteToINI(ext_t::base_type* key, CCINIClass* pINI);
-
 };
 
 class NOVTABLE FakeWarheadTypeClass : public WarheadTypeClass
@@ -1023,17 +1023,19 @@ public:
 
 	static int __fastcall ModifyDamageA(int damage, FakeWarheadTypeClass* pWH, Armor armor, int distance);
 
-	static FORCEDINLINE int ModifyDamage(int damage, WarheadTypeClass* pWH, Armor armor, int distance) {
+	static FORCEDINLINE int ModifyDamage(int damage, WarheadTypeClass* pWH, Armor armor, int distance)
+	{
 		return ModifyDamageA(damage, (FakeWarheadTypeClass*)pWH, armor, distance);
 	}
 
-	WarheadTypeExtData* _GetExtData() const {
+	WarheadTypeExtData* _GetExtData() const
+	{
 		return *reinterpret_cast<WarheadTypeExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 
-	COMPILETIMEEVAL VersesData* GetVersesData(Armor armor) {
+	COMPILETIMEEVAL VersesData* GetVersesData(Armor armor)
+	{
 		return this->_GetExtData()->Verses.data() + static_cast<size_t>(armor);
 	}
-
 };
 static_assert(sizeof(FakeWarheadTypeClass) == sizeof(WarheadTypeClass), "Invalid Size !");

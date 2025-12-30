@@ -181,7 +181,6 @@ public:
 
 	virtual bool LoadAll(const json& root);
 	virtual bool SaveAll(json& root);
-
 };
 
 class ParticleSystemTypeExtData;
@@ -243,13 +242,14 @@ public:
 	Vector3D<float> CalculateTrajectory() const;
 	void CreateSpiralTrail();
 
-	ParticleSystemExtData* _GetExtData() {
+	ParticleSystemExtData* _GetExtData()
+	{
 		return *reinterpret_cast<ParticleSystemExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
 
-	ParticleSystemTypeExtData* _GetTypeExtData() {
+	ParticleSystemTypeExtData* _GetTypeExtData()
+	{
 		return *reinterpret_cast<ParticleSystemTypeExtData**>(((DWORD)this->Type) + AbstractExtOffset);
 	}
-
 };
 static_assert(sizeof(FakeParticleSystemClass) == sizeof(ParticleSystemClass), "Invalid Size !");

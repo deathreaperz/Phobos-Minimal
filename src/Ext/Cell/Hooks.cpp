@@ -330,13 +330,15 @@ ASMJIT_PATCH(0x47F852, CellClass_DrawOverlay_Tiberium_, 0x6) // B
 	GET(FakeCellClass*, pThis, ESI);
 	GET(OverlayTypeClass*, pOverlay, EBX);
 
-	if (!pOverlay->Tiberium) {
+	if (!pOverlay->Tiberium)
+	{
 		return 0x47F96A;
 	}
 
 	const auto pTiberium = CellExtData::GetTiberium(pThis);
 
-	if (!pTiberium) {
+	if (!pTiberium)
+	{
 		return 0x47FB86;
 	}
 
@@ -348,7 +350,8 @@ ASMJIT_PATCH(0x47F852, CellClass_DrawOverlay_Tiberium_, 0x6) // B
 	const auto pTibExt = TiberiumExtContainer::Instance.Find(pTiberium);
 
 	ConvertClass* pDecided = FileSystem::x_PAL();
-	if (const auto pCustom = pTibExt->Palette.GetConvert()) {
+	if (const auto pCustom = pTibExt->Palette.GetConvert())
+	{
 		pDecided = pCustom;
 	}
 
@@ -420,7 +423,8 @@ ASMJIT_PATCH(0x47F852, CellClass_DrawOverlay_Tiberium_, 0x6) // B
 	auto nIndex = CellExtData::GetOverlayIndex(pThis, pTiberium);
 	const auto pShape = OverlayTypeClass::Array->Items[nIndex]->GetImage();
 
-	if (!pShape) {
+	if (!pShape)
+	{
 		return 0x47FB86;
 	}
 
@@ -430,7 +434,8 @@ ASMJIT_PATCH(0x47F852, CellClass_DrawOverlay_Tiberium_, 0x6) // B
 
 	DSurface::Temp->DrawSHP(pDecided, pShape, pThis->OverlayData, &nPos, pBound, BlitterFlags(0x4E00), 0, nZAdjust, ZGradient::Ground, nOreTint, 0, pZShape, 0, 0, 0);
 
-	if(pTibExt->EnableLighningFix){
+	if (pTibExt->EnableLighningFix)
+	{
 		auto nShadowFrame = (nIndex + pShape->Frames / 2);
 		DSurface::Temp->DrawSHP(pDecided, pShape, nShadowFrame, &nPos, pBound, BlitterFlags(0x4E01), 0, nZAdjust, ZGradient::Ground, 1000, 0, nullptr, 0, 0, 0);
 	}
@@ -447,15 +452,17 @@ ASMJIT_PATCH(0x47F661, CellClass_DrawOverlay_Rubble_Shadow, 0x8)
 	GET_STACK(int, nOffset, STACK_OFFS(0x28, 0x18));
 	GET(RectangleStruct*, pRect, EBX);
 
-	if (R->AL()) {
+	if (R->AL())
+	{
 		auto const pBTypeExt = BuildingTypeExtContainer::Instance.Find(pCell->Rubble);
 
 		ConvertClass* pDecided = pCell->LightConvert;
-		if (const auto pCustom = pBTypeExt->RubblePalette.GetConvert()) {
+		if (const auto pCustom = pBTypeExt->RubblePalette.GetConvert())
+		{
 			pDecided = pCustom;
 		}
 
-		auto const zAdjust = - 2 - nOffset;
+		auto const zAdjust = -2 - nOffset;
 
 		DSurface::Temp()->DrawSHP(pDecided, pImage, nFrame, pPoint, pRect, BlitterFlags(0x4601),
 		0, zAdjust, ZGradient::Ground, 1000, 0, nullptr, 0, 0, 0);
@@ -474,11 +481,14 @@ ASMJIT_PATCH(0x47FADB, CellClass_DrawOverlay_Rubble, 0x5)
 	GET(RectangleStruct*, pRect, EBP);
 	GET(int, nVal, EDI);
 
-	if (auto const pRubble = pCell->Rubble) {
-		if (pRubble->CanLeaveRubble(pImage, pFrame)) {
+	if (auto const pRubble = pCell->Rubble)
+	{
+		if (pRubble->CanLeaveRubble(pImage, pFrame))
+		{
 			auto const pBTypeExt = BuildingTypeExtContainer::Instance.Find(pRubble);
 			ConvertClass* pDecided = pCell->LightConvert;
-			if (const auto pCustom = pBTypeExt->RubblePalette.GetConvert()) {
+			if (const auto pCustom = pBTypeExt->RubblePalette.GetConvert())
+			{
 				pDecided = pCustom;
 			}
 
@@ -486,7 +496,6 @@ ASMJIT_PATCH(0x47FADB, CellClass_DrawOverlay_Rubble, 0x5)
 
 			DSurface::Temp()->DrawSHP(pDecided, *pImage, *pFrame, pPoint, pRect, BlitterFlags(0x4E00),
 			0, zAdjust, pOvl->DrawFlat != 0 ? ZGradient::Ground : ZGradient::Deg90, pCell->Color1.Green, 0, nullptr, 0, 0, 0);
-
 		}
 	}
 
@@ -528,7 +537,6 @@ bool FakeCellClass::_CanTiberiumGerminate(TiberiumClass* tiberium)
 	}
 
 	return true;
-
 }
 
 bool FakeCellClass::_CanPlaceVeins()
@@ -543,7 +551,8 @@ bool FakeCellClass::_CanPlaceVeins()
 			if (this->OverlayTypeIndex == -1 || OverlayTypeClass::Array->Items[this->OverlayTypeIndex]->IsVeins)
 			{
 				int ittype = this->IsoTileTypeIndex;
-				if (ittype < 0 || ittype >= IsometricTileTypeClass::Array->Count) {
+				if (ittype < 0 || ittype >= IsometricTileTypeClass::Array->Count)
+				{
 					ittype = 0;
 				}
 
@@ -603,7 +612,6 @@ bool FakeCellClass::_CanPlaceVeins()
 //	R->EAX(bDraw);
 //	return 0x6D7A4D;
 //}
-
 
 /*
 *    v3 = this->TileType;
@@ -705,5 +713,3 @@ bool FakeCellClass::_CanPlaceVeins()
 //	R->EDX(SpawnTiberiumTreeConvert.get());
 //	return 0x71C29A;
 //}
-
-

@@ -11,7 +11,7 @@
 #include <Misc/Spawner/ProtocolZero.h>
 #include <IPXManagerClass.h>
 
-EventExt::TogglePassiveAcquireMode::TogglePassiveAcquireMode(TechnoClass* pTechno, PassiveAcquireMode mode) : Who { pTechno } , Mode { mode }
+EventExt::TogglePassiveAcquireMode::TogglePassiveAcquireMode(TechnoClass* pTechno, PassiveAcquireMode mode) : Who { pTechno }, Mode { mode }
 { }
 
 void EventExt::TogglePassiveAcquireMode::Raise(TechnoClass* pTechno, PassiveAcquireMode mode)
@@ -19,15 +19,17 @@ void EventExt::TogglePassiveAcquireMode::Raise(TechnoClass* pTechno, PassiveAcqu
 	EventClass eventExt {};
 	eventExt.Type = AsEventType();
 	eventExt.HouseIndex = byte(pTechno->Owner->ArrayIndex);
-	EventExt::AddToEvent<true, true, TogglePassiveAcquireMode>(eventExt ,pTechno, mode);
+	EventExt::AddToEvent<true, true, TogglePassiveAcquireMode>(eventExt, pTechno, mode);
 }
 
 void EventExt::TogglePassiveAcquireMode::Respond(EventClass* Event)
 {
 	TogglePassiveAcquireMode* ID = Event->Data.nothing.As<TogglePassiveAcquireMode>();
 
-	if (const auto pTechno = ID->Who.As_Techno()) {
-		if (pTechno->IsAlive && !pTechno->Berzerk) {
+	if (const auto pTechno = ID->Who.As_Techno())
+	{
+		if (pTechno->IsAlive && !pTechno->Berzerk)
+		{
 			const auto pTechnoExt = TechnoExtContainer::Instance.Find(pTechno);
 
 			if (pTechnoExt->CanTogglePassiveAcquireMode())
@@ -43,7 +45,8 @@ void EventExt::ManualReload::Raise(TechnoClass* pTechno)
 {
 	EventClass Event {};
 
-	if (pTechno->Owner->ArrayIndex >= 0) {
+	if (pTechno->Owner->ArrayIndex >= 0)
+	{
 		Event.Type = AsEventType();
 		Event.HouseIndex = byte(pTechno->Owner->ArrayIndex);
 	}
@@ -130,7 +133,8 @@ void EventExt::ProtocolZero::Raise()
 
 	int currentFrame = Unsorted::CurrentFrame;
 
-	if (ProtocolZero::NextSendFrame < 0) {
+	if (ProtocolZero::NextSendFrame < 0)
+	{
 		ProtocolZero::NextSendFrame = currentFrame + Game::Network::FrameSendRate + ProtocolZero::SendResponseTimeFrame;
 		return;
 	}
@@ -149,7 +153,7 @@ void EventExt::ProtocolZero::Raise()
 	const auto maxAhead = char((int8_t)ipxResponseTime + 1);
 	const auto latencyLevel = (uint8_t)LatencyLevel::FromResponseTime((uint8_t)ipxResponseTime);
 
-	if (EventExt::AddToEvent<false , true , ProtocolZero>(event , maxAhead, latencyLevel))
+	if (EventExt::AddToEvent<false, true, ProtocolZero>(event, maxAhead, latencyLevel))
 	{
 		ProtocolZero::NextSendFrame = currentFrame + ProtocolZero::SendResponseTimeInterval;
 		Debug::LogInfo("[Spawner] Player {} sending response time of {}, LatencyMode = {}, Frame = {}"
@@ -207,7 +211,6 @@ void EventExt::ProtocolZero::Respond(EventClass* Event)
 
 	ProtocolZero::WorstMaxAhead = maxMaxAheads;
 	LatencyLevel::Apply(setLatencyMode);
-
 }
 
 void EventExt::FirewallToggle::Raise(HouseClass* Source)
@@ -217,7 +220,7 @@ void EventExt::FirewallToggle::Raise(HouseClass* Source)
 	Event.Type = AsEventType();
 	Event.HouseIndex = byte(Source->ArrayIndex);
 
-	EventExt::AddToEvent<false , false, FirewallToggle>(Event);
+	EventExt::AddToEvent<false, false, FirewallToggle>(Event);
 }
 
 void EventExt::FirewallToggle::Respond(EventClass* Event)

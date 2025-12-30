@@ -27,7 +27,6 @@ class BuildingClass;
 class CCINIClass;
 class SWTypeHandler
 {
-
 public:
 
 	virtual ~SWTypeHandler() = default;
@@ -107,7 +106,8 @@ public:
 
 #include <ranges>
 
-struct TypeContainer {
+struct TypeContainer
+{
 	std::array<std::unique_ptr<SWTypeHandler>, (size_t)NewSuperType::count> Array;
 
 public:
@@ -120,5 +120,4 @@ public:
 private:
 
 	void Register(std::unique_ptr<SWTypeHandler> pType, NewSuperType nType, std::string_view typeStrings);
-
 };

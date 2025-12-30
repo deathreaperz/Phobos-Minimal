@@ -83,10 +83,12 @@ bool ExtensionSaveJson::Save(const wchar_t* baseSave)
 		Debug::Log("[ExtSave] Base: %ls\n", baseSave);
 		Debug::Log("[ExtSave] Ext:  %ls\n", extPath.wstring().c_str());
 
-		if (extPath.has_parent_path() && !extPath.parent_path().empty()) {
+		if (extPath.has_parent_path() && !extPath.parent_path().empty())
+		{
 			std::error_code ec;
 			std::filesystem::create_directories(extPath.parent_path(), ec);
-			if (ec) {
+			if (ec)
+			{
 				Debug::Log("[ExtSave] Failed to create directory: %s\n", ec.message().c_str());
 				return false;
 			}
@@ -103,12 +105,14 @@ bool ExtensionSaveJson::Save(const wchar_t* baseSave)
 		};
 
 		SaveHeader::WriteSaveHeader(root, _header);
-		if (!AnimExtContainer::Instance.SaveAll(root)) {
+		if (!AnimExtContainer::Instance.SaveAll(root))
+		{
 			Debug::FatalErrorAndExit("[ExtSave] Failed to create file\n");
 		}
 
 		std::ofstream file(extPath, std::ios::out | std::ios::trunc);
-		if (!file.is_open()) {
+		if (!file.is_open())
+		{
 			Debug::Log("[ExtSave] Failed to create file\n");
 			return false;
 		}
@@ -136,7 +140,8 @@ bool ExtensionSaveJson::Load(const wchar_t* baseSave)
 		Debug::Log("[ExtLoad] Base: %ls\n", baseSave);
 		Debug::Log("[ExtLoad] Ext:  %ls\n", extPath.wstring().c_str());
 
-		if (!std::filesystem::exists(extPath)) {
+		if (!std::filesystem::exists(extPath))
+		{
 			Debug::Log("[ExtLoad] Extension save not found - using defaults\n");
 			return true; // Not an error
 		}
@@ -144,7 +149,8 @@ bool ExtensionSaveJson::Load(const wchar_t* baseSave)
 		Debug::Log("[ExtLoad] File size: %llu bytes\n", std::filesystem::file_size(extPath));
 
 		std::ifstream file(extPath);
-		if (!file.is_open()) {
+		if (!file.is_open())
+		{
 			Debug::Log("[ExtLoad] Failed to open file for reading\n");
 			return false;
 		}
@@ -155,39 +161,46 @@ bool ExtensionSaveJson::Load(const wchar_t* baseSave)
 		SaveHeader _header;
 
 		// Validate header
-		if (!SaveHeader::ReadSaveHeader(root, _header)) {
+		if (!SaveHeader::ReadSaveHeader(root, _header))
+		{
 			Debug::Log("[ExtLoad] Missing header\n");
 			return false;
 		}
 
-		if (_header.Magic != Game::Savegame_Magic()) {
+		if (_header.Magic != Game::Savegame_Magic())
+		{
 			Debug::Log("[ExtLoad] Invalid magic: %d\n", _header.Magic);
 			return false;
 		}
 
-		if (_header.Version != AresGlobalData::version) {
+		if (_header.Version != AresGlobalData::version)
+		{
 			Debug::Log("[ExtLoad] Invalid version: %d\n", _header.Version);
 			return false;
 		}
 
-		if (_header.VersionIdentifier != AresGlobalData::ModIdentifier) {
+		if (_header.VersionIdentifier != AresGlobalData::ModIdentifier)
+		{
 			Debug::Log("[ExtLoad] Invalid version identifier: %d\n", _header.VersionIdentifier);
 			return false;
 		}
 
-		if (_header.ModName != AresGlobalData::ModName) {
+		if (_header.ModName != AresGlobalData::ModName)
+		{
 			Debug::Log("[ExtLoad] Invalid Mod : %s\n", _header.ModName);
 			return false;
 		}
 
-		if (_header.ModVersion != AresGlobalData::ModVersion) {
+		if (_header.ModVersion != AresGlobalData::ModVersion)
+		{
 			Debug::Log("[ExtLoad] Invalid Mod version: %d\n", _header.ModVersion);
 			return false;
 		}
 
 		Debug::Log("[ExtLoad] Header OK\n");
 
-		if (!AnimExtContainer::Instance.LoadAll(root)) {
+		if (!AnimExtContainer::Instance.LoadAll(root))
+		{
 			Debug::Log("[ExtLoad] Deserialization failed\n");
 			return false;
 		}
@@ -206,4 +219,3 @@ bool ExtensionSaveJson::Load(const wchar_t* baseSave)
 		return false;
 	}
 }
-

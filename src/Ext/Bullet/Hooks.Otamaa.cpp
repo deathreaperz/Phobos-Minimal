@@ -64,7 +64,6 @@ static void  ManipulateLoco(FootClass* pFirer, AbstractClass* pTarget, BulletCla
 
 			if (auto pUnit = specific_cast<UnitClass*>(pTarget))
 			{
-
 				if (pFoot_T->RadioLinks.IsAllocated &&
 					pFoot_T->RadioLinks.IsInitialized &&
 					pFoot_T->RadioLinks.Items)

@@ -22,9 +22,11 @@ bool FlyingStrings::DrawAllowed(CoordStruct const& nCoords, Point2D& outPoint)
 	if (!nCoords.IsValid())
 		return false;
 
-	if (auto const pCell = MapClass::Instance->TryGetCellAt(nCoords)) {
-		if (!pCell->IsFogged() && !pCell->IsShrouded()){
-			auto[_ret, _cond] = TacticalClass::Instance->GetCoordsToClientSituation(nCoords);
+	if (auto const pCell = MapClass::Instance->TryGetCellAt(nCoords))
+	{
+		if (!pCell->IsFogged() && !pCell->IsShrouded())
+		{
+			auto [_ret, _cond] = TacticalClass::Instance->GetCoordsToClientSituation(nCoords);
 			outPoint = _ret;
 			return _cond;
 		}
@@ -42,14 +44,17 @@ bool FlyingStrings::LoadGlobal(const json& root)
 {
 	this->Clear();
 
-	if (root.contains("FlyingStrings")) {
+	if (root.contains("FlyingStrings"))
+	{
 		size_t dataSize = root["collectionsize"].get<size_t>();
 		Debug::Log("[ExtSave] Loading FlyingStrings %d\n", dataSize);
 
-		if (dataSize > 0) {
+		if (dataSize > 0)
+		{
 			Data.reserve(dataSize);
 
-			for (auto& _item : root["collection"]) {
+			for (auto& _item : root["collection"])
+			{
 				auto& newPtr = Data.emplace_back();
 				size_t itemdatasize = _item["itemdatasize"].get<size_t>();
 				std::string encoded = _item["itemdata"].get<std::string>();
@@ -77,8 +82,8 @@ bool FlyingStrings::SaveGlobal(json& root)
 
 	entry_first["collectionsize"] = Data.size();
 
-	if (!Data.empty()) {
-
+	if (!Data.empty())
+	{
 		entry_first["collection"] = json::array();
 		auto& _arrayOfData = entry_first["collection"];
 
@@ -116,11 +121,14 @@ void FlyingStrings::AddMoneyString(bool Display, int amount, TechnoClass* owner,
 		moneyStr.clear();
 		ColorStruct color = nOverrideColor;
 
-		if (color == ColorStruct::Empty) {
+		if (color == ColorStruct::Empty)
+		{
 			bool isPositive = amount > 0;
 			color = isPositive ? Drawing::DefaultColors[(int)DefaultColorList::Green] : Drawing::DefaultColors[(int)DefaultColorList::Red];
 			fmt::format_to(std::back_inserter(moneyStr), L"{}{}{}", amount > 0 ? L"+" : L"-", Phobos::UI::CostLabel, Math::abs(amount));
-		} else {
+		}
+		else
+		{
 			fmt::format_to(std::back_inserter(moneyStr), L"+{}{}", Phobos::UI::CostLabel, Math::abs(amount));
 		}
 
@@ -129,7 +137,7 @@ void FlyingStrings::AddMoneyString(bool Display, int amount, TechnoClass* owner,
 		BitFont::Instance->GetTextDimension(moneyStr.data(), &nDim.Width, &nDim.Height, 120);
 		pixelOffset.X -= (nDim.Width / 2);
 
-		if (const auto pBuilding = cast_to<BuildingClass* , false>(owner))
+		if (const auto pBuilding = cast_to<BuildingClass*, false>(owner))
 			coords.Z += 104 * pBuilding->Type->Height;
 		else
 			coords.Z += 256;
@@ -182,7 +190,8 @@ void FlyingStrings::AddString(const std::wstring& text, bool Display, TechnoClas
 
 		ColorStruct color = nOverrideColor;
 
-		if (color == ColorStruct::Empty) {
+		if (color == ColorStruct::Empty)
+		{
 			color = Drawing::DefaultColors[(int)DefaultColorList::Red];
 		}
 
@@ -190,7 +199,7 @@ void FlyingStrings::AddString(const std::wstring& text, bool Display, TechnoClas
 		BitFont::Instance->GetTextDimension(text.c_str(), &nDim.Width, &nDim.Height, 120);
 		pixelOffset.X -= (nDim.Width / 2);
 
-		if (const auto pBuilding = cast_to<BuildingClass* , false>(owner))
+		if (const auto pBuilding = cast_to<BuildingClass*, false>(owner))
 			coords.Z += 104 * pBuilding->Type->Height;
 		else
 			coords.Z += 256;
@@ -202,7 +211,6 @@ void FlyingStrings::AddString(const std::wstring& text, bool Display, TechnoClas
 void FlyingStrings::AddNumberString(int amount, HouseClass* owner, AffectedHouse const& displayToHouses,
 	ColorStruct const& color, CoordStruct const& coords, Point2D pixelOffset, bool sign, const wchar_t* prefix)
 {
-
 	if (displayToHouses == AffectedHouse::All ||
 		owner && EnumFunctions::CanTargetHouse(displayToHouses, owner, HouseClass::CurrentPlayer))
 	{
@@ -219,12 +227,12 @@ void FlyingStrings::AddNumberString(int amount, HouseClass* owner, AffectedHouse
 	}
 }
 
-void FlyingStrings::DisplayDamageNumberString(int damage, DamageDisplayType type, CoordStruct coords, int& offset, DrawDamageMode mode , WarheadTypeClass* pWH)
+void FlyingStrings::DisplayDamageNumberString(int damage, DamageDisplayType type, CoordStruct coords, int& offset, DrawDamageMode mode, WarheadTypeClass* pWH)
 {
 	if (damage == 0)
 		return;
 
-	ColorStruct color  = Drawing::DefaultColors[(int)DefaultColorList::White];
+	ColorStruct color = Drawing::DefaultColors[(int)DefaultColorList::White];
 
 	switch (type)
 	{
@@ -241,7 +249,7 @@ void FlyingStrings::DisplayDamageNumberString(int damage, DamageDisplayType type
 		break;
 	}
 
-	if(damage < 0)
+	if (damage < 0)
 		damage = -damage;
 
 	int maxOffset = Unsorted::CellWidthInPixels / 2;
@@ -250,10 +258,10 @@ void FlyingStrings::DisplayDamageNumberString(int damage, DamageDisplayType type
 	static fmt::basic_memory_buffer<wchar_t> damagestr;
 	damagestr.clear();
 
-	if(!pWH || mode != DrawDamageMode::withWH)
-		fmt::format_to(std::back_inserter(damagestr), L"{}" , damage);
+	if (!pWH || mode != DrawDamageMode::withWH)
+		fmt::format_to(std::back_inserter(damagestr), L"{}", damage);
 	else
-		fmt::format_to(std::back_inserter(damagestr), L"{} [{}]", damage , PhobosCRT::StringToWideString(pWH->ID));
+		fmt::format_to(std::back_inserter(damagestr), L"{} [{}]", damage, PhobosCRT::StringToWideString(pWH->ID));
 
 	damagestr.push_back(L'\0');
 	BitFont::Instance->GetTextDimension(damagestr.data(), &width, &height, 120);
@@ -268,30 +276,35 @@ void FlyingStrings::DisplayDamageNumberString(int damage, DamageDisplayType type
 
 void FlyingStrings::UpdateAll()
 {
-	Data.remove_all_if([](FlyingStrings::Item& item) {
-		if (!item.Text.empty()) {
-			Point2D pos {};
+	Data.remove_all_if([](FlyingStrings::Item& item)
+ {
+	 if (!item.Text.empty())
+	 {
+		 Point2D pos {};
 
-			if (FlyingStrings::DrawAllowed(item.Location, pos)) {
-				pos += item.PixelOffset;
-				auto bound = DSurface::Temp->Get_Rect_WithoutBottomBar();
+		 if (FlyingStrings::DrawAllowed(item.Location, pos))
+		 {
+			 pos += item.PixelOffset;
+			 auto bound = DSurface::Temp->Get_Rect_WithoutBottomBar();
 
-				if (!(pos.X < 0 || pos.Y < 0 || pos.X > bound.Width || pos.Y > bound.Height)) {
-					if (Unsorted::CurrentFrame > item.CreationFrame + Duration - 70) {
-						pos.Y -= (Unsorted::CurrentFrame - item.CreationFrame);
-					}
+			 if (!(pos.X < 0 || pos.Y < 0 || pos.X > bound.Width || pos.Y > bound.Height))
+			 {
+				 if (Unsorted::CurrentFrame > item.CreationFrame + Duration - 70)
+				 {
+					 pos.Y -= (Unsorted::CurrentFrame - item.CreationFrame);
+				 }
 
-					TextDrawing::Simple_Text_Print_Wide(item.Text , DSurface::Temp(), &bound, &pos, item.Color, item.Back_Color, item.TextPrintType);
-				}
-			}
+				 TextDrawing::Simple_Text_Print_Wide(item.Text, DSurface::Temp(), &bound, &pos, item.Color, item.Back_Color, item.TextPrintType);
+			 }
+		 }
 
-			if (!(Unsorted::CurrentFrame > item.CreationFrame + Duration || Unsorted::CurrentFrame < item.CreationFrame)) {
-				return false;
-			}
-		}
+		 if (!(Unsorted::CurrentFrame > item.CreationFrame + Duration || Unsorted::CurrentFrame < item.CreationFrame))
+		 {
+			 return false;
+		 }
+	 }
 
-		//always will be removed regardless
-		return true;
+	 //always will be removed regardless
+	 return true;
 	});
-
 }

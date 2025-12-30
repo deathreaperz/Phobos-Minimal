@@ -33,46 +33,55 @@ public:
 		, HoverBoost()
 	{ }
 
-	COMPILETIMEEVAL OPTIONALINLINE AnimTypeClass* GetAboveWaterAnim() const {
+	COMPILETIMEEVAL OPTIONALINLINE AnimTypeClass* GetAboveWaterAnim() const
+	{
 		return this->AboveWaterAnim.Get(RulesClass::Instance->Wake);
 	}
 
-	COMPILETIMEEVAL OPTIONALINLINE int GetScoldSound() const {
+	COMPILETIMEEVAL OPTIONALINLINE int GetScoldSound() const
+	{
 		return this->ScoldSound.Get(RulesClass::Instance->ScoldSound);
 	}
 
-	COMPILETIMEEVAL OPTIONALINLINE 	int GetHeight() const {
+	COMPILETIMEEVAL OPTIONALINLINE 	int GetHeight() const
+	{
 		return this->HoverHeight.Get(RulesClass::Instance->HoverHeight);
 	}
 
-	COMPILETIMEEVAL OPTIONALINLINE double GetBob() const {
+	COMPILETIMEEVAL OPTIONALINLINE double GetBob() const
+	{
 		return this->HoverBob.Get(RulesClass::Instance->HoverBob);
 	}
 
-	COMPILETIMEEVAL OPTIONALINLINE double GetDampen() const {
+	COMPILETIMEEVAL OPTIONALINLINE double GetDampen() const
+	{
 		return this->HoverDampen.Get(RulesClass::Instance->HoverDampen);
 	}
 
-	COMPILETIMEEVAL OPTIONALINLINE double GetAccel() const {
+	COMPILETIMEEVAL OPTIONALINLINE double GetAccel() const
+	{
 		return this->HoverAcceleration.Get(RulesClass::Instance->HoverAcceleration);
 	}
 
-	COMPILETIMEEVAL OPTIONALINLINE double GetBrake() const {
+	COMPILETIMEEVAL OPTIONALINLINE double GetBrake() const
+	{
 		return this->HoverBrake.Get(RulesClass::Instance->HoverBrake);
 	}
 
-	COMPILETIMEEVAL OPTIONALINLINE double GetBoost() const {
+	COMPILETIMEEVAL OPTIONALINLINE double GetBoost() const
+	{
 		return this->HoverBoost.Get(RulesClass::Instance->HoverBoost);
 	}
 
-	static void COMPILETIMEEVAL OPTIONALINLINE AddDefaults() {
+	static void COMPILETIMEEVAL OPTIONALINLINE AddDefaults()
+	{
 		FindOrAllocate(DEFAULT_STR2);
 	}
 
 	COMPILETIMEEVAL static const HoverTypeClass* GetMyHover(int nIdx)
 	{ return HoverTypeClass::FindFromIndex(nIdx); }
 
-	void LoadFromINI(CCINIClass *pINI);
+	void LoadFromINI(CCINIClass* pINI);
 	void LoadFromStream(PhobosStreamReader& Stm);
 	void SaveToStream(PhobosStreamWriter& Stm);
 

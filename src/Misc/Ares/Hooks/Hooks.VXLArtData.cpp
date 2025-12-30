@@ -44,8 +44,9 @@ ASMJIT_PATCH(0x5F8277, ObjectTypeClass_Load3DArt_NoSpawnAlt1, 7)
 		std::string _buffer = pThis->ImageFile;
 		_buffer += "WO";
 		ImageStatusses nPairStatus = ImageStatusses::ReadVoxel(_buffer.c_str());
-	
-		if (!nPairStatus.Loaded) {
+
+		if (!nPairStatus.Loaded)
+		{
 			Debug::LogInfo("{} Techno NoSpawnAlt Image[{}] cannot be loaded ,returning load failed ! ", pThis->ID, _buffer.c_str());
 			bLoadFailed = true;
 			return 0x5F8287;
@@ -87,13 +88,14 @@ ASMJIT_PATCH(0x5F887B, ObjectTypeClass_Load3DArt_Barrels, 6)
 		//	return 0x5F8844;
 		//}
 
-		auto &nArr = i < TechnoTypeClass::MaxWeapons ?
+		auto& nArr = i < TechnoTypeClass::MaxWeapons ?
 			pThis->ChargerBarrels[i] :
 			pTypeExt->BarrelImageData[i - TechnoTypeClass::MaxWeapons];
 
 		ImageStatusses nPairStatus = ImageStatusses::ReadVoxel(_buffer.c_str());
 
-		if (!nPairStatus.Loaded) {
+		if (!nPairStatus.Loaded)
+		{
 			Debug::LogInfo("{} Techno Barrel [{}] at[{}] cannot be loaded ! ", pThis->ID, _buffer.c_str(), i);
 			Debug::RegisterParserError();
 			continue;
@@ -135,11 +137,12 @@ ASMJIT_PATCH(0x5F865F, ObjectTypeClass_Load3DArt_Turrets, 6)
 		auto& nArr = i < TechnoTypeClass::MaxWeapons ?
 			pThis->ChargerTurrets[i] :
 			pTypeExt->TurretImageData[i - TechnoTypeClass::MaxWeapons];
-			;
+		;
 
 		ImageStatusses nPairStatus = ImageStatusses::ReadVoxel(_buffer.c_str());
 
-		if (!nPairStatus.Loaded) {
+		if (!nPairStatus.Loaded)
+		{
 			Debug::LogInfo("{} Techno Turret [{}] at[{}] cannot be loaded , breaking the loop ! ", pThis->ID, _buffer.c_str(), i);
 			Debug::RegisterParserError();
 			continue;
@@ -201,7 +204,8 @@ ASMJIT_PATCH(0x5F8084, ObjectTypeClass_UnloadTurretArt, 6)
 
 	auto pTypeExt = TechnoTypeExtContainer::Instance.Find((TechnoTypeClass*)pThis);
 
-	for(auto& bar : pThis->ChargerBarrels){
+	for (auto& bar : pThis->ChargerBarrels)
+	{
 		bar.~VoxelStruct();
 	}
 
@@ -228,9 +232,12 @@ int ChooseFrame(FootClass* pThis, int shadow_index_now, VoxelStruct* pVXL)
 	{
 		// verify just in case:
 		auto who_are_you = reinterpret_cast<uintptr_t*>(reinterpret_cast<DWORD>(pVXL) - (offsetof(TechnoTypeClass, MainVoxel)));
-		if (who_are_you[0] == UnitTypeClass::vtable) {
+		if (who_are_you[0] == UnitTypeClass::vtable)
+		{
 			pType = reinterpret_cast<TechnoTypeClass*>(who_are_you);//you are someone else
-		} else if ((&TechnoTypeExtContainer::Instance.Find(pType)->SpawnAltData) != pVXL) {
+		}
+		else if ((&TechnoTypeExtContainer::Instance.Find(pType)->SpawnAltData) != pVXL)
+		{
 			return pThis->TurretAnimFrame % pVXL->HVA->FrameCount;
 		}
 
@@ -240,29 +247,35 @@ int ChooseFrame(FootClass* pThis, int shadow_index_now, VoxelStruct* pVXL)
 
 	// Main body sections
 	const auto& shadowIndices = TechnoTypeExtContainer::Instance.Find(pType)->ShadowIndices;
-	if (shadowIndices.empty()) {
+	if (shadowIndices.empty())
+	{
 		// Only ShadowIndex
-		if (pType->ShadowIndex == shadow_index_now) {
+		if (pType->ShadowIndex == shadow_index_now)
+		{
 			int shadow_index_frame = TechnoTypeExtContainer::Instance.Find(pType)->ShadowIndex_Frame;
 			if (shadow_index_frame > -1)
 				return shadow_index_frame % pVXL->HVA->FrameCount;
-		} else {
+		}
+		else
+		{
 			// WHO THE HELL ARE YOU???
 			return 0;
 		}
-	} else {
+	}
+	else
+	{
 		auto iter = shadowIndices.get_key_iterator(shadow_index_now);
-		if(iter != shadowIndices.end()  && iter->second > -1)
+		if (iter != shadowIndices.end() && iter->second > -1)
 			return iter->second % pVXL->HVA->FrameCount;
 	}
 
 	return pThis->WalkedFramesSoFar % pVXL->HVA->FrameCount;
 }
 
-static Matrix3D* __fastcall BounceClass_ShadowMatrix(BounceClass* self, void*, Matrix3D* ret) {
-
+static Matrix3D* __fastcall BounceClass_ShadowMatrix(BounceClass* self, void*, Matrix3D* ret)
+{
 	Matrix3D::FromQuaternion(ret, &self->CurrentAngle);
-	*ret = Matrix3D { 1, 0, 0 , 0,	0, 0.25f, -0.4330127f , 0, 0, -0.4330127f, 0.75f , 0 } * (*ret)*  Matrix3D { 1,0,0,0,0,1,0,0,0,0,0,0 };
+	*ret = Matrix3D { 1, 0, 0 , 0,	0, 0.25f, -0.4330127f , 0, 0, -0.4330127f, 0.75f , 0 } * (*ret) * Matrix3D { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 };
 	return ret;
 }
 DEFINE_FUNCTION_JUMP(CALL, 0x749CAC, BounceClass_ShadowMatrix);
@@ -305,7 +318,7 @@ AircraftTypeClass* GetAircraftTypeExtra(AircraftClass* pAircraft)
 	{
 		return (AircraftTypeClass*)pData->Image_Yellow.Get();
 	}
-	else if(pData->Image_Red && pAircraft->IsRedHP())
+	else if (pData->Image_Red && pAircraft->IsRedHP())
 	{
 		return (AircraftTypeClass*)pData->Image_Red.Get();
 	}
@@ -339,13 +352,14 @@ ASMJIT_PATCH(0x4147F9, AircraftClass_Draw_Shadow, 0x6)
 	enum { FinishDrawing = 0x4148A5 };
 
 	auto loco = pThis->Locomotor.GetInterfacePtr();
-	if (pThis->Type->NoShadow || pThis->CloakState != CloakState::Uncloaked ||  !loco->Is_To_Have_Shadow() || pThis->IsSinking)
+	if (pThis->Type->NoShadow || pThis->CloakState != CloakState::Uncloaked || !loco->Is_To_Have_Shadow() || pThis->IsSinking)
 		return FinishDrawing;
 
 	const auto aTypeExt = TechnoTypeExtContainer::Instance.Find(pThis->Type);
-	Matrix3D shadow_mtx {} ;
+	Matrix3D shadow_mtx {};
 	loco->Shadow_Matrix(&shadow_mtx, &key);
-	if(const auto flyloco = locomotion_cast<FlyLocomotionClass*>(pThis->Locomotor)) {
+	if (const auto flyloco = locomotion_cast<FlyLocomotionClass*>(pThis->Locomotor))
+	{
 		const double baseScale_log = RulesExtData::Instance()->AirShadowBaseScale_log;
 
 		if (RulesExtData::Instance()->HeightShadowScaling)
@@ -374,9 +388,11 @@ ASMJIT_PATCH(0x4147F9, AircraftClass_Draw_Shadow, 0x6)
 
 		shadow_mtx.RotateY((float)(ars));
 		shadow_mtx.RotateX((float)(arf));
-
-	} else if (height > 0) {
-		if(const auto rocketloco = locomotion_cast<RocketLocomotionClass*>(pThis->Locomotor)){
+	}
+	else if (height > 0)
+	{
+		if (const auto rocketloco = locomotion_cast<RocketLocomotionClass*>(pThis->Locomotor))
+		{
 			shadow_mtx.RotateY((float)Math::cos(rocketloco->CurrentPitch));
 			key.Invalidate();
 		}
@@ -400,7 +416,7 @@ ASMJIT_PATCH(0x4147F9, AircraftClass_Draw_Shadow, 0x6)
 				true,
 				nullptr,
 				{ 0, 0 }
-		);
+			);
 	}
 	else
 	{
@@ -415,7 +431,7 @@ ASMJIT_PATCH(0x4147F9, AircraftClass_Draw_Shadow, 0x6)
 				true,
 				nullptr,
 				{ 0, 0 }
-		);
+			);
 	}
 
 	return FinishDrawing;
@@ -423,7 +439,7 @@ ASMJIT_PATCH(0x4147F9, AircraftClass_Draw_Shadow, 0x6)
 
 struct JumpjetTiltReference
 {
-	static COMPILETIMEEVAL OPTIONALINLINE int BaseSpeed = 32 ;
+	static COMPILETIMEEVAL OPTIONALINLINE int BaseSpeed = 32;
 	static COMPILETIMEEVAL OPTIONALINLINE double BaseTilt { Math::PI_BY_TWO_ACCURATE / 4 };
 	static COMPILETIMEEVAL OPTIONALINLINE int BaseTurnRaw { 32768 };
 	static COMPILETIMEEVAL OPTIONALINLINE float MaxTilt { static_cast<float>(Math::PI_BY_TWO_ACCURATE) };
@@ -431,7 +447,8 @@ struct JumpjetTiltReference
 	static COMPILETIMEEVAL OPTIONALINLINE float SidewaysBaseTilt { (float)(BaseTilt / float(BaseTurnRaw * BaseSpeed)) };
 };
 
-static void TranslateAngleRotated(Matrix3D* mtx , FootClass* pThis  , TechnoTypeClass* pType, VoxelIndexKey& key) {
+static void TranslateAngleRotated(Matrix3D* mtx, FootClass* pThis, TechnoTypeClass* pType, VoxelIndexKey& key)
+{
 	float arf = pThis->AngleRotatedForwards;
 	float ars = pThis->AngleRotatedSideways;
 	const auto jjloco = locomotion_cast<JumpjetLocomotionClass*>(pThis->Locomotor.GetInterfacePtr());
@@ -448,8 +465,9 @@ static void TranslateAngleRotated(Matrix3D* mtx , FootClass* pThis  , TechnoType
 		mtx->TranslateY(float(Math::signum(-ars) * pType->VoxelScaleY * (1 - c_ars)));
 		mtx->RotateY(arf);
 		mtx->RotateX(ars);
-	} else if (jjloco && uTypeExt->JumpjetTilt && jjloco->NextState != JumpjetLocomotionClass::State::Grounded
-		&& jjloco->__currentSpeed > 0.0 && pThis->IsAlive && pThis->Health > 0 && !pThis->IsAttackedByLocomotor)
+	}
+	else if (jjloco && uTypeExt->JumpjetTilt && jjloco->NextState != JumpjetLocomotionClass::State::Grounded
+	 && jjloco->__currentSpeed > 0.0 && pThis->IsAlive && pThis->Health > 0 && !pThis->IsAttackedByLocomotor)
 	{
 		const auto forwardSpeedFactor = jjloco->__currentSpeed * uTypeExt->JumpjetTilt_ForwardSpeedFactor;
 		const auto forwardAccelFactor = jjloco->Acceleration * uTypeExt->JumpjetTilt_ForwardAccelFactor;
@@ -478,8 +496,8 @@ static void TranslateAngleRotated(Matrix3D* mtx , FootClass* pThis  , TechnoType
 	}
 }
 
-static VoxelStruct* GetmainVxl(TechnoClass* pThis, TechnoTypeClass* pType , VoxelIndexKey& key){
-
+static VoxelStruct* GetmainVxl(TechnoClass* pThis, TechnoTypeClass* pType, VoxelIndexKey& key)
+{
 	if (pType->NoSpawnAlt && pThis->SpawnManager && pThis->SpawnManager->CountDockedSpawns() == 0)
 	{
 		key.Invalidate();// I'd just assume most of the time we have spawn
@@ -489,7 +507,7 @@ static VoxelStruct* GetmainVxl(TechnoClass* pThis, TechnoTypeClass* pType , Voxe
 	return &pType->MainVoxel;
 }
 
-static void DecideScaleAndIndex(Matrix3D* mtx, TechnoClass* pThis, TechnoTypeClass* pType, VoxelIndexKey& key, ILocomotion* iLoco , int height)
+static void DecideScaleAndIndex(Matrix3D* mtx, TechnoClass* pThis, TechnoTypeClass* pType, VoxelIndexKey& key, ILocomotion* iLoco, int height)
 {
 	const double baseScale_log = RulesExtData::Instance()->AirShadowBaseScale_log; // -ln(baseScale) precomputed
 
@@ -556,7 +574,7 @@ ASMJIT_PATCH(0x73C47A, UnitClass_DrawAsVXL_Shadow, 0x5)
 	const auto height = pThis->GetHeight();
 	DecideScaleAndIndex(&shadow_matrix, pThis, pType, vxl_index_key, loco, height);
 
-	VoxelStruct* main_vxl = GetmainVxl(pThis , pType , vxl_index_key);
+	VoxelStruct* main_vxl = GetmainVxl(pThis, pType, vxl_index_key);
 
 	// TODO : adjust shadow point according to height
 	// There was a bit deviation that I cannot decipher, might need help with that
@@ -564,7 +582,7 @@ ASMJIT_PATCH(0x73C47A, UnitClass_DrawAsVXL_Shadow, 0x5)
 
 	auto shadow_point = loco->Shadow_Point();
 	auto why = *floor + shadow_point;
-	TranslateAngleRotated(&shadow_matrix, pThis, pType , vxl_index_key);
+	TranslateAngleRotated(&shadow_matrix, pThis, pType, vxl_index_key);
 
 	auto mtx = Game::VoxelDefaultMatrix() * (shadow_matrix);
 
@@ -573,8 +591,10 @@ ASMJIT_PATCH(0x73C47A, UnitClass_DrawAsVXL_Shadow, 0x5)
 
 	const auto uTypeExt = TechnoTypeExtContainer::Instance.Find(pType);
 
-	if (!pType->UseTurretShadow ) {
-		if(uTypeExt->ShadowIndices.empty()) {
+	if (!pType->UseTurretShadow)
+	{
+		if (uTypeExt->ShadowIndices.empty())
+		{
 			if (pType->ShadowIndex >= 0 && pType->ShadowIndex < main_vxl->HVA->LayerCount)
 				pThis->DrawVoxelShadow(
 					   main_vxl,
@@ -619,11 +639,11 @@ ASMJIT_PATCH(0x73C47A, UnitClass_DrawAsVXL_Shadow, 0x5)
 	if (inRecoil)
 		mtx.TranslateX(-pThis->TurretRecoil.TravelSoFar);
 
-	auto tur = TechnoTypeExtData::GetTurretsVoxelFixedUp(pType , pThis->CurrentTurretNumber);
+	auto tur = TechnoTypeExtData::GetTurretsVoxelFixedUp(pType, pThis->CurrentTurretNumber);
 
 	// sorry but you're fucked
-	if (tur && tur->VXL && tur->HVA) {
-
+	if (tur && tur->VXL && tur->HVA)
+	{
 		auto bar = TechnoTypeExtData::GetBarrelsVoxelFixedUp(pType, pThis->CurrentTurretNumber);
 		auto haveBar = bar && bar->VXL && bar->HVA && !bar->VXL->LoadFailed;
 
@@ -657,8 +677,8 @@ ASMJIT_PATCH(0x73C47A, UnitClass_DrawAsVXL_Shadow, 0x5)
 		);
 
 		// and you are utterly fucked
-		if (haveBar){
-
+		if (haveBar)
+		{
 			if (pType->TurretRecoil && pThis->BarrelRecoil.State != RecoilData::RecoilState::Inactive)
 				mtx.TranslateX(-pThis->BarrelRecoil.TravelSoFar);
 

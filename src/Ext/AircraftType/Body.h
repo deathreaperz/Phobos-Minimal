@@ -16,7 +16,8 @@ public:
 
 public:
 
-	AircraftTypeExtData(AircraftTypeClass* pObj) : TechnoTypeExtData(pObj) {
+	AircraftTypeExtData(AircraftTypeClass* pObj) : TechnoTypeExtData(pObj)
+	{
 		this->AbsType = AircraftTypeClass::AbsID;
 		this->InitializeConstant();
 	}
@@ -43,7 +44,8 @@ public:
 	virtual AbstractType WhatIam() const { return base_type::AbsID; }
 	virtual int GetSize() const { return sizeof(*this); };
 
-	virtual void CalculateCRC(CRCEngine& crc) const {
+	virtual void CalculateCRC(CRCEngine& crc) const
+	{
 		this->TechnoTypeExtData::CalculateCRC(crc);
 	}
 
@@ -71,7 +73,8 @@ public:
 	virtual void WriteToINI(AircraftTypeClass* key, CCINIClass* pINI);
 };
 
-class NOVTABLE FakeAircraftTypeClass : public AircraftTypeClass {
+class NOVTABLE FakeAircraftTypeClass : public AircraftTypeClass
+{
 public:
 	bool _CanAttackMove() { return RulesExtData::Instance()->ExpandAircraftMission; };
 	bool _ReadFromINI(CCINIClass* pINI);

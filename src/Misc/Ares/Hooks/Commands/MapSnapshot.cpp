@@ -25,7 +25,7 @@ const wchar_t* MapSnapshotCommandClass::GetUIDescription() const
 
 void MapSnapshotCommandClass::Execute(WWKey dwUnk) const
 {
-	const std::string fName =  "Map." + Debug::GetCurTimeA() + ".yrm";
+	const std::string fName = "Map." + Debug::GetCurTimeA() + ".yrm";
 	Game::WriteMapFiles(fName.c_str());
 	wchar_t msg[0xA0] = L"\0";
 	wsprintfW(msg, L"Map Snapshot saved as '%hs'.", fName.c_str());

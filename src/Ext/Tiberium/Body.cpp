@@ -173,14 +173,12 @@ void TiberiumExtData::Recalc_Growth()
 	}
 }
 
-
 void TiberiumExtData::Clear_Growth()
 {
 	GrowthQueue = std::priority_queue<QueueItem, std::vector<QueueItem>, CompareQueueItem>();
 	GrowthState.clear();
 	GrowthState.resize(Map_Cell_Count());
 }
-
 
 void TiberiumExtData::Queue_Growth(CellStruct const& cell)
 {
@@ -196,11 +194,11 @@ void TiberiumExtData::Queue_Growth(CellStruct const& cell)
 	}
 }
 
-
 void TiberiumExtData::Clear_Tiberium_Spread_State(CellStruct const& cell)
 {
 	int cellindex = Map_Cell_Index(cell);
-	for (int i = 0; i < TiberiumClass::Array->Count; i++) {
+	for (int i = 0; i < TiberiumClass::Array->Count; i++)
+	{
 		TiberiumExtContainer::Instance.Find(TiberiumClass::Array->Items[i])->SpreadState[cellindex] = false;
 	}
 }
@@ -216,7 +214,7 @@ bool TiberiumExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	INI_EX exINI(pINI);
 
 	this->Palette.Read(exINI, pSection, "CustomPalette");
-	this->OreTwinkle.Read(exINI, pSection,"OreTwinkle");
+	this->OreTwinkle.Read(exINI, pSection, "OreTwinkle");
 	this->OreTwinkleChance.Read(exINI, pSection, "OreTwinkleChance");
 	this->Ore_TintLevel.Read(exINI, pSection, "OreTintLevel");
 
@@ -230,7 +228,6 @@ bool TiberiumExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 
 	this->UseNormalLight.Read(exINI, pSection, "UseNormalLight");
 	this->EnablePixelFXAnim.Read(exINI, pSection, "EnablePixelFX");
-
 
 	this->Damage.Read(exINI, pSection, "Damage");
 	this->Warhead.Read(exINI, pSection, "Warhead");
@@ -260,27 +257,31 @@ bool TiberiumExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 			this->PipIndex = 2;
 		break;
 	case 2:
-		if (this->LinkedOverlayType->empty()) {
+		if (this->LinkedOverlayType->empty())
+		{
 			this->LinkedOverlayType = "GEM";
 		}
 		this->PipIndex = 5;
 		break;
 	case 3:
-		if (this->LinkedOverlayType->empty()) {
+		if (this->LinkedOverlayType->empty())
+		{
 			this->LinkedOverlayType = "TIB2_";
 		}
 		slopes = true;
 		this->PipIndex = 2;
 		break;
 	case 4:
-		if (this->LinkedOverlayType->empty()) {
+		if (this->LinkedOverlayType->empty())
+		{
 			this->LinkedOverlayType = "TIB3_";
 		}
 		slopes = true;
 		this->PipIndex = 2;
 		break;
 	default:
-		if (this->LinkedOverlayType->empty()) {
+		if (this->LinkedOverlayType->empty())
+		{
 			this->LinkedOverlayType = "TIB";
 		}
 		slopes = true;
@@ -294,38 +295,45 @@ bool TiberiumExtData::LoadFromINI(CCINIClass* pINI, bool parseFailAddr)
 	Variety.Read(exINI, pSection, "Variety");
 	int MaxCount = !slopes ? 12 : 20;
 
-	if(Variety.isset()) {
+	if (Variety.isset())
+	{
 		MaxCount = MaxImpl(MaxCount, Variety.Get());
 	}
 
-	if(!this->LinkedOverlayType->empty()) {
-
+	if (!this->LinkedOverlayType->empty())
+	{
 		OverlayTypeClass* first = nullptr;
 
-		for (int i = 0; i < MaxCount; ++i) {
+		for (int i = 0; i < MaxCount; ++i)
+		{
 			const std::string Find = (this->LinkedOverlayType.Get() + fmt::format("{:02}", i + 1));
 			OverlayTypeClass* pOverlay = OverlayTypeClass::Find(Find.c_str());
 
 			if (!pOverlay)
 				Debug::FatalErrorAndExit("CannotFind %s OverlayType for Tiberium[%s]", Find.c_str(), pSection);
 
-			if(!pOverlay->Tiberium)
+			if (!pOverlay->Tiberium)
 				Debug::FatalErrorAndExit("OverlayType[%s] for Tiberium[%s] is not Tiberium", Find.c_str(), pSection);
 
-			if (i == 0) {
+			if (i == 0)
+			{
 				first = pOverlay;
 
 				auto iter = TiberiumExtContainer::Instance.LinkedType.get_key_iterator(pOverlay);
 
-				if (iter != TiberiumExtContainer::Instance.LinkedType.end()) {
+				if (iter != TiberiumExtContainer::Instance.LinkedType.end())
+				{
 					if (iter->second != this->This())
 						Debug::FatalErrorAndExit("OverlayType[%s] already assigned to [%s] Tiberium! ", pOverlay->ID, iter->second->ID);
-				} else {
+				}
+				else
+				{
 					TiberiumExtContainer::Instance.LinkedType.emplace_unchecked(pOverlay, this->This());
 				}
 			}
-			else if (first && pOverlay->ArrayIndex != (first->ArrayIndex + i)) {
-				Debug::FatalErrorAndExit("OverlayType index of [%s - %d] is invalid compared to the first[%s - %d] (+ %d) ", Find.c_str(), pOverlay->ArrayIndex, i ,first->ID, first->ArrayIndex);
+			else if (first && pOverlay->ArrayIndex != (first->ArrayIndex + i))
+			{
+				Debug::FatalErrorAndExit("OverlayType index of [%s - %d] is invalid compared to the first[%s - %d] (+ %d) ", Find.c_str(), pOverlay->ArrayIndex, i, first->ID, first->ArrayIndex);
 			}
 
 			//if (Phobos::Otamaa::IsAdmin)
@@ -615,7 +623,6 @@ void FakeTiberiumClass::__Growth()
 		int increment = 0;
 		if (size_after > 0)
 		{
-
 			while (true)
 			{
 				while (true)
@@ -688,7 +695,7 @@ void TiberiumExtData::Serialize(T& Stm)
 		.Process(this->SpreadState)
 		.Process(this->GrowthQueue)
 		.Process(this->GrowthState)
-	;
+		;
 }
 
 TiberiumExtContainer TiberiumExtContainer::Instance;
@@ -739,7 +746,6 @@ bool TiberiumExtContainer::LoadAll(const json& root)
 	}
 
 	return false;
-
 }
 
 bool TiberiumExtContainer::SaveAll(json& root)
@@ -788,12 +794,10 @@ void TiberiumExtContainer::LoadFromINI(TiberiumClass* key, CCINIClass* pINI, boo
 		//this function can be called again multiple time but without need to re-init the data
 		ptr->SetInitState(InitState::Ruled);
 	}
-
 }
 
 void TiberiumExtContainer::WriteToINI(TiberiumClass* key, CCINIClass* pINI)
 {
-
 	if (auto ptr = this->TryFind(key))
 	{
 		if (!pINI)
@@ -834,10 +838,12 @@ ASMJIT_PATCH(0x721C7B, TiberiumClass_LoadFromINI, 0xA)
 	GET(TiberiumClass*, pItem, ESI);
 	GET_STACK(CCINIClass*, pINI, STACK_OFFS(0xC4, -0x4));
 
-	TiberiumExtContainer::Instance.LoadFromINI(pItem, pINI , R->Origin() == 0x721CE9);
+	TiberiumExtContainer::Instance.LoadFromINI(pItem, pINI, R->Origin() == 0x721CE9);
 
-	if (R->Origin() == 0x721CDC && !TiberiumExtContainer::Instance.Find(pItem)->LinkedOverlayType->empty()) {
-		if (auto pLinked = OverlayTypeClass::Find((TiberiumExtContainer::Instance.Find(pItem)->LinkedOverlayType.Get() + "01").c_str())) {
+	if (R->Origin() == 0x721CDC && !TiberiumExtContainer::Instance.Find(pItem)->LinkedOverlayType->empty())
+	{
+		if (auto pLinked = OverlayTypeClass::Find((TiberiumExtContainer::Instance.Find(pItem)->LinkedOverlayType.Get() + "01").c_str()))
+		{
 			pItem->Image = pLinked;
 		}
 	}

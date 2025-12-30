@@ -50,8 +50,10 @@ ASMJIT_PATCH(0x4E3560, Game_GetFlagSurface, 5)
 		return 0x4E3686;
 	}
 
-	if (auto pHouse = HouseTypeClass::Array->get_or_default(n)) {
-		if (auto pSurface = HouseTypeExtContainer::Instance.Find(pHouse)->FlagFile.GetSurface()) {
+	if (auto pHouse = HouseTypeClass::Array->get_or_default(n))
+	{
+		if (auto pSurface = HouseTypeExtContainer::Instance.Find(pHouse)->FlagFile.GetSurface())
+		{
 			R->EAX(pSurface);
 			return 0x4E3686; //override result
 		}
@@ -64,9 +66,10 @@ ASMJIT_PATCH(0x4E38A0, LoadPlayerCountryString, 5)
 {
 	GET(int, n, ECX);
 
-	enum { NextCompare = 0x4E38BC, Neg2Result = 0x4E38A5 , RetResult = 0x4E39F1 };
+	enum { NextCompare = 0x4E38BC, Neg2Result = 0x4E38A5, RetResult = 0x4E39F1 };
 
-	if(auto pHouse = HouseTypeClass::Array->get_or_default(n)) {
+	if (auto pHouse = HouseTypeClass::Array->get_or_default(n))
+	{
 		R->EAX(HouseTypeExtContainer::Instance.Find(pHouse)->StatusText->Text);
 		return RetResult; //replaced
 	}
@@ -79,12 +82,14 @@ ASMJIT_PATCH(0x553412, LoadProgressMgr_Draw_LSFile, 9)
 	GET(int, n, EBX);
 	enum { SwitchStatement = 0x553421, DefaultResult = 0x553416, RetResult = 0x55342C };
 
-	if(auto pHouse = HouseTypeClass::Array->get_or_default(n)) {
+	if (auto pHouse = HouseTypeClass::Array->get_or_default(n))
+	{
 		R->EDX(HouseTypeExtContainer::Instance.Find(pHouse)->LoadScreenBackground.data());
 		return RetResult;//replaced
 	}
 
-	if (n == 0) {
+	if (n == 0)
+	{
 		return DefaultResult; //USA
 	}
 
@@ -96,12 +101,14 @@ ASMJIT_PATCH(0x5536da, LoadProgressMgr_Draw_LSName, 9)
 	GET(int, n, EBX);
 	enum { SwitchStatement = 0x5536FB, DefaultResult = 0x5536DE, RetResult = 0x553820 };
 
-	if(auto pHouse = HouseTypeClass::Array->get_or_default(n)){
+	if (auto pHouse = HouseTypeClass::Array->get_or_default(n))
+	{
 		R->EDI(HouseTypeExtContainer::Instance.Find(pHouse)->LoadScreenName->Text);
 		return RetResult;//replaced
 	}
 
-	if (n == 0) {
+	if (n == 0)
+	{
 		return DefaultResult; //USA
 	}
 
@@ -114,12 +121,13 @@ ASMJIT_PATCH(0x553a05, LoadProgressMgr_Draw_LSSpecialName, 6)
 	enum { SwitchStatement = 0x553A28, DefaultResult = 0x553A0D, RetResult = 0x553B3B };
 
 	// any valid index will be override
-	if (auto pHouse = HouseTypeClass::Array->get_or_default(n)) {
+	if (auto pHouse = HouseTypeClass::Array->get_or_default(n))
+	{
 		R->EAX(HouseTypeExtContainer::Instance.Find(pHouse)->LoadScreenSpecialName->Text);
 		return RetResult;
 	}
 
-	if(n == 0) // Index 0 is USA
+	if (n == 0) // Index 0 is USA
 		return DefaultResult;
 
 	R->EAX(n);
@@ -132,12 +140,13 @@ ASMJIT_PATCH(0x553d06, LoadProgressMgr_Draw_LSBrief, 6)
 	enum { SwitchStatement = 0x553D2B, DefaultResult = 0x553D0E, RetResult = 0x553E54 };
 
 	// any valid index will be override
-	if (auto pHouse = HouseTypeClass::Array->get_or_default(n)) {
+	if (auto pHouse = HouseTypeClass::Array->get_or_default(n))
+	{
 		R->ESI(HouseTypeExtContainer::Instance.Find(pHouse)->LoadScreenBrief->Text);
 		return RetResult;
 	}
 
-	if(n == 0) // Index 0 is USA
+	if (n == 0) // Index 0 is USA
 		return DefaultResult;
 
 	R->EAX(n);
@@ -165,14 +174,18 @@ bool KeepThisAlive(HouseClass* pHouse, TechnoClass* pTech, AbstractType what, ui
 	bool ret = true;
 	bool defaultKeppAlive = false;
 
-	if (pType->Insignificant || pType->DontScore) {
+	if (pType->Insignificant || pType->DontScore)
+	{
 		ret = false;
-	} else {
+	}
+	else
+	{
 		ret = true;
 		defaultKeppAlive = what == BuildingClass::AbsID;
 	}
 
-	if (result->Get(defaultKeppAlive)) {
+	if (result->Get(defaultKeppAlive))
+	{
 		const int add = 2 * keep - 1;
 		HouseExtContainer::Instance.Find(pHouse)->KeepAliveCount += add;
 		if (what == BuildingClass::AbsID)
@@ -273,12 +286,13 @@ ASMJIT_PATCH(0x688B37, MPGameModeClass_CreateStartingUnits_B, 5)
 {
 	enum { hasBaseUnit = 0x688B75, hasNoBaseUnit = 0x688C09 };
 
-	GET_STACK(HouseClass *, pHouse, 0x10);
+	GET_STACK(HouseClass*, pHouse, 0x10);
 
 	const int idxParent = pHouse->Type->FindParentCountryIndex();
 
-	if(const auto Item =
-		HouseExtData::FindOwned(pHouse , idxParent , make_iterator(RulesClass::Instance->BaseUnit))) {
+	if (const auto Item =
+		HouseExtData::FindOwned(pHouse, idxParent, make_iterator(RulesClass::Instance->BaseUnit)))
+	{
 		R->ESI<UnitClass*>((UnitClass*)Item->CreateObject(pHouse));
 		R->EBP(0);
 		R->EDI<HouseClass*>(pHouse);
@@ -323,7 +337,6 @@ ASMJIT_PATCH(0x52267D, InfantryClass_GetDisguise_Disguise, 6)
 	}
 }
 
-
 ASMJIT_PATCH(0x5227A3, Sides_Disguise, 6) // InfantryClass_SetDefaultDisguise
 {
 	GET(HouseClass*, pHouse, EAX);
@@ -335,28 +348,38 @@ ASMJIT_PATCH(0x5227A3, Sides_Disguise, 6) // InfantryClass_SetDefaultDisguise
 		pThis = R->ECX<InfantryClass*>();
 		dwReturnAddress = 0x5227EC;
 	}
-	else if(R->Origin() == 0x6F422F)
+	else if (R->Origin() == 0x6F422F)
 	{
-		GET(TechnoClass* , pTech , ESI);
+		GET(TechnoClass*, pTech, ESI);
 
-		if(pTech->WhatAmI() == UnitClass::AbsID) {
-			if (const auto pDefault = TechnoTypeExtContainer::Instance.Find(((UnitClass*)pTech)->Type)->DefaultVehicleDisguise.Get()) {
+		if (pTech->WhatAmI() == UnitClass::AbsID)
+		{
+			if (const auto pDefault = TechnoTypeExtContainer::Instance.Find(((UnitClass*)pTech)->Type)->DefaultVehicleDisguise.Get())
+			{
 				pTech->Disguise = pDefault;
 				return 0x6F4277;
 			}
-		} else if(pTech->WhatAmI() == InfantryClass::AbsID) {
+		}
+		else if (pTech->WhatAmI() == InfantryClass::AbsID)
+		{
 			pThis = (InfantryClass*)pTech;
 			dwReturnAddress = 0x6F4277;
-		} else {
+		}
+		else
+		{
 			return 0x0;
 		}
 	}
 
-	if (pThis) {
-		if (auto pDisguise = HouseExtData::GetDisguise(pHouse)) {
+	if (pThis)
+	{
+		if (auto pDisguise = HouseExtData::GetDisguise(pHouse))
+		{
 			pThis->Disguise = pDisguise;
 			return dwReturnAddress;
-		} else if (const auto pDefaultDisguiseType = TechnoTypeExtContainer::Instance.Find(pThis->Type)->DefaultDisguise.Get()){
+		}
+		else if (const auto pDefaultDisguiseType = TechnoTypeExtContainer::Instance.Find(pThis->Type)->DefaultDisguise.Get())
+		{
 			pThis->Disguise = pDefaultDisguiseType;
 			return dwReturnAddress;
 		}
@@ -421,22 +444,23 @@ ASMJIT_PATCH(0x4FE782, HouseClass_AI_BaseConstructionUpdate_PickPowerplant, 6)
 
 	const auto it = pExt->GetPowerplants();
 
-	for (auto const& pPower : it) {
+	for (auto const& pPower : it)
+	{
 		if (HouseExtData::PrereqValidate(pThis, pPower, false, true) == CanBuildResult::Buildable
 			&& HouseExtData::PrerequisitesMet(pThis, pPower)
-		) {
+		)
+		{
 			Eligible.push_back(pPower);
 		}
 	}
 
 	BuildingTypeClass* pResult = nullptr;
-	if (!Eligible.empty()) {
-
+	if (!Eligible.empty())
+	{
 		if ((int)Eligible.size() > 1)
 			pResult = Eligible[ScenarioClass::Instance->Random.RandomFromMax((int)Eligible.size() - 1)];
 		else
 			pResult = Eligible[0];
-
 	}
 	else if (!it.empty())
 	{
@@ -458,7 +482,8 @@ ASMJIT_PATCH(0x4F8EBD, HouseClass_Update_HasBeenDefeated, 5)
 {
 	GET(FakeHouseClass*, pThis, ESI);
 
-	if (pThis->_GetExtData()->KeepAliveCount) {
+	if (pThis->_GetExtData()->KeepAliveCount)
+	{
 		return 0x4F8F87;
 	}
 
@@ -477,46 +502,59 @@ ASMJIT_PATCH(0x4F8EBD, HouseClass_Update_HasBeenDefeated, 5)
 
 	if (GameModeOptionsClass::Instance->ShortGame)
 	{
-		if (pThis->OwnedBuildingTypes.Total > 0) {
-			for (auto const& pBld : pThis->Buildings) {
-
+		if (pThis->OwnedBuildingTypes.Total > 0)
+		{
+			for (auto const& pBld : pThis->Buildings)
+			{
 				if (!pBld->Type->UndeploysInto)
 					continue;
 
-				for (auto const pBaseUnit : RulesClass::Instance->BaseUnit) {
+				for (auto const pBaseUnit : RulesClass::Instance->BaseUnit)
+				{
 					if (pBld->Type->UndeploysInto == pBaseUnit)
 						return 0x4F8F87;
 				}
 			}
 		}
 
-		for (auto pBaseUnit : RulesClass::Instance->BaseUnit) {
-			if (pThis->OwnedUnitTypes[pBaseUnit->ArrayIndex]) {
+		for (auto pBaseUnit : RulesClass::Instance->BaseUnit)
+		{
+			if (pThis->OwnedUnitTypes[pBaseUnit->ArrayIndex])
+			{
 				return 0x4F8F87;
 			}
 		}
 	}
 	else
 	{
-		if (pThis->OwnedUnitTypes.Total) {
-			for (auto pTechno : *UnitClass::Array) {
-				if (IsEligible(pTechno)) {
+		if (pThis->OwnedUnitTypes.Total)
+		{
+			for (auto pTechno : *UnitClass::Array)
+			{
+				if (IsEligible(pTechno))
+				{
 					return 0x4F8F87;
 				}
 			}
 		}
 
-		if (pThis->OwnedInfantryTypes.Total) {
-			for (auto pTechno : *InfantryClass::Array) {
-				if (IsEligible(pTechno)) {
+		if (pThis->OwnedInfantryTypes.Total)
+		{
+			for (auto pTechno : *InfantryClass::Array)
+			{
+				if (IsEligible(pTechno))
+				{
 					return 0x4F8F87;
 				}
 			}
 		}
 
-		if (pThis->OwnedAircraftTypes.Total) {
-			for (auto pTechno : *AircraftClass::Array) {
-				if (IsEligible(pTechno)) {
+		if (pThis->OwnedAircraftTypes.Total)
+		{
+			for (auto pTechno : *AircraftClass::Array)
+			{
+				if (IsEligible(pTechno))
+				{
 					return 0x4F8F87;
 				}
 			}
@@ -549,8 +587,9 @@ ASMJIT_PATCH(0x50965E, HouseClass_CanInstantiateTeam, 5)
 			if (RulesExtData::Instance()->AllowBypassBuildLimit[Owner->GetAIDifficultyIndex()])
 			{
 				CanBuild = BuildLimitAllows;
-			} else {
-
+			}
+			else
+			{
 				CanBuild = HouseExtData::BuildLimitRemaining(Owner, Type) >= ptrEntry->Amount ?
 					BuildLimitAllows : TryToRecruit;
 			}
@@ -610,7 +649,8 @@ ASMJIT_PATCH(0x505C95, HouseClass_GenerateAIBuildList_CountExtra, 7)
 				auto count = MaxImpl(pExt->AIBuildCounts->at(idxDifficulty), 1);
 
 				// random optional building counts
-				if (pExt->AIExtraCounts.isset()) {
+				if (pExt->AIExtraCounts.isset())
+				{
 					auto const& max = pExt->AIExtraCounts->at(idxDifficulty);
 					count += Random.RandomFromMax(MaxImpl(max, 0));
 				}
@@ -632,10 +672,13 @@ ASMJIT_PATCH(0x505C95, HouseClass_GenerateAIBuildList_CountExtra, 7)
 	{
 		auto const it = SideExtContainer::Instance.Find(pSide)->GetBaseDefenseCounts();
 
-		if (idxDifficulty < it.size()) {
+		if (idxDifficulty < it.size())
+		{
 			R->EAX(it[idxDifficulty]);
 			return 0x505CE9;
-		} else {
+		}
+		else
+		{
 			Debug::LogInfo("WTF! vector has {}u items, requested item #{}",
 				it.size(), idxDifficulty);
 		}
@@ -716,17 +759,17 @@ ASMJIT_PATCH(0x4F7870, HouseClass_CanBuild, 7)
 
 	GET(HouseClass* const, pThis, ECX);
 	GET_STACK(TechnoTypeClass* const, pItem, 0x4);
-	GET_STACK(bool , buildLimitOnly, 0x8);
-	GET_STACK(bool , includeInProduction, 0xC);
+	GET_STACK(bool, buildLimitOnly, 0x8);
+	GET_STACK(bool, includeInProduction, 0xC);
 	//GET_STACK(DWORD , caller , 0x0);
 	auto validationResult = HouseExtData::PrereqValidate(pThis, pItem, buildLimitOnly, includeInProduction);
 
-	if(validationResult == CanBuildResult::Buildable) {
+	if (validationResult == CanBuildResult::Buildable)
+	{
 		validationResult = HouseExtData::BuildLimitGroupCheck(pThis, pItem, buildLimitOnly, includeInProduction);
 
 		if (HouseExtData::ReachedBuildLimit(pThis, pItem, true))
 			validationResult = CanBuildResult::TemporarilyUnbuildable;
-
 	}
 
 	if (!buildLimitOnly && includeInProduction && pThis == HouseClass::CurrentPlayer()) // Eliminate any non-producible calls to change the list safely
@@ -743,7 +786,7 @@ ASMJIT_PATCH(0x50B370, HouseClass_ShouldDisableCameo, 5)
 
 	GET(int*, pAddress, ESP);
 
-	R->EAX(HouseExtData::ShouldDisableCameo(pThis , pType , *pAddress == 0x6A5FED || *pAddress == 0x6A97EF || *pAddress == 0x6AB65B));
+	R->EAX(HouseExtData::ShouldDisableCameo(pThis, pType, *pAddress == 0x6A5FED || *pAddress == 0x6A97EF || *pAddress == 0x6AB65B));
 	return 0x50B669;
 }
 
@@ -755,7 +798,8 @@ ASMJIT_PATCH(0x6A640B, SideBarClass_AddCameo_DoNotPlayEVA, 0x5)
 	GET(AbstractType, absType, ESI);
 	GET(int, idxType, EBP);
 
-	if (const auto pType = ObjectTypeClass::FetchTechnoType(absType, idxType)) {
+	if (const auto pType = ObjectTypeClass::FetchTechnoType(absType, idxType))
+	{
 		if (TechnoTypeExtContainer::Instance.Find(pType)->Cameo_AlwaysExist.Get(RulesExtData::Instance()->Cameo_AlwaysExist))
 			return SkipPlaying;
 	}
@@ -911,14 +955,13 @@ ASMJIT_PATCH(0x4FAF2A, HouseClass_SWDefendAgainst_Aborted, 0x8)
 	return (pSW && !pSW->IsCharged) ? 0x4FAF32 : 0x4FB0CF;
 }
 
-DEFINE_FUNCTION_JUMP(LJMP ,0x4F9610, FakeHouseClass::_GiveTiberium);
-DEFINE_FUNCTION_JUMP(CALL ,0x44A272, FakeHouseClass::_GiveTiberium)
-DEFINE_FUNCTION_JUMP(CALL ,0x522E11, FakeHouseClass::_GiveTiberium)
-DEFINE_FUNCTION_JUMP(CALL ,0x522E31, FakeHouseClass::_GiveTiberium)
-DEFINE_FUNCTION_JUMP(CALL ,0x684F58, FakeHouseClass::_GiveTiberium)
-DEFINE_FUNCTION_JUMP(CALL ,0x73E4A9, FakeHouseClass::_GiveTiberium)
-DEFINE_FUNCTION_JUMP(CALL ,0x73E4C9, FakeHouseClass::_GiveTiberium)
-
+DEFINE_FUNCTION_JUMP(LJMP, 0x4F9610, FakeHouseClass::_GiveTiberium);
+DEFINE_FUNCTION_JUMP(CALL, 0x44A272, FakeHouseClass::_GiveTiberium)
+DEFINE_FUNCTION_JUMP(CALL, 0x522E11, FakeHouseClass::_GiveTiberium)
+DEFINE_FUNCTION_JUMP(CALL, 0x522E31, FakeHouseClass::_GiveTiberium)
+DEFINE_FUNCTION_JUMP(CALL, 0x684F58, FakeHouseClass::_GiveTiberium)
+DEFINE_FUNCTION_JUMP(CALL, 0x73E4A9, FakeHouseClass::_GiveTiberium)
+DEFINE_FUNCTION_JUMP(CALL, 0x73E4C9, FakeHouseClass::_GiveTiberium)
 
 ASMJIT_PATCH(0x4F62FF, HouseClass_CTOR_FixNameOverflow, 6)
 {
@@ -1043,7 +1086,6 @@ ASMJIT_PATCH(0x50610E, HouseClass_FindPositionForBuilding_FixShipyard, 7)
 
 // 	// check whether this is a building
 // 	if (auto pBld = cast_to<BuildingClass*>(pTechno)) {
-
 // 		//auto pBldExt = BuildingExtContainer::Instance.Find(pBld);
 
 // 		// if(pBldExt->LimboID != -1) {
@@ -1073,7 +1115,6 @@ ASMJIT_PATCH(0x50610E, HouseClass_FindPositionForBuilding_FixShipyard, 7)
 // 					// don't do this when killing occupants already changed owner
 // 					if (pBld->GetOwningHouse() == pThis)
 // 					{
-
 // 						// fallback to first civilian side house, same logic SlaveManager uses
 // 						if (!pInitialOwner)
 // 						{
@@ -1118,7 +1159,8 @@ ASMJIT_PATCH(0x4F8F54, HouseClass_Update_SlaveMinerCheck, 6)
 	GET(HouseClass*, pThis, ESI);
 	GET(int, n, EDI);
 
-	for (auto const& ref : RulesClass::Instance->BuildRefinery) {
+	for (auto const& ref : RulesClass::Instance->BuildRefinery)
+	{
 		//new sane way to find a slave miner
 		if (ref && ref->SlavesNumber > 0)
 			n += pThis->ActiveBuildingTypes.get_count(ref->ArrayIndex);
@@ -1139,8 +1181,10 @@ ASMJIT_PATCH(0x4F8C97, HouseClass_Update_BuildConst, 6)
 	AresHouseExt::SetFirestormState(pThis, false);
 
 	// should play low power EVA for more than three BuildConst items
-	for (auto const& pItem : RulesClass::Instance->BuildConst) {
-		if (pItem && pThis->ActiveBuildingTypes.get_count(pItem->ArrayIndex) > 0) {
+	for (auto const& pItem : RulesClass::Instance->BuildConst)
+	{
+		if (pItem && pThis->ActiveBuildingTypes.get_count(pItem->ArrayIndex) > 0)
+		{
 			return NotifyLowPower;
 		}
 	}
@@ -1174,7 +1218,8 @@ ASMJIT_PATCH(0x4F8C23, HouseClass_Update_SilosNeededEVA, 5)
 
 	VoxClass::Play("EVA_SilosNeeded");
 
-	if (const CSFText& Message = RulesExtData::Instance()->MessageSilosNeeded) {
+	if (const CSFText& Message = RulesExtData::Instance()->MessageSilosNeeded)
+	{
 		Message.PrintAsMessage(pThis->ColorSchemeIndex);
 	}
 

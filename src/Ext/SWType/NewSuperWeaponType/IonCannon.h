@@ -21,7 +21,8 @@ public:
 	virtual int GetDamage(const SWTypeExtData* pData) const override;
 
 protected:
-	void newStateMachine(CellStruct XY, SuperClass* pSuper, TechnoClass* pFirer) {
+	void newStateMachine(CellStruct XY, SuperClass* pSuper, TechnoClass* pFirer)
+	{
 		SWStateMachine::Array.push_back(std::move(std::make_unique<IonCannonStateMachine>(XY, pSuper, pFirer, this)));
 	}
 };

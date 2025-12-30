@@ -224,7 +224,8 @@ static FORCEDINLINE void DoEnterNow(UnitClass* pTransport, FootClass* pPassenger
 	TechnoExtContainer::Instance.Find(pPassenger)->ResetLocomotor = true;
 }
 
-void TechnoExtData::Fastenteraction(FootClass* pThis) {
+void TechnoExtData::Fastenteraction(FootClass* pThis)
+{
 	if (const auto pDest = cast_to<UnitClass*>(pThis->CurrentMission == Mission::Enter ? pThis->GetNthLink() : pThis->QueueUpToEnter))
 	{
 		const auto pType = pDest->Type;
@@ -322,7 +323,7 @@ ASMJIT_PATCH(0x73DC1E, UnitClass_Mission_Unload_NoQueueUpToUnloadLoop, 0xA)
 		if (!pPassenger || pThis->Passengers.NumPassengers <= pThis->NonPassengerCount)
 		{
 			// If unloading is required within one frame, the sound will only be played when the last passenger leaves
-			VocClass::PlayIndexAtPos(pType->LeaveTransportSound, pThis->Location , false);
+			VocClass::PlayIndexAtPos(pType->LeaveTransportSound, pThis->Location, false);
 			TransportUnloadTemp::ShouldPlaySound = false;
 			return UnloadReturn;
 		}
@@ -468,7 +469,6 @@ ASMJIT_PATCH(0x718F1E, TeleportLocomotionClass_MovingTo_ReplaceMovementZone, 0x6
 	return R->Origin() + 0x6;
 }ASMJIT_PATCH_AGAIN(0x7190B0, TeleportLocomotionClass_MovingTo_ReplaceMovementZone, 0x6)
 
-
 // Enter building
 DEFINE_JUMP(LJMP, 0x43C38D, 0x43C3FF); // Skip amphibious and naval check if no Ares
 
@@ -591,7 +591,6 @@ ASMJIT_PATCH(0x73DAD8, UnitClass_Mission_Unload_PassengerLeavePosition, 0x5)
 
 #pragma endregion
 
-
 #pragma region BuildingEnterExtension
 
 ASMJIT_PATCH(0x51EE36, InfantryClass_MouseOvetObject_NoQueueUpToEnter, 0x5)
@@ -698,7 +697,8 @@ ASMJIT_PATCH(0x519776, InfantryClass_UpdatePosition_NoQueueUpToEnter, 0x5)
 
 	if (pType->Passengers > 0 || HouseExtData::GetTunnelVector(pBuilding->Type, pBuilding->Owner))
 	{
-		if (pThis->SendCommand(RadioCommand::QueryCanEnter, pBuilding) == RadioCommand::AnswerPositive) {
+		if (pThis->SendCommand(RadioCommand::QueryCanEnter, pBuilding) == RadioCommand::AnswerPositive)
+		{
 			if (const auto pTag = pBuilding->AttachedTag)
 				pTag->RaiseEvent(TriggerEvent::EnteredBy, pThis, CellStruct::Empty);
 
@@ -726,15 +726,18 @@ ASMJIT_PATCH(0x739FA2, UnitClassClass_UpdatePosition_NoQueueUpToEnter, 0x5)
 
 	auto pTunnel = HouseExtData::GetTunnelVector(pBuilding->Type, pBuilding->Owner);
 
-	if (pType->Passengers > 0 || pTunnel) {
-		if (pThis->SendCommand(RadioCommand::QueryCanEnter, pBuilding) == RadioCommand::AnswerPositive) {
+	if (pType->Passengers > 0 || pTunnel)
+	{
+		if (pThis->SendCommand(RadioCommand::QueryCanEnter, pBuilding) == RadioCommand::AnswerPositive)
+		{
 			if (const auto pTag = pBuilding->AttachedTag)
 				pTag->RaiseEvent(TriggerEvent::EnteredBy, pThis, CellStruct::Empty);
 
 			// This might fix a bug where hover vehicles enter tunnels.
 			TechnoExtContainer::Instance.Find(pThis)->ResetLocomotor = true;
 
-			if (pTunnel) 	{
+			if (pTunnel)
+			{
 				TunnelFuncs::EnterTunnel(&pTunnel->Vector, pBuilding, pThis);
 				return SkipGameCode;
 			}

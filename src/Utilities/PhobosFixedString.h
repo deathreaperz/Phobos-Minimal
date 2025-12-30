@@ -18,5 +18,4 @@ public:
 
 	//OPTIONALINLINE const char* c_str() const
 	//{ return ((*this).data()); }
-
 };

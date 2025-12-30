@@ -28,7 +28,8 @@ public:
 	void LoadFromINI(CCINIClass* pINI, const char* pSection);
 
 	bool Load(PhobosStreamReader& stm, bool registerForChange) { return this->Serialize(stm); }
-	bool Save(PhobosStreamWriter& stm) const {
+	bool Save(PhobosStreamWriter& stm) const
+	{
 		return const_cast<AEAttachInfoTypeClass*>(this)->Serialize(stm);
 	}
 

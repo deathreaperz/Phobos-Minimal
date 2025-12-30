@@ -23,7 +23,7 @@ public:
 	static COMPILETIMEEVAL unsigned Marker = UuidFirstPart<base_type>::value;
 	static COMPILETIMEEVAL auto Marker_str = to_hex_string<Marker>();
 
-public :
+public:
 
 #pragma region ClassMembers
 	std::string TileSetName;
@@ -79,11 +79,11 @@ public:
 	const IsometricTileTypeClass* This_Const() const { return reinterpret_cast<const IsometricTileTypeClass*>(this->AttachedToObject); }
 
 	virtual bool LoadFromINI(CCINIClass* pINI, bool parseFailAddr);
-	virtual bool WriteToINI(CCINIClass* pINI) const { return true;  }
+	virtual bool WriteToINI(CCINIClass* pINI) const { return true; }
 
 public:
 
-	static LightConvertClass* GetLightConvert(IsometricTileTypeClass* pOvrl , int r, int g, int b);
+	static LightConvertClass* GetLightConvert(IsometricTileTypeClass* pOvrl, int r, int g, int b);
 
 private:
 	template <typename T>
@@ -105,7 +105,8 @@ public:
 
 	virtual bool LoadAll(const json& root) { return true; }
 	virtual bool SaveAll(json& root) { return true; }
-	virtual void Clear() { 
+	virtual void Clear()
+	{
 		this->base_t::Clear();
 		this->LightConvertEntities.clear();
 		this->CurrentTileset = -1;
@@ -118,5 +119,4 @@ public:
 class FakeIsometricTileTypeClass : public IsometricTileTypeClass
 {
 public:
-
 };

@@ -65,7 +65,7 @@ public:
 	const ParticleSystemTypeClass* This_Const() const { return reinterpret_cast<const ParticleSystemTypeClass*>(this->AttachedToObject); }
 
 	virtual bool LoadFromINI(CCINIClass* pINI, bool parseFailAddr);
-	virtual bool WriteToINI(CCINIClass* pINI) const { return true;  }
+	virtual bool WriteToINI(CCINIClass* pINI) const { return true; }
 
 private:
 	template <typename T>
@@ -95,9 +95,9 @@ public:
 
 	bool _ReadFromINI(CCINIClass* pINI);
 
-	ParticleSystemTypeExtData* _GetExtData() {
+	ParticleSystemTypeExtData* _GetExtData()
+	{
 		return *reinterpret_cast<ParticleSystemTypeExtData**>(((DWORD)this) + AbstractExtOffset);
 	}
-
 };
 static_assert(sizeof(FakeParticleSystemTypeClass) == sizeof(ParticleSystemTypeClass), "Invalid Size !");

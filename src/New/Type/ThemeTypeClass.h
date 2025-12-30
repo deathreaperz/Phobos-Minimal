@@ -30,5 +30,4 @@ public:
 	{ }
 
 	void LoadFromINI(CCINIClass* pINI);
-
 };

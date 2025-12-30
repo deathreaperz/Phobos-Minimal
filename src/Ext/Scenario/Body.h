@@ -19,7 +19,7 @@ struct ExtendedVariable
 	{
 		return
 			stm
-			.Process(Name , registerForChange)
+			.Process(Name, registerForChange)
 			.Process(Value, registerForChange)
 			.Success()
 			;
@@ -96,7 +96,6 @@ public:
 	void GetVariableStateByID(const bool IsGlobal, int nIndex, char* pOut);
 	void ReadVariables(const bool IsGlobal, CCINIClass* pINI);
 
-
 	void LoadFromINIFile(CCINIClass* pINI, bool parseFailAddr);
 	void ReadMissionMDINI();
 
@@ -152,7 +151,6 @@ private:
 			.Process(this->UndergroundTracker)
 			.Process(this->FallingDownTracker)
 			;
-
 	}
 
 public:
@@ -178,13 +176,13 @@ public:
 	static void SaveVariablesToFile(bool isGlobal);
 	static void LoadVariablesToFile(bool isGlobal);
 
-	static COMPILETIMEEVAL PhobosMap<int, ExtendedVariable>* GetVariables(bool IsGlobal) {
+	static COMPILETIMEEVAL PhobosMap<int, ExtendedVariable>* GetVariables(bool IsGlobal)
+	{
 		if (IsGlobal)
 			return &ScenarioExtData::Instance()->Global_Variables;
 
 		return &ScenarioExtData::Instance()->Local_Variables;
 	}
-
 };
 
 class NOVTABLE FakeScenarioClass : public ScenarioClass
